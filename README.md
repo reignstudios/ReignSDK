@@ -16,7 +16,7 @@ Platforms
     - Windows
     - Metro
     - Xbox360
-    - XNA (Used for testing Xbox code on Windows)
+    - XNA
 
     Apple
     - OSX
