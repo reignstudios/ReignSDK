@@ -1,4 +1,4 @@
-﻿using Reign.Core.MathF32;
+﻿using Reign.Core;
 
 namespace Reign.Input
 {

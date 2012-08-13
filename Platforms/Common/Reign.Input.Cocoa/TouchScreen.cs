@@ -1,6 +1,5 @@
 using System;
 using Reign.Core;
-using Reign.Core.MathF32;
 
 namespace Reign.Input.Cocoa
 {
@@ -53,7 +52,7 @@ namespace Reign.Input.Cocoa
 				{
 					touchOn[i] = theEvent.TouchesOn[i];
 					var loc = theEvent.TouchLocations[i];
-					touchLocations[i] = new Vector2(loc.X, input.application.FrameSize.Y-loc.Y);
+					touchLocations[i] = new Vector2(loc.X, input.application.FrameSize.Height-loc.Y);
 				}
 			}
 		}
