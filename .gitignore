@@ -1,0 +1,25 @@
+# Folders
+[Dd]ebug*/
+[Rr]elease*/
+[Bb]in/
+obj/
+Lib/
+ipch/
+
+# Tooling
+_ReSharper*/
+*.resharper
+[Tt]est[Rr]esult*
+
+# SLN
+*.db
+*.sdf
+*.suo
+*.user
+*.opensdf
+*.pidb
+*.userprefs
+
+# System Files
+*.DS_Store
+*.cachefile

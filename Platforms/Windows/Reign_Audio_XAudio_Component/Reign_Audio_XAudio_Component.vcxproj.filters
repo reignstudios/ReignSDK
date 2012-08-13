@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Base">
+      <UniqueIdentifier>{a33ba15e-0e4f-44c9-9b78-c3c4853aee5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{30a6bc80-631e-4077-8e2c-b04063bf24ff}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\CPP_CLR-CX_Helpers\Common.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Audio_XAudio_Component\Audio.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Audio_XAudio_Component\Sound\SoundWAV.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Audio_XAudio_Component\Sound\SoundWAVInstance.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\CPP_CLR-CX_Helpers\Common.h" />
+    <ClInclude Include="..\..\Common\Reign_Audio_XAudio_Component\Audio.h" />
+    <ClInclude Include="..\..\Common\Reign_Audio_XAudio_Component\Sound\SoundWAV.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

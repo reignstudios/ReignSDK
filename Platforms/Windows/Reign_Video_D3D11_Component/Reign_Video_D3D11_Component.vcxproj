@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{001985F2-1E42-489C-8C50-2C646E0C4333}</ProjectGuid>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <Keyword>ManagedCProj</Keyword>
+    <RootNamespace>Reign_Video_D3D11_Component</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CLRSupport>true</CLRSupport>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>../Lib</OutDir>
+    <IncludePath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>DEBUG;WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Common\CPP_CLR-CX_Helpers\Common.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\BufferLayout.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\IndexBuffer.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\VertexBuffer.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\DepthStencil\DepthStencil.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\PixelShader.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\ShaderModel.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\ShaderResource.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\ShaderVariable.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\VertexShader.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\States\BlendState.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\States\DepthStencilState.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\States\RasterizerState.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\States\SamplerState.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Textures\RenderTarget.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Textures\Texture2D.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Video.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\ViewPort\ViewPort.h" />
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Common\CPP_CLR-CX_Helpers\Common.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\BufferLayout.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\BufferLayoutDesc.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\IndexBuffer.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\VertexBuffer.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\DepthStencil\DepthStencil.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\PixelShader.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\ShaderModel.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\ShaderResource.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\ShaderVariable.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\VertexShader.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\BlendState.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\BlendStateDesc.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\DepthStencilState.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\DepthStencilStateDesc.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\RasterizerState.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\RasterizerStateDesc.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\SamplerState.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\SamplerStateDesc.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Textures\RenderTarget.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Textures\Texture2D.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Video.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\ViewPort\ViewPort.cpp" />
+    <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

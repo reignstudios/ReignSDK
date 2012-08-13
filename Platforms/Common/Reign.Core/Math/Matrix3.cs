@@ -1,0 +1,179 @@
+﻿using System.Runtime.InteropServices;
+using MathS = System.Math;
+
+namespace Reign.Core
+{
+	[StructLayout(LayoutKind.Sequential)]
+	public struct Matrix3
+	{
+		#region Properties
+		public Vector3 X, Y, Z;
+		#endregion
+
+		#region Constructors
+		public Matrix3(float value)
+		{
+			X = new Vector3(value);
+			Y = new Vector3(value);
+			Z = new Vector3(value);
+		}
+
+		public Matrix3(Vector3 x, Vector3 y, Vector3 z)
+		{
+			X = x;
+			Y = y;
+			Z = z;
+		}
+
+		public static Matrix3 Cross(Vector3 zVector, Vector3 yVector)
+		{
+			var Z = zVector.Normalize();
+			var X = yVector.Cross(Z).Normalize();
+			var Y = Z.Cross(X);
+
+			return new Matrix3(X, Y, Z);
+		}
+		public static readonly Matrix3 Identity = new Matrix3
+		(
+		    new Vector3(1, 0, 0),
+		    new Vector3(0, 1, 0),
+		    new Vector3(0, 0, 1)
+		);
+		#endregion
+
+		#region Operators
+		// +
+		public static Matrix3 operator+(Matrix3 p1, Matrix3 p2) {return new Matrix3(p1.X+p2.X, p1.Y+p2.Y, p1.Z+p2.Z);}
+		public static Matrix3 operator+(Matrix3 p1, float p2) {return new Matrix3(p1.X+p2, p1.Y+p2, p1.Z+p2);}
+		public static Matrix3 operator+(float p1, Matrix3 p2) {return new Matrix3(p1+p2.X, p1+p2.Y, p1+p2.Z);}
+		// -
+		public static Matrix3 operator-(Matrix3 p1, Matrix3 p2) {return new Matrix3(p1.X-p2.X, p1.Y-p2.Y, p1.Z-p2.Z);}
+		public static Matrix3 operator-(Matrix3 p1, float p2) {return new Matrix3(p1.X-p2, p1.Y-p2, p1.Z-p2);}
+		public static Matrix3 operator-(float p1, Matrix3 p2) {return new Matrix3(p1-p2.X, p1-p2.Y, p1-p2.Z);}
+		// *
+		public static Matrix3 operator*(Matrix3 p1, Matrix3 p2) {return new Matrix3(p1.X*p2.X, p1.Y*p2.Y, p1.Z*p2.Z);}
+		public static Matrix3 operator*(Matrix3 p1, float p2) {return new Matrix3(p1.X*p2, p1.Y*p2, p1.Z*p2);}
+		public static Matrix3 operator*(float p1, Matrix3 p2) {return new Matrix3(p1*p2.X, p1*p2.Y, p1*p2.Z);}
+		// /
+		public static Matrix3 operator/(Matrix3 p1, Matrix3 p2) {return new Matrix3(p1.X/p2.X, p1.Y/p2.Y, p1.Z/p2.Z);}
+		public static Matrix3 operator/(Matrix3 p1, float p2) {return new Matrix3(p1.X/p2, p1.Y/p2, p1.Z/p2);}
+		public static Matrix3 operator/(float p1, Matrix3 p2) {return new Matrix3(p1/p2.X, p1/p2.Y, p1/p2.Z);}
+		// ==
+		public static bool operator==(Matrix3 p1, Matrix3 p2) {return (p1.X==p2.X && p1.Y==p2.Y && p1.Z==p2.Z);}
+		public static bool operator!=(Matrix3 p1, Matrix3 p2) {return (p1.X!=p2.X || p1.Y!=p2.Y || p1.Z!=p2.Z);}
+		#endregion
+		
+		#region Methods
+		public override bool Equals(object obj)
+		{
+			return obj != null && (Matrix3)obj == this;
+		}
+
+		public override string ToString()
+		{
+			return string.Format("{0} : {1} : {2}", X, Y, Z);
+		}
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+		
+		public Matrix3 Abs()
+		{
+			return new Matrix3(X.Abs(), Y.Abs(), Z.Abs());
+		}
+
+		public Matrix3 Transpose()
+		{
+			return new Matrix3
+			(
+				new Vector3(X.X, Y.X, Z.X),
+				new Vector3(X.Y, Y.Y, Z.Y),
+				new Vector3(X.Z, Y.Z, Z.Z)
+			);
+		}
+
+		public Matrix3 Multiply(Matrix3 matrix)
+		{
+			return new Matrix3
+			(
+				new Vector3((matrix.X.X*X.X) + (matrix.X.Y*Y.X) + (matrix.X.Z*Z.X), (matrix.X.X*X.Y) + (matrix.X.Y*Y.Y) + (matrix.X.Z*Z.Y), (matrix.X.X*X.Z) + (matrix.X.Y*Y.Z) + (matrix.X.Z*Z.Z)),
+				new Vector3((matrix.Y.X*X.X) + (matrix.Y.Y*Y.X) + (matrix.Y.Z*Z.X), (matrix.Y.X*X.Y) + (matrix.Y.Y*Y.Y) + (matrix.Y.Z*Z.Y), (matrix.Y.X*X.Z) + (matrix.Y.Y*Y.Z) + (matrix.Y.Z*Z.Z)),
+				new Vector3((matrix.Z.X*X.X) + (matrix.Z.Y*Y.X) + (matrix.Z.Z*Z.X), (matrix.Z.X*X.Y) + (matrix.Z.Y*Y.Y) + (matrix.Z.Z*Z.Y), (matrix.Z.X*X.Z) + (matrix.Z.Y*Y.Z) + (matrix.Z.Z*Z.Z))
+			);
+		}
+
+		public Matrix3 RotateAroundAxisX(float radians)
+		{
+			float tCos = (float)MathS.Cos(-radians), tSin = (float)MathS.Sin(-radians);
+			return new Matrix3
+			(
+				X,
+				new Vector3((Y.X*tCos) - (Z.X*tSin), (Y.Y*tCos) - (Z.Y*tSin), (Y.Z*tCos) - (Z.Z*tSin)),
+				new Vector3((Y.X*tSin) + (Z.X*tCos), (Y.Y*tSin) + (Z.Y*tCos), (Y.Z*tSin) + (Z.Z*tCos))
+			);
+		}
+
+		public Matrix3 RotateAroundAxisY(float radians)
+		{
+			float tCos = (float)MathS.Cos(-radians), tSin = (float)MathS.Sin(-radians);
+			return new Matrix3
+			(
+				new Vector3((Z.X*tSin) + (X.X*tCos), (Z.Y*tSin) + (X.Y*tCos), (Z.Z*tSin) + (X.Z*tCos)),
+				Y,
+				new Vector3((Z.X*tCos) - (X.X*tSin), (Z.Y*tCos) - (X.Y*tSin), (Z.Z*tCos) - (X.Z*tSin))
+			);
+		}
+
+		public Matrix3 RotateAroundAxisZ(float radians)
+		{
+			float tCos = (float)MathS.Cos(-radians), tSin = (float)MathS.Sin(-radians);
+			return new Matrix3
+			(
+				new Vector3((X.X*tCos) - (Y.X*tSin), (X.Y*tCos) - (Y.Y*tSin), (X.Z*tCos) - (Y.Z*tSin)),
+				new Vector3((X.X*tSin) + (Y.X*tCos), (X.Y*tSin) + (Y.Y*tCos), (X.Z*tSin) + (Y.Z*tCos)),
+				Z
+			);
+		}
+
+		public Matrix3 RotateAroundWorldAxisX(float radians)
+		{
+			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
+			return new Matrix3
+			(
+				new Vector3(X.X, (X.Y*tCos) - (X.Z*tSin), (X.Y*tSin) + (X.Z*tCos)),
+				new Vector3(Y.X, (Y.Y*tCos) - (Y.Z*tSin), (Y.Y*tSin) + (Y.Z*tCos)),
+				new Vector3(Z.X, (Z.Y*tCos) - (Z.Z*tSin), (Z.Y*tSin) + (Z.Z*tCos))
+			);
+		}
+
+		public Matrix3 RotateAroundWorldAxisY(float radians)
+		{
+			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
+			return new Matrix3
+			(
+				new Vector3((X.Z*tSin) + (X.X*tCos), X.Y, (X.Z*tCos) - (X.X*tSin)),
+				new Vector3((Y.Z*tSin) + (Y.X*tCos), Y.Y, (Y.Z*tCos) - (Y.X*tSin)),
+				new Vector3((Z.Z*tSin) + (Z.X*tCos), Z.Y, (Z.Z*tCos) - (Z.X*tSin))
+			);
+		}
+
+		public Matrix3 RotateAroundWorldAxisZ(float radians)
+		{
+			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
+			return new Matrix3
+			(
+				new Vector3((X.X*tCos) - (X.Y*tSin), (X.X*tSin) + (X.Y*tCos), X.Z),
+				new Vector3((Y.X*tCos) - (Y.Y*tSin), (Y.X*tSin) + (Y.Y*tCos), Y.Z),
+				new Vector3((Z.X*tCos) - (Z.Y*tSin), (Z.X*tSin) + (Z.Y*tCos), Z.Z)
+			);
+		}
+
+		public Matrix3 Rotate(Vector3 vectorNormalized, float radians)
+		{
+			return new Matrix3(X.Rotate(vectorNormalized, radians), Y.Rotate(vectorNormalized, radians), Z.Rotate(vectorNormalized, radians));
+		}
+		#endregion
+	}
+}
