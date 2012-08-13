@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{49DFC40D-C27A-4230-A637-8D9669269586}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>MonoDevelop.MonoNaCl</RootNamespace>
+    <AssemblyName>MonoDevelop.MonoNaCl</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="MonoDevelop.Ide, Version=2.6.0.0, Culture=neutral">
+      <Private>False</Private>
+      <Package>monodevelop</Package>
+    </Reference>
+    <Reference Include="MonoDevelop.Core, Version=2.6.0.0, Culture=neutral">
+      <Private>False</Private>
+      <Package>monodevelop</Package>
+    </Reference>
+    <Reference Include="Mono.Addins, Version=0.6.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Posix" />
+    <Reference Include="System.Xml" />
+    <Reference Include="MonoDevelop.CSharpBinding, Version=2.6.0.0, Culture=neutral">
+      <Private>False</Private>
+      <Package>monodevelop-core-addins</Package>
+    </Reference>
+    <Reference Include="MonoDevelop.DesignerSupport, Version=2.6.0.0, Culture=neutral">
+      <Private>False</Private>
+      <Package>monodevelop-core-addins</Package>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.MonoNaCl.MonoNaClGlobalOptions.cs" />
+    <Compile Include="GlobalOptions\MonoNaClGlobalOptions.cs" />
+    <Compile Include="GlobalOptions\MonoNaClSettingsService.cs" />
+    <Compile Include="Projects\MonoNaClProject.cs" />
+    <Compile Include="Projects\MonoNaClProjectBinding.cs" />
+    <Compile Include="Projects\MonoNaClProjectConfiguration.cs" />
+    <Compile Include="GlobalOptions\MonoNaClProjectOptions.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.MonoNaCl.MonoNaClProjectOptions.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MonoDevelop.MonoNaCl.addin.xml">
+      <LogicalName>MonoDevelop.MonoNaCl.addin.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="templates\MonoNaClProject.xpt.xml">
+      <LogicalName>MonoNaClProject.xpt.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="templates\MonoNaClLibraryProject.xpt.xml">
+      <LogicalName>MonoNaClLibraryProject.xpt.xml</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="templates\" />
+    <Folder Include="icons\" />
+    <Folder Include="GlobalOptions\" />
+    <Folder Include="Projects\" />
+  </ItemGroup>
+</Project>

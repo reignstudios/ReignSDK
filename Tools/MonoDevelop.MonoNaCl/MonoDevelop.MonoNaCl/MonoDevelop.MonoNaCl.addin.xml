@@ -1,0 +1,50 @@
+<Addin namespace   = "MonoDevelop"
+       id          = "MonoNaCl"
+       name        = "Mono for NaCl"
+       author      = "Andrew Witte"
+       copyright   = "BSD-2"
+       url         = "http://www.reign-studios.com"
+       description = "Support for developing MonoNaCl applications."
+       category    = "NaCl Development"
+       version     = "1.0.0">
+       
+	<Dependencies>
+		<Addin id="Ide" version="3.0" />
+		<Addin id="Core" version="3.0" />
+	</Dependencies>
+	
+	<!-- Template Types -->
+	<Extension path = "/MonoDevelop/Ide/ProjectTemplates">
+		<ProjectTemplate id = "MonoNaClProject" resource = "MonoNaClProject.xpt.xml"/>
+		<ProjectTemplate id = "MonoNaClLibraryProject" resource = "MonoNaClLibraryProject.xpt.xml"/>
+	</Extension>
+	
+	<!-- Project Binding -->
+	<Extension path = "/MonoDevelop/ProjectModel/ProjectBindings">
+		<ProjectBinding id = "MonoNaCl" class = "MonoDevelop.MonoNaCl.MonoNaClProjectBinding"/>
+	</Extension>
+	
+	<Extension path = "/MonoDevelop/ProjectModel/MSBuildItemTypes">
+		<DotNetProjectSubtype guid = "{304EDB7B-59C9-4334-85AD-2F54227B63B9}" type = "MonoDevelop.MonoNaCl.MonoNaClProject"/>
+	</Extension>
+	
+	<!-- Global Option Panels -->
+	<Extension path = "/MonoDevelop/Ide/GlobalOptionsDialog/Other">
+		<Section id = "MonoNaClGlobalOptions" _label = "MonoNaCl" class = "MonoDevelop.MonoNaCl.MonoNaClGlobalOptionsBinding"/>
+	</Extension>
+	
+	<!-- Project Option Panels -->
+	<Extension path = "/MonoDevelop/ProjectModel/SerializableClasses">
+		<DataType class = "MonoDevelop.MonoNaCl.MonoNaClProject" />
+	</Extension>
+	
+	<Extension path = "/MonoDevelop/ProjectModel/Gui/ItemOptionPanels/Build">
+		<Condition id = "ItemType" value = "MonoDevelop.MonoNaCl.MonoNaClProject">
+			<Section id = "MonoNaClProjectOptions" _label = "NaCl" insertafter = "Compile" class = "MonoDevelop.MonoNaCl.ProjectOptionsBinding"/>
+		</Condition>
+	</Extension>
+	
+	<!--<Extension path = "/MonoDevelop/Ide/Commands/Edit">  
+		<Command id = "MonoDevelop.Samples.DateInserter.DateInserterCommands.InsertDate" _label = "Some lable" _description = "Some desc" />  
+	</Extension>-->
+</Addin>

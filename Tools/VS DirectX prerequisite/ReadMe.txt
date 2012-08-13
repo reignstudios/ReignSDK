@@ -1,0 +1,1 @@
+Copy the folder "directx" to "C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\Bootstrapper\Packages".

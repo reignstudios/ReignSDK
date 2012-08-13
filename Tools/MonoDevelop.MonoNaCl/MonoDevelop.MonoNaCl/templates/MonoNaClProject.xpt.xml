@@ -1,0 +1,627 @@
+<?xml version="1.0"?>
+<Template originator = "Andrew Witte">
+
+	<TemplateConfiguration>
+		<_Name>MonoNaCl Project</_Name>
+		<_Category>C#/MonoNaCl</_Category>
+		<LanguageName>C#</LanguageName>
+		<_Description>Creates a MonoNaCl project.</_Description>
+	</TemplateConfiguration>
+	
+	<!-- Actions -->
+	<Actions>
+		<Open filename = "Internal.c"/>
+		<Open filename = "Main.cs"/>
+	</Actions>
+
+	<Combine name = "${ProjectName}" directory = ".">
+		<Options>
+			<StartupProject>${ProjectName}</StartupProject>
+		</Options>
+		<References>
+			<Reference type="Gac" refto="System" />
+		</References>
+		<Project name = "${ProjectName}" directory = "." type = "MonoNaCl">
+			<Options Target = "Exe"/>
+			<Files>
+<File name="Main.cs">
+<![CDATA[using System;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace ${Namespace}
+{
+	static class Program
+	{
+		[DllImport("__Internal", EntryPoint="HelloWorld")]
+		public extern static string HelloWorld ();
+		
+		[MethodImplAttribute (MethodImplOptions.InternalCall)]
+		public extern static void PostMessage (string s);
+		
+		static void Main (string[] args)
+		{
+			string helloWorld = HelloWorld ();
+			PostMessage (helloWorld);
+			
+			for (int i = 0; i != 5; ++i)
+			{
+				PostMessage("GameLoop test: " + i.ToString());
+				System.Threading.Thread.Sleep(1000);
+			}
+			
+			PostMessage("DONE !!!");
+		}
+	}
+}
+]]></File>
+
+<File name="Internal.c">
+<![CDATA[// ----------------------------
+// Add any 'c' code that needs to be built directly into the nacl.nexe's
+// Such as methods needing to be invoked by Mono
+// ----------------------------
+
+#include <string.h>
+
+char* HelloWorld()
+{
+	return strdup("Hello World!\0");
+}
+]]></File>
+
+<File name="${ProjectName}.html">
+<![CDATA[<!DOCTYPE html>
+<html>
+	<head>
+		<title>Mono for NaCl project.</title>
+	</head>
+	
+	<body>
+		<object id="plugin" width=0 height=0 src="${ProjectName}.nmf" type="application/x-nacl"></object>
+		
+		<script type="text/javascript">
+			var plugin = document.getElementById('plugin');
+			
+			handleMessage = function(message)
+			{
+				if (message.data === 'Mono Initialized')
+				{
+					document.getElementById('status').innerHTML = 'Mono Initialized';
+					plugin.postMessage('LoadAssemblyDlls');
+				}
+				else if (message.data === 'Mono Loaded Dlls')
+				{
+					document.getElementById('status').innerHTML = 'Mono Loaded Dlls';
+					plugin.postMessage('LoadAssemblyExe');
+				}
+				else if (message.data === 'Mono Loaded Exe')
+				{
+					document.getElementById('status').innerHTML = 'Mono Loaded Exe';
+					plugin.postMessage('ExecuteAssembly');
+				}
+				else if (message.data === 'Mono Executed Exe')
+				{
+					document.getElementById('status').innerHTML = 'Mono Executed Exe';
+				}
+				else
+				{
+					document.getElementById('output').innerHTML += message.data + '<br>';
+				}
+			}
+			plugin.addEventListener('message', handleMessage, true);
+		</script>
+		
+		<h1>Mono for NaCl project</h1>
+		<p>Native client will boot up mono and ${ProjectName}.exe, then ${ProjectName}.exe will invoke the 'HelloWorld" method build directly into "${ProjectName}_x86_(32/64).nexe" and send back its responce to javaScript.</p>
+		<h2>STATUS</h2>
+		<div id="status">NOT READY</div>
+		<h2>OUTPUT</h2>
+		<br><div id="output"></div>
+	</body>
+</html>
+
+]]></File>
+
+<File name="ppapi/Common.h">
+<![CDATA[#pragma once
+
+#include <stdbool.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#include <mono/jit/jit.h>
+#include <mono/metadata/assembly.h>
+#include <mono/metadata/debug-helpers.h>
+
+#include "ppapi/c/pp_var.h"
+#include "ppapi/c/pp_module.h"
+#include "ppapi/c/pp_completion_callback.h"
+#include "ppapi/c/pp_errors.h"
+#include "ppapi/c/pp_instance.h"
+
+#include "ppapi/c/ppb.h"
+#include "ppapi/c/ppb_var.h"
+#include "ppapi/c/ppb_core.h"
+#include "ppapi/c/ppb_url_loader.h"
+#include "ppapi/c/ppb_url_request_info.h"
+#include "ppapi/c/ppb_instance.h"
+#include "ppapi/c/ppb_messaging.h"
+
+#include "ppapi/c/ppp.h"
+#include "ppapi/c/ppp_instance.h"
+#include "ppapi/c/ppp_messaging.h"
+
+#define assert(__cond) \
+  do { \
+    if (!(__cond)) { \
+      fprintf(stderr, \
+              "condition failed! " #__cond " %s:%d\n", __FILE__, __LINE__); \
+    } \
+  } while (0)
+]]></File>
+
+<File name="ppapi/MonoInitialization.h">
+<![CDATA[#pragma once
+#include "Common.h"
+
+void Mono_Init();
+void Mono_LoadDlls();
+void Mono_LoadExe();
+void Mono_Execute();
+
+void Mono_PostMessageCallback(MonoString* arg);
+void Mono_InvokeMethod(const char* assemblyName, const char* method, const char* arg);
+]]></File>
+
+<File name="ppapi/MonoInitialization.c">
+<![CDATA[#include "MonoInitialization.h"
+
+char* libNames[256];
+int libNamesLength;
+
+void loadLib(int success, const char* buffer, size_t size, const void* data)
+{
+	assert(success);
+	char assembly_name[256];
+	snprintf(assembly_name, 256, "/%s", (const char*)data);
+	
+	MonoImageOpenStatus imgstatus = MONO_IMAGE_ERROR_ERRNO;
+	MonoImage* mi = mono_image_open_from_data_with_name((char*)buffer, size, 0, &imgstatus, 0, assembly_name);
+	assert(mi && imgstatus == MONO_IMAGE_OK);
+	
+	imgstatus = MONO_IMAGE_OK;
+	MonoAssembly* ma = mono_assembly_load_from_full(mi, assembly_name, &imgstatus, 0);
+	assert(ma && imgstatus == MONO_IMAGE_OK);
+}
+
+void loadLibFileNames(int success, const char* buffer, size_t size, const void* data)
+{
+	assert(success);
+	
+	char name[256];
+	memset(name, 0, sizeof(char)*256);
+	libNamesLength = 0;
+	
+	int i = 0, i2 = 0, i3 = 0;
+	while (i != size)
+	{
+		bool copy = false;
+		if (buffer[i] != '\n')
+		{
+			name[i2] = buffer[i];
+			if (i + 1 >= size) copy = true;
+			++i2;
+		}
+		else
+		{
+			copy = true;
+		}
+		
+		if (copy)
+		{
+			name[i2] = '\0';
+			libNames[i3] = strdup(name);
+			i2 = 0;
+			++i3;
+		}
+		
+		++i;
+	}
+	libNamesLength = i3;
+}
+
+void Mono_LoadCore(int success, const char* buffer, size_t size, const void* data)
+{
+	assert(success);
+	
+	mono_set_corlib_data((char*)buffer, size);
+	mono_set_dirs("/", "/");
+	mono_config_parse (NULL);
+	mono_jit_init("${ProjectName}.exe");
+	
+	sleep(1);
+	PostMessage("Mono Initialized");
+}
+
+void Mono_Init()
+{
+	URLLoader_LoadFileFromURL("mscorlib.dll", Mono_LoadCore, NULL);
+	URLLoader_LoadFileFromURL("${ProjectName}.dep", loadLibFileNames, "${ProjectName}.dep");
+}
+
+void Mono_LoadDlls()
+{
+	sleep(1);
+
+	int i = 0;
+	while (i != libNamesLength)
+	{
+		char* fileName = strdup(libNames[i]);
+		URLLoader_LoadFileFromURL(fileName, loadLib, fileName);
+		++i;
+	}
+	
+	PostMessage("Mono Loaded Dlls");
+}
+
+void Mono_LoadExe()
+{
+	sleep(1);
+	URLLoader_LoadFileFromURL("${ProjectName}.exe", loadLib, "${ProjectName}.exe");
+	PostMessage("Mono Loaded Exe");
+}
+
+void Mono_Execute()
+{
+	sleep(1);
+	MonoThread* monoThread = mono_thread_attach(mono_get_root_domain());
+	
+	mono_add_internal_call("${ProjectName}.Program::PostMessage", Mono_PostMessageCallback);
+	MonoAssemblyName* assemblyName = mono_assembly_name_new("${ProjectName}");
+	assert(assemblyName);
+	MonoAssembly* assembly = mono_assembly_loaded(assemblyName);
+	assert(assembly);
+	char *args[1];
+	args[0] = "${ProjectName}";
+	mono_jit_exec(mono_get_root_domain(), assembly, 1, args);
+	
+	mono_thread_detach(monoThread);
+	PostMessage("Mono Executed Exe");
+}
+
+void Mono_PostMessageCallback(MonoString* arg)
+{
+	PostMessage(mono_string_to_utf8(arg));
+}
+
+void Mono_InvokeMethod(const char* assemblyName, const char* method, const char* arg)
+{
+	MonoAssemblyName* man = mono_assembly_name_new(assemblyName);
+	assert(man);
+	MonoAssembly* ma = mono_assembly_loaded(man);
+	assert(ma);
+	MonoImage* mi = mono_assembly_get_image(ma);
+	assert(mi);
+	MonoMethodDesc* mmd = mono_method_desc_new(method, 0 /* include_namespace */);
+	assert(mmd);
+	MonoMethod* mm = mono_method_desc_search_in_image(mmd, mi);
+	assert(mm);
+	void *args[1];
+	args[0] = mono_string_new(mono_get_root_domain(), arg);
+	
+	mono_runtime_invoke(mm, NULL /* "this" object */, args, NULL /* exception */);
+}
+]]></File>
+
+<File name="ppapi/PostMessage.h">
+<![CDATA[#pragma once
+#include "Common.h"
+
+void PostMessage_Init(PP_Instance instance, const void* messaging, const void* core, const void* var);
+void PostMessage_Callback(void* data, int32_t result);
+void PostMessage(const char *msg);
+]]></File>
+
+<File name="ppapi/PostMessage.c">
+<![CDATA[#include "PostMessage.h"
+
+static const PPB_Core* g_core;
+static const PPB_Messaging* g_messaging;
+static const PPB_Var* g_var;
+static PP_Instance g_instance;
+
+void PostMessage_Init(PP_Instance instance, const void* messaging, const void* core, const void* var)
+{
+	assert(messaging);
+	g_instance = instance;
+	g_messaging = (const PPB_Messaging*)messaging;
+	g_core = (const PPB_Core*)core;
+	g_var = (const PPB_Var*)var;
+}
+
+void PostMessage_Callback(void* data, int32_t result)
+{
+	char* msg = (char*)data;
+	struct PP_Var msg_var = g_var->VarFromUtf8(msg, strlen(msg));
+	g_messaging->PostMessage(g_instance, msg_var);
+	g_var->Release(msg_var);
+	free((char*)msg);
+}
+
+void PostMessage(const char *msg)
+{
+	char* new_msg = strdup(msg);
+	if (g_core->IsMainThread())
+	{
+		PostMessage_Callback((void*)new_msg, 0);
+	}
+	else
+	{
+		struct PP_CompletionCallback cb = PP_MakeCompletionCallback(PostMessage_Callback, (void*)new_msg);
+		g_core->CallOnMainThread(0, cb, 0);
+	}
+}
+]]></File>
+
+<File name="ppapi/URLLoader.h">
+<![CDATA[#pragma once
+#include "Common.h"
+
+typedef void (*URLLoaderCallback)(int, const char*, size_t, const void* data);
+struct URLLoaderData
+{
+	char *buf;
+	size_t size;
+	size_t alloced;
+	URLLoaderCallback user_cb;
+	const void* user_data;
+	PP_Resource loader;
+};
+
+void URLLoader_Init(PP_Instance instance, const void *url_loader, const void *url_request, const void *core, const void *var);
+void URLLoader_LoadFileFromURL(const char* url, URLLoaderCallback callBack, const void* userData);
+void URLLoader_ReadData(void* data);
+
+static void URLLoader_ReadDataCallback(void* data, int32_t result);
+static void URLLoader_ReadSomeDataCallback(void* data, int32_t result);
+]]></File>
+
+<File name="ppapi/URLLoader.c">
+<![CDATA[#include "URLLoader.h"
+
+static PP_Instance g_instance;
+static const PPB_URLLoader* g_url_loader;
+static const PPB_URLRequestInfo* g_url_request;
+static const PPB_Core* g_core;
+static const PPB_Var* g_var;
+const size_t BUFFER_READ_SIZE = 4096;
+
+void URLLoader_Init(PP_Instance instance, const void *url_loader, const void *url_request, const void *core, const void *var)
+{
+	assert(url_loader && url_request && core && var);
+	g_instance = instance;
+	g_url_loader = (const PPB_URLLoader*)url_loader;
+	g_url_request = (const PPB_URLRequestInfo*)url_request;
+	g_core = (const PPB_Core*)core;
+	g_var = (const PPB_Var*)var;
+}
+
+void URLLoader_LoadFileFromURL(const char* url, URLLoaderCallback callBack, const void* userData)
+{
+	PP_Resource resource = g_url_request->Create(g_instance);
+	struct PP_Var url_var = g_var->VarFromUtf8(url, strlen(url));
+	g_url_request->SetProperty(resource, PP_URLREQUESTPROPERTY_URL, url_var);
+	g_var->Release(url_var);
+	PP_Resource loader = g_url_loader->Create(g_instance);
+	
+	struct URLLoaderData* data = (struct URLLoaderData*)malloc(sizeof(struct URLLoaderData));
+	data->buf = (char*)malloc(BUFFER_READ_SIZE);
+	data->size = 0;
+	data->alloced = BUFFER_READ_SIZE;
+	data->user_cb = callBack;
+	data->user_data = userData;
+	data->loader = loader;
+	
+	struct PP_CompletionCallback cb = PP_MakeCompletionCallback(URLLoader_ReadDataCallback, data);
+	int32_t open_ret = g_url_loader->Open(loader, resource, cb);
+	assert(open_ret == PP_OK_COMPLETIONPENDING);
+	g_core->ReleaseResource(resource);
+}
+
+static void URLLoader_ReadDataCallback(void* data, int32_t result)
+{
+	assert(result == PP_OK);
+	URLLoader_ReadData(data);
+}
+
+static void URLLoader_ReadSomeDataCallback(void* data, int32_t result)
+{
+	struct URLLoaderData *ldata = (struct URLLoaderData*)data;
+	if (result == PP_OK)
+	{
+		// We're done reading the file.
+		ldata->user_cb(1, ldata->buf, ldata->size, ldata->user_data);
+		free(ldata);
+	}
+	else if (result > 0)
+	{
+		// 'result' bytes were read into memory.
+		ldata->size += (size_t)result;
+		URLLoader_ReadData(data);
+	}
+	else
+	{
+		ldata->user_cb(0, NULL, 0, ldata->user_data);
+	}
+}
+
+// Read up to BUFFER_READ_SIZE from the URLLoader.
+// Allocate more space in the destination buffer if needed.
+void URLLoader_ReadData(void* data)
+{
+	struct URLLoaderData *ldata = (struct URLLoaderData*)data;
+	while (ldata->alloced < ldata->size + BUFFER_READ_SIZE)
+	{
+		// The buffer isn't big enough to hold BUFFER_READ_SIZE.
+		char *temp = (char*)malloc(ldata->alloced * 2);
+		memcpy(temp, ldata->buf, ldata->size);
+		free(ldata->buf);
+		ldata->buf = temp;
+		ldata->alloced *= 2;
+	}
+	
+	struct PP_CompletionCallback callback = PP_MakeCompletionCallback(URLLoader_ReadSomeDataCallback, data);
+	int32_t read_ret = g_url_loader->ReadResponseBody(ldata->loader, ldata->buf + ldata->size, BUFFER_READ_SIZE, callback);
+	assert(read_ret == PP_OK_COMPLETIONPENDING);
+}
+]]></File>
+
+<File name="ppapi/ppapi.h">
+<![CDATA[#pragma once
+#include "Common.h"
+
+char* VarToCStr(struct PP_Var var);
+static void HandleMessage(PP_Instance instance, struct PP_Var message);
+
+static PP_Bool Instance_DidCreate(PP_Instance instance, uint32_t argc, const char* argn[], const char* argv[]);
+static void Instance_DidDestroy(PP_Instance instance);
+static void Instance_DidChangeView(PP_Instance instance, PP_Resource view_resource);
+static void Instance_DidChangeFocus(PP_Instance instance, PP_Bool has_focus);
+static PP_Bool Instance_HandleDocumentLoad(PP_Instance instance, PP_Resource url_loader);
+
+PP_EXPORT int32_t PPP_InitializeModule(PP_Module a_module_id, PPB_GetInterface get_browser);
+PP_EXPORT const void* PPP_GetInterface(const char* interface_name);
+PP_EXPORT void PPP_ShutdownModule();
+]]></File>
+
+<File name="ppapi/ppapi.c">
+<![CDATA[#include "ppapi.h"
+#include <pthread.h>
+
+static PPB_GetInterface g_get_browser = NULL;
+static PPB_Var* g_ppb_var_interface = NULL;
+pthread_t mainThread;
+
+int pthread_cancel(pthread_t thread)
+{
+	return 0;
+}
+
+void* mainLoop(void* args)
+{
+	Mono_Execute();
+}
+
+void startMainLoop()
+{
+	void* args = NULL;
+	pthread_create(&mainThread, NULL, mainLoop, args);
+}
+
+char* VarToCStr(struct PP_Var var)
+{
+	uint32_t len = 0;
+	if (g_ppb_var_interface != NULL)
+	{
+		const char* var_c_str = g_ppb_var_interface->VarToUtf8(var, &len);
+		if (len > 0)
+		{
+			char* c_str = (char*)malloc(len + 1);
+			memcpy(c_str, var_c_str, len);
+			c_str[len] = '\0';
+			return c_str;
+		}
+	}
+	return NULL;
+}
+
+// Handle massages from javaScript
+static void HandleMessage(PP_Instance instance, struct PP_Var message)
+{
+	if (message.type != PP_VARTYPE_STRING) return;
+	
+	char* msg = VarToCStr(message);
+	
+	const char* loadAssemblyDlls = "LoadAssemblyDlls";
+	const char* loadAssemblyExe = "LoadAssemblyExe";
+	const char* executeAssembly = "ExecuteAssembly";
+	if (strncmp(msg, loadAssemblyDlls, strlen(loadAssemblyDlls)) == 0) Mono_LoadDlls();
+	if (strncmp(msg, loadAssemblyExe, strlen(loadAssemblyExe)) == 0) Mono_LoadExe();
+	if (strncmp(msg, executeAssembly, strlen(executeAssembly)) == 0) startMainLoop();
+	
+	free(msg);
+}
+
+// Called when the NaCl module is instantiated on the web page.
+static PP_Bool Instance_DidCreate(PP_Instance instance, uint32_t argc, const char* argn[], const char* argv[])
+{
+	// Init messaging from javaScript
+	URLLoader_Init(instance,
+		g_get_browser(PPB_URLLOADER_INTERFACE),
+		g_get_browser(PPB_URLREQUESTINFO_INTERFACE),
+		g_get_browser(PPB_CORE_INTERFACE),
+		g_get_browser(PPB_VAR_INTERFACE));
+		
+	PostMessage_Init(instance,
+		g_get_browser(PPB_MESSAGING_INTERFACE),
+		g_get_browser(PPB_CORE_INTERFACE),
+		g_get_browser(PPB_VAR_INTERFACE));
+		
+	// Init mono
+	Mono_Init();
+	return PP_TRUE;
+}
+
+static PP_Bool Instance_HandleDocumentLoad(PP_Instance instance, PP_Resource url_loader)
+{
+	return PP_FALSE;
+}
+
+static void Instance_DidDestroy(PP_Instance instance) {}
+static void Instance_DidChangeView(PP_Instance instance, PP_Resource view_resource) {}
+static void Instance_DidChangeFocus(PP_Instance instance, PP_Bool has_focus) {}
+
+#pragma region EntryPoints
+PP_EXPORT int32_t PPP_InitializeModule(PP_Module a_module_id, PPB_GetInterface get_browser)
+{
+	g_ppb_var_interface = (PPB_Var*)(get_browser(PPB_VAR_INTERFACE));
+	g_get_browser = get_browser;
+	return PP_OK;
+}
+
+PP_EXPORT const void* PPP_GetInterface(const char* interface_name)
+{
+	if (strcmp(interface_name, PPP_INSTANCE_INTERFACE) == 0)
+	{
+		static PPP_Instance instance_interface =
+		{
+			&Instance_DidCreate,
+			&Instance_DidDestroy,
+			&Instance_DidChangeView,
+			&Instance_DidChangeFocus,
+			&Instance_HandleDocumentLoad,
+		};
+		return &instance_interface;
+	}
+	else if (strcmp(interface_name, PPP_MESSAGING_INTERFACE) == 0)
+	{
+		static PPP_Messaging messaging_interface =
+		{
+			&HandleMessage
+		};
+		return &messaging_interface;
+	}
+	
+	return NULL;
+}
+
+PP_EXPORT void PPP_ShutdownModule() {}
+#pragma endregion
+]]></File>
+			</Files>
+		</Project>
+	</Combine>
+</Template>

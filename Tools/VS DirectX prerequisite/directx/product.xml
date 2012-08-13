@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+
+<Product
+  xmlns="http://schemas.microsoft.com/developer/2004/01/bootstrapper"
+  ProductCode="DirectX Web Installer"
+>
+
+  <!-- Defines list of files to be copied on build -->
+  <PackageFiles>
+    <PackageFile Name="dxwebsetup.exe"/>
+  </PackageFiles>
+  <InstallChecks>
+    <MsiProductCheck Property="DXRedistInstalled" Product="{84A35BF1-DAFE-4AE8-82AF-AD2AE20B6B14}"/>
+  </InstallChecks>
+  
+  <Commands Reboot="Defer">
+    <Command PackageFile="dxwebsetup.exe">
+      <ExitCodes>
+        <ExitCode Value="0" Result="Success"/>
+	<ExitCode Value="-1442840576" Result="Success"/>
+        <ExitCode Value="3010" Result="SuccessReboot"/>
+        <DefaultExitCode Result="Fail" FormatMessageFromSystem="true" String="GeneralFailure" />
+      </ExitCodes>
+    </Command>
+  </Commands>
+</Product>

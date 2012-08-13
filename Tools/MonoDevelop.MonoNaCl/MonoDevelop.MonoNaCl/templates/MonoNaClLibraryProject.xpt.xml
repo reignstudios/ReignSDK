@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<Template originator = "Andrew Witte">
+
+	<TemplateConfiguration>
+		<_Name>MonoNaCl Library Project</_Name>
+		<_Category>C#/MonoNaCl</_Category>
+		<LanguageName>C#</LanguageName>
+		<_Description>Creates a MonoNaCl library project.</_Description>
+	</TemplateConfiguration>
+	
+	<!-- Actions -->
+	<Actions>
+		<Open filename = "MyClass.cs"/>
+	</Actions>
+
+	<Combine name = "${ProjectName}" directory = ".">
+		<Options>
+			<StartupProject>${ProjectName}</StartupProject>
+		</Options>
+		<References>
+			<Reference type="Gac" refto="System" />
+		</References>
+		<Project name = "${ProjectName}" directory = "." type = "MonoNaCl">
+			<Options Target = "Library"/>
+			<Files>
+<File name="MyClass.cs">
+<![CDATA[using System;
+
+namespace ${Namespace}
+{
+	public class MyClass
+	{
+		public MyClass()
+		{
+			
+		}
+	}
+}
+]]></File>
+			</Files>
+		</Project>
+	</Combine>
+</Template>

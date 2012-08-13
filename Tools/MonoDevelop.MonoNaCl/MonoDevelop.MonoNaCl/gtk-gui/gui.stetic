@@ -1,0 +1,253 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stetic-interface>
+  <configuration>
+    <images-root-path>..</images-root-path>
+    <target-gtk-version>2.12</target-gtk-version>
+  </configuration>
+  <import>
+    <widget-library name="MonoDevelop.Ide, Version=2.6.0.0, Culture=neutral" />
+    <widget-library name="MonoDevelop.CSharpBinding, Version=2.6.0.0, Culture=neutral" />
+    <widget-library name="MonoDevelop.DesignerSupport, Version=2.6.0.0, Culture=neutral" />
+    <widget-library name="../bin/Debug/MonoDevelop.MonoNaCl.dll" internal="true" />
+  </import>
+  <widget class="Gtk.Bin" id="MonoDevelop.MonoNaCl.MonoNaClGlobalOptions" design-size="453 409">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.Fixed" id="fixed1">
+        <property name="MemberName" />
+        <property name="HasWindow">False</property>
+        <child>
+          <widget class="Gtk.Entry" id="NACL_SDK_ROOT">
+            <property name="MemberName" />
+            <property name="WidthRequest">370</property>
+            <property name="CanFocus">True</property>
+            <property name="IsEditable">True</property>
+            <property name="InvisibleChar">●</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">30</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="NACL_SDK_ROOT_BrowseButton">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Browse</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">390</property>
+            <property name="Y">30</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label1">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">NaCl SDK root directory:</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">10</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label2">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">NaCl-Mono SDK root directory:</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">70</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Entry" id="NACL_MONO_ROOT">
+            <property name="MemberName" />
+            <property name="WidthRequest">370</property>
+            <property name="CanFocus">True</property>
+            <property name="IsEditable">True</property>
+            <property name="InvisibleChar">●</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">90</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="NACL_MONO_ROOT_BrowseButton">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Browse</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">390</property>
+            <property name="Y">90</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="MonoDevelop.MonoNaCl.MonoNaClProjectOptions" design-size="423 410">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.Fixed" id="fixed1">
+        <property name="MemberName" />
+        <property name="HasWindow">False</property>
+        <child>
+          <widget class="Gtk.CheckButton" id="requiresGLES">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Label" translatable="yes">Requires GLES</property>
+            <property name="DrawIndicator">True</property>
+            <property name="HasLabel">True</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">10</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.CheckButton" id="generateManifest">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Label" translatable="yes">Generate Manifest</property>
+            <property name="DrawIndicator">True</property>
+            <property name="HasLabel">True</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">100</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.CheckButton" id="copyAllJsonObjects">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Label" translatable="yes">Copy all JSON objects</property>
+            <property name="DrawIndicator">True</property>
+            <property name="HasLabel">True</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">40</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.CheckButton" id="copyAllHtmlObjects">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Label" translatable="yes">Copy all HTML objects</property>
+            <property name="DrawIndicator">True</property>
+            <property name="HasLabel">True</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">70</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label1">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">App Name:</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">140</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Entry" id="appName">
+            <property name="MemberName" />
+            <property name="WidthRequest">200</property>
+            <property name="CanFocus">True</property>
+            <property name="IsEditable">True</property>
+            <property name="InvisibleChar">●</property>
+          </widget>
+          <packing>
+            <property name="X">130</property>
+            <property name="Y">135</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label2">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">App Version:</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">180</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Entry" id="appVersion">
+            <property name="MemberName" />
+            <property name="WidthRequest">200</property>
+            <property name="CanFocus">True</property>
+            <property name="IsEditable">True</property>
+            <property name="InvisibleChar">●</property>
+          </widget>
+          <packing>
+            <property name="X">130</property>
+            <property name="Y">175</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label3">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">App Launch HTML:</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">220</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Entry" id="appLaunchHtml">
+            <property name="MemberName" />
+            <property name="WidthRequest">200</property>
+            <property name="CanFocus">True</property>
+            <property name="IsEditable">True</property>
+            <property name="InvisibleChar">●</property>
+          </widget>
+          <packing>
+            <property name="X">130</property>
+            <property name="Y">215</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Entry" id="appDescription">
+            <property name="MemberName" />
+            <property name="WidthRequest">200</property>
+            <property name="CanFocus">True</property>
+            <property name="IsEditable">True</property>
+            <property name="InvisibleChar">●</property>
+          </widget>
+          <packing>
+            <property name="X">130</property>
+            <property name="Y">255</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label4">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">App Description:</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">260</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</stetic-interface>
