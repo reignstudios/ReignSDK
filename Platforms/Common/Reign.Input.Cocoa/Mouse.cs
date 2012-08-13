@@ -1,7 +1,6 @@
 using System;
 using MonoMac.AppKit;
 using Reign.Core;
-using Reign.Core.MathF32;
 
 namespace Reign.Input.Cocoa
 {
@@ -14,13 +13,13 @@ namespace Reign.Input.Cocoa
 		public Button Left {get; private set;}
 		public Button Middle {get; private set;}
 		public Button Right {get; private set;}
-		public Vector3 ScrollWheelVelocity {get; private set;}
+		public float ScrollWheelVelocity {get; private set;}
 		public Vector2 Velocity {get; private set;}
 		public Vector2 Location {get; private set;}
 		public Vector2 ScreenLocation {get; private set;}
 		
 		private bool leftOn, middleOn, rightOn, scollWheelChanged;
-		private Vector3 scrollWheelVelocity;
+		private float scrollWheelVelocity;
 		private Vector2 lastLocation;
 		#endregion
 	
@@ -35,7 +34,6 @@ namespace Reign.Input.Cocoa
 			Left = new Button();
 			Middle = new Button();
 			Right = new Button();
-			ScrollWheelVelocity = new Vector3();
 		}
 		
 		public override void Dispose ()
@@ -80,7 +78,7 @@ namespace Reign.Input.Cocoa
 			}
 			else
 			{
-				ScrollWheelVelocity = new Vector3();
+				ScrollWheelVelocity = 0;
 			}
 			
 			Left.Update(leftOn);

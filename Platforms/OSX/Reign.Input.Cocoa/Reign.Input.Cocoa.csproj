@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{586A7B0B-249D-44C8-8C7A-2DA1EF7FC6AB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Reign.Input.Cocoa</RootNamespace>
+    <AssemblyName>Reign.Input.Cocoa</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <DefineConstants>DEBUG;OSX</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DefineConstants>OSX</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="MonoMac, Version=0.0.0.0, Culture=neutral">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="..\..\Common\Reign.Input.Cocoa\Input.cs">
+      <Link>Input.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Input.Cocoa\Keyboard.cs">
+      <Link>Keyboard.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Input.Cocoa\Mouse.cs">
+      <Link>Mouse.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{6FC91DF3-4F4F-4667-A0DC-14D4CDA97F99}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Input\Reign.Input.csproj">
+      <Project>{CD569551-0C1D-4BAE-90F3-5194C5175B85}</Project>
+      <Name>Reign.Input</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

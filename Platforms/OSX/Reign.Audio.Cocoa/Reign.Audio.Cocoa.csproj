@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A8D8EE63-941E-45AB-9D33-03B2D9D6CAA9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Reign.Audio.Cocoa</RootNamespace>
+    <AssemblyName>Reign.Audio.Cocoa</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <DefineConstants>DEBUG;OSX</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>OSX</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="MonoMac, Version=0.0.0.0, Culture=neutral">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="..\..\Common\Reign.Audio.Cocoa\Audio.cs">
+      <Link>Audio.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Audio.Cocoa\Sound.cs">
+      <Link>Sound.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Audio.Cocoa\SoundWAV.cs">
+      <Link>SoundWAV.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Audio\Reign.Audio.csproj">
+      <Project>{084832F7-28A7-4182-A987-6AEED346AEE2}</Project>
+      <Name>Reign.Audio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{6FC91DF3-4F4F-4667-A0DC-14D4CDA97F99}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
