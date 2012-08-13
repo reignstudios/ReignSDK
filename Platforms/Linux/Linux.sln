@@ -1,0 +1,74 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Core", "Reign.Core\Reign.Core.csproj", "{E48D2170-14A8-4650-9D14-FC28863605D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Input", "Reign.Input\Reign.Input.csproj", "{023863B3-2F5F-4B17-B157-BE247B77B507}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Input.X11", "Reign.Input.X11\Reign.Input.X11.csproj", "{BE9C9E86-1DAE-452A-A9E9-18B79E53D0CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Input.API", "Reign.Input.API\Reign.Input.API.csproj", "{C4028C5B-AAAC-4B5E-9A62-5A852313BA55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Audio", "Reign.Audio\Reign.Audio.csproj", "{021A73DD-2E18-4CCE-A3CF-1010DD21F0EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Audio.Dumby", "Reign.Audio.Dumby\Reign.Audio.Dumby.csproj", "{FD6F12A9-B80D-4874-B16D-B042EF22E932}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Audio.OpenAL", "Reign.Audio.OpenAL\Reign.Audio.OpenAL.csproj", "{7B97C8FC-7C7A-446C-B42F-C57F1113B3F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video", "Reign.Video\Reign.Video.csproj", "{A413C5B3-9881-413B-976C-4DA355BD2A16}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.OpenGL", "Reign.Video.OpenGL\Reign.Video.OpenGL.csproj", "{984BE766-7F12-496A-A389-66892274A244}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.API", "Reign.Video.API\Reign.Video.API.csproj", "{106401C3-113F-49A8-AAD3-F53D2380F6A0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{021A73DD-2E18-4CCE-A3CF-1010DD21F0EB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{021A73DD-2E18-4CCE-A3CF-1010DD21F0EB}.Debug|x86.Build.0 = Debug|Any CPU
+		{021A73DD-2E18-4CCE-A3CF-1010DD21F0EB}.Release|x86.ActiveCfg = Release|Any CPU
+		{021A73DD-2E18-4CCE-A3CF-1010DD21F0EB}.Release|x86.Build.0 = Release|Any CPU
+		{023863B3-2F5F-4B17-B157-BE247B77B507}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{023863B3-2F5F-4B17-B157-BE247B77B507}.Debug|x86.Build.0 = Debug|Any CPU
+		{023863B3-2F5F-4B17-B157-BE247B77B507}.Release|x86.ActiveCfg = Release|Any CPU
+		{023863B3-2F5F-4B17-B157-BE247B77B507}.Release|x86.Build.0 = Release|Any CPU
+		{106401C3-113F-49A8-AAD3-F53D2380F6A0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{106401C3-113F-49A8-AAD3-F53D2380F6A0}.Debug|x86.Build.0 = Debug|Any CPU
+		{106401C3-113F-49A8-AAD3-F53D2380F6A0}.Release|x86.ActiveCfg = Release|Any CPU
+		{106401C3-113F-49A8-AAD3-F53D2380F6A0}.Release|x86.Build.0 = Release|Any CPU
+		{7B97C8FC-7C7A-446C-B42F-C57F1113B3F4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7B97C8FC-7C7A-446C-B42F-C57F1113B3F4}.Debug|x86.Build.0 = Debug|Any CPU
+		{7B97C8FC-7C7A-446C-B42F-C57F1113B3F4}.Release|x86.ActiveCfg = Release|Any CPU
+		{7B97C8FC-7C7A-446C-B42F-C57F1113B3F4}.Release|x86.Build.0 = Release|Any CPU
+		{984BE766-7F12-496A-A389-66892274A244}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{984BE766-7F12-496A-A389-66892274A244}.Debug|x86.Build.0 = Debug|Any CPU
+		{984BE766-7F12-496A-A389-66892274A244}.Release|x86.ActiveCfg = Release|Any CPU
+		{984BE766-7F12-496A-A389-66892274A244}.Release|x86.Build.0 = Release|Any CPU
+		{A413C5B3-9881-413B-976C-4DA355BD2A16}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A413C5B3-9881-413B-976C-4DA355BD2A16}.Debug|x86.Build.0 = Debug|Any CPU
+		{A413C5B3-9881-413B-976C-4DA355BD2A16}.Release|x86.ActiveCfg = Release|Any CPU
+		{A413C5B3-9881-413B-976C-4DA355BD2A16}.Release|x86.Build.0 = Release|Any CPU
+		{BE9C9E86-1DAE-452A-A9E9-18B79E53D0CF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BE9C9E86-1DAE-452A-A9E9-18B79E53D0CF}.Debug|x86.Build.0 = Debug|Any CPU
+		{BE9C9E86-1DAE-452A-A9E9-18B79E53D0CF}.Release|x86.ActiveCfg = Release|Any CPU
+		{BE9C9E86-1DAE-452A-A9E9-18B79E53D0CF}.Release|x86.Build.0 = Release|Any CPU
+		{C4028C5B-AAAC-4B5E-9A62-5A852313BA55}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C4028C5B-AAAC-4B5E-9A62-5A852313BA55}.Debug|x86.Build.0 = Debug|Any CPU
+		{C4028C5B-AAAC-4B5E-9A62-5A852313BA55}.Release|x86.ActiveCfg = Release|Any CPU
+		{C4028C5B-AAAC-4B5E-9A62-5A852313BA55}.Release|x86.Build.0 = Release|Any CPU
+		{E48D2170-14A8-4650-9D14-FC28863605D4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E48D2170-14A8-4650-9D14-FC28863605D4}.Debug|x86.Build.0 = Debug|Any CPU
+		{E48D2170-14A8-4650-9D14-FC28863605D4}.Release|x86.ActiveCfg = Release|Any CPU
+		{E48D2170-14A8-4650-9D14-FC28863605D4}.Release|x86.Build.0 = Release|Any CPU
+		{FD6F12A9-B80D-4874-B16D-B042EF22E932}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FD6F12A9-B80D-4874-B16D-B042EF22E932}.Debug|x86.Build.0 = Debug|Any CPU
+		{FD6F12A9-B80D-4874-B16D-B042EF22E932}.Release|x86.ActiveCfg = Release|Any CPU
+		{FD6F12A9-B80D-4874-B16D-B042EF22E932}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Reign.Core\Reign.Core.csproj
+	EndGlobalSection
+EndGlobal

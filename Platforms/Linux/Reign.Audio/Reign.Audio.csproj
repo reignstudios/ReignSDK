@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{021A73DD-2E18-4CCE-A3CF-1010DD21F0EB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Reign.Audio</RootNamespace>
+    <AssemblyName>Reign.Audio</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <DefineConstants>DEBUG;LINUX</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DefineConstants>LINUX</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="..\..\Common\Reign.Audio\Audio.cs">
+      <Link>Audio.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Audio\Sound.cs">
+      <Link>Sound.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Audio\SoundWAV.cs">
+      <Link>SoundWAV.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{E48D2170-14A8-4650-9D14-FC28863605D4}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{984BE766-7F12-496A-A389-66892274A244}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Reign.Video.OpenGL</RootNamespace>
+    <AssemblyName>Reign.Video.OpenGL</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <DefineConstants>DEBUG;LINUX</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DefineConstants>LINUX</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\DepthStencil.cs">
+      <Link>DepthStencil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Font.cs">
+      <Link>Font.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\QuickDraw.cs">
+      <Link>QuickDraw.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Video.cs">
+      <Link>Video.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\ViewPort.cs">
+      <Link>ViewPort.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Buffers\BufferLayout.cs">
+      <Link>Buffers\BufferLayout.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Buffers\BufferLayoutDesc.cs">
+      <Link>Buffers\BufferLayoutDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Buffers\IndexBuffer.cs">
+      <Link>Buffers\IndexBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Buffers\VertexBuffer.cs">
+      <Link>Buffers\VertexBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Shaders\PixelShader.cs">
+      <Link>Shaders\PixelShader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Shaders\Shader.cs">
+      <Link>Shaders\Shader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Shaders\ShaderModel.cs">
+      <Link>Shaders\ShaderModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Shaders\ShaderResource.cs">
+      <Link>Shaders\ShaderResource.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Shaders\ShaderVariable.cs">
+      <Link>Shaders\ShaderVariable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Shaders\VertexShader.cs">
+      <Link>Shaders\VertexShader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\States\BlendState.cs">
+      <Link>States\BlendState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\States\BlendStateDesc.cs">
+      <Link>States\BlendStateDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\States\DepthStencilState.cs">
+      <Link>States\DepthStencilState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\States\DepthStencilStateDesc.cs">
+      <Link>States\DepthStencilStateDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\States\RasterizerState.cs">
+      <Link>States\RasterizerState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\States\RasterizerStateDesc.cs">
+      <Link>States\RasterizerStateDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\States\SamplerState.cs">
+      <Link>States\SamplerState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\States\SamplerStateDesc.cs">
+      <Link>States\SamplerStateDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Textures\RenderTarget.cs">
+      <Link>Textures\RenderTarget.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Textures\Texture2D.cs">
+      <Link>Textures\Texture2D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Wrappers\GL.cs">
+      <Link>Wrappers\GL.cs</Link>
+    </Compile>
+    <Compile Include="Wrappers\GLX.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{E48D2170-14A8-4650-9D14-FC28863605D4}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Video\Reign.Video.csproj">
+      <Project>{A413C5B3-9881-413B-976C-4DA355BD2A16}</Project>
+      <Name>Reign.Video</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Buffers\" />
+    <Folder Include="Shaders\" />
+    <Folder Include="States\" />
+    <Folder Include="Textures\" />
+    <Folder Include="Wrappers\" />
+  </ItemGroup>
+</Project>
