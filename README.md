@@ -11,7 +11,8 @@ All Rights Reserved.
 The ReignSDK is a set of libraries, projects, tools and source code written in C++ and C#, of which are currently defined as follows:
 
 Platforms
-{
+--------
+========================================================================
     Microsoft
     - Windows
     - Metro
@@ -28,7 +29,7 @@ Platforms
 
     Other
     - Linux
-}
+========================================================================
 
 ------------------------------------------------------------
 
