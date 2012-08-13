@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Core", "Reign.Core\Reign.Core.csproj", "{60A1936F-D408-4425-874C-7194491BFF30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Input", "Reign.Input\Reign.Input.csproj", "{9B4C2971-EB42-4E97-B169-64934C0CB497}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Input.NaCl", "Reign.Input.NaCl\Reign.Input.NaCl.csproj", "{6FC439BD-F08D-453E-A5BD-B7126DE75F14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video", "Reign.Video\Reign.Video.csproj", "{E7E37A0B-239F-4098-8CBF-A10480A5F0E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.OpenGL", "Reign.Video.OpenGL\Reign.Video.OpenGL.csproj", "{35C0A361-2C8C-4091-9A21-3332DC08E54F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{35C0A361-2C8C-4091-9A21-3332DC08E54F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35C0A361-2C8C-4091-9A21-3332DC08E54F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35C0A361-2C8C-4091-9A21-3332DC08E54F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35C0A361-2C8C-4091-9A21-3332DC08E54F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60A1936F-D408-4425-874C-7194491BFF30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60A1936F-D408-4425-874C-7194491BFF30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60A1936F-D408-4425-874C-7194491BFF30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60A1936F-D408-4425-874C-7194491BFF30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FC439BD-F08D-453E-A5BD-B7126DE75F14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FC439BD-F08D-453E-A5BD-B7126DE75F14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FC439BD-F08D-453E-A5BD-B7126DE75F14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FC439BD-F08D-453E-A5BD-B7126DE75F14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B4C2971-EB42-4E97-B169-64934C0CB497}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B4C2971-EB42-4E97-B169-64934C0CB497}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B4C2971-EB42-4E97-B169-64934C0CB497}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B4C2971-EB42-4E97-B169-64934C0CB497}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7E37A0B-239F-4098-8CBF-A10480A5F0E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7E37A0B-239F-4098-8CBF-A10480A5F0E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7E37A0B-239F-4098-8CBF-A10480A5F0E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7E37A0B-239F-4098-8CBF-A10480A5F0E8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Reign.Core\Reign.Core.csproj
+	EndGlobalSection
+EndGlobal

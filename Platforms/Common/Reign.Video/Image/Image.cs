@@ -58,8 +58,10 @@ namespace Reign.Video
 			{
 				case (".dds"): return new ImageDDS(fileName, flip);
 				case (".pvr"): return new ImagePVR(fileName, flip);
-				#if !XNA
+				#if !XNA && NaCl
 				case (".bmpc"): return new ImageBMPC(fileName, flip);
+				#endif
+				#if !XNA && !NaCl
 				case (".png"): return new ImagePNG(fileName, flip, generateMipmaps);
 				case (".jpg"): return new ImageJPG(fileName, flip, generateMipmaps);
 				case (".jpeg"): return new ImageJPG(fileName, flip, generateMipmaps);

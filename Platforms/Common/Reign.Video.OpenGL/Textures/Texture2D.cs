@@ -82,7 +82,11 @@ namespace Reign.Video.OpenGL
 					var image = Image.Load(fileName, true, false);
 					var imageType = image.GetType();
 
+					#if NaCl
+					if (imageType == typeof(ImageBMPC))
+					#else
 					if (imageType == typeof(ImagePNG) || imageType == typeof(ImageJPG) || imageType == typeof(ImageBMP) || imageType == typeof(ImageBMPC))
+					#endif
 					{
 						var mipmap = image.Mipmaps[0];
 						fixed (byte* data = mipmap.Data)

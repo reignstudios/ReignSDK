@@ -110,7 +110,7 @@ namespace Reign.Video.OpenGL
 		: base(parent)
 		{
 			var frameSize = window.FrameSize;
-			init(IntPtr.Zero, frameSize.X, frameSize.Y, false, vSync);
+			init(IntPtr.Zero, frameSize.Width, frameSize.Height, false, vSync);
 		}
 		#endif
 

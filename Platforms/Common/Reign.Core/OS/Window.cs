@@ -122,7 +122,7 @@ namespace Reign.Core
 		}
 
 		#if NaCl
-		internal Vector2 frameSize;
+		internal Size2 frameSize;
 		#endif
 		public Size2 FrameSize
 		{

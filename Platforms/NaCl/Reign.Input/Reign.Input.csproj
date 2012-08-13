@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9B4C2971-EB42-4E97-B169-64934C0CB497}</ProjectGuid>
+    <ProjectTypeGuids>{304EDB7B-59C9-4334-85AD-2F54227B63B9};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Reign.Input</RootNamespace>
+    <AppDescription>This is a MonoNaCl project</AppDescription>
+    <AppName>My MonoNaCl Project</AppName>
+    <GenerateManifest>true</GenerateManifest>
+    <CopyAllHtmlObjects>true</CopyAllHtmlObjects>
+    <CopyAllJsonObjects>true</CopyAllJsonObjects>
+    <RequiresGLES>true</RequiresGLES>
+    <AppVersion>1.0.0</AppVersion>
+    <AssemblyName>Reign.Input</AssemblyName>
+    <AppLaunchHTML>Reign.Input.html</AppLaunchHTML>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <DefineConstants>DEBUG;NaCl</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DefineConstants>NaCl</DefineConstants>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{60A1936F-D408-4425-874C-7194491BFF30}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\Reign.Input\Button.cs">
+      <Link>Button.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Input\Input.cs">
+      <Link>Input.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Input\Keyboard.cs">
+      <Link>Keyboard.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Input\Mouse.cs">
+      <Link>Mouse.cs</Link>
+    </Compile>
+  </ItemGroup>
+</Project>

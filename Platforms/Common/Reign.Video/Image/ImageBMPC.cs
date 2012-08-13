@@ -74,7 +74,7 @@ namespace Reign.Video
 						} while (read > 0);
 						
 						Mipmaps = new Mipmap[1];
-						Mipmaps[0] = new Mipmap(dataStream.GetBuffer(), Size.X, Size.Y);
+						Mipmaps[0] = new Mipmap(dataStream.GetBuffer(), Size.Width, Size.Height);
 						if (flip) Mipmaps[0].FlipVertical();
 					}
 					#else
