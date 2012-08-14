@@ -43,8 +43,8 @@ namespace Reign.Core
 				graphics.SynchronizeWithVerticalRetrace = true;
 
 				#if XBOX360
-				graphics.PreferredBackBufferWidth = width == 0 ? int.MaxValue : width;
-				graphics.PreferredBackBufferHeight = height == 0 ? int.MaxValue : height;
+				graphics.PreferredBackBufferWidth = width == 0 ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width : width;
+				graphics.PreferredBackBufferHeight = height == 0 ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height : height;
 				#else
 				if (width == 0 || height == 0) Debug.ThrowError("Application", "Width or Height can not be 0");
 				graphics.PreferredBackBufferWidth = width;
