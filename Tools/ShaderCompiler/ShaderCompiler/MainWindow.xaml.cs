@@ -215,6 +215,7 @@ namespace ShadersCS
 			{
 				Console.WriteLine(ex.Message);
 				hlsl.Text = ex.Message;
+				MessageBox.Show(ex.Message);
 			}
 		}
 

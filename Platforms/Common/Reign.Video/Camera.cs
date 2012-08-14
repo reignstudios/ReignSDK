@@ -219,10 +219,10 @@ namespace Reign.Video
 			TransformInverseMatrix = TransformMatrix.Invert();
 		}
 
-		public Vector3 Project(Vector3 position)
+		public Vector2 Project(Vector3 position)
 		{
 			var pos = new Vector4(position, 1);
-			return pos.Project(ProjectionMatrix, ViewMatrix, ViewPort.Location.X, ViewPort.Location.Y, ViewPort.Size.Width, ViewPort.Size.Height).ToVector3();
+			return pos.Project(ProjectionMatrix, ViewMatrix, ViewPort.Location.X, ViewPort.Location.Y, ViewPort.Size.Width, ViewPort.Size.Height).ToVector2();
 		}
 
 		public Vector4 Project(Vector4 position)
@@ -230,19 +230,19 @@ namespace Reign.Video
 			return position.Project(ProjectionMatrix, ViewMatrix, ViewPort.Location.X, ViewPort.Location.Y, ViewPort.Size.Width, ViewPort.Size.Height);
 		}
 
-		public Vector3 UnProjectNormalized(Vector3 screenPosition)
+		public Vector3 UnProjectNormalized(Vector2 screenPosition)
 		{
-			var pos = new Vector4(screenPosition, 0);
+			var pos = new Vector4(screenPosition, 0, 1);
 			var near = pos.UnProject(TransformInverseMatrix, ViewPort.Location.X, ViewPort.Location.Y, ViewPort.Size.Width, ViewPort.Size.Height);
-			pos.W = 1;
+			pos.Z = 1;
 			var far = pos.UnProject(TransformInverseMatrix, ViewPort.Location.X, ViewPort.Location.Y, ViewPort.Size.Width, ViewPort.Size.Height);
 			return (far - near).ToVector3().Normalize();
 		}
 
-		public Vector3 UnProject(Vector3 screenPosition)
+		public Vector4 UnProject(Vector2 screenPosition)
 		{
-			var pos = new Vector4(screenPosition, 1);
-			return pos.UnProject(TransformInverseMatrix, ViewPort.Location.X, ViewPort.Location.Y, ViewPort.Size.Width, ViewPort.Size.Height).ToVector3();
+			var pos = new Vector4(screenPosition, 0, 1);
+			return pos.UnProject(TransformInverseMatrix, ViewPort.Location.X, ViewPort.Location.Y, ViewPort.Size.Width, ViewPort.Size.Height);
 		}
 
 		public Vector4 UnProject(Vector4 screenPosition)

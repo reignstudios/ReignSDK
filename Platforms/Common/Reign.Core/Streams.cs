@@ -246,6 +246,16 @@ namespace Reign.Core
 			return '.' + names[names.Length-1];
 		}
 
+		public static bool IsAbsolutePath(string fileName)
+		{
+			#if WINDOWS
+			var match = Regex.Match(fileName, @"A|C|D|E|F|G|H|I:/|\\");
+			return match.Success;
+			#else
+			throw new Exception();
+			#endif
+		}
+
 		public static int MakeFourCC(char ch0, char ch1, char ch2, char ch3)
 		{
 			return (((int)(byte)(ch0)) | ((int)(byte)(ch1) << 8) | ((int)(byte)(ch2) << 16) | ((int)(byte)(ch3) << 24));

@@ -49,39 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\reign BK\Tools\ShaderCompiler\ShaderCompiler.Core\Attributes\ArrayType.cs">
-      <Link>Attributes\ArrayType.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\reign BK\Tools\ShaderCompiler\ShaderCompiler.Core\Attributes\PSOutput.cs">
-      <Link>Attributes\PSOutput.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\reign BK\Tools\ShaderCompiler\ShaderCompiler.Core\Attributes\ShaderMethod.cs">
-      <Link>Attributes\ShaderMethod.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\reign BK\Tools\ShaderCompiler\ShaderCompiler.Core\Attributes\VSInput.cs">
-      <Link>Attributes\VSInput.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\reign BK\Tools\ShaderCompiler\ShaderCompiler.Core\Attributes\VSOutputPSInput.cs">
-      <Link>Attributes\VSOutputPSInput.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\reign BK\Tools\ShaderCompiler\ShaderCompiler.Core\Stucts\Matrix3.cs">
-      <Link>Structs\Matrix3.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\reign BK\Tools\ShaderCompiler\ShaderCompiler.Core\Stucts\Matrix4.cs">
-      <Link>Structs\Matrix4.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\reign BK\Tools\ShaderCompiler\ShaderCompiler.Core\Stucts\Texture2D.cs">
-      <Link>Structs\Texture2D.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\reign BK\Tools\ShaderCompiler\ShaderCompiler.Core\Stucts\Vector2.cs">
-      <Link>Structs\Vector2.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\reign BK\Tools\ShaderCompiler\ShaderCompiler.Core\Stucts\Vector3.cs">
-      <Link>Structs\Vector3.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\..\reign BK\Tools\ShaderCompiler\ShaderCompiler.Core\Stucts\Vector4.cs">
-      <Link>Structs\Vector4.cs</Link>
-    </Compile>
+    <Compile Include="Attributes\ArrayType.cs" />
+    <Compile Include="Attributes\PSOutput.cs" />
+    <Compile Include="Attributes\ShaderMethod.cs" />
+    <Compile Include="Attributes\VSInput.cs" />
+    <Compile Include="Attributes\VSOutputPSInput.cs" />
     <Compile Include="CodeFile.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="Compiler_Fields.cs" />
@@ -89,6 +61,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShaderI.cs" />
     <Compile Include="SL.cs" />
+    <Compile Include="Structs\Matrix3.cs" />
+    <Compile Include="Structs\Matrix4.cs" />
+    <Compile Include="Structs\Texture2D.cs" />
+    <Compile Include="Structs\Vector2.cs" />
+    <Compile Include="Structs\Vector3.cs" />
+    <Compile Include="Structs\Vector4.cs" />
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
