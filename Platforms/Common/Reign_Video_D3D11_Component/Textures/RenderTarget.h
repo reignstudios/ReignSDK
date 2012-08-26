@@ -21,7 +21,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: RenderTargetError Init(VideoCom^ video, Texture2DCom^ texture, int multiSampleMultiple, REIGN_DXGI_FORMAT surfaceFormat);
-		public: ~RenderTargetCom();
+		public: virtual ~RenderTargetCom();
 		private: void null();
 		#pragma endregion
 

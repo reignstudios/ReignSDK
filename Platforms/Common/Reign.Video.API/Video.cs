@@ -9,7 +9,7 @@ namespace Reign.Video.API
 	{
 		None = 0,
 		#if WINDOWS
-		D3D10 = 1,
+		D3D11 = 1,
 		D3D9 = 2,
 		#endif
 		
@@ -24,7 +24,7 @@ namespace Reign.Video.API
 
 	public static class Video
 	{
-		internal const string D3D10 = "Reign.Video.D3D10";
+		internal const string D3D11 = "Reign.Video.D3D11";
 		internal const string D3D9 = "Reign.Video.D3D9";
 		internal const string XNA = "Reign.Video.XNA";
 		internal const string OpenGL = "Reign.Video.OpenGL";
@@ -59,7 +59,7 @@ namespace Reign.Video.API
 		public static VideoI Create(VideoTypes typeFlags, out VideoTypes type, params object[] args)
 		{
 			#if WINDOWS
-			bool d3d10 = (typeFlags & VideoTypes.D3D10) != 0;
+			bool d3d11 = (typeFlags & VideoTypes.D3D11) != 0;
 			bool d3d9 = (typeFlags & VideoTypes.D3D9) != 0;
 			#endif
 			#if WINDOWS || OSX || LINUX
@@ -72,11 +72,11 @@ namespace Reign.Video.API
 				try
 				{
 					#if WINDOWS
-					if (d3d10)
+					if (d3d11)
 					{
-						d3d10 = false;
-						type = VideoTypes.D3D10;
-						return (VideoI)OS.CreateInstance(D3D10, D3D10, "Video", args);
+						d3d11 = false;
+						type = VideoTypes.D3D11;
+						return (VideoI)OS.CreateInstance(D3D11, D3D11, "Video", args);
 					}
 					else if (d3d9)
 					{

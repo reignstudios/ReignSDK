@@ -11,9 +11,9 @@ namespace Reign.Video.API
 			try
 			{
 				#if WINDOWS
-				if (apiType == VideoTypes.D3D10)
+				if (apiType == VideoTypes.D3D11)
 				{
-					return (DepthStencilStateDescI)OS.CreateInstance(Video.D3D10, Video.D3D10, "DepthStencilStateDesc", args);
+					return (DepthStencilStateDescI)OS.CreateInstance(Video.D3D11, Video.D3D11, "DepthStencilStateDesc", args);
 				}
 
 				if (apiType == VideoTypes.D3D9)
@@ -56,9 +56,9 @@ namespace Reign.Video.API
 			try
 			{
 				#if WINDOWS
-				if (apiType == VideoTypes.D3D10)
+				if (apiType == VideoTypes.D3D11)
 				{
-					return (DepthStencilStateI)OS.CreateInstance(Video.D3D10, Video.D3D10, "DepthStencilState", args);
+					return (DepthStencilStateI)OS.CreateInstance(Video.D3D11, Video.D3D11, "DepthStencilState", args);
 				}
 
 				if (apiType == VideoTypes.D3D9)

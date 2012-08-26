@@ -31,15 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.NRefactory">
-      <HintPath>..\..\..\..\NRefactory\ICSharpCode.NRefactory\bin\Debug\ICSharpCode.NRefactory.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.NRefactory.CSharp">
-      <HintPath>..\..\..\..\NRefactory\ICSharpCode.NRefactory\bin\Debug\ICSharpCode.NRefactory.CSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Cecil">
-      <HintPath>..\..\..\..\NRefactory\ICSharpCode.NRefactory\bin\Debug\Mono.Cecil.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\ArrayType.cs" />
+    <Compile Include="Attributes\FieldType.cs" />
+    <Compile Include="Attributes\MaterialType.cs" />
     <Compile Include="Attributes\PSOutput.cs" />
     <Compile Include="Attributes\ShaderMethod.cs" />
     <Compile Include="Attributes\VSInput.cs" />

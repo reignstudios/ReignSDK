@@ -30,7 +30,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: ShaderModelErrors Init(VideoCom^ video, string^ code, int codeSize, string^ shaderType, OutType(string^) errorText);
-		public: ~ShaderModelCom();
+		public: virtual ~ShaderModelCom();
 		private: void null();
 		#pragma endregion
 

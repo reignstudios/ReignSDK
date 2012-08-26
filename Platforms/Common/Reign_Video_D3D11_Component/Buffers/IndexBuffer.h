@@ -21,7 +21,7 @@ namespace Reign_Video_D3D11_Component
 		#pragma region Constructors
 		public: IndexBufferCom(VideoCom^ video);
 		public: IndexBufferErrors Init(const array<int>^ indices, int indexCount, int indexByteSize, REIGN_D3D11_USAGE usage, REIGN_D3D11_CPU_ACCESS_FLAG cpuUsage, bool _32BitIndices);
-		public: ~IndexBufferCom();
+		public: virtual ~IndexBufferCom();
 		private: void null();
 		#pragma endregion
 		

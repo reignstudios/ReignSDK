@@ -11,9 +11,9 @@ namespace Reign.Video.API
 			try
 			{
 				#if WINDOWS
-				if (apiType == VideoTypes.D3D10)
+				if (apiType == VideoTypes.D3D11)
 				{
-					return (SamplerStateDescI)OS.CreateInstance(Video.D3D10, Video.D3D10, "SamplerStateDesc", args);
+					return (SamplerStateDescI)OS.CreateInstance(Video.D3D11, Video.D3D11, "SamplerStateDesc", args);
 				}
 
 				if (apiType == VideoTypes.D3D9)
@@ -56,9 +56,9 @@ namespace Reign.Video.API
 			try
 			{
 				#if WINDOWS
-				if (apiType == VideoTypes.D3D10)
+				if (apiType == VideoTypes.D3D11)
 				{
-					return (SamplerStateI)OS.CreateInstance(Video.D3D10, Video.D3D10, "SamplerState", args);
+					return (SamplerStateI)OS.CreateInstance(Video.D3D11, Video.D3D11, "SamplerState", args);
 				}
 
 				if (apiType == VideoTypes.D3D9)

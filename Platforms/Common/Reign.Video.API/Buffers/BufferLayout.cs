@@ -19,9 +19,9 @@ namespace Reign.Video.API
 			try
 			{
 				#if WINDOWS
-				if (apiType == VideoTypes.D3D10)
+				if (apiType == VideoTypes.D3D11)
 				{
-					return (BufferLayoutDescI)OS.CreateInstance(Video.D3D10, Video.D3D10, "BufferLayoutDesc", args);
+					return (BufferLayoutDescI)OS.CreateInstance(Video.D3D11, Video.D3D11, "BufferLayoutDesc", args);
 				}
 
 				if (apiType == VideoTypes.D3D9)
@@ -64,9 +64,9 @@ namespace Reign.Video.API
 			try
 			{
 				#if WINDOWS
-				if (apiType == VideoTypes.D3D10)
+				if (apiType == VideoTypes.D3D11)
 				{
-					return (BufferLayoutI)OS.CreateInstance(Video.D3D10, Video.D3D10, "BufferLayout", args);
+					return (BufferLayoutI)OS.CreateInstance(Video.D3D11, Video.D3D11, "BufferLayout", args);
 				}
 
 				if (apiType == VideoTypes.D3D9)

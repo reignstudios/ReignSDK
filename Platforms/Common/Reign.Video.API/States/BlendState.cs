@@ -11,9 +11,9 @@ namespace Reign.Video.API
 			try
 			{
 				#if WINDOWS
-				if (apiType == VideoTypes.D3D10)
+				if (apiType == VideoTypes.D3D11)
 				{
-					return (BlendStateDescI)OS.CreateInstance(Video.D3D10, Video.D3D10, "BlendStateDesc", args);
+					return (BlendStateDescI)OS.CreateInstance(Video.D3D11, Video.D3D11, "BlendStateDesc", args);
 				}
 
 				if (apiType == VideoTypes.D3D9)
@@ -56,9 +56,9 @@ namespace Reign.Video.API
 			try
 			{
 				#if WINDOWS
-				if (apiType == VideoTypes.D3D10)
+				if (apiType == VideoTypes.D3D11)
 				{
-					return (BlendStateI)OS.CreateInstance(Video.D3D10, Video.D3D10, "BlendState", args);
+					return (BlendStateI)OS.CreateInstance(Video.D3D11, Video.D3D11, "BlendState", args);
 				}
 
 				if (apiType == VideoTypes.D3D9)

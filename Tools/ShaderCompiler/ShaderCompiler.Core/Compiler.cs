@@ -6,12 +6,6 @@ using System.Reflection;
 using Microsoft.CSharp;
 using System.CodeDom.Compiler;
 
-using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.CSharp.Resolver;
-using ICSharpCode.NRefactory.Semantics;
-using ICSharpCode.NRefactory.TypeSystem;
-using ICSharpCode.NRefactory.TypeSystem.Implementation;
-
 namespace ShaderCompiler.Core
 {
 	public enum CompilerCodeSources
@@ -42,7 +36,7 @@ namespace ShaderCompiler.Core
 		#region Properties
 		private List<CodeFile> codeFiles;
 		private string inDirectory, inFile, outDirectory;
-		private CompilerOutputs outputType;
+		internal static CompilerOutputs outputType;
 		public string FileTag;
 		private CompilerCodeSources codeSource;
 		#endregion
@@ -76,7 +70,7 @@ namespace ShaderCompiler.Core
 		{
 			using (var reader = new XmlTextReader(fileName))
 			{
-				var parser = new CSharpParser();
+				//var parser = new CSharpParser();
 				while (reader.Read())
 				{
 					if (reader.Name == "Compile")
@@ -87,7 +81,7 @@ namespace ShaderCompiler.Core
 						using (var stream = new FileStream(inDirectory + fileReletivePath, FileMode.Open))
 						{
 							var streamReader = new StreamReader(stream);
-							var codeBlock = new CodeFile(streamReader.ReadToEnd(), fileReletivePath, parser);
+							var codeBlock = new CodeFile(streamReader.ReadToEnd(), fileReletivePath);//, parser);
 							codeFiles.Add(codeBlock);
 						}
 					}
@@ -99,14 +93,14 @@ namespace ShaderCompiler.Core
 		#region Methods
 		public string CompileFromMemory(string code, CompilerOutputs outputType)
 		{
-			this.outputType = outputType;
+			Compiler.outputType = outputType;
 			return compileFromMemory(code);
 		}
 		
 		public void Compile(string outDirectory, CompilerOutputs outputType)
 		{
 			this.outDirectory = outDirectory;
-			this.outputType = outputType;
+			Compiler.outputType = outputType;
 			
 			if (!Directory.Exists(outDirectory))
 			{
@@ -150,10 +144,10 @@ namespace ShaderCompiler.Core
 		private string compileFromMemory(string code)
 		{
 			var codeProvider = new CSharpCodeProvider();
-			var options = new CompilerParameters(new string[] {"ShaderCompiler.Core.dll"});
+			var options = new CompilerParameters(new string[] {"System.dll", "ShaderCompiler.Core.dll"});
 			options.GenerateExecutable = false;
 			options.TreatWarningsAsErrors = false;
-			//options.GenerateInMemory = true;
+			//options.CompilerOptions = "/optimize";
 
 			try
 			{
@@ -198,7 +192,7 @@ namespace ShaderCompiler.Core
 		{
 string xnaEndCode =
 @"
-technique Simplest
+technique MainTechnique
 {
 	pass Pass0
 	{
@@ -307,7 +301,7 @@ technique Simplest
 		{
 			switch (outputType)
 			{
-				case (CompilerOutputs.D3D11): return "D3D10";
+				case (CompilerOutputs.D3D11): return "D3D11";
 				case (CompilerOutputs.D3D9): return "D3D9";
 				case (CompilerOutputs.XNA): return "XNA";
 				case (CompilerOutputs.GL3): return "GL3";
@@ -316,44 +310,50 @@ technique Simplest
 				default: throw new Exception("Unknown CompilerIfBlockType.");
 			}
 		}
-		
-		private string convertToBasicType(Type type)
+
+		private string convertToBasicType(Type type, bool convertVectorTypes)
+        {
+			return convertToBasicType(type, outputType, convertVectorTypes);
+        }
+
+        internal static string convertToBasicType(Type type, CompilerOutputs outputType, bool convertVectorTypes)
 		{
-			return convertToBasicType(type.Name);
+            return convertToBasicType(type.Name, outputType, convertVectorTypes);
 		}
-		
-		private string convertToBasicType(string type)
+
+        private string convertToBasicType(string type, bool convertVectorTypes)
+        {
+			return convertToBasicType(type, outputType, convertVectorTypes);
+        }
+
+        internal static string convertToBasicType(string type, CompilerOutputs outputType, bool convertVectorTypes)
 		{
 			switch (type)
 		    {
 				case ("Void"): return "void";
-		        //case ("Int32"): return (outputType == CompilerOutputs.GL2 || outputType == CompilerOutputs.GLES2) ? "float" : "int";
-		        //case ("UInt32"): return (outputType == CompilerOutputs.GL2 || outputType == CompilerOutputs.GLES2) ? "float" : ((outputType == CompilerOutputs.GL3) ? "int" : "uint");
 		        case ("Int32"): return "int";
 		        case ("UInt32"): return "uint";
 				case ("Single"): return "float";
 		        case ("Double"): return "float";
 				case ("Boolean"): return "bool";
-		        case ("Vector2"): return Vector2.Output(outputType);
-				case ("Vector3"): return Vector3.Output(outputType);
-				case ("Vector4"): return Vector4.Output(outputType);
-				case ("Matrix3"): return Matrix3.Output(outputType);
-				case ("Matrix4"): return Matrix4.Output(outputType);
+                case ("Vector2"): return convertVectorTypes ? Vector2.Output(outputType) : type;
+				case ("Vector3"): return convertVectorTypes ? Vector3.Output(outputType) : type;
+				case ("Vector4"): return convertVectorTypes ? Vector4.Output(outputType) : type;
+				case ("Matrix3"): return convertVectorTypes ? Matrix3.Output(outputType) : type;
+				case ("Matrix4"): return convertVectorTypes ? Matrix4.Output(outputType) : type;
 				
 				case ("Void[]"): return "void";
-		        //case ("Int32[]"): return (outputType == CompilerOutputs.GL2 || outputType == CompilerOutputs.GLES2) ? "float" : "int";
-		        //case ("UInt32[]"): return (outputType == CompilerOutputs.GL2 || outputType == CompilerOutputs.GLES2) ? "float" : ((outputType == CompilerOutputs.GL3) ? "int" : "uint");
 		        case ("Int32[]"): return "int";
 		        case ("UInt32[]"): return "uint";
 				case ("Single[]"): return "float";
 		        case ("Double[]"): return "float";
 				case ("Boolean[]"): return "bool";
-				case ("Vector2[]"): return Vector2.Output(outputType);
-				case ("Vector3[]"): return Vector3.Output(outputType);
-				case ("Vector4[]"): return Vector4.Output(outputType);
-				case ("Matrix3[]"): return Matrix3.Output(outputType);
-				case ("Matrix4[]"): return Matrix4.Output(outputType);
-				case ("Texture2D"): return Texture2D.Output(outputType);
+				case ("Vector2[]"): return convertVectorTypes ? Vector2.Output(outputType) : type;
+				case ("Vector3[]"): return convertVectorTypes ? Vector3.Output(outputType) : type;
+				case ("Vector4[]"): return convertVectorTypes ? Vector4.Output(outputType) : type;
+				case ("Matrix3[]"): return convertVectorTypes ? Matrix3.Output(outputType) : type;
+				case ("Matrix4[]"): return convertVectorTypes ? Matrix4.Output(outputType) : type;
+				case ("Texture2D"): return convertVectorTypes ? Texture2D.Output(outputType) : type;
 		        default: return type;
 		    }
 		}
@@ -379,6 +379,8 @@ technique Simplest
 		
 		private string formatCode(byte[] code)
 		{
+			//return System.Text.Encoding.UTF8.GetString(System.Text.Encoding.Convert(System.Text.Encoding.ASCII, System.Text.Encoding.ASCII, code));
+
 			// Remove tabs and \r
 			string formatedCode = "";
 			char lastChar = ' ';

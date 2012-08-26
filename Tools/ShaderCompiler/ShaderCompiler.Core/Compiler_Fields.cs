@@ -68,7 +68,7 @@ namespace ShaderCompiler.Core
 				foreach (var field in vsInFields)
 				{
 					var a = (VSInput)field.GetCustomAttributes(true)[0];
-					var fieldType = convertToBasicType(field.FieldType);
+					var fieldType = convertToBasicType(field.FieldType, true);
 					string attributeType = "POSITION";
 					if (a.Type == VSInputTypes.Color) attributeType = "COLOR";
 					if (a.Type == VSInputTypes.UV) attributeType = "TEXCOORD";
@@ -96,7 +96,7 @@ namespace ShaderCompiler.Core
 				{
 					var a = (VSInput)field.GetCustomAttributes(true)[0];
 					string fieldName = getGLVSInputFieldName(field);
-					string fieldType = convertToBasicType(field.FieldType);
+                    string fieldType = convertToBasicType(field.FieldType, true);
 					if (a.Type == VSInputTypes.Index || a.Type == VSInputTypes.IndexClassic)
 					{
 						if (field.FieldType != typeof(uint)) throw new Exception("VS Index type must be uint.");
@@ -121,7 +121,7 @@ namespace ShaderCompiler.Core
 					}
 					string attributeType = "SV_POSITION";
 					if (a.Type == VSOutputPSInputTypes.InOut) attributeType = "TEXCOORD";
-					stream.WriteLine(string.Format("{0} {1} : {2}{3};", convertToBasicType(field.FieldType), field.Name, attributeType, a.Index));
+                    stream.WriteLine(string.Format("{0} {1} : {2}{3};", convertToBasicType(field.FieldType, true), field.Name, attributeType, a.Index));
 				}
 				stream.WriteLine("};");
 			}
@@ -131,7 +131,7 @@ namespace ShaderCompiler.Core
 				foreach (var field in vsInPSOutFields)
 				{
 					var a = (VSOutputPSInput)field.GetCustomAttributes(true)[0];
-					string fieldType = convertToBasicType(field.FieldType);
+                    string fieldType = convertToBasicType(field.FieldType, true);
 					if (a.Type == VSOutputPSInputTypes.Position && field.FieldType != typeof(Vector4))
 					{
 						throw new Exception("VS Position ouput must be a Vector4.");
@@ -165,7 +165,7 @@ namespace ShaderCompiler.Core
 				{
 					var a = (PSOutput)field.GetCustomAttributes(true)[0];
 					string attributeType = "SV_TARGET";
-					psStream.WriteLine(string.Format("{0} {1} : {2}{3};", convertToBasicType(field.FieldType), field.Name, attributeType, a.Index));
+                    psStream.WriteLine(string.Format("{0} {1} : {2}{3};", convertToBasicType(field.FieldType, true), field.Name, attributeType, a.Index));
 				}
 				psStream.WriteLine("};");
 				psStream.WriteLine();
@@ -199,7 +199,7 @@ namespace ShaderCompiler.Core
 			int samplerFieldCount = 0;
 			foreach (var field in normalFields)
 			{
-				string fieldType = convertToBasicType(field.FieldType);
+                string fieldType = convertToBasicType(field.FieldType, true);
 				if (baseType == BaseCompilerOutputs.GLSL) stream.Write("uniform ");
 				
 				int arrayLength = -1;

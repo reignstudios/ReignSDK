@@ -37,7 +37,7 @@ PSOut mainPS(VSOutPSIn In)
 	return Out;
 }
 
-technique Simplest
+technique MainTechnique
 {
 	pass Pass0
 	{

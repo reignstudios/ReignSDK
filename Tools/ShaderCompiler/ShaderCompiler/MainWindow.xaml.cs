@@ -41,24 +41,24 @@ namespace ShadersCS
 		[PSOutput(PSOutputTypes.Color, 0)]
 		public Vector4 Color_PS;
 
-		public Vector2 Location;
-		public Matrix4 testMat;
+		[FieldUsage(FieldUsageTypes.VS)] public Matrix4 Camera;
+		[FieldUsage(FieldUsageTypes.VS_PS)] public Vector3 Location;
+		[FieldUsage(FieldUsageTypes.PS)] public Vector4 Color;
 
 		[ShaderMethod(ShaderMethodTypes.VS)]
 		public void MainVS()
 		{
-			Position_VSPS = new Vector4(Position_VS.xy + Location, Position_VS.z, 1);
-			UV_VSPS = Position_VS.xy;
-			Vector4 vec = testMat.Multiply(new Vector4(0, 0, 0, 0));
+			Position_VSPS = Camera.Multiply(new Vector4(Position_VS + Location, 0));
+			UV_VSPS = UV_VS;
 		}
 
 		[ShaderMethod(ShaderMethodTypes.PS)]
 		public void MainPS()
 		{
-			double dis = SL.Distance(Location, UV_VSPS);
+			double dis = SL.Distance(Location.xy, UV_VSPS);
 			SL.Clip(.1 - dis);
 
-			Color_PS = new Vector4(0, 0, 1, 0);
+			Color_PS = Color;
 		}
 	}
 }

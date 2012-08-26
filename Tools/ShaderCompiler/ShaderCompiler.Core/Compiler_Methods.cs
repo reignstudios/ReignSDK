@@ -97,11 +97,11 @@ namespace ShaderCompiler.Core
 						string methodParameters = null;
 						for (int i = 0; i != parameters.Length; ++i)
 						{
-							methodParameters += convertToBasicType(parameterTypes[i]) + ' ' + parameters[i].Name;
+                            methodParameters += convertToBasicType(parameterTypes[i], true) + ' ' + parameters[i].Name;
 							if (i != parameters.Length-1) methodParameters += ", ";
 						}
 
-						stream.WriteLine(string.Format("{0} {1}({2})", convertToBasicType(method.ReturnType), method.Name, methodParameters));
+                        stream.WriteLine(string.Format("{0} {1}({2})", convertToBasicType(method.ReturnType, true), method.Name, methodParameters));
 					}
 					else
 					{
@@ -246,11 +246,11 @@ namespace ShaderCompiler.Core
 			methodBlock = Regex.Replace(methodBlock, @"\s*Vector2\(\s*\)", @"Vector2(0, 0)");
 			methodBlock = Regex.Replace(methodBlock, @"\s*Vector3\(\s*\)", @"Vector3(0, 0, 0)");
 			methodBlock = Regex.Replace(methodBlock, @"\s*Vector4\(\s*\)", @"Vector4(0, 0, 0, 0)");
-			methodBlock = Utility.ReplaceKeyword(methodBlock, "Vector2", convertToBasicType("Vector2"));
-			methodBlock = Utility.ReplaceKeyword(methodBlock, "Vector3", convertToBasicType("Vector3"));
-			methodBlock = Utility.ReplaceKeyword(methodBlock, "Vector4", convertToBasicType("Vector4"));
-			methodBlock = Utility.ReplaceKeyword(methodBlock, "Matrix3", convertToBasicType("Matrix3"));
-			methodBlock = Utility.ReplaceKeyword(methodBlock, "Matrix4", convertToBasicType("Matrix4"));
+            methodBlock = Utility.ReplaceKeyword(methodBlock, "Vector2", convertToBasicType("Vector2", true));
+            methodBlock = Utility.ReplaceKeyword(methodBlock, "Vector3", convertToBasicType("Vector3", true));
+            methodBlock = Utility.ReplaceKeyword(methodBlock, "Vector4", convertToBasicType("Vector4", true));
+            methodBlock = Utility.ReplaceKeyword(methodBlock, "Matrix3", convertToBasicType("Matrix3", true));
+            methodBlock = Utility.ReplaceKeyword(methodBlock, "Matrix4", convertToBasicType("Matrix4", true));
 			
 			// Convert SL types
 			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Distance", "distance");

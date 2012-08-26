@@ -11,9 +11,9 @@ namespace Reign.Video.API
 			try
 			{
 				#if WINDOWS
-				if (apiType == VideoTypes.D3D10)
+				if (apiType == VideoTypes.D3D11)
 				{
-					return (RasterizerStateDescI)OS.CreateInstance(Video.D3D10, Video.D3D10, "RasterizerStateDesc", args);
+					return (RasterizerStateDescI)OS.CreateInstance(Video.D3D11, Video.D3D11, "RasterizerStateDesc", args);
 				}
 
 				if (apiType == VideoTypes.D3D9)
@@ -56,9 +56,9 @@ namespace Reign.Video.API
 			try
 			{
 				#if WINDOWS
-				if (apiType == VideoTypes.D3D10)
+				if (apiType == VideoTypes.D3D11)
 				{
-					return (RasterizerStateI)OS.CreateInstance(Video.D3D10, Video.D3D10, "RasterizerState", args);
+					return (RasterizerStateI)OS.CreateInstance(Video.D3D11, Video.D3D11, "RasterizerState", args);
 				}
 
 				if (apiType == VideoTypes.D3D9)
