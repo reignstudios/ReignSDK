@@ -1,13 +1,13 @@
 #GLOBAL
 varying vec4 Position_VSPS;
 varying vec4 Color_VSPS;
-
-uniform mat4 Camera;
 #END
 
 #VS
 attribute vec3 Position0;
 attribute vec4 Color0;
+
+uniform mat4 Camera;
 
 void main()
 {
@@ -17,6 +17,7 @@ void main()
 #END
 
 #PS
+
 void main()
 {
 	gl_FragData[0] = Color_VSPS;

@@ -1,5 +1,4 @@
 #GLOBAL
-uniform mat4 Camera;
 #END
 
 #VS
@@ -8,6 +7,8 @@ attribute vec4 Color0;
 
 out vec4 Position_VSPS;
 out vec4 Color_VSPS;
+
+uniform mat4 Camera;
 
 void main()
 {
@@ -21,6 +22,7 @@ in vec4 Position_VSPS;
 in vec4 Color_VSPS;
 
 out vec4 glFragColorOut[1];
+
 
 void main()
 {

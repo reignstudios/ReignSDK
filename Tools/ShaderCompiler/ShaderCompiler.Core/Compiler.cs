@@ -36,7 +36,7 @@ namespace ShaderCompiler.Core
 		#region Properties
 		private List<CodeFile> codeFiles;
 		private string inDirectory, inFile, outDirectory;
-		internal static CompilerOutputs outputType;
+		private CompilerOutputs outputType;
 		public string FileTag;
 		private CompilerCodeSources codeSource;
 		#endregion
@@ -70,7 +70,6 @@ namespace ShaderCompiler.Core
 		{
 			using (var reader = new XmlTextReader(fileName))
 			{
-				//var parser = new CSharpParser();
 				while (reader.Read())
 				{
 					if (reader.Name == "Compile")
@@ -81,7 +80,7 @@ namespace ShaderCompiler.Core
 						using (var stream = new FileStream(inDirectory + fileReletivePath, FileMode.Open))
 						{
 							var streamReader = new StreamReader(stream);
-							var codeBlock = new CodeFile(streamReader.ReadToEnd(), fileReletivePath);//, parser);
+							var codeBlock = new CodeFile(streamReader.ReadToEnd(), fileReletivePath);
 							codeFiles.Add(codeBlock);
 						}
 					}
@@ -93,52 +92,23 @@ namespace ShaderCompiler.Core
 		#region Methods
 		public string CompileFromMemory(string code, CompilerOutputs outputType)
 		{
-			Compiler.outputType = outputType;
+			this.outputType = outputType;
 			return compileFromMemory(code);
 		}
 		
-		public void Compile(string outDirectory, CompilerOutputs outputType)
+		public void Compile(string outDirectory, CompilerOutputs outputType, bool compileMaterial)
 		{
 			this.outDirectory = outDirectory;
-			Compiler.outputType = outputType;
+			this.outputType = outputType;
 			
 			if (!Directory.Exists(outDirectory))
 			{
 				Directory.CreateDirectory(outDirectory);
 			}
 			
-			compileLibrary(inDirectory + "bin/Debug/" + extractFileString(inFile, '.') + ".dll", false);
-		}
-		
-		private static string extractFileString(string input, params char[] delimiter)
-		{
-			int foundIndex = 0;
-			for (int i = input.Length-1; i != -1; --i)
-			{
-				bool pass = false;
-				foreach (char c in delimiter)
-				{
-					if (input[i] == c)
-					{
-						pass = true;
-						break;
-					}
-				}
-
-				if (pass)
-				{
-					foundIndex = i;
-					break;
-				}
-			}
-
-			string output = "";
-			for (int i = 0; i != foundIndex; ++i)
-			{
-				output += input[i];
-			}
-
-			return output;
+			var materialCode = new List<string>();
+			if (!compileMaterial) materialCode = null;
+			compileLibrary(inDirectory + "bin/Debug/" + inFile.Split('.')[0] + ".dll", false, materialCode);
 		}
 		
 		private string compileFromMemory(string code)
@@ -169,7 +139,7 @@ namespace ShaderCompiler.Core
 				if (compilerResults.Errors.Count != 0) throw new Exception(errors + Environment.NewLine + "CSharp Compiler Errors.");
 
 				// Convert Reign Code
-				code = compileLibrary(compilerResults.CompiledAssembly.Location, true);
+				code = compileLibrary(compilerResults.CompiledAssembly.Location, true, null);
 
 				Console.WriteLine("Compile Success!");
 			}
@@ -188,9 +158,9 @@ namespace ShaderCompiler.Core
 			return code;
 		}
 		
-		private string compileLibrary(string dllFileName, bool writeToMemory)
+		private string compileLibrary(string dllFileName, bool writeToMemory, List<string> materialCode)
 		{
-string xnaEndCode =
+string xnaEndTechniqueBlock =
 @"
 technique MainTechnique
 {
@@ -206,6 +176,9 @@ technique MainTechnique
 			var assembly = Assembly.LoadFile(dllFileName);
 			var objects = assembly.GetTypes();
 			string lastShaderOut = null;
+			var initLines = new List<string>();
+			var names = dllFileName.Split('/', '\\', '.');
+			string name = names[names.Length-2];
 			foreach (var obj in objects)
 			{
 				var iFaces = obj.GetInterfaces();
@@ -219,7 +192,15 @@ technique MainTechnique
 							{
 								using (var psStream = new MemoryStream())
 								{
-									compileShader(obj, stream, vsStream, psStream);
+									compileShader(obj, stream, vsStream, psStream, materialCode);
+									if (materialCode != null)
+									{
+										
+										string initLine;
+										var codeFile = compileMaterial(name, obj, out initLine);
+										materialCode.Add(codeFile);
+										initLines.Add(initLine);
+									}
 									
 									if (writeToMemory)
 									{
@@ -239,7 +220,7 @@ technique MainTechnique
 										
 										if (outputType == CompilerOutputs.XNA)
 										{
-											lastShaderOut += xnaEndCode;
+											lastShaderOut += xnaEndTechniqueBlock;
 										}
 									}
 									else
@@ -267,7 +248,7 @@ technique MainTechnique
 												
 												if (outputType == CompilerOutputs.XNA)
 												{
-													writer.Write(xnaEndCode);
+													writer.Write(xnaEndTechniqueBlock);
 												}
 											}
 										}
@@ -278,11 +259,78 @@ technique MainTechnique
 					}
 				}
 			}
+
+			if (materialCode != null)
+			{
+				var codeProvider = new CSharpCodeProvider();
+				var options = new CompilerParameters(new string[] {"System.dll", "ShaderCompiler.Core.dll", "Reign.Core.dll", "Reign.Video.dll", "Reign.Video.API.dll"});
+				options.GenerateExecutable = false;
+				options.TreatWarningsAsErrors = false;
+				options.OutputAssembly = outDirectory + name + ".dll";
+
+				try
+				{
+					string compiledShaders =
+					@"
+						using System;
+						using System.Collections.Generic;
+						using Reign.Core;
+						using Reign.Video;
+						using Reign.Video.API;
+
+						namespace ShaderMaterials.{0}
+						{{
+							public static class Materials
+							{{
+								public static List<Type> Types {{get; private set;}}
+
+								public static void Init(VideoTypes apiType, DisposableI parent, string shaderFolerPath, string tag, ShaderVersions shaderVersion)
+								{{
+									// init shaders
+									Types = new List<Type>();
+									{1}
+								}}
+							}}
+						}}
+					";
+					string initLineText = "";
+					foreach (var initLine in initLines) initLineText += initLine;
+					materialCode.Add(string.Format(compiledShaders, name, initLineText));
+					var compilerResults = codeProvider.CompileAssemblyFromSource(options, materialCode.ToArray());
+
+					// Compiler Output
+					foreach (var line in compilerResults.Output)
+					{
+						Console.WriteLine(line);
+					}
+
+					// Compiler Errors
+					string errors = null;
+					foreach (var line in compilerResults.Errors)
+					{
+						errors += line + Environment.NewLine;
+					}
+					if (compilerResults.Errors.Count != 0) throw new Exception(errors + Environment.NewLine + "CSharp Material Compiler Errors.");
+
+					Console.WriteLine("Compile Material Success!");
+				}
+				catch(Exception e)
+				{
+					string message = "Material Compile Failer:" + Environment.NewLine + e.Message;
+					Console.WriteLine(message);
+					throw new Exception(message);
+				}
+				finally
+				{
+					codeProvider.Dispose();
+					options.TempFiles.Delete();
+				}
+			}
 			
 			return lastShaderOut;
 		}
 		
-		private void compileShader(Type shader, Stream stream, Stream vsStream, Stream psStream)
+		private void compileShader(Type shader, Stream stream, Stream vsStream, Stream psStream, List<string> materialCode)
 		{
 			using (var writer = new StreamWriter(stream))
 			{
@@ -295,6 +343,165 @@ technique MainTechnique
 					}
 				}
 			}
+		}
+
+		private string compileMaterial(string shaderLibName, Type shader, out string initLine)
+		{
+			// get fields
+			var fieldInfoList = new List<FieldInfo[]>();
+			var baseShaderType = shader;
+			while (baseShaderType.BaseType != null)
+			{
+				fieldInfoList.Add(baseShaderType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly));
+				baseShaderType = baseShaderType.BaseType;
+			}
+			fieldInfoList.Reverse();
+			var fields = new List<FieldInfo>();
+			foreach (var fieldInfos in fieldInfoList)
+			{
+				foreach (var info in fieldInfos) fields.Add(info);
+			}
+
+			// create properties and method property body
+			string materialProperties = null, materialInstanceProperties = null, applyMethodBody = null;
+			foreach (var field in fields)
+			{
+				var attributes = field.GetCustomAttributes(true);
+				foreach (var a in attributes)
+				{
+					if (a.GetType() == typeof(FieldUsage))
+					{
+						var m = (FieldUsage)a;
+
+						if (field.FieldType == typeof(Vector2) || field.FieldType == typeof(Vector3) || field.FieldType == typeof(Vector4) ||
+							field.FieldType == typeof(Matrix2) || field.FieldType == typeof(Matrix3) || field.FieldType == typeof(Matrix4) ||
+							field.FieldType == typeof(Vector2[]) || field.FieldType == typeof(Vector3[]) || field.FieldType == typeof(Vector4[]) ||
+							field.FieldType == typeof(Matrix2[]) || field.FieldType == typeof(Matrix3[]) || field.FieldType == typeof(Matrix4[]))
+						{
+							materialProperties += string.Format("public static ShaderVariableI {0};", field.Name);
+						}
+						else if (field.FieldType == typeof(Texture2D))
+						{
+							materialProperties += string.Format("public static ShaderResourceI {0};", field.Name);
+						}
+						else
+						{
+							throw new Exception("Unsuported field type.");
+						}
+
+						string fieldFormat = "[MaterialField(MaterialFieldTypes.{2})] public {0} {1};", methodValue = "gMATERIAL.{0}.Set({0});";
+						if (field.FieldType == typeof(Vector2))
+						{
+							materialInstanceProperties += string.Format(fieldFormat, "Vector2", field.Name, m.MaterialType);
+							applyMethodBody += string.Format(methodValue, field.Name);
+						}
+						if (field.FieldType == typeof(Vector3))
+						{
+							materialInstanceProperties += string.Format(fieldFormat, "Vector3", field.Name, m.MaterialType);
+							applyMethodBody += string.Format(methodValue, field.Name);
+						}
+						if (field.FieldType == typeof(Vector4))
+						{
+							materialInstanceProperties += string.Format(fieldFormat, "Vector4", field.Name, m.MaterialType);
+							applyMethodBody += string.Format(methodValue, field.Name);
+						}
+						if (field.FieldType == typeof(Matrix2))
+						{
+							materialInstanceProperties += string.Format(fieldFormat, "Matrix2", field.Name, m.MaterialType);
+							applyMethodBody += string.Format(methodValue, field.Name);
+						}
+						if (field.FieldType == typeof(Matrix3))
+						{
+							materialInstanceProperties += string.Format(fieldFormat, "Matrix3", field.Name, m.MaterialType);
+							applyMethodBody += string.Format(methodValue, field.Name);
+						}
+						if (field.FieldType == typeof(Matrix4))
+						{
+							materialInstanceProperties += string.Format(fieldFormat, "Matrix4", field.Name, m.MaterialType);
+							applyMethodBody += string.Format(methodValue, field.Name);
+						}
+						if (field.FieldType == typeof(Texture2D))
+						{
+							materialInstanceProperties += string.Format(fieldFormat, "Texture2DI", field.Name, m.MaterialType);
+							applyMethodBody += string.Format(methodValue, field.Name);
+						}
+
+						fieldFormat = "private WeakReference {2}; public {0} {1} {{ get{{return {2}.Target;}} set{{{2} = new WeakReference(value);}} }}";
+						if (field.FieldType == typeof(Vector2[]))
+						{
+							materialInstanceProperties += string.Format(fieldFormat, "Vector2[]", field.Name, field.Name.ToLower());
+							applyMethodBody += string.Format(methodValue, field.Name);
+						}
+						if (field.FieldType == typeof(Vector3[]))
+						{
+							materialInstanceProperties += string.Format(fieldFormat, "Vector3[]", field.Name, field.Name.ToLower());
+							applyMethodBody += string.Format(methodValue, field.Name);
+						}
+						if (field.FieldType == typeof(Vector4[]))
+						{
+							materialInstanceProperties += string.Format(fieldFormat, "Vector4[]", field.Name, field.Name.ToLower());
+							applyMethodBody += string.Format(methodValue, field.Name);
+						}
+						if (field.FieldType == typeof(Matrix2[]))
+						{
+							materialInstanceProperties += string.Format(fieldFormat, "Matrix2[]", field.Name, field.Name.ToLower());
+							applyMethodBody += string.Format(methodValue, field.Name);
+						}
+						if (field.FieldType == typeof(Matrix3[]))
+						{
+							materialInstanceProperties += string.Format(fieldFormat, "Matrix3[]", field.Name, field.Name.ToLower());
+							applyMethodBody += string.Format(methodValue, field.Name);
+						}
+						if (field.FieldType == typeof(Matrix4[]))
+						{
+							materialInstanceProperties += string.Format(fieldFormat, "Matrix4[]", field.Name, field.Name.ToLower());
+							applyMethodBody += string.Format(methodValue, field.Name);
+						}
+					}
+				}
+			}
+
+			// create class objects
+			string shaderFile = 
+			@"
+				using Reign.Core;
+				using Reign.Video;
+				using A = Reign.Video.API;
+
+				namespace ShaderMaterials.{0}
+				{{
+					public static class {1}Material
+					{{
+						// properties
+						public static ShaderI Shader;
+						{2}
+
+						// constructors
+						public static void Init(A.VideoTypes apiType, DisposableI parent, string shaderFolerPath, string tag, ShaderVersions shaderVersion)
+						{{
+							Shader = A.Shader.Create(apiType, parent, shaderFolerPath + tag + ""{1}.rs"", shaderVersion);
+						}}
+					}}
+
+					public class {1}MaterialInstance
+					{{
+						// properties
+						{3}
+
+						// methods
+						public void Apply()
+						{{
+							// set properties
+							{4}
+							{1}Material.Shader.Apply();
+						}}
+					}}
+				}}
+			";
+
+			initLine = string.Format("Types.Add(typeof({0}Material)); ", shader.Name) + shader.Name + "Material.Init(apiType, parent, shaderFolerPath, tag, shaderVersion);";
+			shaderFile = string.Format(shaderFile, shaderLibName, shader.Name, materialProperties, materialInstanceProperties, applyMethodBody);
+			return shaderFile.Replace("gMATERIAL", shader.Name + "Material");
 		}
 		
 		private string getCompilerIfBlockName()
@@ -379,8 +586,6 @@ technique MainTechnique
 		
 		private string formatCode(byte[] code)
 		{
-			//return System.Text.Encoding.UTF8.GetString(System.Text.Encoding.Convert(System.Text.Encoding.ASCII, System.Text.Encoding.ASCII, code));
-
 			// Remove tabs and \r
 			string formatedCode = "";
 			char lastChar = ' ';

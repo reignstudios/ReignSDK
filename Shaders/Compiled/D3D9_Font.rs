@@ -4,14 +4,6 @@ struct VSOutPSIn
 	float4 Position_VSPS : SV_POSITION0;
 	float2 UV_VSPS : TEXCOORD0;
 };
-float4x4 Camera;
-float3 Location;
-float2 Size;
-float2 LocationUV;
-float2 SizeUV;
-float2 TexelOffset;
-float4 Color;
-sampler2D DiffuseTexture;
 #END
 
 #VS
@@ -20,6 +12,13 @@ struct VSIn
 	float2 Position_VS : POSITION0;
 };
 
+
+float4x4 Camera;
+float3 Location;
+float2 Size;
+float2 LocationUV;
+float2 SizeUV;
+float2 TexelOffset;
 
 VSOutPSIn main(VSIn In)
 {
@@ -41,6 +40,9 @@ struct PSOut
 {
 	float4 Color_PS : SV_TARGET0;
 };
+
+float4 Color;
+sampler2D DiffuseTexture;
 
 PSOut main(VSOutPSIn In)
 {

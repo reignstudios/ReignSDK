@@ -28,12 +28,13 @@
 		</ComboBox>
 		<ComboBox Height="23" HorizontalAlignment="Right" Margin="0,0,138,12" Name="compileTypeCombo" VerticalAlignment="Bottom" Width="120" SelectedIndex="1">
 			<ComboBoxItem>All</ComboBoxItem>
-			<ComboBoxItem>XNA</ComboBoxItem>
 			<ComboBoxItem>D3D11</ComboBoxItem>
 			<ComboBoxItem>D3D9</ComboBoxItem>
+			<ComboBoxItem>XNA</ComboBoxItem>
 			<ComboBoxItem>GL3</ComboBoxItem>
 			<ComboBoxItem>GL2</ComboBoxItem>
 			<ComboBoxItem>GLES2</ComboBoxItem>
 		</ComboBox>
+		<CheckBox Content="Compile Materials" Height="16" HorizontalAlignment="Right" Margin="0,0,16,49" Name="compileMaterialsCheckBox" VerticalAlignment="Bottom" IsChecked="True" />
 	</Grid>
 </Window>

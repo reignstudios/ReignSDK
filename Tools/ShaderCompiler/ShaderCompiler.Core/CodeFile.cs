@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using System.IO;
 using System.Collections.Generic;
-
 using System.Text.RegularExpressions;
 
 namespace ShaderCompiler.Core
@@ -23,7 +22,7 @@ namespace ShaderCompiler.Core
 			this.reletivePath = reletivePath;
 		}
 
-		public string FindMethodBlock(Type shader, MethodInfo method)
+		public string FindMethodBlock(Type shader, MethodInfo method, CompilerOutputs outputType)
 		{
 			// find shaders namespace
 			var match = Regex.Match(Code, shader.Namespace + @"\s*?\{(.*\})", RegexOptions.Singleline);
@@ -33,14 +32,14 @@ namespace ShaderCompiler.Core
 				var namespaceBlock = match.Groups[1].Value;
 				int end = getBlockEnd(namespaceBlock);
 				namespaceBlock = namespaceBlock.Remove(end);
-				match = Regex.Match(namespaceBlock, @"public\s*sealed\s*class\s*" + shader.Name + @".*?\{(.*\})", RegexOptions.Singleline);
+				match = Regex.Match(namespaceBlock, @"class\s*" + shader.Name + @".*?\{(.*\})", RegexOptions.Singleline);
 				if (match.Success && match.Groups.Count == 2)
 				{
 					// find method
 					var classBlock = match.Groups[1].Value;
 					end = getBlockEnd(classBlock);
 					classBlock = classBlock.Remove(end);
-					match = Regex.Match(classBlock, Compiler.convertToBasicType(method.ReturnType, Compiler.outputType, false) + @"\s*" + method.Name + @".*?\{(.*?\})", RegexOptions.Singleline);
+					match = Regex.Match(classBlock, Compiler.convertToBasicType(method.ReturnType, outputType, false) + @"\s*" + method.Name + @".*?\{(.*?\})", RegexOptions.Singleline);
 					if (match.Success && match.Groups.Count == 2)
 					{
 						var methodBlock = match.Groups[1].Value;
@@ -62,10 +61,10 @@ namespace ShaderCompiler.Core
 				var c = code[i];
 				if (c == '{') ++openBrackes;
 				if (c == '}') --openBrackes;
-				if (openBrackes == 0) return i-1;
+				if (openBrackes == 0) return i - 1;
 			}
 
-			return -1;
+			throw new Exception("Failed to find code block end");
 		}
 	}
 }

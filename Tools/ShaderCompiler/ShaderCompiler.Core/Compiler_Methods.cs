@@ -88,7 +88,7 @@ namespace ShaderCompiler.Core
 			bool foundMethod = false;
 			foreach (var codeFile in codeFiles)
 			{
-				string codeBlock = codeFile.FindMethodBlock(shader, method);
+				string codeBlock = codeFile.FindMethodBlock(shader, method, outputType);
 
 				if (codeBlock != null)
 				{
@@ -222,6 +222,7 @@ namespace ShaderCompiler.Core
 					"Vector2", "(0, 0);",
 					"Vector3", "(0, 0, 0);",
 					"Vector4", "(0, 0, 0, 0);",
+					"Matrix2", "(0);",
 					"Matrix3", "(0);",
 					"Matrix4", "(0);",
 				};
@@ -249,7 +250,8 @@ namespace ShaderCompiler.Core
             methodBlock = Utility.ReplaceKeyword(methodBlock, "Vector2", convertToBasicType("Vector2", true));
             methodBlock = Utility.ReplaceKeyword(methodBlock, "Vector3", convertToBasicType("Vector3", true));
             methodBlock = Utility.ReplaceKeyword(methodBlock, "Vector4", convertToBasicType("Vector4", true));
-            methodBlock = Utility.ReplaceKeyword(methodBlock, "Matrix3", convertToBasicType("Matrix3", true));
+            methodBlock = Utility.ReplaceKeyword(methodBlock, "Matrix2", convertToBasicType("Matrix2", true));
+			methodBlock = Utility.ReplaceKeyword(methodBlock, "Matrix3", convertToBasicType("Matrix3", true));
             methodBlock = Utility.ReplaceKeyword(methodBlock, "Matrix4", convertToBasicType("Matrix4", true));
 			
 			// Convert SL types

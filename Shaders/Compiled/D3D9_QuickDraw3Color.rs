@@ -4,7 +4,6 @@ struct VSOutPSIn
 	float4 Position_VSPS : SV_POSITION0;
 	float4 Color_VSPS : TEXCOORD0;
 };
-float4x4 Camera;
 #END
 
 #VS
@@ -14,6 +13,8 @@ struct VSIn
 	float4 Color_VS : COLOR0;
 };
 
+
+float4x4 Camera;
 
 VSOutPSIn main(VSIn In)
 {
@@ -32,6 +33,7 @@ struct PSOut
 {
 	float4 Color_PS : SV_TARGET0;
 };
+
 
 PSOut main(VSOutPSIn In)
 {

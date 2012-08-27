@@ -4,20 +4,15 @@ namespace Shaders
 {
 	public sealed class QuickDraw3Color : ShaderI
 	{
-		[VSInput(VSInputTypes.Position, 0)]
-		public Vector3 Position_VS;
-		[VSInput(VSInputTypes.Color, 0)]
-		public Vector4 Color_VS;
+		[VSInput(VSInputTypes.Position, 0)] public Vector3 Position_VS;
+		[VSInput(VSInputTypes.Color, 0)] public Vector4 Color_VS;
 
-		[VSOutputPSInput(VSOutputPSInputTypes.Position, 0)]
-		public Vector4 Position_VSPS;
-		[VSOutputPSInput(VSOutputPSInputTypes.InOut, 0)]
-		public Vector4 Color_VSPS;
+		[VSOutputPSInput(VSOutputPSInputTypes.Position, 0)] public Vector4 Position_VSPS;
+		[VSOutputPSInput(VSOutputPSInputTypes.InOut, 0)] public Vector4 Color_VSPS;
 
-		[PSOutput(PSOutputTypes.Color, 0)]
-		public Vector4 Color_PS;
+		[PSOutput(PSOutputTypes.Color, 0)] public Vector4 Color_PS;
 
-		public Matrix4 Camera;
+		[FieldUsage(FieldUsageTypes.VS)] public Matrix4 Camera;
 
 		[ShaderMethod(ShaderMethodTypes.VS)]
 		public void MainVS()

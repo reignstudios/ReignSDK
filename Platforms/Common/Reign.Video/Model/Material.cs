@@ -3,6 +3,27 @@ using System;
 
 namespace Reign.Video
 {
+	public enum MaterialFieldTypes
+	{
+		None,
+		Diffuse,
+		Specular,
+		Emission,
+		Shininess,
+		IndexOfRefraction
+	}
+
+	[AttributeUsage(AttributeTargets.Field)]
+	public class MaterialField : Attribute
+	{
+		public MaterialFieldTypes Type;
+
+		public MaterialField(MaterialFieldTypes type)
+		{
+			Type = type;
+		}
+	}
+
 	public abstract class MaterialI : Disposable
 	{
 		#region Properties

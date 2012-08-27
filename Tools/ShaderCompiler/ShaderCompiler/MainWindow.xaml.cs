@@ -28,19 +28,15 @@ namespace ShadersCS
 {
 	public sealed class MyShader : ShaderI
 	{
-		[VSInput(VSInputTypes.Position, 0)]
-		public Vector3 Position_VS;
-		[VSInput(VSInputTypes.UV, 0)]
-		public Vector2 UV_VS;
+		[VSInput(VSInputTypes.Position, 0)] public Vector3 Position_VS;
+		[VSInput(VSInputTypes.UV, 0)] public Vector2 UV_VS;
 
-		[VSOutputPSInput(VSOutputPSInputTypes.Position, 0)]
-		public Vector4 Position_VSPS;
-		[VSOutputPSInput(VSOutputPSInputTypes.InOut, 0)]
-		public Vector2 UV_VSPS;
+		[VSOutputPSInput(VSOutputPSInputTypes.Position, 0)] public Vector4 Position_VSPS;
+		[VSOutputPSInput(VSOutputPSInputTypes.InOut, 0)] public Vector2 UV_VSPS;
 
-		[PSOutput(PSOutputTypes.Color, 0)]
-		public Vector4 Color_PS;
+		[PSOutput(PSOutputTypes.Color, 0)] public Vector4 Color_PS;
 
+		[FieldUsage(FieldUsageTypes.PS)] public Texture2D DiffuseTexture;
 		[FieldUsage(FieldUsageTypes.VS)] public Matrix4 Camera;
 		[FieldUsage(FieldUsageTypes.VS_PS)] public Vector3 Location;
 		[FieldUsage(FieldUsageTypes.PS)] public Vector4 Color;
@@ -58,7 +54,8 @@ namespace ShadersCS
 			double dis = SL.Distance(Location.xy, UV_VSPS);
 			SL.Clip(.1 - dis);
 
-			Color_PS = Color;
+			Vector4 diffuse = DiffuseTexture.Sample(UV_VSPS);
+			Color_PS = Color * diffuse;
 		}
 	}
 }
@@ -86,6 +83,7 @@ namespace ShadersCS
 					rsOutputTextbox.Text = reader.ReadLine();
 					compileFromCombo.SelectedIndex = int.Parse(reader.ReadLine());
 					compileTypeCombo.SelectedIndex = int.Parse(reader.ReadLine());
+					compileMaterialsCheckBox.IsChecked = bool.Parse(reader.ReadLine());
 				}
 			}
 			catch{}
@@ -100,6 +98,7 @@ namespace ShadersCS
 				writer.WriteLine(rsOutputTextbox.Text);
 				writer.WriteLine(compileFromCombo.SelectedIndex.ToString());
 				writer.WriteLine(compileTypeCombo.SelectedIndex.ToString());
+				writer.WriteLine(compileMaterialsCheckBox.IsChecked.ToString());
 			}
 
 			base.OnClosing(e);
@@ -113,16 +112,16 @@ namespace ShadersCS
 			var comboBoxValue = ((ComboBoxItem)compileTypeCombo.SelectedValue).Content as string;
 			switch (comboBoxValue)
 			{
-				case ("XNA"):
-					outputType = CompilerOutputs.XNA;
-					break;
-
 				case ("D3D11"):
 					outputType = CompilerOutputs.D3D11;
 					break;
 
 				case ("D3D9"):
 					outputType = CompilerOutputs.D3D9;
+					break;
+
+					case ("XNA"):
+					outputType = CompilerOutputs.XNA;
 					break;
 
 				case ("GL3"):
@@ -143,17 +142,12 @@ namespace ShadersCS
 			hlsl.Text = c.CompileFromMemory(rsl.Text, outputType);
 		}
 
-		private void compileProjectType(Compiler compiler, string type)
+		private void compileProjectType(Compiler compiler, string type, bool compileMaterial)
 		{
 			string tag = null;
 			var outputType = CompilerOutputs.GL2;
 			switch (type)
 			{
-				case ("XNA"):
-					tag = "XNA_";
-					outputType = CompilerOutputs.XNA;
-					break;
-
 				case ("D3D11"):
 					tag = "D3D11_";
 					outputType = CompilerOutputs.D3D11;
@@ -162,6 +156,11 @@ namespace ShadersCS
 				case ("D3D9"):
 					tag = "D3D9_";
 					outputType = CompilerOutputs.D3D9;
+					break;
+
+				case ("XNA"):
+					tag = "XNA_";
+					outputType = CompilerOutputs.XNA;
 					break;
 
 				case ("GL3"):
@@ -181,7 +180,7 @@ namespace ShadersCS
 			}
 		
 			compiler.FileTag = tag;
-			compiler.Compile(rsOutputTextbox.Text, outputType);
+			compiler.Compile(rsOutputTextbox.Text, outputType, compileMaterial);
 		}
 
 		private void compileProject()
@@ -191,16 +190,16 @@ namespace ShadersCS
 			var comboBoxValue = ((ComboBoxItem)compileTypeCombo.SelectedValue).Content as string;
 			if (comboBoxValue == "All")
 			{
-				compileProjectType(compiler, "XNA");
-				compileProjectType(compiler, "D3D11");
-				compileProjectType(compiler, "D3D9");
-				compileProjectType(compiler, "GL3");
-				compileProjectType(compiler, "GL2");
-				compileProjectType(compiler, "GLES2");
+				compileProjectType(compiler, "D3D11", false);
+				compileProjectType(compiler, "D3D9", false);
+				compileProjectType(compiler, "XNA", false);
+				compileProjectType(compiler, "GL3", false);
+				compileProjectType(compiler, "GL2", false);
+				compileProjectType(compiler, "GLES2", (bool)compileMaterialsCheckBox.IsChecked);
 			}
 			else
 			{
-				compileProjectType(compiler, comboBoxValue);
+				compileProjectType(compiler, comboBoxValue, (bool)compileMaterialsCheckBox.IsChecked);
 			}
 		}
 
@@ -221,10 +220,23 @@ namespace ShadersCS
 
 		private bool getFilePath(out string path)
 		{
-			var dlg = new OpenFileDialog();
-			if (dlg.ShowDialog() == true)
+			var dlg = new System.Windows.Forms.OpenFileDialog();
+			if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
 				path = dlg.FileName;
+				return true;
+			}
+
+			path = null;
+			return false;
+		}
+
+		private bool getFolderPath(out string path)
+		{
+			var dlg = new System.Windows.Forms.FolderBrowserDialog();
+			if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				path = dlg.SelectedPath;
 				return true;
 			}
 
@@ -243,7 +255,7 @@ namespace ShadersCS
 		private void browseRSButton_Click(object sender, RoutedEventArgs e)
 		{
 			string path;
-			if (!getFilePath(out path)) return;
+			if (!getFolderPath(out path)) return;
 
 			rsOutputTextbox.Text = path;
 		}

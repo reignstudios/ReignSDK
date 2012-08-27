@@ -4,22 +4,18 @@ namespace Shaders
 {
 	public sealed class Font : ShaderI
 	{
-		[VSInput(VSInputTypes.Position, 0)]
-		public Vector2 Position_VS;
+		[VSInput(VSInputTypes.Position, 0)] public Vector2 Position_VS;
 
-		[VSOutputPSInput(VSOutputPSInputTypes.Position, 0)]
-		public Vector4 Position_VSPS;
-		[VSOutputPSInput(VSOutputPSInputTypes.InOut, 0)]
-		public Vector2 UV_VSPS;
+		[VSOutputPSInput(VSOutputPSInputTypes.Position, 0)] public Vector4 Position_VSPS;
+		[VSOutputPSInput(VSOutputPSInputTypes.InOut, 0)] public Vector2 UV_VSPS;
 
-		[PSOutput(PSOutputTypes.Color, 0)]
-		public Vector4 Color_PS;
+		[PSOutput(PSOutputTypes.Color, 0)] public Vector4 Color_PS;
 
-		public Matrix4 Camera;
-		public Vector3 Location;
-		public Vector2 Size, LocationUV, SizeUV, TexelOffset;
-		public Vector4 Color;
-		public Texture2D DiffuseTexture;
+		[FieldUsage(FieldUsageTypes.VS)] public Matrix4 Camera;
+		[FieldUsage(FieldUsageTypes.VS)] public Vector3 Location;
+		[FieldUsage(FieldUsageTypes.VS)] public Vector2 Size, LocationUV, SizeUV, TexelOffset;
+		[FieldUsage(FieldUsageTypes.PS, MaterialTypes.Diffuse)] public Vector4 Color;
+		[FieldUsage(FieldUsageTypes.PS, MaterialTypes.Diffuse)] public Texture2D DiffuseTexture;
 
 		[ShaderMethod(ShaderMethodTypes.VS)]
 		public void MainVS()

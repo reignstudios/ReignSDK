@@ -18,42 +18,73 @@ namespace ShaderCompiler.Core
 				baseShaderType = baseShaderType.BaseType;
 			}
 			fieldInfoList.Reverse();
-			var fieldArray = new List<FieldInfo>();
+			var fields = new List<FieldInfo>();
 			foreach (var fieldInfos in fieldInfoList)
 			{
-				foreach (var info in fieldInfos) fieldArray.Add(info);
+				foreach (var info in fieldInfos) fields.Add(info);
 			}
-			var fields = fieldArray.ToArray();
+			//var fields = fieldArray.ToArray();
 			
 			var vsInFields = new List<FieldInfo>();
 			var vsInPSOutFields = new List<FieldInfo>();
 			var psOutFields = new List<FieldInfo>();
-			var normalFields = new List<FieldInfo>();
+			var normalGlobalFields = new List<FieldInfo>();
+			var normalVSFields = new List<FieldInfo>();
+			var normalPSFields = new List<FieldInfo>();
 			foreach (var field in fields)
 			{
+				bool isField = false, isVSField = false, isPSField = false, isVSIn = false, isVSOutPSIn = false, isPSOut = false;
 				var attributes = field.GetCustomAttributes(true);
-				var arrayAttributes = field.GetCustomAttributes(typeof(ArrayType), true);
-				if (attributes.Length == 0 || arrayAttributes.Length != 0)
+				if (attributes.Length == 0) throw new Exception("All fields must have an attribute.");
+				foreach (var a in attributes)
 				{
-					normalFields.Add(field);
+					var t = a.GetType();
+					if (t == typeof(ArrayType)) isField = true;
+					if (t == typeof(FieldUsage))
+					{
+						isField = true;
+						var aValue = (FieldUsage)a;
+						if (aValue.Type == FieldUsageTypes.VS)
+						{
+							isVSField = true;
+						}
+						else if (aValue.Type == FieldUsageTypes.VS_PS)
+						{
+							isVSField = true;
+							isPSField = true;
+						}
+						else if (aValue.Type == FieldUsageTypes.PS)
+						{
+							isPSField = true;
+						}
+					}
+					if (t == typeof(VSInput)) isVSIn = true;
+					if (t == typeof(VSOutputPSInput)) isVSOutPSIn = true;
+					if (t == typeof(PSOutput)) isPSOut = true;
+				}
+
+				if (isField)
+				{
+					if (isVSField && isPSField) normalGlobalFields.Add(field);
+					else if (isVSField) normalVSFields.Add(field);
+					else if (isPSField) normalPSFields.Add(field);
 				}
 				else
 				{
 					if (attributes.Length >= 2)
 					{
-						throw new Exception("Fields can only have one shader attribute.");
+						throw new Exception("VS and PS In/Out Fields can only have one shader attribute.");
 					}
 
-					var a = attributes[0].GetType();
-					if (a == typeof(VSInput))
+					if (isVSIn)
 					{
 						vsInFields.Add(field);
 					}
-					else if (a == typeof(VSOutputPSInput))
+					else if (isVSOutPSIn)
 					{
 						vsInPSOutFields.Add(field);
 					}
-					else if (a == typeof(PSOutput))
+					else if (isPSOut)
 					{
 						psOutFields.Add(field);
 					}
@@ -178,6 +209,13 @@ namespace ShaderCompiler.Core
 			}
 
 			// Process normal fields
+			processNormalFields(stream, normalGlobalFields, baseType);
+			processNormalFields(vsStream, normalVSFields, baseType);
+			processNormalFields(psStream, normalPSFields, baseType);
+		}
+
+		private void processNormalFields(StreamWriter stream, List<FieldInfo> normalFields, BaseCompilerOutputs baseType)
+		{
 			if (outputType == CompilerOutputs.D3D11)
 			{
 				int fieldCount = 0;
@@ -195,13 +233,13 @@ namespace ShaderCompiler.Core
 					stream.WriteLine(string.Format("{0} {1}[{2}];", "sampler", "Samplers", fieldCount));
 				}
 			}
-			
+
 			int samplerFieldCount = 0;
 			foreach (var field in normalFields)
 			{
-                string fieldType = convertToBasicType(field.FieldType, true);
+				string fieldType = convertToBasicType(field.FieldType, true);
 				if (baseType == BaseCompilerOutputs.GLSL) stream.Write("uniform ");
-				
+
 				int arrayLength = -1;
 				if (field.FieldType.IsArray && field.GetCustomAttributes(typeof(ArrayType), true).Length != 0)
 				{
@@ -211,9 +249,9 @@ namespace ShaderCompiler.Core
 						arrayLength = attributes.Length;
 					}
 				}
-				
-				stream.WriteLine(string.Format("{0} {1};", fieldType, field.Name + ((arrayLength == -1) ? "" : "["+arrayLength.ToString()+"]")));
-				
+
+				stream.WriteLine(string.Format("{0} {1};", fieldType, field.Name + ((arrayLength == -1) ? "" : "[" + arrayLength.ToString() + "]")));
+
 				if (outputType == CompilerOutputs.XNA && field.FieldType == typeof(Texture2D))
 				{
 					stream.Write(string.Format("sampler2D {0}_S : register(s{1}) = sampler_state", field.Name, samplerFieldCount) + " {");
