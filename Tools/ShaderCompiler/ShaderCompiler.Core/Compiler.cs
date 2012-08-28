@@ -266,6 +266,7 @@ technique MainTechnique
 				var options = new CompilerParameters(new string[] {"System.dll", "ShaderCompiler.Core.dll", "Reign.Core.dll", "Reign.Video.dll", "Reign.Video.API.dll"});
 				options.GenerateExecutable = false;
 				options.TreatWarningsAsErrors = false;
+				options.CompilerOptions = "/optimize";
 				options.OutputAssembly = outDirectory + name + ".dll";
 
 				try
