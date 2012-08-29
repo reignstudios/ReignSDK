@@ -26,6 +26,7 @@ using System.Runtime.InteropServices;
 
 #if METRO
 using System.Reflection;
+using Windows.ApplicationModel.Core;
 #endif
 
 using System;
@@ -253,10 +254,14 @@ namespace Reign.Core
 		}
 		#endif
 		
-		#if iOS || XNA
+		#if iOS || XNA || METRO
 		public static void Run(Application application)
 		{
 			CurrentApplication = application;
+
+			#if METRO
+			CoreApplication.Run(application.source);
+			#endif
 
 			#if iOS
 			UIApplication.Main(new string[0], null, "AppDelegate");

@@ -67,7 +67,7 @@ namespace Reign.Video.D3D11
 				#else
 				var frame = application.FrameSize;
 				windowFrameSize = frame;
-				var error = com.Init(IntPtr.Zero, vSync, frame.Width, frame.Height, out featureLevel);
+				var error = com.Init(OS.CurrentApplication.CoreWindow, vSync, frame.Width, frame.Height, out featureLevel);
 				#endif
 
 				switch (error)

@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include <D3Dcompiler.h>
+#include <D3DCompiler.h>
 #include "ShaderModel.h"
 
 namespace Reign_Video_D3D11_Component
@@ -13,6 +13,7 @@ namespace Reign_Video_D3D11_Component
 		// Code
 		char* shaderTypeName = StringToAscii(shaderType);
 		char* codeAscii = StringToAscii(code);
+		#if WINDOWS
 		ID3DBlob *codeTEMP, *err = 0;
 		if (FAILED(D3DCompile(codeAscii, codeSize, NULL, NULL, NULL, "main", shaderTypeName, D3DCOMPILE_OPTIMIZATION_LEVEL3, NULL, &codeTEMP, &err)))
 		{
@@ -33,6 +34,9 @@ namespace Reign_Video_D3D11_Component
 		if (shaderTypeName) delete shaderTypeName;
 		if (codeAscii) delete codeAscii;
 		this->code = codeTEMP;
+		#else
+
+		#endif
 
 		// Reflection
 		void* reflectionTEMP = 0;

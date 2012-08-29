@@ -111,7 +111,7 @@
       <Name>Reign.Video</Name>
     </ProjectReference>
     <ProjectReference Include="..\Reign_Video_D3D11_Component\Reign_Video_D3D11_Component.vcxproj">
-      <Project>{281556bb-c9db-4ee9-80fd-bbb772b19090}</Project>
+      <Project>{8205ab2d-c1d3-458c-a672-5c65f712d9a8}</Project>
       <Name>Reign_Video_D3D11_Component</Name>
     </ProjectReference>
   </ItemGroup>

@@ -67,12 +67,18 @@ namespace Reign_Video_D3D11_Component
 	public ref class VideoCom sealed
 	{
 		#pragma region Properties
+		#if WINDOWS
 		private: IDXGISwapChain* swapChain;
+		internal: ID3D11Device* device;
+		internal: ID3D11DeviceContext* deviceContext;
+		#else
+		private: IDXGISwapChain1* swapChain;
+		internal: ID3D11Device1* device;
+		internal: ID3D11DeviceContext1* deviceContext;
+		#endif
 		private: ID3D11RenderTargetView* renderTarget;
 		private: ID3D11DepthStencilView* depthStencil;
 		private: ID3D11Texture2D* depthTexture;
-		internal: ID3D11Device* device;
-		internal: ID3D11DeviceContext* deviceContext;
 		internal: ID3D11RenderTargetView* currentRenderTarget;
 		internal: ID3D11DepthStencilView* currentDepthStencil;
 
@@ -87,7 +93,7 @@ namespace Reign_Video_D3D11_Component
 		#if WINDOWS
 		public: VideoError Init(IntPtr handle, bool vSync, int width, int height, bool fullscreen, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel);
 		#else
-		public: VideoError Init(IntPtr handle, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel);
+		public: VideoError Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel);
 		#endif
 		private: VideoError createViews(int width, int height);
 		public: virtual ~VideoCom();

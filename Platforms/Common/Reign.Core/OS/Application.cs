@@ -31,7 +31,7 @@ namespace Reign.Core
 	
 	public enum ApplicationAdGravity
 	{
-		#if WP7 || ANDROID
+		#if ANDROID
 		BottomLeft,
 		BottomRight,
 		TopLeft,
@@ -46,11 +46,6 @@ namespace Reign.Core
 
 	public enum ApplicationAdSize
 	{
-		#if WP7
-		Large_300x50,
-		XLarge_480x80
-		#endif
-
 		#if iOS
 		Landscape,
 		Portrait
@@ -66,8 +61,6 @@ namespace Reign.Core
 	: GLController
 	#elif ANDROID
 	 : RootActivity
-	#elif WP7
-	: GameDummy
 	#elif XNA
 	: XNAGame
 	#elif METRO
@@ -95,14 +88,6 @@ namespace Reign.Core
 		#endregion
 
 		#region Constructors
-		#if WP7
-		public Application(Reign.Core.MathI32.Vector2 frameSize, Microsoft.Xna.Framework.Graphics.GraphicsDevice device)
-		{
-			this.frameSize = frameSize;
-			GraphicsDevice = device;
-		}
-		#endif
-
 		#if iOS
 		public Application(ApplicationOrientations orientation, bool enableAds)
 		: base(enableAds)

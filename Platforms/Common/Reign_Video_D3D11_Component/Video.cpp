@@ -13,7 +13,7 @@ namespace Reign_Video_D3D11_Component
 	#if WINDOWS
 	VideoError VideoCom::Init(IntPtr handle, bool vSync, int width, int height, bool fullscreen, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel)
 	#else
-	VideoError VideoCom::Init(IntPtr handle, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel)
+	VideoError VideoCom::Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel)
 	#endif
 	{
 		null();
@@ -106,18 +106,21 @@ namespace Reign_Video_D3D11_Component
 		{
 			return VideoError::DeviceFailed;
 		}
-		device = deviceTEMP.Get();
-		deviceContext = deviceContextTEMP.Get();
-
 		ComPtr<ID3D11Device1> device1;
 		deviceTEMP.As(&device1);
+		device = device1.Get();
+		ComPtr<ID3D11DeviceContext1> deviceContext1;
+		deviceContextTEMP.As(&deviceContext1);
+		deviceContext = deviceContext1.Get();
+
 		ComPtr<IDXGIDevice1> dxgiDevice;
 		device1.As(&dxgiDevice);
+		dxgiDevice->SetMaximumFrameLatency(vSync ? 1 : 0);
 		ComPtr<IDXGIAdapter> dxgiAdapter;
 		dxgiDevice->GetAdapter(&dxgiAdapter);
 		ComPtr<IDXGIFactory2> dxgiFactory;
 		dxgiAdapter->GetParent(IID_PPV_ARGS(&dxgiFactory));
-		if (FAILED(dxgiFactory->CreateSwapChainForCoreWindow(deviceTEMP.Get(), reinterpret_cast<IUnknown*>(handle.ToPointer()), &swapChainDesc, 0, &swapChainTEMP)))
+		if (FAILED(dxgiFactory->CreateSwapChainForCoreWindow(deviceTEMP.Get(), reinterpret_cast<IUnknown*>(coreWindow), &swapChainDesc, 0, &swapChainTEMP)))
 		{
 			return VideoError::SwapChainFailed;
 		}
@@ -275,19 +278,31 @@ namespace Reign_Video_D3D11_Component
 
 	void VideoCom::Present()
 	{
+		#if WINDOWS
 		swapChain->Present(vSync, 0);
+		#else
+		DXGI_PRESENT_PARAMETERS parameters = {0};
+		parameters.DirtyRectsCount = 0;
+		parameters.pDirtyRects = nullptr;
+		parameters.pScrollRect = nullptr;
+		parameters.pScrollOffset = nullptr;
+
+		swapChain->Present1(vSync, 0, &parameters);
+		deviceContext->DiscardView(renderTarget);
+		deviceContext->DiscardView(depthStencil);
+		#endif
 	}
 
 	void VideoCom::Clear(float r, float g, float b, float a)
 	{
-		float clearColor[4] = {r, g, b, a};
+		const float clearColor[4] = {r, g, b, a};
 		deviceContext->ClearRenderTargetView(currentRenderTarget, clearColor);
 		deviceContext->ClearDepthStencilView(currentDepthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 
 	void VideoCom::ClearColor(float r, float g, float b, float a)
 	{
-		float clearColor[4] = {r, g, b, a};
+		const float clearColor[4] = {r, g, b, a};
 		deviceContext->ClearRenderTargetView(currentRenderTarget, clearColor);
 	}
 

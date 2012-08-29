@@ -2,40 +2,28 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Buffers">
-      <UniqueIdentifier>{93e008dd-efae-40bc-9989-6d682d54bdc3}</UniqueIdentifier>
+      <UniqueIdentifier>{109406e5-974b-48ff-98b1-055056215cef}</UniqueIdentifier>
     </Filter>
     <Filter Include="DepthStencil">
-      <UniqueIdentifier>{e36dc442-219d-4101-97ba-b25ab2bc2fb2}</UniqueIdentifier>
+      <UniqueIdentifier>{1056a0fb-d44d-4e4d-baa6-0594e99be0e0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shaders">
-      <UniqueIdentifier>{2934b061-5c9d-4365-9652-78eb48a199b2}</UniqueIdentifier>
+      <UniqueIdentifier>{96a15cdf-7fbd-491f-b123-b2eba5d53b3a}</UniqueIdentifier>
     </Filter>
     <Filter Include="States">
-      <UniqueIdentifier>{0f6a1d94-81ef-46f1-ae79-b7d28b2422aa}</UniqueIdentifier>
+      <UniqueIdentifier>{e8dcc926-3952-43e1-b341-c25459576ed3}</UniqueIdentifier>
     </Filter>
     <Filter Include="Textures">
-      <UniqueIdentifier>{351cc3f6-60ff-4adc-bbe4-01b62c401e57}</UniqueIdentifier>
+      <UniqueIdentifier>{8d368f71-b24a-4f5a-97f2-ed0a8925141c}</UniqueIdentifier>
     </Filter>
     <Filter Include="ViewPort">
-      <UniqueIdentifier>{bfb08e96-8383-4053-99ed-b2f6e4f5266d}</UniqueIdentifier>
+      <UniqueIdentifier>{8ab13dda-d081-44e0-9b20-448d40f147c7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="..\..\Common\CPP_CLR-CX_Helpers\Common.cpp" />
     <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Video.cpp" />
-    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\BufferLayout.cpp">
-      <Filter>Buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\BufferLayoutDesc.cpp">
-      <Filter>Buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\IndexBuffer.cpp">
-      <Filter>Buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\VertexBuffer.cpp">
-      <Filter>Buffers</Filter>
-    </ClCompile>
+    <ClCompile Include="..\..\Common\CPP_CLR-CX_Helpers\Common.cpp" />
     <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\DepthStencil\DepthStencil.cpp">
       <Filter>DepthStencil</Filter>
     </ClCompile>
@@ -87,20 +75,23 @@
     <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\VertexShader.cpp">
       <Filter>Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\BufferLayout.cpp">
+      <Filter>Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\BufferLayoutDesc.cpp">
+      <Filter>Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\IndexBuffer.cpp">
+      <Filter>Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\VertexBuffer.cpp">
+      <Filter>Buffers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="..\..\Common\CPP_CLR-CX_Helpers\Common.h" />
     <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Video.h" />
-    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\BufferLayout.h">
-      <Filter>Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\IndexBuffer.h">
-      <Filter>Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\VertexBuffer.h">
-      <Filter>Buffers</Filter>
-    </ClInclude>
+    <ClInclude Include="..\..\Common\CPP_CLR-CX_Helpers\Common.h" />
     <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\DepthStencil\DepthStencil.h">
       <Filter>DepthStencil</Filter>
     </ClInclude>
@@ -139,6 +130,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\VertexShader.h">
       <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\BufferLayout.h">
+      <Filter>Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\IndexBuffer.h">
+      <Filter>Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\VertexBuffer.h">
+      <Filter>Buffers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
