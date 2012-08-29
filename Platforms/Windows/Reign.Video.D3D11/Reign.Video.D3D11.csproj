@@ -61,9 +61,6 @@
     <Compile Include="..\..\Common\Reign.Video.D3D11\Font.cs">
       <Link>Font.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Video.D3D11\Model\Material.cs">
-      <Link>Model\Material.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Video.D3D11\Model\Mesh.cs">
       <Link>Model\Mesh.cs</Link>
     </Compile>

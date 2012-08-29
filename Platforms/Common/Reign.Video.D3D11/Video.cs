@@ -26,6 +26,8 @@ namespace Reign.Video.D3D11
 	public class Video : Disposable, VideoI
 	{
 		#region Properties
+		public string FileTag {get; private set;}
+
 		#if WINDOWS
 		private Window window;
 		#else
@@ -54,7 +56,7 @@ namespace Reign.Video.D3D11
 			
 			try
 			{
-				Shader.FileTag = "D3D11_";
+				FileTag = "D3D11_";
 				Cap = new Caps();
 
 				com = new VideoCom();

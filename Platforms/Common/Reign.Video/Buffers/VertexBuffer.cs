@@ -101,7 +101,7 @@ namespace Reign.Video
 
 			Init(verts);
 			#else
-			Debug.ThrowError("VertexBufferI", "Does not work on Xbox360 or WP7.");
+			Debug.ThrowError("VertexBufferI", "Does not work on Xbox360.");
 			#endif
 		}
 

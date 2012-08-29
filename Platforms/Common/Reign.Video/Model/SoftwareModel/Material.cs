@@ -6,14 +6,17 @@ namespace Reign.Video
 	public class SoftwareMaterial
 	{
 		#region Properties
+		public string Name;
 		public string[] DiffuseTextures, SpecularTextures, EmissionTextures;
-		public Vector4 Diffuse, Specular, Emission;
-		public float Shininess, IndexOfRefraction;
+		public Vector4[] DiffuseColors, SpecularColors, EmissionColors;
+		public float[] ShininessValues, IndexOfRefractionValues;
 		#endregion
 
 		#region Methods
 		public SoftwareMaterial(ColladaModel collada, ColladaModel_Material material)
 		{
+			Name = material.Name;
+
 			var effect = collada.LibraryEffect.FindEffect(material.InstanceEffect.URL);
 			if (effect == null) Debug.ThrowError("SoftwareMaterial", "Failed to find material effect: " + material.InstanceEffect.URL);
 
@@ -52,32 +55,36 @@ namespace Reign.Video
 			}
 
 			// colors
-			float[] colors;
-			if (phong.Diffuse.Color != null)
+			DiffuseColors = getColors(phong.Diffuse.Colors);
+			SpecularColors = getColors(phong.Specular.Colors);
+			EmissionColors = getColors(phong.Emission.Colors);
+
+			// values
+			ShininessValues = getValues(phong.Shininess.Floats);
+			IndexOfRefractionValues = getValues(phong.IndexOfRefraction.Floats);
+		}
+
+		private Vector4[] getColors(ColladaModel_Color[] colors)
+		{
+			var vectorColors = new Vector4[colors.Length];
+			for (int i = 0; i != colors.Length; ++i)
 			{
-				colors = phong.Diffuse.Color.Colors;
-				Diffuse = new Vector4(colors[0], colors[1], colors[2], colors[3]);
-			}
-			else
-			{
-				Diffuse = new Vector4(1);
+				var colorValues = colors[i].Colors;
+				vectorColors[i] = new Vector4(colorValues[0], colorValues[1], colorValues[2], colorValues[3]);
 			}
 
-			if (phong.Specular.Color != null)
+			return vectorColors;
+		}
+
+		private float[] getValues(ColladaModel_Float[] values)
+		{
+			var scalarValues = new float[values.Length];
+			for (int i = 0; i != values.Length; ++i)
 			{
-				colors = phong.Specular.Color.Colors;
-				if (colors != null) Specular = new Vector4(colors[0], colors[1], colors[2], colors[3]);
-			}
-			else
-			{
-				Specular = new Vector4(1);
+				scalarValues[i] = values[i].Value;
 			}
 
-			colors = phong.Emission.Color.Colors;
-			if (colors != null) Emission = new Vector4(colors[0], colors[1], colors[2], colors[3]);
-
-			Shininess = phong.Shininess.Float.Value;
-			IndexOfRefraction = phong.IndexOfRefraction.Float.Value;
+			return scalarValues;
 		}
 
 		private string getTexture(ColladaModel collada, ColladaModel_Effect effect, ColladaModel_Phong phong, ColladaModel_Texture texture)

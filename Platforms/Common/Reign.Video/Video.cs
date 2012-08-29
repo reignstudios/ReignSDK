@@ -4,6 +4,8 @@ namespace Reign.Video
 {
 	public interface VideoI : DisposableI
 	{
+		string FileTag {get;}
+
 		void Update();
 		void EnableRenderTarget();
 		void EnableRenderTarget(DepthStencilI depthStencil);

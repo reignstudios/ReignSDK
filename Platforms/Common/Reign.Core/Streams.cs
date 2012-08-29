@@ -124,13 +124,12 @@ namespace Reign.Core
 			//if (resource == null) Debug.ThrowError("Streams", "Resource not found: " + url);
 			//return resource;
 
-			#if WP7
-			var match = Regex.Match(url, ";");
-			if (match.Success) return OpenResource(url);
-			else return OpenFile(url);
-			#else
+			// for wpf
+			//var match = Regex.Match(url, ";");
+			//if (match.Success) return OpenResource(url);
+			//else return OpenFile(url);
+			
 			return OpenFile(url);
-			#endif
 		}
 
 		public static Stream OpenFile(string fileName)
@@ -190,14 +189,13 @@ namespace Reign.Core
 			return memoryStream;
 		}
 
-		#if WP7
-		public static Stream OpenResource(string resourceName)
-		{
-			var resource = System.Windows.Application.GetResourceStream(new Uri(resourceName, UriKind.Relative));
-			if (resource == null) Debug.ThrowError("Streams", "Resource not found: " + resourceName);
-			return resource.Stream;
-		}
-		#endif
+		// for wpf
+		//public static Stream OpenResource(string resourceName)
+		//{
+		//    var resource = System.Windows.Application.GetResourceStream(new Uri(resourceName, UriKind.Relative));
+		//    if (resource == null) Debug.ThrowError("Streams", "Resource not found: " + resourceName);
+		//    return resource.Stream;
+		//}
 
 		public static string StripFileExt(string fileName)
 		{

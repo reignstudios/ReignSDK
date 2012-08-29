@@ -27,6 +27,8 @@ namespace Reign
 	#pragma endregion
 
 	#pragma region Properties
+	string^ Video::FileTag::get() {return fileTag;}
+
 	bool Video::IsExDevice::get() {return isExDevice;}
 	IDirect3DDevice9* Video::Device::get() {return device;}
 	bool Video::DeviceIsLost::get() {return deviceIsLost;}
@@ -96,7 +98,7 @@ namespace Reign
 
 			currentVertexTextures = gcnew array<Texture2D^>(4);
 			currentPixelTextures = gcnew array<Texture2D^>(8);
-			ShaderI::FileTag = L"D3D9_";
+			fileTag = L"D3D9_";
 
 			//Create D3D Object
 			direct3D = createD3D9Ex();

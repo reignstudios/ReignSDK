@@ -21,24 +21,24 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
-		public Mesh(Model model, SoftwareModel softwareModel, SoftwareMesh mesh, MeshVertexSizes positionSize)
+		public Mesh(Model model, SoftwareModel softwareModel, SoftwareMesh softwareMesh, MeshVertexSizes positionSize)
 		: base(model)
 		{
 			try
 			{
 				// material
-				if (mesh.Material != null)
+				if (softwareMesh.Material != null)
 				{
 					for (int i = 0; i != softwareModel.Materials.Count; ++i)
 					{
-						if (mesh.Material == softwareModel.Materials[i])
-						{
-							Material = model.Materials[i];
-							break;
-						}
+					    if (softwareMesh.Material == softwareModel.Materials[i])
+					    {
+					        Material = model.Materials[i];
+					        break;
+					    }
 					}
 
-					if (mesh.Material == null) Debug.ThrowError("Mesh", "Failed to find material");
+					if (Material == null) Debug.ThrowError("Mesh", "Failed to find material: " + softwareMesh.Material.Name);
 				}
 
 				// get position float size
@@ -59,7 +59,7 @@ namespace Reign.Video.D3D11
 				// get vertex float size and create layout
 				var elements = new List<BufferLayoutElement>();
 				int vertFloatCount = 0, posCount = 0, normalCount = 0, uvCount = 0;
-				foreach (var key in mesh.VertexComponentKeys)
+				foreach (var key in softwareMesh.VertexComponentKeys)
 				{
 					switch (key.Key)
 					{
@@ -71,7 +71,7 @@ namespace Reign.Video.D3D11
 					}
 				}
 
-				foreach (var key in mesh.TriangleComponentKeys)
+				foreach (var key in softwareMesh.TriangleComponentKeys)
 				{
 					switch (key.Key)
 					{
@@ -91,7 +91,7 @@ namespace Reign.Video.D3D11
 
 				// create vertex buffer
 				LayoutDesc = new BufferLayoutDesc(elements);
-				var meshProcessor = new HardwareMeshProcessor(mesh);
+				var meshProcessor = new HardwareMeshProcessor(softwareMesh);
 				var verts = new float[meshProcessor.Verticies.Count * vertFloatCount];
 				int vi = 0;
 				foreach (var vertex in meshProcessor.Verticies)
@@ -151,6 +151,11 @@ namespace Reign.Video.D3D11
 		#region Methods
 		public void Enable()
 		{
+			if (Material != null)
+			{
+				Material.Enable();
+				Material.Apply(this);
+			}
 			vertexBuffer.Enable(indexBuffer);
 		}
 

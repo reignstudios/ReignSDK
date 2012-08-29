@@ -285,7 +285,7 @@ technique MainTechnique
 							{{
 								public static List<Type> Types {{get; private set;}}
 
-								public static void Init(VideoTypes apiType, DisposableI parent, string shaderFolerPath, string tag, ShaderVersions shaderVersion)
+								public static void Init(VideoTypes apiType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
 								{{
 									// init shaders
 									Types = new List<Type>();
@@ -364,7 +364,8 @@ technique MainTechnique
 			}
 
 			// create properties and method property body
-			string materialProperties = null, materialInstanceProperties = null, applyMethodBody = null;
+			string constantProperties = null, constantTypeProperties = null, applyGlobalMethodBody = null, applyInstanceMethodBody = null, applyInstancingMethodBody = null, elementsBody = null, constantInitBody = null;
+			int floatOffset = 0;
 			foreach (var field in fields)
 			{
 				var attributes = field.GetCustomAttributes(true);
@@ -372,92 +373,113 @@ technique MainTechnique
 				{
 					if (a.GetType() == typeof(FieldUsage))
 					{
-						var m = (FieldUsage)a;
+						var usage = (FieldUsage)a;
 
 						if (field.FieldType == typeof(Vector2) || field.FieldType == typeof(Vector3) || field.FieldType == typeof(Vector4) ||
 							field.FieldType == typeof(Matrix2) || field.FieldType == typeof(Matrix3) || field.FieldType == typeof(Matrix4) ||
 							field.FieldType == typeof(Vector2[]) || field.FieldType == typeof(Vector3[]) || field.FieldType == typeof(Vector4[]) ||
 							field.FieldType == typeof(Matrix2[]) || field.FieldType == typeof(Matrix3[]) || field.FieldType == typeof(Matrix4[]))
 						{
-							materialProperties += string.Format("public static ShaderVariableI {0};", field.Name);
+							constantProperties += string.Format("public static ShaderVariableI {0}Constant {{get; private set;}}", field.Name);
+							constantInitBody += string.Format(@"{0}Constant = Shader.Variable(""{0}"");", field.Name);
 						}
 						else if (field.FieldType == typeof(Texture2D))
 						{
-							materialProperties += string.Format("public static ShaderResourceI {0};", field.Name);
+							constantProperties += string.Format("public static ShaderResourceI {0}Constant {{get; private set;}}", field.Name);
+							constantInitBody += string.Format(@"{0}Constant = Shader.Resource(""{0}"");", field.Name);
 						}
 						else
 						{
 							throw new Exception("Unsuported field type.");
 						}
 
-						string fieldFormat = "[MaterialField(MaterialFieldTypes.{2})] public {0} {1};", methodValue = "gMATERIAL.{0}.Set({0});";
+						string globalFieldFormat = "[MaterialField(MaterialFieldTypes.{2}, MaterialFieldUsages.{3})] public static {0} {1};";
+						string fieldFormat = "[MaterialField(MaterialFieldTypes.{2}, MaterialFieldUsages.{3})] public {0} {1};";
+						string methodValue = "{0}Constant.Set({0});";
 						if (field.FieldType == typeof(Vector2))
 						{
-							materialInstanceProperties += string.Format(fieldFormat, "Vector2", field.Name, m.MaterialType);
-							applyMethodBody += string.Format(methodValue, field.Name);
+							createConstantType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Vector2", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
 						}
-						if (field.FieldType == typeof(Vector3))
+						else if (field.FieldType == typeof(Vector3))
 						{
-							materialInstanceProperties += string.Format(fieldFormat, "Vector3", field.Name, m.MaterialType);
-							applyMethodBody += string.Format(methodValue, field.Name);
+							createConstantType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Vector3", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
 						}
-						if (field.FieldType == typeof(Vector4))
+						else if (field.FieldType == typeof(Vector4))
 						{
-							materialInstanceProperties += string.Format(fieldFormat, "Vector4", field.Name, m.MaterialType);
-							applyMethodBody += string.Format(methodValue, field.Name);
+							createConstantType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Vector4", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
 						}
-						if (field.FieldType == typeof(Matrix2))
+						else if (field.FieldType == typeof(Matrix2))
 						{
-							materialInstanceProperties += string.Format(fieldFormat, "Matrix2", field.Name, m.MaterialType);
-							applyMethodBody += string.Format(methodValue, field.Name);
+							createConstantType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Matrix2", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
 						}
-						if (field.FieldType == typeof(Matrix3))
+						else if (field.FieldType == typeof(Matrix3))
 						{
-							materialInstanceProperties += string.Format(fieldFormat, "Matrix3", field.Name, m.MaterialType);
-							applyMethodBody += string.Format(methodValue, field.Name);
+							createConstantType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Matrix3", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
 						}
-						if (field.FieldType == typeof(Matrix4))
+						else if (field.FieldType == typeof(Matrix4))
 						{
-							materialInstanceProperties += string.Format(fieldFormat, "Matrix4", field.Name, m.MaterialType);
-							applyMethodBody += string.Format(methodValue, field.Name);
+							createConstantType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Matrix4", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
 						}
-						if (field.FieldType == typeof(Texture2D))
+						else if (field.FieldType == typeof(Texture2D))
 						{
-							materialInstanceProperties += string.Format(fieldFormat, "Texture2DI", field.Name, m.MaterialType);
-							applyMethodBody += string.Format(methodValue, field.Name);
+							createConstantType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Texture2DI", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
 						}
 
-						fieldFormat = "private WeakReference {2}; public {0} {1} {{ get{{return {2}.Target;}} set{{{2} = new WeakReference(value);}} }}";
+						globalFieldFormat = "private static WeakReference {2}; [MaterialField(MaterialFieldTypes.{3}, MaterialFieldUsages.{4})] public static {0} {1} {{ get{{return {2}.Target;}} set{{{2} = new WeakReference(value);}} }}";
+						fieldFormat = "private WeakReference {2}; [MaterialField(MaterialFieldTypes.{3}, MaterialFieldUsages.{4})] public {0} {1} {{ get{{return {2}.Target;}} set{{{2} = new WeakReference(value);}} }}";
 						if (field.FieldType == typeof(Vector2[]))
 						{
-							materialInstanceProperties += string.Format(fieldFormat, "Vector2[]", field.Name, field.Name.ToLower());
-							applyMethodBody += string.Format(methodValue, field.Name);
+							createConstantArrayType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Vector2[]", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
 						}
-						if (field.FieldType == typeof(Vector3[]))
+						else if (field.FieldType == typeof(Vector3[]))
 						{
-							materialInstanceProperties += string.Format(fieldFormat, "Vector3[]", field.Name, field.Name.ToLower());
-							applyMethodBody += string.Format(methodValue, field.Name);
+							createConstantArrayType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Vector3[]", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
 						}
-						if (field.FieldType == typeof(Vector4[]))
+						else if (field.FieldType == typeof(Vector4[]))
 						{
-							materialInstanceProperties += string.Format(fieldFormat, "Vector4[]", field.Name, field.Name.ToLower());
-							applyMethodBody += string.Format(methodValue, field.Name);
+							createConstantArrayType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Vector4[]", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
 						}
-						if (field.FieldType == typeof(Matrix2[]))
+						else if (field.FieldType == typeof(Matrix2[]))
 						{
-							materialInstanceProperties += string.Format(fieldFormat, "Matrix2[]", field.Name, field.Name.ToLower());
-							applyMethodBody += string.Format(methodValue, field.Name);
+							createConstantArrayType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Matrix2[]", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
 						}
-						if (field.FieldType == typeof(Matrix3[]))
+						else if (field.FieldType == typeof(Matrix3[]))
 						{
-							materialInstanceProperties += string.Format(fieldFormat, "Matrix3[]", field.Name, field.Name.ToLower());
-							applyMethodBody += string.Format(methodValue, field.Name);
+							createConstantArrayType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Matrix3[]", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
 						}
-						if (field.FieldType == typeof(Matrix4[]))
+						else if (field.FieldType == typeof(Matrix4[]))
 						{
-							materialInstanceProperties += string.Format(fieldFormat, "Matrix4[]", field.Name, field.Name.ToLower());
-							applyMethodBody += string.Format(methodValue, field.Name);
+							createConstantArrayType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Matrix4[]", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
 						}
+					}
+					else if (a.GetType() == typeof(VSInput))
+					{
+						var input = (VSInput)a;
+						
+						string usage = null;
+						int streamIndex = 0;
+						switch (input.Type)
+						{
+							case (VSInputTypes.Position): usage = "BufferLayoutElementUsages.Position"; break;
+							case (VSInputTypes.UV): usage = "BufferLayoutElementUsages.UV"; break;
+							case (VSInputTypes.Color): usage = "BufferLayoutElementUsages.Color"; break;
+							case (VSInputTypes.Normal): usage = "BufferLayoutElementUsages.Normal"; break;
+							case (VSInputTypes.Index): usage = "BufferLayoutElementUsages.Index"; streamIndex = 1; break;
+							case (VSInputTypes.IndexClassic): usage = "BufferLayoutElementUsages.IndexClassic"; break;
+							default: throw new Exception("Unsuported material usage type.");
+						}
+						
+						string type = null;
+						int offset = 0;
+						if (field.FieldType == typeof(double)) {type = "BufferLayoutElementTypes.Float"; offset = 1;}
+						else if (field.FieldType == typeof(Vector4) && input.Type == VSInputTypes.Color) {type = "BufferLayoutElementTypes.RGBAx8"; offset = 1;}
+						else if (field.FieldType == typeof(Vector2)) {type = "BufferLayoutElementTypes.Vector2"; offset = 2;}
+						else if (field.FieldType == typeof(Vector3)) {type = "BufferLayoutElementTypes.Vector3"; offset = 3;}
+						else if (field.FieldType == typeof(Vector4)) {type = "BufferLayoutElementTypes.Vector4"; offset = 4;}
+						else throw new Exception("Unsuported material element type.");
+
+						elementsBody += string.Format("elements.Add(new BufferLayoutElement({0}, {1}, {2}, {3}, {4}));", type, usage, streamIndex, input.Index, floatOffset);
+						floatOffset += offset;
 					}
 				}
 			}
@@ -465,44 +487,144 @@ technique MainTechnique
 			// create class objects
 			string shaderFile = 
 			@"
+				using System.Collections.Generic;
 				using Reign.Core;
 				using Reign.Video;
 				using A = Reign.Video.API;
 
 				namespace ShaderMaterials.{0}
 				{{
-					public static class {1}Material
+					public class {1}Material : MaterialI
 					{{
-						// properties
-						public static ShaderI Shader;
+						// static properties
+						public static ShaderI Shader {{get; private set;}}
+						public static BufferLayoutDescI BufferLayoutDesc {{get; private set;}}
+						public static BufferLayoutI BufferLayout {{get; private set;}}
 						{2}
 
-						// constructors
-						public static void Init(A.VideoTypes apiType, DisposableI parent, string shaderFolerPath, string tag, ShaderVersions shaderVersion)
-						{{
-							Shader = A.Shader.Create(apiType, parent, shaderFolerPath + tag + ""{1}.rs"", shaderVersion);
-						}}
-					}}
-
-					public class {1}MaterialInstance
-					{{
-						// properties
+						// instance properties
+						public delegate void ApplyCallbackMethod({1}Material material, MeshI mesh);
+						public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
 						{3}
 
+						// constructors
+						public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
+						{{
+							Shader = A.Shader.Create(videoType, parent, contentPath + tag + ""{1}.rs"", shaderVersion);
+							{8}
+
+							var elements = new List<BufferLayoutElement>();
+							{7}
+							BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
+							BufferLayout = A.BufferLayout.Create(videoType, parent, Shader, BufferLayoutDesc);
+						}}
+
 						// methods
+						public void Enable()
+						{{
+							BufferLayout.Enable();
+						}}
+
+						public void ApplyGlobalContants(MeshI mesh)
+						{{
+							if (ApplyGlobalConstantsCallback != null) ApplyGlobalConstantsCallback(this, mesh);
+							{4}
+						}}
+
+						public void ApplyInstanceContants(MeshI mesh)
+						{{
+							if (ApplyInstanceConstantsCallback != null) ApplyInstanceConstantsCallback(this, mesh);
+							{5}
+						}}
+
+						public void ApplyInstancingContants(MeshI mesh)
+						{{
+							if (ApplyInstancingConstantsCallback != null) ApplyInstancingConstantsCallback(this, mesh);
+							{6}
+						}}
+
+						public void Apply(MeshI mesh)
+						{{
+							ApplyGlobalContants(mesh);
+							ApplyInstanceContants(mesh);
+							ApplyInstancingContants(mesh);
+							Shader.Apply();
+						}}
+
+						public void ApplyGlobalContants()
+						{{
+							{4}
+						}}
+
+						public void ApplyInstanceContants()
+						{{
+							{5}
+						}}
+
+						public void ApplyInstancingContants()
+						{{
+							{6}
+						}}
+
 						public void Apply()
 						{{
-							// set properties
-							{4}
-							{1}Material.Shader.Apply();
+							ApplyGlobalContants();
+							ApplyInstanceContants();
+							ApplyInstancingContants();
+							Shader.Apply();
 						}}
 					}}
 				}}
 			";
 
-			initLine = string.Format("Types.Add(typeof({0}Material)); ", shader.Name) + shader.Name + "Material.Init(apiType, parent, shaderFolerPath, tag, shaderVersion);";
-			shaderFile = string.Format(shaderFile, shaderLibName, shader.Name, materialProperties, materialInstanceProperties, applyMethodBody);
-			return shaderFile.Replace("gMATERIAL", shader.Name + "Material");
+			initLine = string.Format("Types.Add(typeof({0}Material)); ", shader.Name) + shader.Name + "Material.Init(apiType, parent, contentPath, tag, shaderVersion);";
+			return string.Format(shaderFile, shaderLibName, shader.Name, constantProperties, constantTypeProperties, applyGlobalMethodBody, applyInstanceMethodBody, applyInstancingMethodBody, elementsBody, constantInitBody);
+		}
+
+		private void createConstantType(FieldUsage usage, FieldInfo field, string methodValue, string globalFieldFormat, string fieldFormat, string constantType, ref string constantTypeProperties, ref string applyGlobalMethodBody, ref string applyInstanceMethodBody, ref string applyInstancingMethodBody)
+		{
+			if (usage.MaterialUsages == MaterialUsages.Global)
+			{
+				constantTypeProperties += string.Format(globalFieldFormat, constantType, field.Name, usage.MaterialType, usage.MaterialUsages);
+				applyGlobalMethodBody += string.Format(methodValue, field.Name);
+			}
+			else if (usage.MaterialUsages == MaterialUsages.Instance)
+			{
+				constantTypeProperties += string.Format(fieldFormat, constantType, field.Name, usage.MaterialType, usage.MaterialUsages);
+				applyInstanceMethodBody += string.Format(methodValue, field.Name);
+			}
+			else if (usage.MaterialUsages == MaterialUsages.Instancing)
+			{
+				constantTypeProperties += string.Format(fieldFormat, constantType, field.Name, usage.MaterialType, usage.MaterialUsages);
+				applyInstancingMethodBody += string.Format(methodValue, field.Name);
+			}
+			else
+			{
+				throw new Exception("Unsuported MaterialUsages: " + usage.MaterialUsages.ToString());
+			}
+		}
+
+		private void createConstantArrayType(FieldUsage usage, FieldInfo field, string methodValue, string globalFieldFormat, string fieldFormat, string constantType, ref string constantTypeProperties, ref string applyGlobalMethodBody, ref string applyInstanceMethodBody, ref string applyInstancingMethodBody)
+		{
+			if (usage.MaterialUsages == MaterialUsages.Global)
+			{
+				constantTypeProperties += string.Format(fieldFormat, constantType, field.Name, field.Name.ToLower(), usage.MaterialType, usage.MaterialUsages);
+				applyGlobalMethodBody += string.Format(methodValue, field.Name);
+			}
+			else if (usage.MaterialUsages == MaterialUsages.Instance)
+			{
+				constantTypeProperties += string.Format(fieldFormat, constantType, field.Name, field.Name.ToLower(), usage.MaterialType, usage.MaterialUsages);
+				applyInstanceMethodBody += string.Format(methodValue, field.Name);
+			}
+			else if (usage.MaterialUsages == MaterialUsages.Instancing)
+			{
+				constantTypeProperties += string.Format(fieldFormat, constantType, field.Name, field.Name.ToLower(), usage.MaterialType, usage.MaterialUsages);
+				applyInstancingMethodBody += string.Format(methodValue, field.Name);
+			}
+			else
+			{
+				throw new Exception("Unsuported MaterialUsages: " + usage.MaterialUsages.ToString());
+			}
 		}
 		
 		private string getCompilerIfBlockName()

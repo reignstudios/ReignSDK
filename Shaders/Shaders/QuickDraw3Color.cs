@@ -12,7 +12,7 @@ namespace Shaders
 
 		[PSOutput(PSOutputTypes.Color, 0)] public Vector4 Color_PS;
 
-		[FieldUsage(FieldUsageTypes.VS)] public Matrix4 Camera;
+		[FieldUsage(FieldUsageTypes.VS, MaterialUsages.Global)] public Matrix4 Camera;
 
 		[ShaderMethod(ShaderMethodTypes.VS)]
 		public void MainVS()

@@ -58,65 +58,101 @@ namespace Reign.Video
 
 	public class ColladaModel_Emission
 	{
-		[XmlElement("color")] public ColladaModel_Color Color;
+		[XmlElement("color")] public ColladaModel_Color[] Colors;
 		[XmlElement("texture")] public ColladaModel_Texture[] Textures;
 
 		public void Init()
 		{
-			if (Color != null) Color.Init();
+			if (Colors != null)
+			{
+				foreach (var color in Colors)
+				{
+					color.Init();
+				}
+			}
 		}
 	}
 
 	public class ColladaModel_Ambient
 	{
-		[XmlElement("color")] public ColladaModel_Color Color;
+		[XmlElement("color")] public ColladaModel_Color[] Colors;
 		[XmlElement("texture")] public ColladaModel_Texture[] Textures;
 
 		public void Init()
 		{
-			if (Color != null) Color.Init();
+			if (Colors != null)
+			{
+				foreach (var color in Colors)
+				{
+					color.Init();
+				}
+			}
 		}
 	}
 
 	public class ColladaModel_Diffuse
 	{
-		[XmlElement("color")] public ColladaModel_Color Color;
+		[XmlElement("color")] public ColladaModel_Color[] Colors;
 		[XmlElement("texture")] public ColladaModel_Texture[] Textures;
 
 		public void Init()
 		{
-			if (Color != null) Color.Init();
+			if (Colors != null)
+			{
+				foreach (var color in Colors)
+				{
+					color.Init();
+				}
+			}
 		}
 	}
 
 	public class ColladaModel_Specular
 	{
-		[XmlElement("color")] public ColladaModel_Color Color;
+		[XmlElement("color")] public ColladaModel_Color[] Colors;
 		[XmlElement("texture")] public ColladaModel_Texture[] Textures;
 
 		public void Init()
 		{
-			if (Color != null) Color.Init();
+			if (Colors != null)
+			{
+				foreach (var color in Colors)
+				{
+					color.Init();
+				}
+			}
 		}
 	}
 
 	public class ColladaModel_Shininess
 	{
-		[XmlElement("float")] public ColladaModel_Float Float;
+		[XmlElement("float")] public ColladaModel_Float[] Floats;
 
 		public void Init()
 		{
-			Float.Init();
+			if (Floats != null)
+			{
+				foreach (var value in Floats)
+				{
+					value.Init();
+				}
+			}
 		}
 	}
 
 	public class ColladaModel_IndexOfRefraction
 	{
-		[XmlElement("float")] public ColladaModel_Float Float;
+		[XmlElement("float")] public ColladaModel_Float[] Floats;
 
 		public void Init()
 		{
-			Float.Init();
+			if (Floats != null)
+			{
+				foreach (var value in Floats)
+				{
+					value.Init();
+				}
+			}
 		}
 	}
 

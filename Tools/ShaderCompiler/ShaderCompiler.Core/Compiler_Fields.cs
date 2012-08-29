@@ -103,6 +103,7 @@ namespace ShaderCompiler.Core
 					string attributeType = "POSITION";
 					if (a.Type == VSInputTypes.Color) attributeType = "COLOR";
 					if (a.Type == VSInputTypes.UV) attributeType = "TEXCOORD";
+					if (a.Type == VSInputTypes.Normal) attributeType = "NORMAL";
 					if (a.Type == VSInputTypes.Index || a.Type == VSInputTypes.IndexClassic)
 					{
 						if (field.FieldType != typeof(uint)) throw new Exception("VS Index type must be uint.");
@@ -278,6 +279,10 @@ namespace ShaderCompiler.Core
 
 				case (VSInputTypes.UV):
 					fieldName = "Texcoord" + a.Index.ToString();
+					break;
+
+				case (VSInputTypes.Normal):
+					fieldName = "Normal" + a.Index.ToString();
 					break;
 
 				case (VSInputTypes.Index):

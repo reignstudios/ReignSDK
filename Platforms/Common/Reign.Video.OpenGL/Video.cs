@@ -39,6 +39,7 @@ namespace Reign.Video.OpenGL
 	public class Video : Disposable, VideoI
 	{
 		#region Properties
+		public string FileTag {get; private set;}
 		public Caps Caps;
 		private bool disposed;
 		internal Texture2D[] currentTextures;
@@ -327,7 +328,7 @@ namespace Reign.Video.OpenGL
 					float shaderValue = Convert.ToSingle(shaderVersion);
 					
 					Caps.Version = Versions.GL1;
-					ShaderI.FileTag = "";
+					FileTag = "";
 					#if iOS || ANDROID || NaCl
 					if (shaderValue >= 1.0f)
 					{
@@ -339,13 +340,13 @@ namespace Reign.Video.OpenGL
 					if (shaderValue >= 1.1f)
 					{
 						Caps.Version = Versions.GL2;
-						ShaderI.FileTag = "GL2_";
+						FileTag = "GL2_";
 						Caps.MaxShaderVersion = ShaderVersions.GLSL_1_10;
 					}
 					if (shaderValue >= 1.2f)
 					{
 						Caps.Version = Versions.GL2;
-						ShaderI.FileTag = "GL2_";
+						FileTag = "GL2_";
 						Caps.MaxShaderVersion = ShaderVersions.GLSL_1_20;
 					}
 					// GL3 not supported in GLSL 1.30 becuase 'gl_InstanceID' only exists in GLSL 1.40
@@ -358,19 +359,19 @@ namespace Reign.Video.OpenGL
 					if (shaderValue >= 1.4f)
 					{
 						Caps.Version = Versions.GL3;
-						ShaderI.FileTag = "GL3_";
+						FileTag = "GL3_";
 						Caps.MaxShaderVersion = ShaderVersions.GLSL_1_40;
 					}
 					if (shaderValue >= 1.5f)
 					{
 						Caps.Version = Versions.GL3;
-						ShaderI.FileTag = "GL3_";
+						FileTag = "GL3_";
 						Caps.MaxShaderVersion = ShaderVersions.GLSL_1_50;
 					}
 					if (shaderValue >= 3.3f)
 					{
 						Caps.Version = Versions.GL3;
-						ShaderI.FileTag = "GL3_";
+						FileTag = "GL3_";
 						Caps.MaxShaderVersion = ShaderVersions.GLSL_3_30;
 					}
 					//if (shaderValue >= 4.0f) Caps.MaxShaderVersion = ShaderVersions.GLSL_4_00;

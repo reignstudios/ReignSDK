@@ -10,6 +10,7 @@ namespace ShaderCompiler.Core
 		Position,
 		Color,
 		UV,
+		Normal,
 		Index,
 		IndexClassic
 	}

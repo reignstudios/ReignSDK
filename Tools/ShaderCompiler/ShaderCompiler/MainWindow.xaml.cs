@@ -236,7 +236,8 @@ namespace ShadersCS
 			var dlg = new System.Windows.Forms.FolderBrowserDialog();
 			if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
 			{
-				path = dlg.SelectedPath;
+				char endChar = dlg.SelectedPath[dlg.SelectedPath.Length-1];
+				path = dlg.SelectedPath + ((endChar != '/' || endChar != '\\') ? "\\" : "");
 				return true;
 			}
 

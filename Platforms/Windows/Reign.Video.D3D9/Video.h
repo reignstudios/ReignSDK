@@ -70,6 +70,9 @@ namespace Reign
 		private: Reign::Video::D3D9::Caps^ caps;
 		public: property Reign::Video::D3D9::Caps^ Caps {Reign::Video::D3D9::Caps^ get(); private: void set(Reign::Video::D3D9::Caps^ value);}
 
+		private: string^ fileTag;
+		public: property string^ FileTag {virtual string^ get();}
+
 		public: property float PointSize {void set(float value);}
 		public: property float PointSizeMax {void set(float value);}
 		public: property float PointSizeMin {void set(float value);}

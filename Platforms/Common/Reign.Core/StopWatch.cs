@@ -32,7 +32,7 @@ namespace Reign.Core
 		#endregion
 
 		#region Methods
-		#if WINDOWS || (XNA && !XBOX360 && !WP7)
+		#if WINDOWS || (XNA && !XBOX360)
 		[StructLayout(LayoutKind.Sequential)]
 		public struct TimeCaps
 		{

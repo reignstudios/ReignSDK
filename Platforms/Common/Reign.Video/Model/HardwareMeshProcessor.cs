@@ -47,7 +47,7 @@ namespace Reign.Video
 			}
 
 			// get uv components
-			componentCount = mesh.normalComponents.Count;
+			componentCount = mesh.uvComponents.Count;
 			var uvs = new Vector2[3][];
 			for (int i = 0; i != uvs.Length; ++i)
 			{

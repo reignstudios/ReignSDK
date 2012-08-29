@@ -70,13 +70,6 @@ namespace Reign.Video
 
 	public abstract class ShaderI : Disposable
 	{
-		#region Properties
-		public static string FileTag;
-		#if WP7
-		public Microsoft.Xna.Framework.Graphics.Effect FX {get; protected set;}
-		#endif
-		#endregion
-
 		#region Constructors
 		public ShaderI(DisposableI parent)
 		: base(parent)
