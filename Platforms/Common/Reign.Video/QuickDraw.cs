@@ -7,7 +7,7 @@ namespace Reign.Video
 		#region Properties
 		protected int vertexCount, vertexArraySize, vertexNext, vertexNextOffset, primitiveVertexCount;
 		protected float[] vertices, vertex;
-		protected int[] positionOffset, colorOffset, uvOffset;
+		protected int[] positionOffset, colorOffset, uvOffset, normalOffset;
 		private BufferLayoutElementTypes[] positionTypes;
 		#endregion
 
@@ -54,6 +54,15 @@ namespace Reign.Video
 			foreach (var uv in uvs)
 			{
 				uvOffset[i] = uv.FloatOffset;
+				++i;
+			}
+
+			var normals = bufferLayoutDesc.ElementsUsages(BufferLayoutElementUsages.Normal);
+			normalOffset = new int[normals.Count];
+			i = 0;
+			foreach (var normal in normals)
+			{
+				normalOffset[i] = normal.FloatOffset;
 				++i;
 			}
 

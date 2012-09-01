@@ -191,6 +191,9 @@ namespace Reign.Video.D3D11
 		{
 			switch (surfaceFormat)
 			{
+				case (SurfaceFormats.DXT1): return REIGN_DXGI_FORMAT.BC1_UNORM;
+				case (SurfaceFormats.DXT3): return REIGN_DXGI_FORMAT.BC2_UNORM;
+				case (SurfaceFormats.DXT5): return REIGN_DXGI_FORMAT.BC3_UNORM;
 				case (SurfaceFormats.RGBAx8): return REIGN_DXGI_FORMAT.R8G8B8A8_UNORM;
 				case (SurfaceFormats.RGBx10_Ax2): return REIGN_DXGI_FORMAT.R10G10B10A2_UNORM;
 				case (SurfaceFormats.RGBAx16f): return REIGN_DXGI_FORMAT.R16G16B16A16_FLOAT;

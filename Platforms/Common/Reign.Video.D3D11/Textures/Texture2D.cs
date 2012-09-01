@@ -5,9 +5,57 @@ using System.Runtime.InteropServices;
 
 namespace Reign.Video.D3D11
 {
+	class Texture2DStreamLoader : StreamLoaderI
+	{
+		private Texture2D texture;
+		private DisposableI parent;
+		private string fileName;
+		private int width, height;
+		private bool generateMipmaps;
+		private MultiSampleTypes multiSampleType;
+		private SurfaceFormats surfaceFormat;
+		private RenderTargetUsage renderTargetUsage;
+		private BufferUsages usage;
+		private bool isRenderTarget;
+
+		private Image image;
+
+		public Texture2DStreamLoader(Texture2D texture, DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
+		{
+			this.texture = texture;
+			this.parent = parent;
+			this.fileName = fileName;
+			this.width = width;
+			this.height = height;
+			this.generateMipmaps = generateMipmaps;
+			this.multiSampleType = multiSampleType;
+			this.surfaceFormat = surfaceFormat;
+			this.renderTargetUsage = renderTargetUsage;
+			this.usage = usage;
+			this.isRenderTarget = isRenderTarget;
+		}
+
+		public override bool Load()
+		{
+			if (image == null)
+			{
+				image = Image.Load(fileName, false);
+				return false;
+			}
+			else if (!image.Loaded)
+			{
+				return false;
+			}
+
+			texture.load(parent, image, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, isRenderTarget);
+			return true;
+		}
+	}
+
 	public class Texture2D : Disposable, Texture2DI
 	{
 		#region Properties
+		public bool Loaded {get; private set;}
 		protected Video video;
 		internal Texture2DCom com;
 
@@ -20,7 +68,7 @@ namespace Reign.Video.D3D11
 		public Texture2D(DisposableI parent, string fileName)
 		: base(parent)
 		{
-			init(parent, fileName, 0, 0, false, MultiSampleTypes.None, SurfaceFormats.RGBAx8, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false);
+			new Texture2DStreamLoader(this, parent, fileName, 0, 0, false, MultiSampleTypes.None, SurfaceFormats.RGBAx8, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false);
 		}
 
 		public Texture2D(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat)
@@ -38,10 +86,15 @@ namespace Reign.Video.D3D11
 		public Texture2D(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, SurfaceFormats surfaceFormat, BufferUsages usage)
 		: base(parent)
 		{
-			init(parent, fileName, width, height, generateMipmaps, MultiSampleTypes.None, surfaceFormat, RenderTargetUsage.PlatformDefault, usage, false);
+			new Texture2DStreamLoader(this, parent, fileName, width, height, generateMipmaps, MultiSampleTypes.None, surfaceFormat, RenderTargetUsage.PlatformDefault, usage, false);
 		}
 
-		protected virtual void init(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
+		internal void load(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
+		{
+			init(parent, image, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, isRenderTarget);
+		}
+
+		protected virtual void init(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
 		{
 			IntPtr[] mipmaps = null;
 			int[] mipmapSizes = null, mipmapPitches = null;
@@ -50,9 +103,8 @@ namespace Reign.Video.D3D11
 				video = parent.FindParentOrSelfWithException<Video>();
 
 				// load image data
-				if (!string.IsNullOrEmpty(fileName))
+				if (image != null)
 				{
-					var image = Image.Load(fileName, false, generateMipmaps);
 					mipmaps = new IntPtr[image.Mipmaps.Length];
 					mipmapSizes = new int[image.Mipmaps.Length];
 					mipmapPitches = new int[image.Mipmaps.Length];
@@ -62,11 +114,12 @@ namespace Reign.Video.D3D11
 						IntPtr mipmapPtr = Marshal.AllocHGlobal(imageMipmap.Data.Length);
 						Marshal.Copy(imageMipmap.Data, 0, mipmapPtr, imageMipmap.Data.Length);
 						mipmapSizes[i] = imageMipmap.Data.Length;
-						mipmapPitches[i] = imageMipmap.Size.Width * 4;
+						mipmapPitches[i] = imageMipmap.Pitch;//(imageMipmap.Size.Width / 2) * 4;
 						mipmaps[i] = mipmapPtr;
 					}
 
 					Size = image.Size;
+					surfaceFormat = image.SurfaceFormat;
 				}
 				else
 				{
@@ -112,6 +165,8 @@ namespace Reign.Video.D3D11
 					}
 				}
 			}
+
+			Loaded = true;
 		}
 
 		public override void Dispose()

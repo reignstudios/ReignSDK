@@ -198,16 +198,12 @@ namespace Reign.Video
 
 		public uint FormatD3D {get; private set;}
 		public uint FormatGL {get; private set;}
-		public bool IsCompressed {get; private set;}
 		#endregion
 
 		#region Constructors
 		public ImageDDS(string fileName, bool flip)
 		{
-			using (var stream = Streams.OpenFile(fileName))
-			{
-				init(stream, flip);
-			}
+			new ImageStreamLoader(this, fileName, flip);
 		}
 
 		public ImageDDS(Stream stream, bool flip)
@@ -215,7 +211,7 @@ namespace Reign.Video
 			init(stream, flip);
 		}
 
-		private void init(Stream stream, bool flip)
+		protected override void init(Stream stream, bool flip)
 		{
 			// Load Desc
 			DDSURFACEDESC2 desc = new DDSURFACEDESC2();
@@ -298,12 +294,12 @@ namespace Reign.Video
 			bool isCubemap = ((desc.ddsCaps.dwCaps & DDSCAPS_COMPLEX) != 0) && ((desc.ddsCaps.dwCaps2 & DDSCAPS2_CUBEMAP) != 0);
 			bool isVolumeTexture = ((desc.ddsCaps.dwCaps2 & DDSCAPS2_VOLUME) != 0);
 			bool hasAlphaChannel = ((desc.Union4.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS) != 0);
-			IsCompressed = ((desc.Union4.ddpfPixelFormat.dwFlags & DDPF_FOURCC) != 0);
+			Compressed = ((desc.Union4.ddpfPixelFormat.dwFlags & DDPF_FOURCC) != 0);
 
 			// Get pixel format
 			Size = new Size2((int)desc.dwWidth, (int)desc.dwHeight);
-			int blockSize = 0;
-			if (IsCompressed)
+			int blockSize = 0, blockDev = 1;
+			if (Compressed)
 			{
 				FormatD3D = desc.Union4.ddpfPixelFormat.dwFourCC;
 				switch (desc.Union4.ddpfPixelFormat.dwFourCC)
@@ -311,21 +307,26 @@ namespace Reign.Video
 					case FOURCC_DXT1:
 						FormatGL = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
 						blockSize = 8;
+						blockDev = 2;
+						SurfaceFormat = SurfaceFormats.DXT1;
 						break;
 
 					case FOURCC_DXT3:
 						FormatGL = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
 						blockSize = 16;
+						SurfaceFormat = SurfaceFormats.DXT3;
 						break;
 
 					case FOURCC_DXT5:
 						FormatGL = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
 						blockSize = 16;
+						SurfaceFormat = SurfaceFormats.DXT5;
 						break;
 
 					case FOURCC_ATC_RGB:
 						FormatGL = ATC_RGB_AMD;
 						blockSize = 8;
+						blockDev = 2;
 						break;
 
 					case FOURCC_ATC_RGBA_EXPLICIT:
@@ -363,10 +364,12 @@ namespace Reign.Video
 				{
 					data = flipCompressedData(data, size.Width, size.Height, blockSize);
 				}
-				Mipmaps[i] = new Mipmap(data, size.Width, size.Height);
+				Mipmaps[i] = new Mipmap(data, size.Width, size.Height, blockDev, 4);
 
 				size /= 2;
 			}
+
+			Loaded = true;
 		}
 
 		private byte[] flipCompressedData(byte[] data, int width, int height, int blockSize)

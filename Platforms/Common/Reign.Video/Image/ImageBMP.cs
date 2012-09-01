@@ -15,14 +15,14 @@ namespace Reign.Video
 	#endif
 	{
 		#region Construtors
-		public ImageBMP(string fileName, bool flip, bool generateMipmaps)
-		: base(fileName, flip, generateMipmaps)
+		public ImageBMP(string fileName, bool flip)
+		: base(fileName, flip)
 		{
 			
 		}
 
-		public ImageBMP(Stream stream, bool flip, bool generateMipmaps)
-		: base(stream, flip, generateMipmaps)
+		public ImageBMP(Stream stream, bool flip)
+		: base(stream, flip)
 		{
 			
 		}

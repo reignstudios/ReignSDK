@@ -18,12 +18,14 @@ namespace Reign.Video.API
 		{
 			try
 			{
-				#if WINDOWS
+				#if WINDOWS || METRO
 				if (apiType == VideoTypes.D3D11)
 				{
 					return (BufferLayoutDescI)OS.CreateInstance(Video.D3D11, Video.D3D11, "BufferLayoutDesc", args);
 				}
+				#endif
 
+				#if WINDOWS
 				if (apiType == VideoTypes.D3D9)
 				{
 					return (BufferLayoutDescI)OS.CreateInstance(Video.D3D9, Video.D3D9, "BufferLayoutDesc", args);
@@ -63,12 +65,14 @@ namespace Reign.Video.API
 		{
 			try
 			{
-				#if WINDOWS
+				#if WINDOWS || METRO
 				if (apiType == VideoTypes.D3D11)
 				{
 					return (BufferLayoutI)OS.CreateInstance(Video.D3D11, Video.D3D11, "BufferLayout", args);
 				}
+				#endif
 
+				#if WINDOWS
 				if (apiType == VideoTypes.D3D9)
 				{
 					return (BufferLayoutI)OS.CreateInstance(Video.D3D9, Video.D3D9, "BufferLayout", args);

@@ -1,0 +1,8 @@
+vsVar Camera 0
+vsVar Location 64
+vsVar Size 80
+vsVar LocationUV 96
+vsVar SizeUV 112
+vsVar TexelOffset 128
+psVar Color 0
+psRes DiffuseTexture 0

@@ -30,6 +30,7 @@ namespace Reign
 		#pragma region Constructors
 		public: static Shader^ New(DisposableI^ parent, string^ fileName, ShaderVersions shaderVersion);
 		public: Shader(DisposableI^ parent, string^ fileName, ShaderVersions shaderVersion);
+		internal: void load(string^ fileName, ShaderVersions shaderVersion);
 		#pragma endregion
 
 		#pragma region Methods

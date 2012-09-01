@@ -1,6 +1,7 @@
 ﻿using Reign_Video_D3D11_Component;
 using System;
 using System.Collections.Generic;
+using Reign.Core;
 
 namespace Reign.Video.D3D11
 {
@@ -45,6 +46,7 @@ namespace Reign.Video.D3D11
 						case (BufferLayoutElementUsages.Normal): semanticNames[i] = "NORMAL"; break;
 						case (BufferLayoutElementUsages.Index): semanticNames[i] = "BLENDINDICES"; break;
 						case (BufferLayoutElementUsages.IndexClassic): semanticNames[i] = "BLENDINDICES"; break;
+						default: Debug.ThrowError("BufferLayoutDesc", "Unsuported ElementUsage"); break;
 					}
 
 					switch (element.Type)
@@ -54,6 +56,7 @@ namespace Reign.Video.D3D11
 						case (BufferLayoutElementTypes.Vector3): formats[i] = REIGN_DXGI_FORMAT.R32G32B32_FLOAT; break;
 						case (BufferLayoutElementTypes.Vector4): formats[i] = REIGN_DXGI_FORMAT.R32G32B32A32_FLOAT; break;
 						case (BufferLayoutElementTypes.RGBAx8): formats[i] = REIGN_DXGI_FORMAT.R8G8B8A8_UNORM; break;
+						default: Debug.ThrowError("BufferLayoutDesc", "Unsuported ElementType"); break;
 					}
 
 					samanticIndicies[i] = (uint)element.UsageIndex;

@@ -36,8 +36,10 @@ namespace Reign
 					case (BufferLayoutElementUsages::Position): desc[i].Usage = D3DDECLUSAGE_POSITION; break;
 					case (BufferLayoutElementUsages::Color): desc[i].Usage = D3DDECLUSAGE_COLOR; break;
 					case (BufferLayoutElementUsages::UV): desc[i].Usage = D3DDECLUSAGE_TEXCOORD; break;
+					case (BufferLayoutElementUsages::Normal): desc[i].Usage = D3DDECLUSAGE_NORMAL; break;
 					case (BufferLayoutElementUsages::Index): desc[i].Usage = D3DDECLUSAGE_BLENDINDICES; break;
 					case (BufferLayoutElementUsages::IndexClassic): desc[i].Usage = D3DDECLUSAGE_BLENDINDICES; break;
+					default: Debug::ThrowError("BufferLayoutDesc", "Unsuported ElementUsage"); break;
 				}
 
 				switch (element.Type)
@@ -47,6 +49,7 @@ namespace Reign
 					case (BufferLayoutElementTypes::Vector3): desc[i].Type = D3DDECLTYPE_FLOAT3; break;
 					case (BufferLayoutElementTypes::Vector4): desc[i].Type = D3DDECLTYPE_FLOAT4; break;
 					case (BufferLayoutElementTypes::RGBAx8): desc[i].Type = D3DDECLTYPE_D3DCOLOR; break;
+					default: Debug::ThrowError("BufferLayoutDesc", "Unsuported ElementType"); break;
 				}
 
 				desc[i].UsageIndex = element.UsageIndex;

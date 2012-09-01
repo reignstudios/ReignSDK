@@ -13,6 +13,10 @@ namespace Reign.Video
 
 	public enum SurfaceFormats
 	{
+		Unknown,
+		DXT1,
+		DXT3,
+		DXT5,
 		RGBAx8,
 		RGBx10_Ax2,
 		RGBAx16f,
@@ -40,6 +44,7 @@ namespace Reign.Video
 
 	public interface Texture2DI : TextureI
 	{
+		bool Loaded {get;}
 		Size2 Size {get;}
 		Vector2 SizeF {get;}
 		Vector2 TexelOffset {get;}
@@ -48,6 +53,7 @@ namespace Reign.Video
 
 	public interface Texture3DI : TextureI
 	{
+		bool Loaded {get;}
 		Size3 Size {get;}
 		Vector3 SizeF {get;}
 		Vector3 TexelOffset {get;}

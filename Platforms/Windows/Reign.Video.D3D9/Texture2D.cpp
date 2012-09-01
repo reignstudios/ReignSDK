@@ -9,7 +9,58 @@ namespace Reign
 {namespace Video
 {namespace D3D9
 {
+	ref class Texture2DStreamLoader : StreamLoaderI
+	{
+		private: Texture2D^ texture;
+		private: DisposableI^ parent;
+		private: string^ fileName;
+		private: int width, height;
+		private: bool generateMipmaps;
+		private: MultiSampleTypes multiSampleType;
+		private: SurfaceFormats surfaceFormat;
+		private: RenderTargetUsage renderTargetUsage;
+		private: BufferUsages usage;
+		private: bool isRenderTarget, lockable;
+
+		private: Image^ image;
+
+		public: Texture2DStreamLoader(Texture2D^ texture, DisposableI^ parent, string^ fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, bool lockable)
+		{
+			image == nullptr;
+			this->texture = texture;
+			this->parent = parent;
+			this->fileName = fileName;
+			this->width = width;
+			this->height = height;
+			this->generateMipmaps = generateMipmaps;
+			this->multiSampleType = multiSampleType;
+			this->surfaceFormat = surfaceFormat;
+			this->renderTargetUsage = renderTargetUsage;
+			this->usage = usage;
+			this->isRenderTarget = isRenderTarget;
+			this->lockable = lockable;
+		}
+
+		public: virtual bool Load() override
+		{
+			if (image == nullptr)
+			{
+				image = Image::Load(fileName, false);
+				return false;
+			}
+			else if (!image->Loaded)
+			{
+				return false;
+			}
+
+			texture->load(parent, image, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, isRenderTarget, lockable);
+			return true;
+		}
+	};
+
 	#pragma region Properties
+	bool Texture2D::Loaded::get() {return loaded;}
+
 	IDirect3DSurface9* Texture2D::Surface::get() {return surface;}
 	IDirect3DTexture9* Texture2D::Texture::get() {return texture;}
 
@@ -35,88 +86,109 @@ namespace Reign
 	Texture2D::Texture2D(DisposableI^ parent, string^ fileName)
 	: Disposable(parent)
 	{
-		init(parent, fileName, 0, 0, false, MultiSampleTypes::None, SurfaceFormats::RGBAx8, RenderTargetUsage::PlatformDefault, false, false);
+		gcnew Texture2DStreamLoader(this, parent, fileName, 0, 0, false, MultiSampleTypes::None, SurfaceFormats::RGBAx8, RenderTargetUsage::PlatformDefault, BufferUsages::Default, false, false);
 	}
 
 	Texture2D::Texture2D(DisposableI^ parent, string^ fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, bool lockable)
 	: Disposable(parent)
 	{
-		init(parent, fileName, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage::PlatformDefault, false, lockable);
+		gcnew Texture2DStreamLoader(this, parent, fileName, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage::PlatformDefault, BufferUsages::Default, false, lockable);
 	}
 
 	Texture2D::Texture2D(DisposableI^ parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, bool lockable)
 	: Disposable(parent)
 	{
-		init(parent, nullptr, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage::PlatformDefault, false, lockable);
+		init(parent, nullptr, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage::PlatformDefault, BufferUsages::Default, false, lockable);
 	}
 
 	Texture2D::Texture2D(DisposableI^ parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat)
 	: Disposable(parent)
 	{
-		init(parent, nullptr, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage::PlatformDefault, false, false);
+		init(parent, nullptr, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage::PlatformDefault, BufferUsages::Default, false, false);
 	}
 
 	Texture2D::Texture2D(DisposableI^ parent, string^ fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool lockable)
 	: Disposable(parent)
 	{
-		init(parent, fileName, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, false, lockable);
+		gcnew Texture2DStreamLoader(this, parent, fileName, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, BufferUsages::Default, false, lockable);
 	}
 
 	Texture2D::Texture2D(DisposableI^ parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool lockable)
 	: Disposable(parent)
 	{
-		init(parent, nullptr, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, false, lockable);
+		init(parent, nullptr, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, BufferUsages::Default, false, lockable);
 	}
 
 	Texture2D::Texture2D(DisposableI^ parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage)
 	: Disposable(parent)
 	{
-		init(parent, nullptr, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, false, false);
+		init(parent, nullptr, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, BufferUsages::Default, false, false);
 	}
 
-	void Texture2D::init(DisposableI^ parent, string^ fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool isRenderTarget, bool lockable)
+	void Texture2D::load(DisposableI^ parent, Image^ image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, bool lockable)
+	{
+		init(parent, image, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, isRenderTarget, lockable);
+	}
+
+	void Texture2D::init(DisposableI^ parent, Image^ image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, bool lockable)
 	{
 		null();
 
-		fileName_LostDevice = fileName;
+		image_LostDevice = image;
 		width_LostDevice = width;
 		height_LostDevice = height;
 		generateMipmaps_LostDevice = generateMipmaps;
 		multiSampleType_LostDevice = multiSampleType;
 		surfaceFormat_LostDevice = surfaceFormat;
 		renderTargetUsage_LostDevice = renderTargetUsage;
+		usage_LostDevice = usage;
 		isRenderTarget_LostDevice = isRenderTarget;
 		lockable_LostDevice = lockable;
 
-		IntPtr fileNamePtr = Marshal::StringToHGlobalUni(fileName);
 		try
 		{
 			video = parent->FindParentOrSelfWithException<Video^>();
 
-			pool = video->IsExDevice ? D3DPOOL_DEFAULT : D3DPOOL_MANAGED;
-			DWORD usage = 0;
-			//D3DUSAGE_DYNAMIC - Need for updating textures:: Cannot be used with D3DPOOL_MANAGED
+			pool = D3DPOOL_DEFAULT;
+			DWORD usage = 0;//D3DUSAGE_DYNAMIC - Need for locking textures:: Cannot be used with D3DPOOL_MANAGED
 			if (isRenderTarget)
 			{
 				pool = D3DPOOL_DEFAULT;
 				usage = D3DUSAGE_RENDERTARGET;
 			}
 			
-			if (fileName)
+			if (image)
 			{
-				uint mipLvls = generateMipmaps ? D3DX_DEFAULT : D3DX_FROM_FILE;
 				IDirect3DTexture9* textureTEMP = 0;
-				if (FAILED(D3DXCreateTextureFromFileEx(video->Device, (wchar_t*)fileNamePtr.ToPointer(), width, height, mipLvls, usage, Video::surfaceFormat(surfaceFormat), pool, D3DX_FILTER_TRIANGLE, D3DX_FILTER_TRIANGLE, 0, 0, 0, &textureTEMP)))
+				if (FAILED(video->Device->CreateTexture(image->Size.Width, image->Size.Height, image->Mipmaps->Length, usage, Video::surfaceFormat(image->SurfaceFormat), pool, &textureTEMP, 0)))
 				{
-					Debug::ThrowError(L"Texture2D", L"Could not load texture: " + fileName);
+					Debug::ThrowError(L"Texture2D", L"Failed to create texture");
 				}
 				texture = textureTEMP;
+				size = image->Size;
 
-				// Get image information
-				D3DXIMAGE_INFO imageInfo;
-				ZeroMemory(&imageInfo, sizeof(D3DXIMAGE_INFO));
-				D3DXGetImageInfoFromFile((wchar_t*)fileNamePtr.ToPointer(), &imageInfo);
-				size = Size2(imageInfo.Width, imageInfo.Height);
+				IDirect3DTexture9* systemTexture = 0;
+				if (FAILED(video->Device->CreateTexture(image->Size.Width, image->Size.Height, image->Mipmaps->Length, usage, Video::surfaceFormat(image->SurfaceFormat), D3DPOOL_SYSTEMMEM, &systemTexture, 0)))
+				{
+					Debug::ThrowError(L"Texture2D", L"Failed to create system texture");
+				}
+
+				for (int i = 0; i != image->Mipmaps->Length; ++i)
+				{
+					Image::Mipmap^ mipmap = image->Mipmaps[i];
+
+					D3DLOCKED_RECT rect;
+					systemTexture->LockRect(i, &rect, NULL, D3DLOCK_DISCARD);
+					auto mipmapData = image->Compressed ? mipmap->Data : mipmap->SwapRBColorChannels();
+					pin_ptr<byte> srcData = &mipmapData[0];
+					memcpy(rect.pBits, srcData, mipmap->Data->Length);
+					systemTexture->UnlockRect(i);
+				}
+				video->Device->UpdateTexture(systemTexture, textureTEMP);
+				systemTexture->Release();
+
+				// release image if not needed
+				if (video->IsExDevice || pool == D3DPOOL_MANAGED) image_LostDevice = nullptr;
 			}
 			else
 			{
@@ -147,10 +219,8 @@ namespace Reign
 			delete this;
 			throw ex;
 		}
-		finally
-		{
-			Marshal::FreeHGlobal(fileNamePtr);
-		}
+
+		loaded = true;
 	}
 
 	Texture2D::~Texture2D()
@@ -174,6 +244,7 @@ namespace Reign
 
 	void Texture2D::null()
 	{
+		loaded = false;
 		surface = 0;
 		texture = 0;
 	}
@@ -185,7 +256,7 @@ namespace Reign
 
 	void Texture2D::deviceReset()
 	{
-		if (!video->IsExDevice &&( pool != D3DPOOL_MANAGED || isRenderTarget_LostDevice)) init(video, fileName_LostDevice, width_LostDevice, height_LostDevice, generateMipmaps_LostDevice, multiSampleType_LostDevice, surfaceFormat_LostDevice, renderTargetUsage_LostDevice, isRenderTarget_LostDevice, lockable_LostDevice);
+		if (!video->IsExDevice && (pool != D3DPOOL_MANAGED || isRenderTarget_LostDevice)) init(video, image_LostDevice, width_LostDevice, height_LostDevice, generateMipmaps_LostDevice, multiSampleType_LostDevice, surfaceFormat_LostDevice, renderTargetUsage_LostDevice, usage_LostDevice, isRenderTarget_LostDevice, lockable_LostDevice);
 	}
 	#pragma endregion
 

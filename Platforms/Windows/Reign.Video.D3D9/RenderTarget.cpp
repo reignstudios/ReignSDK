@@ -22,14 +22,14 @@ namespace Reign
 	: Texture2D(parent, width, height, false, multiSampleType, surfaceFormat)
 	{}
 
-	void RenderTarget::init(DisposableI^ parent, string^ fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool isRenderTarget, bool lockable)
+	void RenderTarget::init(DisposableI^ parent, Image^ image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, bool lockable)
 	{
 		null();
-		Texture2D::init(parent, fileName, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, true, lockable);
+		Texture2D::init(parent, image, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, usage, true, lockable);
 
 		try
 		{
-			if (!fileName)
+			if (image == nullptr)
 			{
 				if (multiSampleType != MultiSampleTypes::None)
 				{

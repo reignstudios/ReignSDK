@@ -13,6 +13,7 @@ namespace Reign.Video.XNA
 	{
 		#region Properties
 		public GraphicsDevice Device {get; private set;}
+		public string FileTag {get; private set;}
 		#endregion
 
 		#region Constructors
@@ -22,7 +23,7 @@ namespace Reign.Video.XNA
 			Device = application.GraphicsDevice;
 			defualtStates();
 
-			ShaderI.FileTag = "XNA_";
+			FileTag = "XNA_";
 		}
 
 		public override void Dispose()

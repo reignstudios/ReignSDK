@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.IO;
 using System;
+using System.Collections.Generic;
 
 namespace Reign.Video
 {
@@ -70,6 +71,10 @@ namespace Reign.Video
 
 	public abstract class ShaderI : Disposable
 	{
+		#region Properties
+		public bool Loaded {get; protected set;}
+		#endregion
+
 		#region Constructors
 		public ShaderI(DisposableI parent)
 		: base(parent)
@@ -79,12 +84,13 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
+		#if WINDOWS
 		protected string[] getShaders(string fileName)
 		{
 			string code = null;
 			using (var file = Streams.OpenFile(fileName))
+			using (var reader = new StreamReader(file))
 			{
-				var reader = new StreamReader(file);
 				code = reader.ReadToEnd();
 			}
 
@@ -99,6 +105,24 @@ namespace Reign.Video
 
 			return new string[] {globalCode + vertexCode, globalCode + pixelCode};
 		}
+		#else
+		protected async System.Threading.Tasks.Task<byte[][]> getShaders(string fileName)
+		{
+			var code = new byte[2][];
+			using (var file = await Streams.OpenFile(fileName))
+			using (var reader = new BinaryReader(file))
+			{
+				int vsSize = reader.ReadInt32();
+				int psSize = reader.ReadInt32();
+				code[0] = new byte[vsSize];
+				code[1] = new byte[psSize];
+				file.Read(code[0], 0, vsSize);
+				file.Read(code[1], 0, psSize);
+			}
+
+			return code;
+		}
+		#endif
 
 		public abstract void Apply();
 		public abstract ShaderVariableI Variable(string name);

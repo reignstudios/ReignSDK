@@ -4,9 +4,57 @@ using System.Collections.Generic;
 
 namespace Reign.Video.OpenGL
 {
+	class Texture2DStreamLoader : StreamLoaderI
+	{
+		private Texture2D texture;
+		private DisposableI parent;
+		private string fileName;
+		private int width, height;
+		private bool generateMipmaps;
+		private MultiSampleTypes multiSampleType;
+		private SurfaceFormats surfaceFormat;
+		private RenderTargetUsage renderTargetUsage;
+		private BufferUsages usage;
+		private bool isRenderTarget;
+
+		private Image image;
+
+		public Texture2DStreamLoader(Texture2D texture, DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
+		{
+			this.texture = texture;
+			this.parent = parent;
+			this.fileName = fileName;
+			this.width = width;
+			this.height = height;
+			this.generateMipmaps = generateMipmaps;
+			this.multiSampleType = multiSampleType;
+			this.surfaceFormat = surfaceFormat;
+			this.renderTargetUsage = renderTargetUsage;
+			this.usage = usage;
+			this.isRenderTarget = isRenderTarget;
+		}
+
+		public override bool Load()
+		{
+			if (image == null)
+			{
+				image = Image.Load(fileName, false);
+				return false;
+			}
+			else if (!image.Loaded)
+			{
+				return false;
+			}
+
+			texture.load(parent, image, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, isRenderTarget);
+			return true;
+		}
+	}
+
 	public class Texture2D : Disposable, Texture2DI
 	{
 		#region Properties
+		public bool Loaded {get; private set;}
 		protected Video video;
 		public uint Texture {get; private set;}
 		public Size2 Size {get; private set;}
@@ -32,34 +80,39 @@ namespace Reign.Video.OpenGL
 		public Texture2D(DisposableI parent, string fileName)
 		: base(parent)
 		{
-			init(parent, fileName, 0, 0, false, MultiSampleTypes.None, SurfaceFormats.RGBAx8, RenderTargetUsage.PlatformDefault, false);
+			new Texture2DStreamLoader(this, parent, fileName, 0, 0, false, MultiSampleTypes.None, SurfaceFormats.RGBAx8, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false);
 		}
 
 		public Texture2D(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat)
 		: base(parent)
 		{
-			init(parent, fileName, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage.PlatformDefault, false);
+			new Texture2DStreamLoader(this, parent, fileName, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false);
 		}
 
 		public Texture2D(DisposableI parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat)
 		: base(parent)
 		{
-			init(parent, null, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage.PlatformDefault, false);
+			init(parent, null, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false);
 		}
 
 		protected Texture2D(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage)
 		: base(parent)
 		{
-			init(parent, fileName, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, false);
+			new Texture2DStreamLoader(this, parent, fileName, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, BufferUsages.Default, false);
 		}
 
 		protected Texture2D(DisposableI parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage)
 		: base(parent)
 		{
-			init(parent, null, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, false);
+			init(parent, null, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, BufferUsages.Default, false);
 		}
 
-		protected unsafe virtual void init(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool isRenderTarget)
+		internal void load(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
+		{
+			init(parent, image, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, isRenderTarget);
+		}
+
+		protected unsafe virtual void init(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
 		{
 			try
 			{
@@ -77,9 +130,8 @@ namespace Reign.Video.OpenGL
 				GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.LINEAR);
 				
 				hasMipmaps = false;
-				if (fileName != null)
+				if (image != null)
 				{
-					var image = Image.Load(fileName, true, false);
 					var imageType = image.GetType();
 
 					#if NaCl
@@ -114,14 +166,14 @@ namespace Reign.Video.OpenGL
 						if (imageType == typeof(ImageDDS))
 						{
 							var imageDDS = (ImageDDS)image;
-							compressed = imageDDS.IsCompressed;
+							compressed = imageDDS.Compressed;
 							format = imageDDS.FormatGL;
 							errorType = "DDS";
 						}
 						else if (imageType == typeof(ImagePVR))
 						{
 							var imagePVR = (ImagePVR)image;
-							compressed = imagePVR.IsCompressed;
+							compressed = imagePVR.Compressed;
 							format = imagePVR.FormatGL;
 							errorType = "PVR";
 						}
@@ -163,8 +215,7 @@ namespace Reign.Video.OpenGL
 				string errorName;
 				if (Video.checkForError(out error, out errorName))
 				{
-					fileName = "RenderTarget";
-					Debug.ThrowError("Texture2D", string.Format("{0} {1}: Failed to load/create texture: {2}", error, errorName, fileName));
+					Debug.ThrowError("Texture2D", string.Format("{0} {1}: Failed to load/create texture", error, errorName));
 				}
 			}
 			catch (Exception e)
@@ -172,6 +223,8 @@ namespace Reign.Video.OpenGL
 				Dispose();
 				throw e;
 			}
+
+			Loaded = true;
 		}
 
 		public unsafe override void Dispose()

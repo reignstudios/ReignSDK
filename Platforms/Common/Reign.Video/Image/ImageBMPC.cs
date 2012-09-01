@@ -16,10 +16,7 @@ namespace Reign.Video
 		#region Construtors
 		public ImageBMPC(string fileName, bool flip)
 		{
-			using (var stream = Streams.OpenFile(fileName))
-			{
-				init(stream, flip);
-			}
+			new ImageStreamLoader(this, fileName, flip);
 		}
 
 		public ImageBMPC(Stream stream, bool flip)
@@ -27,8 +24,10 @@ namespace Reign.Video
 			init(stream, flip);
 		}
 
-		private void init(Stream stream, bool flip)
+		protected override void init(Stream stream, bool flip)
 		{
+			SurfaceFormat = SurfaceFormats.RGBAx8;
+
 			using (var reader = new BinaryReader(stream))
 			{
 				// File Type
@@ -83,12 +82,14 @@ namespace Reign.Video
 					{
 						decompressedStream.CopyTo(dataStream);
 						Mipmaps = new Mipmap[1];
-						Mipmaps[0] = new Mipmap(dataStream.ToArray(), Size.Width, Size.Height);
+						Mipmaps[0] = new Mipmap(dataStream.ToArray(), Size.Width, Size.Height, 1, 4);
 						if (flip) Mipmaps[0].FlipVertical();
 					}
 					#endif
 				}
 			}
+
+			Loaded = true;
 		}
 		#endregion
 

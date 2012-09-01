@@ -2,13 +2,36 @@ using Reign.Core;
 
 namespace Reign.Video.OpenGL
 {
+	class FonttreamLoader : StreamLoaderI
+	{
+		private Font font;
+		private ShaderI shader;
+		private Texture2DI texture;
+		private string metricsFileName;
+
+		public FonttreamLoader(Font font, ShaderI shader, Texture2DI texture, string metricsFileName)
+		{
+			this.font = font;
+			this.shader = shader;
+			this.texture = texture;
+			this.metricsFileName = metricsFileName;
+		}
+
+		public override bool Load()
+		{
+			if (!shader.Loaded || !texture.Loaded) return false;
+			font.load(shader, texture, metricsFileName);
+			return true;
+		}
+	}
+
 	public class Font : FontI
 	{
 		#region Constructors
 		private ShaderI shader;
 		private ShaderVariableI shaderCamera, shaderLocation, shaderSize, shaderLocationUV, shaderSizeUV, texelOffset, shaderColor;
 		private ShaderResourceI shaderTexture;
-		private Texture2DI fontTexture;
+		private Texture2DI texture;
 		private BufferLayoutDesc layoutDesc;
 		private BufferLayout layout;
 		private IndexBuffer indexBuffer;
@@ -17,21 +40,28 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public Font(DisposableI parent, ShaderI shader, Texture2DI fontTexture)
+		public Font(DisposableI parent, ShaderI shader, Texture2DI texture)
 		: base(parent)
 		{
-			init(shader, fontTexture);
+			new FonttreamLoader(this, shader, texture, null);
 		}
 
-		public Font(DisposableI parent, ShaderI shader, Texture2DI fontTexture, string metricsFileName)
+		public Font(DisposableI parent, ShaderI shader, Texture2DI texture, string metricsFileName)
 		: base(parent, metricsFileName)
 		{
-			init(shader, fontTexture);
+			new FonttreamLoader(this, shader, texture, metricsFileName);
 		}
 
-		private void init(ShaderI shader, Texture2DI fontTexture)
+		internal void load(ShaderI shader, Texture2DI texture, string metricsFileName)
 		{
-			this.fontTexture = fontTexture;
+			init(shader, texture, metricsFileName);
+		}
+
+		protected override void init(ShaderI shader, Texture2DI texture, string metricsFileName)
+		{
+			if (metricsFileName != null) base.init(shader, texture, metricsFileName);
+
+			this.texture = texture;
 			this.shader = shader;
 			shaderCamera = shader.Variable("Camera");
 			shaderLocation = shader.Variable("Location");
@@ -47,6 +77,7 @@ namespace Reign.Video.OpenGL
 
 			indexBuffer = new IndexBuffer(this, BufferUsages.Default, Indices);
 			vertexBuffer = new VertexBuffer(this, layoutDesc, BufferUsages.Default, VertexBufferTopologys.Triangle, Vertices);
+			Loaded = true;
 		}
 		#endregion
 
@@ -55,8 +86,8 @@ namespace Reign.Video.OpenGL
 		{
 			vertexBuffer.Enable(indexBuffer);
 			shaderCamera.Set(camera.TransformMatrix);
-			texelOffset.Set(fontTexture.TexelOffset);
-			shaderTexture.Set(fontTexture);
+			texelOffset.Set(texture.TexelOffset);
+			shaderTexture.Set(texture);
 			layout.Enable();
 			instancing = false;
 		}
@@ -69,7 +100,7 @@ namespace Reign.Video.OpenGL
 			}
 			else
 			{
-				draw(text, fontTexture.SizeF, Location, color, size, centeredX, centeredY);
+				draw(text, texture.SizeF, Location, color, size, centeredX, centeredY);
 			}
 		}
 

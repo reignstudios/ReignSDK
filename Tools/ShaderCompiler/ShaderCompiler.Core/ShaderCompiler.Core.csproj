@@ -40,6 +40,9 @@
     <Reference Include="Reign.Video.API">
       <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Video.API.dll</HintPath>
     </Reference>
+    <Reference Include="Reign_Video_D3D11_Component">
+      <HintPath>..\..\..\Platforms\Windows\Lib\Reign_Video_D3D11_Component.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />

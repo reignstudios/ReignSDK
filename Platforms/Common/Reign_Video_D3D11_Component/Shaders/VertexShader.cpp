@@ -12,9 +12,13 @@ namespace Reign_Video_D3D11_Component
 		variableBuffer = shaderModel->variableBuffer;
 		resourcesKnownCount = shaderModel->resourcesKnownCount;
 
-		ID3DBlob* codeBlob = shaderModel->code;
 		ID3D11VertexShader* shaderTEMP;
+		#if WINDOWS
+		ID3DBlob* codeBlob = shaderModel->code;
 		if (FAILED(video->device->CreateVertexShader(codeBlob->GetBufferPointer(), codeBlob->GetBufferSize(), NULL, &shaderTEMP)))
+		#else
+		if (FAILED(video->device->CreateVertexShader(shaderModel->code, shaderModel->codeSize, NULL, &shaderTEMP)))
+		#endif
 		{
 			return VertexShaderErrors::VertexShader;
 		}

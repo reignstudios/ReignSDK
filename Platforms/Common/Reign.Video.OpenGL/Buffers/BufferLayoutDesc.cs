@@ -9,8 +9,9 @@ namespace Reign.Video.OpenGL
 		Position = 0,
 		Color = 1,
 		UV = 2,
-		Index = 3,
-		IndexClassic = 4
+		Normal = 3,
+		Index = 4,
+		IndexClassic = 5
 	}
 
 	enum GLBufferElementFormats
@@ -76,6 +77,11 @@ namespace Reign.Video.OpenGL
 						Desc[i].Name = "Texcoord" + usageIndex;
 						break;
 
+					case (BufferLayoutElementUsages.Normal):
+						Desc[i].Usage = GLBufferElementUsages.Normal;
+						Desc[i].Name = "Normal" + usageIndex;
+						break;
+
 					case (BufferLayoutElementUsages.Index):
 						Desc[i].Usage = GLBufferElementUsages.Index;
 						Desc[i].Name = "BlendIndex" + usageIndex;
@@ -85,6 +91,8 @@ namespace Reign.Video.OpenGL
 						Desc[i].Usage = GLBufferElementUsages.IndexClassic;
 						Desc[i].Name = "BlendIndex" + usageIndex;
 						break;
+
+					default: Debug.ThrowError("BufferLayoutDesc", "Unsuported ElementUsage"); break;
 			    }
 
 			    switch (element.Type)
@@ -94,6 +102,7 @@ namespace Reign.Video.OpenGL
 			        case (BufferLayoutElementTypes.Vector3): Desc[i].Format = GLBufferElementFormats.Vector3f; break;
 			        case (BufferLayoutElementTypes.Vector4): Desc[i].Format = GLBufferElementFormats.Vector4f; break;
 			        case (BufferLayoutElementTypes.RGBAx8): Desc[i].Format = GLBufferElementFormats.Color; break;
+					default: Debug.ThrowError("BufferLayoutDesc", "Unsuported ElementType"); break;
 			    }
 
 			    Desc[i].UsageIndex = element.UsageIndex;

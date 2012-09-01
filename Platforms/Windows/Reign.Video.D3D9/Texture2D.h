@@ -8,14 +8,17 @@ namespace Reign
 	public ref class Texture2D : Disposable, Texture2DI
 	{
 		#pragma region Properties
+		private: bool loaded;
+		public: property bool Loaded {virtual bool get();}
 		protected: Video^ video;
 
 		private: D3DPOOL pool;
-		private: string^ fileName_LostDevice;
+		private: Image^ image_LostDevice;
 		private: int width_LostDevice, height_LostDevice, generateMipmaps_LostDevice;
 		private: MultiSampleTypes multiSampleType_LostDevice;
 		private: SurfaceFormats surfaceFormat_LostDevice;
 		private: RenderTargetUsage renderTargetUsage_LostDevice;
+		private: BufferUsages usage_LostDevice;
 		private: bool isRenderTarget_LostDevice, lockable_LostDevice;
 
 		protected: IDirect3DSurface9* surface;
@@ -43,7 +46,8 @@ namespace Reign
 		protected: Texture2D(DisposableI^ parent, string^ fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool lockable);
 		protected: Texture2D(DisposableI^ parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool lockable);
 		protected: Texture2D(DisposableI^ parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage);
-		protected: virtual void init(DisposableI^ parent, string^ fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool isRenderTarget, bool lockable);
+		internal: void load(DisposableI^ parent, Image^ image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, bool lockable);
+		protected: virtual void init(DisposableI^ parent, Image^ image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, bool lockable);
 		public: ~Texture2D();
 		protected: virtual void dispose();
 		private: void null();

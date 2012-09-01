@@ -6,21 +6,51 @@ namespace Reign
 {namespace Video
 {namespace D3D9
 {
+	ref class FonttreamLoader : StreamLoaderI
+	{
+		private: Font^ font;
+		private: ShaderI^ shader;
+		private: Texture2DI^ texture;
+		private: string^ metricsFileName;
+
+		public: FonttreamLoader(Font^ font, ShaderI^ shader, Texture2DI^ texture, string^ metricsFileName)
+		{
+			this->font = font;
+			this->shader = shader;
+			this->texture = texture;
+			this->metricsFileName = metricsFileName;
+		}
+
+		public: virtual bool Load() override
+		{
+			if (!shader->Loaded || !texture->Loaded) return false;
+			font->load(shader, texture, metricsFileName);
+			return true;
+		}
+	};
+
 	#pragma region Constructors
-	Font::Font(DisposableI^ parent, ShaderI^ shader, Texture2DI^ fontTexture)
+	Font::Font(DisposableI^ parent, ShaderI^ shader, Texture2DI^ texture)
 	: FontI(parent)
 	{
-		init(shader, fontTexture);
+		gcnew FonttreamLoader(this, shader, texture, nullptr);
 	}
 
-	Font::Font(DisposableI^ parent, ShaderI^ shader, Texture2DI^ fontTexture, string^ metricsFileName)
+	Font::Font(DisposableI^ parent, ShaderI^ shader, Texture2DI^ texture, string^ metricsFileName)
 	: FontI(parent, metricsFileName)
 	{
-		init(shader, fontTexture);
+		gcnew FonttreamLoader(this, shader, texture, metricsFileName);
 	}
 
-	void Font::init(ShaderI^ shader, Texture2DI^ fontTexture)
+	void Font::load(ShaderI^ shader, Texture2DI^ texture, string^ metricsFileName)
 	{
+		init(shader, texture, metricsFileName);
+	}
+
+	void Font::init(ShaderI^ shader, Texture2DI^ texture, string^ metricsFileName)
+	{
+		if (metricsFileName != nullptr) FontI::init(shader, texture, metricsFileName);
+
 		this->fontTexture = fontTexture;
 		this->shader = shader;
 		shaderCamera = shader->Variable(L"Camera");
@@ -37,6 +67,7 @@ namespace Reign
 
 		indexBuffer = gcnew IndexBuffer(this, BufferUsages::Default, Indices);
 		vertexBuffer = gcnew VertexBuffer(this, layoutDesc, BufferUsages::Default, VertexBufferTopologys::Triangle, Vertices);
+		Loaded = true;
 	}
 	#pragma endregion
 

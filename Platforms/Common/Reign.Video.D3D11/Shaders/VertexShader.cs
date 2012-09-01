@@ -12,8 +12,13 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
+		#if WINDOWS
 		public VertexShader(Shader shader, string code, ShaderVersions shaderVersion)
 		: base(shader, code, ShaderTypes.VS, shaderVersion)
+		#else
+		public VertexShader(Shader shader, byte[] code)
+		: base(shader, code, ShaderTypes.VS)
+		#endif
 		{
 			try
 			{

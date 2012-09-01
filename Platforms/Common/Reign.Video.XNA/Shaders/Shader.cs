@@ -7,58 +7,18 @@ using System.IO;
 
 namespace Reign.Video.XNA
 {
-	#if WP7
-	public enum SimpleShaderTypes
-	{
-		Basic,
-		DualTexture,
-		AlphaTest
-	}
-	#endif
-
 	public class Shader : ShaderI
 	{
 		#region Properties
 		private Video video;
 		private Effect effect;
-		#if WP7
-		public SimpleShaderTypes Type {get; private set;}
-		#else
 		private EffectPass pass;
-		#endif
 		private List<ShaderVariable> variables;
 		private List<ShaderResource> resources;
 		private bool loadedFromContentManager;
 		#endregion
 
 		#region Constructors
-		#if WP7
-		public Shader(DisposableI parent, SimpleShaderTypes type, ShaderVersions shaderVersion)
-		: base(parent)
-		{
-			try
-			{
-				video = parent.FindParentOrSelfWithException<Video>();
-				Type = type;
-
-				switch (type)
-				{
-					case (SimpleShaderTypes.Basic): effect = new BasicEffect(video.Device); break;
-					case (SimpleShaderTypes.DualTexture): effect = new DualTextureEffect(video.Device); break;
-					case (SimpleShaderTypes.AlphaTest): effect = new AlphaTestEffect(video.Device); break;
-				}
-
-				FX = effect;
-				variables = new List<ShaderVariable>();
-				resources = new List<ShaderResource>();
-			}
-			catch (Exception ex)
-			{
-				Dispose();
-				throw ex;
-			}
-		}
-		#else
 		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion)
 		: base(parent)
 		{
@@ -79,7 +39,6 @@ namespace Reign.Video.XNA
 				throw ex;
 			}
 		}
-		#endif
 
 		public override void Dispose()
 		{
@@ -96,11 +55,7 @@ namespace Reign.Video.XNA
 		#region Methods
 		public override void Apply()
 		{
-			#if WP7
-			effect.CurrentTechnique.Passes[0].Apply();
-			#else
 			pass.Apply();
-			#endif
 		}
 
 		public override ShaderVariableI Variable(string name)

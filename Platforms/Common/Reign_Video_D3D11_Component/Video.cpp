@@ -212,14 +212,14 @@ namespace Reign_Video_D3D11_Component
 	VideoCom::~VideoCom()
 	{
 		if (deviceContext) deviceContext->ClearState();
-		
+		if (deviceContext) deviceContext->Release();
+
 		if (currentVertexResources) delete currentVertexResources;
 		if (currentPixelResources) delete currentPixelResources;
 		if (renderTarget) renderTarget->Release();
 		if (depthStencil) depthStencil->Release();
 		if (depthTexture) depthTexture->Release();
 		if (swapChain) swapChain->Release();
-		if (deviceContext) deviceContext->Release();
 		if (device) device->Release();
 		null();
 	}

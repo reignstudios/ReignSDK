@@ -26,7 +26,8 @@ namespace Reign
 		#pragma region Constructors
 		public: Font(DisposableI^ parent, ShaderI^ shader, Texture2DI^ font);
 		public: Font(DisposableI^ parent, ShaderI^ shader, Texture2DI^ font, string^ metricsFileName);
-		private: void init(ShaderI^ shader, Texture2DI^ font);
+		internal: void load(ShaderI^ shader, Texture2DI^ texture, string^ metricsFileName);
+		protected: virtual void init(ShaderI^ shader, Texture2DI^ texture, string^ metricsFileName) override;
 		#pragma endregion
 
 		#pragma region Methods

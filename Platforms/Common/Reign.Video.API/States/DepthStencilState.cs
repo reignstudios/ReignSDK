@@ -10,12 +10,14 @@ namespace Reign.Video.API
 		{
 			try
 			{
-				#if WINDOWS
+				#if WINDOWS || METRO
 				if (apiType == VideoTypes.D3D11)
 				{
 					return (DepthStencilStateDescI)OS.CreateInstance(Video.D3D11, Video.D3D11, "DepthStencilStateDesc", args);
 				}
+				#endif
 
+				#if WINDOWS
 				if (apiType == VideoTypes.D3D9)
 				{
 					return (DepthStencilStateDescI)OS.CreateInstance(Video.D3D9, Video.D3D9, "DepthStencilStateDesc", args);
@@ -55,12 +57,14 @@ namespace Reign.Video.API
 		{
 			try
 			{
-				#if WINDOWS
+				#if WINDOWS || METRO
 				if (apiType == VideoTypes.D3D11)
 				{
 					return (DepthStencilStateI)OS.CreateInstance(Video.D3D11, Video.D3D11, "DepthStencilState", args);
 				}
+				#endif
 
+				#if WINDOWS
 				if (apiType == VideoTypes.D3D9)
 				{
 					return (DepthStencilStateI)OS.CreateInstance(Video.D3D9, Video.D3D9, "DepthStencilState", args);

@@ -10,12 +10,14 @@ namespace Reign.Video.API
 		{
 			try
 			{
-				#if WINDOWS
+				#if WINDOWS || METRO
 				if (apiType == VideoTypes.D3D11)
 				{
 					return (QuickDrawI)OS.CreateInstance(Video.D3D11, Video.D3D11, "QuickDraw", args);
 				}
+				#endif
 
+				#if WINDOWS
 				if (apiType == VideoTypes.D3D9)
 				{
 					return (QuickDrawI)OS.CreateInstance(Video.D3D9, Video.D3D9, "QuickDraw", args);

@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
 
 #if OSX
 using MonoMac.Foundation;
@@ -16,6 +17,12 @@ using MonoTouch.Foundation;
 using System.Collections.Generic;
 #endif
 
+#if METRO
+using Windows.Storage;
+using Windows.ApplicationModel;
+using System.Threading.Tasks;
+#endif
+
 namespace Reign.Core
 {
 	public enum SourceTypes
@@ -23,9 +30,49 @@ namespace Reign.Core
 		File,
 		Memory
 	}
+
+	public abstract class StreamLoaderI
+	{
+		public StreamLoaderI()
+		{
+			Streams.loaders.Add(this);
+		}
+
+		public abstract bool Load();
+	}
 	
 	public static class Streams
 	{
+		public static int ItemsRemainingToLoad {get{return loaders.Count;}}
+		internal static List<StreamLoaderI> loaders;
+
+		static Streams()
+		{
+			loaders = new List<StreamLoaderI>();
+		}
+
+		public static Exception TryLoad()
+		{
+			if (loaders.Count != 0)
+			{
+				try
+				{
+					var currentLoaders = new StreamLoaderI[loaders.Count];
+					loaders.CopyTo(currentLoaders);
+					foreach (var loader in currentLoaders)
+					{
+						if (loader.Load()) loaders.Remove(loader);
+					}
+				}
+				catch (Exception e)
+				{
+					return e;
+				}
+			}
+
+			return null;
+		}
+
 		#if NaCl
 		class NaClFile
 		{
@@ -110,29 +157,12 @@ namespace Reign.Core
 			}
 		}
 		#endif
-	
-		public static string GetResourceName(string assemblyName)
-		{
-			return "/" + new AssemblyName(assemblyName).Name + ";component/";
-		}
 
-		public static Stream OpenStream(string url)
-		{
-			// for Embeded Resources
-			//var assembly = Assembly.GetAssembly(OS.GetType("Reign.Core", "Reign.Core", "ClassName"));
-			//var resource = assembly.GetManifestResourceStream("File.xml");
-			//if (resource == null) Debug.ThrowError("Streams", "Resource not found: " + url);
-			//return resource;
-
-			// for wpf
-			//var match = Regex.Match(url, ";");
-			//if (match.Success) return OpenResource(url);
-			//else return OpenFile(url);
-			
-			return OpenFile(url);
-		}
-
+		#if METRO
+		public async static Task<Stream> OpenFile(string fileName)
+		#else
 		public static Stream OpenFile(string fileName)
+		#endif
 		{
 			#if OSX || iOS
 			string directory = GetFileDirectory(fileName);
@@ -168,7 +198,9 @@ namespace Reign.Core
 			Debug.ThrowError("Streams", "Could not find file: " + fileName);
 			return new MemoryStream();
 			#elif METRO
-			throw new NotImplementedException();
+			var storageFolder = Package.Current.InstalledLocation;
+			var stream = await storageFolder.OpenStreamForReadAsync(fileName);
+			return stream;
 			#else
 			return new FileStream(fileName, FileMode.Open, FileAccess.Read);
 			#endif
@@ -188,14 +220,6 @@ namespace Reign.Core
 			memoryStream.Position = 0;
 			return memoryStream;
 		}
-
-		// for wpf
-		//public static Stream OpenResource(string resourceName)
-		//{
-		//    var resource = System.Windows.Application.GetResourceStream(new Uri(resourceName, UriKind.Relative));
-		//    if (resource == null) Debug.ThrowError("Streams", "Resource not found: " + resourceName);
-		//    return resource.Stream;
-		//}
 
 		public static string StripFileExt(string fileName)
 		{
@@ -250,7 +274,7 @@ namespace Reign.Core
 			var match = Regex.Match(fileName, @"A|C|D|E|F|G|H|I:/|\\");
 			return match.Success;
 			#else
-			throw new Exception();
+			throw new NotImplementedException();
 			#endif
 		}
 

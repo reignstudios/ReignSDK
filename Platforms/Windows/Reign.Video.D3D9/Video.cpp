@@ -464,6 +464,9 @@ namespace Reign
 	{
 		switch (surfaceFormat)
 		{
+			case (SurfaceFormats::DXT1): return D3DFMT_DXT1;
+			case (SurfaceFormats::DXT3): return D3DFMT_DXT3;
+			case (SurfaceFormats::DXT5): return D3DFMT_DXT5;
 			case (SurfaceFormats::RGBAx8): return D3DFMT_A8R8G8B8;
 			case (SurfaceFormats::RGBx10_Ax2): return D3DFMT_A2R10G10B10;
 			case (SurfaceFormats::RGBAx16f): return D3DFMT_A16B16G16R16F;

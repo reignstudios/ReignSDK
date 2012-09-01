@@ -62,16 +62,12 @@ namespace Reign.Video
 		private const uint GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG = 0x8C03u;
 
 		public uint FormatGL {get; private set;}
-		public bool IsCompressed {get; private set;}
 		#endregion
 
 		#region Constructors
 		public ImagePVR(string fileName, bool flip)
 		{
-			using (var stream = Streams.OpenFile(fileName))
-			{
-				init(stream, flip);
-			}
+			new ImageStreamLoader(this, fileName, flip);
 		}
 
 		public ImagePVR(Stream stream, bool flip)
@@ -79,7 +75,7 @@ namespace Reign.Video
 			init(stream, flip);
 		}
 
-		private void init(Stream stream, bool flip)
+		protected override void init(Stream stream, bool flip)
 		{
 			// Load Header
 			var header = new PVRHeader();
@@ -124,11 +120,11 @@ namespace Reign.Video
 			var dSize = reader.ReadUInt32();*/
 			
 			// Get Caps
-			IsCompressed = true;
+			Compressed = true;
 			
 			// Get pixel format
 			Size = new Size2((int)header.Width, (int)header.Height);
-			int blockSize = 0, bpp = 0, blockWidth = 0, blockHeight = 0;
+			int blockSize = 0, bpp = 0, blockWidth = 0, blockHeight = 0, blockDev = 1;
 			//switch (header.PixelFormat)// version 3
 			switch (header.Flags & PVR_TEXTURE_FLAG_TYPE_MASK)
 			{
@@ -138,6 +134,7 @@ namespace Reign.Video
 					blockWidth = 8;
 					blockHeight = 4;
 					bpp = 2;
+					blockDev = 2;
 					break;
 
 				case FOURCC_2BPP_RGBA:
@@ -146,6 +143,7 @@ namespace Reign.Video
 					blockWidth = 8;
 					blockHeight = 4;
 					bpp = 2;
+					blockDev = 2;
 					break;
 
 				case FOURCC_4BPP_RGB:
@@ -183,10 +181,12 @@ namespace Reign.Video
 				var data = new byte[dataSize];
 				stream.Read(data, 0, dataSize);
 
-				Mipmaps[i] = new Mipmap(data, size.Width, size.Height);
+				Mipmaps[i] = new Mipmap(data, size.Width, size.Height, blockDev, 4);
 
 				size /= 2;
 			}
+
+			Loaded = true;
 		}
 		#endregion
 	}

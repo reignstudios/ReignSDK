@@ -12,8 +12,13 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
+		#if WINDOWS
 		public PixelShader(Shader shader, string code, ShaderVersions shaderVersion)
 		: base(shader, code, ShaderTypes.PS, shaderVersion)
+		#else
+		public PixelShader(Shader shader, byte[] code)
+		: base(shader, code, ShaderTypes.PS)
+		#endif
 		{
 			try
 			{

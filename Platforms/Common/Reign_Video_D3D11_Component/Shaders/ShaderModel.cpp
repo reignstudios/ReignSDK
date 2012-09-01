@@ -5,15 +5,19 @@
 namespace Reign_Video_D3D11_Component
 {
 	#pragma region Constructors
+	#if WINDOWS
 	ShaderModelErrors ShaderModelCom::Init(VideoCom^ video, string^ code, int codeSize, string^ shaderType, OutType(string^) errorText)
+	#else
+	ShaderModelErrors ShaderModelCom::Init(VideoCom^ video, const array<byte>^ code, int codeSize, int variableBufferSize, int resourceCount)
+	#endif
 	{
 		null();
 		this->video = video;
 		
 		// Code
+		#if WINDOWS
 		char* shaderTypeName = StringToAscii(shaderType);
 		char* codeAscii = StringToAscii(code);
-		#if WINDOWS
 		ID3DBlob *codeTEMP, *err = 0;
 		if (FAILED(D3DCompile(codeAscii, codeSize, NULL, NULL, NULL, "main", shaderTypeName, D3DCOMPILE_OPTIMIZATION_LEVEL3, NULL, &codeTEMP, &err)))
 		{
@@ -34,9 +38,6 @@ namespace Reign_Video_D3D11_Component
 		if (shaderTypeName) delete shaderTypeName;
 		if (codeAscii) delete codeAscii;
 		this->code = codeTEMP;
-		#else
-
-		#endif
 
 		// Reflection
 		void* reflectionTEMP = 0;
@@ -46,7 +47,7 @@ namespace Reign_Video_D3D11_Component
 		}
 		reflection = (ID3D11ShaderReflection*)reflectionTEMP;
 
-		// Veriable Buffers
+		// Variable Buffers
 		uint constantBufferIndex = 0;
 		variables = reflection->GetConstantBufferByIndex(constantBufferIndex);
 
@@ -95,17 +96,55 @@ namespace Reign_Video_D3D11_Component
 				}
 			}
 		}
+		#else
+		this->code = &code->get(0);
+		this->codeSize = codeSize;
+
+		// Variable Buffers
+		if (variableBufferSize != 0)
+		{
+			variableBufferBytesCount = variableBufferSize;
+			variableBufferBytes = new char[variableBufferSize];
+			for (uint i = 0; i != variableBufferSize; ++i) variableBufferBytes[i] = 0;
+
+			ID3D11Buffer* variableBufferTEMP = 0;
+			D3D11_BUFFER_DESC cbDesc;
+			cbDesc.ByteWidth = variableBufferSize;
+			cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+			cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+			cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			cbDesc.MiscFlags = 0;
+			video->device->CreateBuffer(&cbDesc, 0, &variableBufferTEMP);
+			if (variableBufferTEMP == 0)
+			{
+				return ShaderModelErrors::VariableBuffer;
+			}
+			variableBuffer = variableBufferTEMP;
+		}
+
+		// Resources
+		if (resourceCount != 0)
+		{
+			this->resourcesCount = resourcesCount;
+			this->resourcesKnownCount = resourcesCount;
+			resources = new ID3D11ShaderResourceView*[resourcesCount];
+		}
+		#endif
 
 		return ShaderModelErrors::None;
 	}
 
 	ShaderModelCom::~ShaderModelCom()
 	{
-		if (code) code->Release();
 		if (resources) delete resources;
-		if (reflection) reflection->Release();
 		if (variableBufferBytes) delete variableBufferBytes;
 		if (variableBuffer) variableBuffer->Release();
+		#if WINDOWS
+		if (code) code->Release();
+		if (reflection) reflection->Release();
+		#else
+		delete code;
+		#endif
 		null();
 	}
 
@@ -115,9 +154,11 @@ namespace Reign_Video_D3D11_Component
 		resources = 0;
 		resourcesCount = 0;
 		resourcesKnownCount = 0;
-		reflection = 0;
 		variableBufferBytes = 0;
 		variableBuffer = 0;
+		#if WINDOWS
+		reflection = 0;
+		#endif
 	}
 	#pragma endregion
 
@@ -135,6 +176,7 @@ namespace Reign_Video_D3D11_Component
 
 	int ShaderModelCom::Variable(string^ name)
 	{
+		#if WINDOWS
 		char* namePtr = StringToAscii(name);
 		ID3D11ShaderReflectionVariable* variable = variables->GetVariableByName(namePtr);
 		delete namePtr;
@@ -146,12 +188,16 @@ namespace Reign_Video_D3D11_Component
 		{
 			return desc.StartOffset;
 		}
+		#else
+
+		#endif
 
 		return -1;
 	}
 
 	int ShaderModelCom::Resource(string^ name)
 	{
+		#if WINDOWS
 		char* nameAscii = StringToAscii(name);
 		for (uint i = 0; i != resourcesCount; ++i)
 		{
@@ -164,9 +210,40 @@ namespace Reign_Video_D3D11_Component
 				return desc.BindPoint;
 			}
 		}
-
 		delete nameAscii;
+		#else
+
+		#endif
+
 		return -1;
 	}
+
+	#if WINDOWS
+	string^ ShaderModelCom::Compile(string^ code, int codeSize, string^ shaderType, [Out] IntPtr% buffer, [Out] int% bufferSize)
+	{
+		char* shaderTypeName = StringToAscii(shaderType);
+		char* codeAscii = StringToAscii(code);
+		ID3DBlob *codeTEMP, *err = 0;
+		if (FAILED(D3DCompile(codeAscii, codeSize, NULL, NULL, NULL, "main", shaderTypeName, D3DCOMPILE_OPTIMIZATION_LEVEL3, NULL, &codeTEMP, &err)))
+		{
+			if (shaderTypeName) delete shaderTypeName;
+			if (codeAscii) delete codeAscii;
+			if (err)
+			{
+				string^ error = gcnew string(AsciiToUnicode((char*)err->GetBufferPointer()));
+				err->Release();
+				return error;
+			}
+
+			return L"Failed with unknow error.";
+		}
+		if (shaderTypeName) delete shaderTypeName;
+		if (codeAscii) delete codeAscii;
+		buffer = IntPtr(codeTEMP->GetBufferPointer());
+		bufferSize = codeTEMP->GetBufferSize();
+
+		return nullptr;
+	}
+	#endif
 	#pragma endregion
 }

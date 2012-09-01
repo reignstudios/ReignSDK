@@ -10,12 +10,14 @@ namespace Reign.Video.API
 		{
 			try
 			{
-				#if WINDOWS
+				#if WINDOWS || METRO
 				if (apiType == VideoTypes.D3D11)
 				{
 					return (ViewPortI)OS.CreateInstance(Video.D3D11, Video.D3D11, "ViewPort", args);
 				}
+				#endif
 
+				#if WINDOWS
 				if (apiType == VideoTypes.D3D9)
 				{
 					return (ViewPortI)OS.CreateInstance(Video.D3D9, Video.D3D9, "ViewPort", args);

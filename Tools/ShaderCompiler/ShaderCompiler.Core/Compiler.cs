@@ -96,7 +96,7 @@ namespace ShaderCompiler.Core
 			return compileFromMemory(code);
 		}
 		
-		public void Compile(string outDirectory, CompilerOutputs outputType, bool compileMaterial)
+		public void Compile(string outDirectory, CompilerOutputs outputType, bool compileMaterial, bool compileMetroShaders)
 		{
 			this.outDirectory = outDirectory;
 			this.outputType = outputType;
@@ -108,7 +108,7 @@ namespace ShaderCompiler.Core
 			
 			var materialCode = new List<string>();
 			if (!compileMaterial) materialCode = null;
-			compileLibrary(inDirectory + "bin/Debug/" + inFile.Split('.')[0] + ".dll", false, materialCode);
+			compileLibrary(inDirectory + "bin/Debug/" + inFile.Split('.')[0] + ".dll", false, materialCode, compileMetroShaders);
 		}
 		
 		private string compileFromMemory(string code)
@@ -139,7 +139,7 @@ namespace ShaderCompiler.Core
 				if (compilerResults.Errors.Count != 0) throw new Exception(errors + Environment.NewLine + "CSharp Compiler Errors.");
 
 				// Convert Reign Code
-				code = compileLibrary(compilerResults.CompiledAssembly.Location, true, null);
+				code = compileLibrary(compilerResults.CompiledAssembly.Location, true, null, false);
 
 				Console.WriteLine("Compile Success!");
 			}
@@ -157,8 +157,53 @@ namespace ShaderCompiler.Core
 			
 			return code;
 		}
+
+		class MetroShaderCompiler : Reign.Video.ShaderI
+		{
+			public MetroShaderCompiler(string fileName)
+			: base(null)
+			{
+				var code = getShaders(fileName);
+
+				IntPtr vsBuffer;
+				int vsBufferSize;
+				var error = Reign_Video_D3D11_Component.ShaderModelCom.Compile(code[0], code[0].Length, "vs_4_0_level_9_3", out vsBuffer, out vsBufferSize);
+				if (error != null) throw new Exception("Failed to compile Metro VS shader: " + error);
+
+				IntPtr psBuffer;
+				int psBufferSize;
+				error = Reign_Video_D3D11_Component.ShaderModelCom.Compile(code[1], code[1].Length, "ps_4_0_level_9_3", out psBuffer, out psBufferSize);
+				if (error != null) throw new Exception("Failed to compile Metro PS shader: " + error);
+
+				var data = new byte[vsBufferSize + psBufferSize];
+				System.Runtime.InteropServices.Marshal.Copy(vsBuffer, data, 0, vsBufferSize);
+				System.Runtime.InteropServices.Marshal.Copy(psBuffer, data, vsBufferSize, psBufferSize);
+				using (var file = new FileStream(Reign.Core.Streams.StripFileExt(fileName) + ".mrs", FileMode.Create, FileAccess.Write))
+				using (var writer = new BinaryWriter(file))
+				{
+					writer.Write(vsBufferSize);
+					writer.Write(psBufferSize);
+					file.Write(data, 0, data.Length);
+				}
+			}
+
+			public override void Apply()
+			{
+				throw new NotImplementedException();
+			}
+
+			public override Reign.Video.ShaderVariableI Variable(string name)
+			{
+				throw new NotImplementedException();
+			}
+
+			public override Reign.Video.ShaderResourceI Resource(string name)
+			{
+				throw new NotImplementedException();
+			}
+		}
 		
-		private string compileLibrary(string dllFileName, bool writeToMemory, List<string> materialCode)
+		private string compileLibrary(string dllFileName, bool writeToMemory, List<string> materialCode, bool compileMetroShaders)
 		{
 string xnaEndTechniqueBlock =
 @"
@@ -187,70 +232,78 @@ technique MainTechnique
 					if (iFace.Name == "ShaderI" && obj.IsSealed)
 					{
 						using (var stream = new MemoryStream())
+						using (var vsStream = new MemoryStream())
+						using (var psStream = new MemoryStream())
 						{
-							using (var vsStream = new MemoryStream())
+							if (outputType == CompilerOutputs.D3D11 && compileMetroShaders)
 							{
-								using (var psStream = new MemoryStream())
+								using (var reflectionFile = new FileStream(outDirectory + FileTag + obj.Name + ".ref", FileMode.Create, FileAccess.Write))
 								{
-									compileShader(obj, stream, vsStream, psStream, materialCode);
-									if (materialCode != null)
-									{
+									compileShader(obj, stream, vsStream, psStream, reflectionFile, materialCode);
+								}
+								var metroShader = new MetroShaderCompiler(outDirectory + FileTag + obj.Name + ".rs");
+							}
+							else
+							{
+								compileShader(obj, stream, vsStream, psStream, null, materialCode);
+							}
+
+							if (materialCode != null)
+							{
 										
-										string initLine;
-										var codeFile = compileMaterial(name, obj, out initLine);
-										materialCode.Add(codeFile);
-										initLines.Add(initLine);
-									}
+								string initLine;
+								var codeFile = compileMaterial(name, obj, out initLine);
+								materialCode.Add(codeFile);
+								initLines.Add(initLine);
+							}
 									
-									if (writeToMemory)
+							if (writeToMemory)
+							{
+								if (outputType != CompilerOutputs.XNA) lastShaderOut += "#GLOBAL" + Environment.NewLine;
+								lastShaderOut += formatCode(stream.GetBuffer());
+								if (outputType != CompilerOutputs.XNA) lastShaderOut += "#END" + Environment.NewLine;
+								lastShaderOut += Environment.NewLine;
+										
+								if (outputType != CompilerOutputs.XNA) lastShaderOut += "#VS" + Environment.NewLine;
+								lastShaderOut += formatCode(vsStream.GetBuffer());
+								if (outputType != CompilerOutputs.XNA) lastShaderOut += "#END" + Environment.NewLine;
+								lastShaderOut += Environment.NewLine;
+										
+								if (outputType != CompilerOutputs.XNA) lastShaderOut += "#PS" + Environment.NewLine;
+								lastShaderOut += formatCode(psStream.GetBuffer());
+								if (outputType != CompilerOutputs.XNA) lastShaderOut += "#END" + Environment.NewLine;
+										
+								if (outputType == CompilerOutputs.XNA)
+								{
+									lastShaderOut += xnaEndTechniqueBlock;
+								}
+							}
+							else
+							{
+								string fileExt = ".rs";
+								if (outputType == CompilerOutputs.XNA) fileExt = ".fx";
+								using (var file = new FileStream(outDirectory + FileTag + obj.Name + fileExt, FileMode.Create, FileAccess.Write))
+								{
+									using (var writer = new StreamWriter(file))
 									{
-										if (outputType != CompilerOutputs.XNA) lastShaderOut += "#GLOBAL" + Environment.NewLine;
-										lastShaderOut += formatCode(stream.GetBuffer());
-										if (outputType != CompilerOutputs.XNA) lastShaderOut += "#END" + Environment.NewLine;
-										lastShaderOut += Environment.NewLine;
-										
-										if (outputType != CompilerOutputs.XNA) lastShaderOut += "#VS" + Environment.NewLine;
-										lastShaderOut += formatCode(vsStream.GetBuffer());
-										if (outputType != CompilerOutputs.XNA) lastShaderOut += "#END" + Environment.NewLine;
-										lastShaderOut += Environment.NewLine;
-										
-										if (outputType != CompilerOutputs.XNA) lastShaderOut += "#PS" + Environment.NewLine;
-										lastShaderOut += formatCode(psStream.GetBuffer());
-										if (outputType != CompilerOutputs.XNA) lastShaderOut += "#END" + Environment.NewLine;
-										
+										if (outputType != CompilerOutputs.XNA) writer.WriteLine("#GLOBAL");
+										writer.Write(formatCode(stream.GetBuffer()));
+										if (outputType != CompilerOutputs.XNA) writer.WriteLine("#END");
+										writer.WriteLine();
+	
+										if (outputType != CompilerOutputs.XNA) writer.WriteLine("#VS");
+										writer.Write(formatCode(vsStream.GetBuffer()));
+										if (outputType != CompilerOutputs.XNA) writer.WriteLine("#END");
+										writer.WriteLine();
+	
+										if (outputType != CompilerOutputs.XNA) writer.WriteLine("#PS");
+										writer.Write(formatCode(psStream.GetBuffer()));
+										if (outputType != CompilerOutputs.XNA) writer.WriteLine("#END");
+										if (outputType != CompilerOutputs.XNA) writer.WriteLine();
+												
 										if (outputType == CompilerOutputs.XNA)
 										{
-											lastShaderOut += xnaEndTechniqueBlock;
-										}
-									}
-									else
-									{
-										string fileExt = ".rs";
-										if (outputType == CompilerOutputs.XNA) fileExt = ".fx";
-										using (var file = new FileStream(outDirectory + FileTag + obj.Name + fileExt, FileMode.Create, FileAccess.Write))
-										{
-											using (var writer = new StreamWriter(file))
-											{
-												if (outputType != CompilerOutputs.XNA) writer.WriteLine("#GLOBAL");
-												writer.Write(formatCode(stream.GetBuffer()));
-												if (outputType != CompilerOutputs.XNA) writer.WriteLine("#END");
-												writer.WriteLine();
-	
-												if (outputType != CompilerOutputs.XNA) writer.WriteLine("#VS");
-												writer.Write(formatCode(vsStream.GetBuffer()));
-												if (outputType != CompilerOutputs.XNA) writer.WriteLine("#END");
-												writer.WriteLine();
-	
-												if (outputType != CompilerOutputs.XNA) writer.WriteLine("#PS");
-												writer.Write(formatCode(psStream.GetBuffer()));
-												if (outputType != CompilerOutputs.XNA) writer.WriteLine("#END");
-												if (outputType != CompilerOutputs.XNA) writer.WriteLine();
-												
-												if (outputType == CompilerOutputs.XNA)
-												{
-													writer.Write(xnaEndTechniqueBlock);
-												}
-											}
+											writer.Write(xnaEndTechniqueBlock);
 										}
 									}
 								}
@@ -331,18 +384,15 @@ technique MainTechnique
 			return lastShaderOut;
 		}
 		
-		private void compileShader(Type shader, Stream stream, Stream vsStream, Stream psStream, List<string> materialCode)
+		private void compileShader(Type shader, Stream stream, Stream vsStream, Stream psStream, Stream reflectionStream, List<string> materialCode)
 		{
 			using (var writer = new StreamWriter(stream))
+			using (var vsWriter = new StreamWriter(vsStream))
+			using (var psWriter = new StreamWriter(psStream))
+			using (var reflectionWriter = new StreamWriter(reflectionStream == null ? new MemoryStream() : reflectionStream))
 			{
-				using (var vsWriter = new StreamWriter(vsStream))
-				{
-					using (var psWriter = new StreamWriter(psStream))
-					{
-						compileFields(shader, writer, vsWriter, psWriter);
-						compileMethods(shader, writer, vsWriter, psWriter);
-					}
-				}
+				compileFields(shader, writer, vsWriter, psWriter, reflectionWriter == null ? null : reflectionWriter);
+				compileMethods(shader, writer, vsWriter, psWriter);
 			}
 		}
 
@@ -494,9 +544,34 @@ technique MainTechnique
 
 				namespace ShaderMaterials.{0}
 				{{
+					class {1}MaterialStreamLoader : StreamLoaderI
+					{{
+						private A.VideoTypes videoType;
+						private DisposableI parent;
+						private string contentPath;
+						private string tag;
+						private ShaderVersions shaderVersion;
+
+						public {1}MaterialStreamLoader(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
+						{{
+							this.videoType = videoType;
+							this.parent = parent;
+							this.contentPath = contentPath;
+							this.tag = tag;
+							this.shaderVersion = shaderVersion;
+						}}
+
+						public override bool Load()
+						{{
+							if (!{1}Material.load(videoType, parent, contentPath, tag, shaderVersion)) return false;
+							return true;
+						}}
+					}}
+
 					public class {1}Material : MaterialI
 					{{
 						// static properties
+						public static bool Loaded {{get; private set;}}
 						public static ShaderI Shader {{get; private set;}}
 						public static BufferLayoutDescI BufferLayoutDesc {{get; private set;}}
 						public static BufferLayoutI BufferLayout {{get; private set;}}
@@ -510,13 +585,29 @@ technique MainTechnique
 						// constructors
 						public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
 						{{
-							Shader = A.Shader.Create(videoType, parent, contentPath + tag + ""{1}.rs"", shaderVersion);
-							{8}
-
+							new {1}MaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
 							var elements = new List<BufferLayoutElement>();
 							{7}
 							BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
-							BufferLayout = A.BufferLayout.Create(videoType, parent, Shader, BufferLayoutDesc);
+						}}
+
+						internal static bool load(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
+						{{
+							if (Shader == null)
+							{{
+								Shader = A.Shader.Create(videoType, parent, contentPath + tag + ""{1}.rs"", shaderVersion);
+								return false;
+							}}
+							if (!Shader.Loaded)
+							{{
+								return false;
+							}}
+							{8}
+
+							BufferLayout = A.BufferLayout.Create(videoType, Shader, Shader, BufferLayoutDesc);
+
+							Loaded = true;
+							return true;
 						}}
 
 						// methods

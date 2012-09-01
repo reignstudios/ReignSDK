@@ -12,6 +12,10 @@ namespace Reign.Video.API
 		D3D11 = 1,
 		D3D9 = 2,
 		#endif
+
+		#if METRO
+		D3D11 = 1,
+		#endif
 		
 		#if XNA
 		XNA = 4,
@@ -55,13 +59,17 @@ namespace Reign.Video.API
 		}
 		#endif
 
-		#if WINDOWS || OSX || LINUX
+		#if WINDOWS || METRO || OSX || LINUX
 		public static VideoI Create(VideoTypes typeFlags, out VideoTypes type, params object[] args)
 		{
-			#if WINDOWS
+			#if WINDOWS || METRO
 			bool d3d11 = (typeFlags & VideoTypes.D3D11) != 0;
+			#endif
+
+			#if WINDOWS
 			bool d3d9 = (typeFlags & VideoTypes.D3D9) != 0;
 			#endif
+
 			#if WINDOWS || OSX || LINUX
 			bool gl = (typeFlags & VideoTypes.OpenGL) != 0;
 			#endif
@@ -71,13 +79,16 @@ namespace Reign.Video.API
 			{
 				try
 				{
-					#if WINDOWS
+					#if WINDOWS || METRO
 					if (d3d11)
 					{
 						d3d11 = false;
 						type = VideoTypes.D3D11;
 						return (VideoI)OS.CreateInstance(D3D11, D3D11, "Video", args);
 					}
+					#endif
+
+					#if WINDOWS
 					else if (d3d9)
 					{
 						d3d9 = false;

@@ -60,6 +60,7 @@ namespace Reign.Video
 		#endregion
 
 		#region Properties
+		public bool Loaded {get; protected set;}
 		public Character[] Characters {get; private set;}
 
 		public static int[] Indices = new int[6]
@@ -81,39 +82,38 @@ namespace Reign.Video
 		public FontI(DisposableI parent)
 		: base(parent)
 		{
-			init(null);
+			Characters = new Character[95];
+			for (int i = 0; i != Characters.Length; ++i)
+			{
+				Characters[i] = new Character((char)(i + 32), new Vector2(), new Vector2());
+			}
 		}
 
 		public FontI(DisposableI parent, string metricsFileName)
 		: base(parent)
 		{
-			init(metricsFileName);
+			
 		}
 
-		private void init(string metricsFileName)
+		#if METRO
+		protected virtual async void init(ShaderI shader, Texture2DI texture, string metricsFileName)
 		{
-			if (metricsFileName == null)
+			using (var stream = await Streams.OpenFile(metricsFileName))
+		#else
+		protected virtual void init(ShaderI shader, Texture2DI texture, string metricsFileName)
+		{
+			using (var stream = Streams.OpenFile(metricsFileName))
+		#endif
 			{
-				Characters = new Character[95];
-				for (int i = 0; i != Characters.Length; ++i)
-				{
-					Characters[i] = new Character((char)(i + 32), new Vector2(), new Vector2());
-				}
-			}
-			else
-			{
-				using (var stream = Streams.OpenStream(metricsFileName))
-				{
-					var xml = new XmlSerializer(typeof(FontMetrics));
-					var metrics = xml.Deserialize(stream) as FontMetrics;
-					if (metrics == null) Debug.ThrowError("FontI", "Failed to deserialize font metrics: " + metricsFileName);
+				var xml = new XmlSerializer(typeof(FontMetrics));
+				var metrics = xml.Deserialize(stream) as FontMetrics;
+				if (metrics == null) Debug.ThrowError("FontI", "Failed to deserialize font metrics: " + metricsFileName);
 
-					Characters = new Character[metrics.Characters.Count];
-					for (int i = 0; i != metrics.Characters.Count; ++i)
-					{
-						var character = metrics.Characters[i];
-						Characters[i] = new Character((char)character.Key, new Vector2(character.X, character.Y), new Vector2(character.Width, character.Height));
-					}
+				Characters = new Character[metrics.Characters.Count];
+				for (int i = 0; i != metrics.Characters.Count; ++i)
+				{
+					var character = metrics.Characters[i];
+					Characters[i] = new Character((char)character.Key, new Vector2(character.X, character.Y), new Vector2(character.Width, character.Height));
 				}
 			}
 		}

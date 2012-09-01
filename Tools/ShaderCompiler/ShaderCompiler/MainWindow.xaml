@@ -4,14 +4,14 @@
         Title="Shader Compiler" Height="600" Width="1024" WindowStartupLocation="CenterScreen">
 
 	<Grid>
-	<Grid Margin="0,0,0,70" Background="#FF42B1B1" SnapsToDevicePixels="False">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="*"/>
-		</Grid.ColumnDefinitions>
-			<TextBox Text="" Margin="12,12,0,12" Name="rsl" Grid.Column="0" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
-			<TextBox Text="Compile from memory in RLSL in the left hand side text box and HLSL or GLSL will output here..." Margin="0,12,12,12" Name="hlsl" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
-	</Grid>
+		<Grid Margin="0,0,0,70" Background="#FF42B1B1" SnapsToDevicePixels="False">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+				<TextBox Text="" Margin="12,12,0,12" Name="rsl" Grid.Column="0" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
+				<TextBox Text="Compile from memory in RLSL in the left hand side text box and HLSL or GLSL will output here..." Margin="0,12,12,12" Name="hlsl" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
+		</Grid>
 
 		<Button Content="Compile" Margin="0,0,12,12" Name="compileButton" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="75" Click="compileButton_Click" />
 		<TextBox Height="23" HorizontalAlignment="Left" Margin="85,0,0,9" Name="rsOutputTextbox" VerticalAlignment="Bottom" Width="228" />
@@ -35,6 +35,7 @@
 			<ComboBoxItem>GL2</ComboBoxItem>
 			<ComboBoxItem>GLES2</ComboBoxItem>
 		</ComboBox>
-		<CheckBox Content="Compile Materials" Height="16" HorizontalAlignment="Right" Margin="0,0,16,49" Name="compileMaterialsCheckBox" VerticalAlignment="Bottom" IsChecked="True" />
+		<CheckBox Content="Compile Materials" Height="16" HorizontalAlignment="Right" Margin="0,0,385,39" Name="compileMaterialsCheckBox" VerticalAlignment="Bottom" IsChecked="True" />
+		<CheckBox Content="Compile Metro Shaders" Height="16" HorizontalAlignment="Right" Margin="0,0,356,12" Name="compileMetroShadersCheckBox" VerticalAlignment="Bottom" IsChecked="True" />
 	</Grid>
 </Window>

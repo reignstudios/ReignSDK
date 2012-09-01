@@ -7,7 +7,7 @@ namespace ShaderCompiler.Core
 {
 	public partial class Compiler
 	{
-		private void compileFields(Type shader, StreamWriter stream, StreamWriter vsStream, StreamWriter psStream)
+		private void compileFields(Type shader, StreamWriter stream, StreamWriter vsStream, StreamWriter psStream, StreamWriter reflectionStream)
 		{
 			// Get field types
 			var fieldInfoList = new List<FieldInfo[]>();
@@ -23,7 +23,6 @@ namespace ShaderCompiler.Core
 			{
 				foreach (var info in fieldInfos) fields.Add(info);
 			}
-			//var fields = fieldArray.ToArray();
 			
 			var vsInFields = new List<FieldInfo>();
 			var vsInPSOutFields = new List<FieldInfo>();
@@ -89,6 +88,16 @@ namespace ShaderCompiler.Core
 						psOutFields.Add(field);
 					}
 				}
+			}
+
+			// write reflection file
+			if (reflectionStream != null)
+			{
+				int variableByteOffset = 0, resourceIndex = 0;
+				writeReflectionFile(reflectionStream, normalGlobalFields, ref variableByteOffset, ref resourceIndex, null);
+				int variableByteOffset2 = variableByteOffset, resourceIndex2 = resourceIndex;
+				writeReflectionFile(reflectionStream, normalVSFields, ref variableByteOffset2, ref resourceIndex2, true);
+				writeReflectionFile(reflectionStream, normalPSFields, ref variableByteOffset, ref resourceIndex, false);
 			}
 
 			// Process VSInput fields
@@ -213,6 +222,30 @@ namespace ShaderCompiler.Core
 			processNormalFields(stream, normalGlobalFields, baseType);
 			processNormalFields(vsStream, normalVSFields, baseType);
 			processNormalFields(psStream, normalPSFields, baseType);
+		}
+
+		private void writeReflectionFile(StreamWriter reflectionStream, List<FieldInfo> normalFields, ref int variableByteOffset, ref int resourceIndex, bool? vsConstansts)
+		{
+			string label = null;
+			if (vsConstansts == null) label = "g";
+			else if (vsConstansts == true) label = "vs";
+			else label = "ps";
+			foreach (var field in normalFields)
+			{
+				if (field.FieldType == typeof(Texture2D))
+				{
+					reflectionStream.WriteLine(string.Format("{2}Res {0} {1}", field.Name, resourceIndex, label));
+					++resourceIndex;
+				}
+				else
+				{
+					reflectionStream.WriteLine(string.Format("{2}Var {0} {1}", field.Name, variableByteOffset, label));
+					if (field.FieldType == typeof(Vector2) || field.FieldType == typeof(Vector3) || field.FieldType == typeof(Vector4)) variableByteOffset += sizeof(float) * 4;
+					if (field.FieldType == typeof(Matrix2)) variableByteOffset += sizeof(float) * 4 * 2;
+					if (field.FieldType == typeof(Matrix3)) variableByteOffset += sizeof(float) * 4 * 3;
+					if (field.FieldType == typeof(Matrix4)) variableByteOffset += sizeof(float) * 4 * 4;
+				}
+			}
 		}
 
 		private void processNormalFields(StreamWriter stream, List<FieldInfo> normalFields, BaseCompilerOutputs baseType)

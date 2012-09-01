@@ -84,6 +84,7 @@ namespace ShadersCS
 					compileFromCombo.SelectedIndex = int.Parse(reader.ReadLine());
 					compileTypeCombo.SelectedIndex = int.Parse(reader.ReadLine());
 					compileMaterialsCheckBox.IsChecked = bool.Parse(reader.ReadLine());
+					compileMetroShadersCheckBox.IsChecked = bool.Parse(reader.ReadLine());
 				}
 			}
 			catch{}
@@ -99,6 +100,7 @@ namespace ShadersCS
 				writer.WriteLine(compileFromCombo.SelectedIndex.ToString());
 				writer.WriteLine(compileTypeCombo.SelectedIndex.ToString());
 				writer.WriteLine(compileMaterialsCheckBox.IsChecked.ToString());
+				writer.WriteLine(compileMetroShadersCheckBox.IsChecked.ToString());
 			}
 
 			base.OnClosing(e);
@@ -180,7 +182,7 @@ namespace ShadersCS
 			}
 		
 			compiler.FileTag = tag;
-			compiler.Compile(rsOutputTextbox.Text, outputType, compileMaterial);
+			compiler.Compile(rsOutputTextbox.Text, outputType, compileMaterial, (bool)compileMetroShadersCheckBox.IsChecked);
 		}
 
 		private void compileProject()

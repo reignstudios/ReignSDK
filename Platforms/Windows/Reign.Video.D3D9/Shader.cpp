@@ -5,6 +5,26 @@ namespace Reign
 {namespace Video
 {namespace D3D9
 {
+	ref class ShaderStreamLoader : StreamLoaderI
+	{
+		private: Shader^ shader;
+		private: string^ fileName;
+		private: ShaderVersions shaderVersion;
+
+		public: ShaderStreamLoader(Shader^ shader, string^ fileName, ShaderVersions shaderVersion)
+		{
+			this->shader = shader;
+			this->fileName = fileName;
+			this->shaderVersion = shaderVersion;
+		}
+
+		public: virtual bool Load() override
+		{
+			shader->load(fileName, shaderVersion);
+			return true;
+		}
+	};
+
 	#pragma region Properties
 	VertexShader^ Shader::Vertex::get() {return vertex;}
 	PixelShader^ Shader::Pixel::get() {return pixel;}
@@ -30,16 +50,21 @@ namespace Reign
 	Shader::Shader(DisposableI^ parent, string^ fileName, ShaderVersions shaderVersion)
 	: ShaderI(parent)
 	{
+		video = parent->FindParentOrSelfWithException<Video^>();
+		gcnew ShaderStreamLoader(this, fileName, shaderVersion);
+	}
+
+	void Shader::load(string^ fileName, ShaderVersions shaderVersion)
+	{
 		try
 		{
-			video = parent->FindParentOrSelfWithException<Video^>();
-			
 			array<string^>^ code = getShaders(fileName);
 			vertex = gcnew VertexShader(this, code[0], (shaderVersion == ShaderVersions::Max) ? video->Caps->MaxVertexShaderVersion : shaderVersion);
 			pixel = gcnew PixelShader(this, code[1], (shaderVersion == ShaderVersions::Max) ? video->Caps->MaxPixelShaderVersion : shaderVersion);
 
 			variables = gcnew List<ShaderVariable^>();
 			resources = gcnew List<ShaderResource^>();
+			Loaded = true;
 		}
 		catch (Exception^ ex)
 		{

@@ -4,6 +4,26 @@ using System.Collections.Generic;
 
 namespace Reign.Video.OpenGL
 {
+	class ShaderStreamLoader : StreamLoaderI
+	{
+		private Shader shader;
+		private string fileName;
+		private ShaderVersions shaderVersion;
+
+		public ShaderStreamLoader(Shader shader, string fileName, ShaderVersions shaderVersion)
+		{
+			this.shader = shader;
+			this.fileName = fileName;
+			this.shaderVersion = shaderVersion;
+		}
+
+		public override bool Load()
+		{
+			shader.load(fileName, shaderVersion);
+			return true;
+		}
+	}
+
 	public class Shader : ShaderI
 	{
 		#region Properties
@@ -35,9 +55,14 @@ namespace Reign.Video.OpenGL
 		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion)
 		: base(parent)
 		{
+			video = parent.FindParentOrSelfWithException<Video>();
+			new ShaderStreamLoader(this, fileName, shaderVersion);
+		}
+
+		internal void load(string fileName, ShaderVersions shaderVersion)
+		{
 			try
 			{
-				video = parent.FindParentOrSelfWithException<Video>();
 				shaderVersion = (shaderVersion == ShaderVersions.Max) ? this.video.Caps.MaxShaderVersion : shaderVersion;
 
 				var code = getShaders(fileName);
@@ -60,6 +85,8 @@ namespace Reign.Video.OpenGL
 				Dispose();
 				throw new Exception(ex.Message + " - File: " + fileName);
 			}
+
+			Loaded = true;
 		}
 
 		public override void Dispose()

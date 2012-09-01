@@ -12,9 +12,6 @@ namespace Reign.Video.XNA
 		#region Properties
 		protected Video video;
 		internal X.Texture2D texture;
-		#if WP7
-		public X.Texture2D Texture {get{return texture;}}
-		#endif
 		public Size2 Size {get; private set;}
 		public Vector2 SizeF {get; private set;}
 		public Vector2 TexelOffset {get; private set;}
