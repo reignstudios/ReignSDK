@@ -23,9 +23,9 @@ namespace Reign.Video.XNA
 		: base(parent, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage)
 		{}
 
-		protected override void init(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool isRenderTarget)
+		protected override void init(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
 		{
-			base.init(parent, fileName, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, true);
+			base.init(parent, fileName, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, usage, true);
 
 			try
 			{

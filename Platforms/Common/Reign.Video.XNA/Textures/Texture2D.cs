@@ -7,9 +7,45 @@ using System.Collections.Generic;
 
 namespace Reign.Video.XNA
 {
+	class Texture2DStreamLoader : StreamLoaderI
+	{
+		private Texture2D texture;
+		private DisposableI parent;
+		private string fileName;
+		private int width, height;
+		private bool generateMipmaps;
+		private MultiSampleTypes multiSampleType;
+		private SurfaceFormats surfaceFormat;
+		private RenderTargetUsage renderTargetUsage;
+		private BufferUsages usage;
+		private bool isRenderTarget;
+
+		public Texture2DStreamLoader(Texture2D texture, DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
+		{
+			this.texture = texture;
+			this.parent = parent;
+			this.fileName = fileName;
+			this.width = width;
+			this.height = height;
+			this.generateMipmaps = generateMipmaps;
+			this.multiSampleType = multiSampleType;
+			this.surfaceFormat = surfaceFormat;
+			this.renderTargetUsage = renderTargetUsage;
+			this.usage = usage;
+			this.isRenderTarget = isRenderTarget;
+		}
+
+		public override bool Load()
+		{
+			texture.load(parent, fileName, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, isRenderTarget);
+			return true;
+		}
+	}
+
 	public class Texture2D : Disposable, Texture2DI
 	{
 		#region Properties
+		public bool Loaded {get; private set;}
 		protected Video video;
 		internal X.Texture2D texture;
 		public Size2 Size {get; private set;}
@@ -22,22 +58,27 @@ namespace Reign.Video.XNA
 		public Texture2D(DisposableI parent, string fileName)
 		: base(parent)
 		{
-			init(parent, fileName, 0, 0, false, MultiSampleTypes.None, SurfaceFormats.RGBAx8, RenderTargetUsage.PlatformDefault, false);
+			new Texture2DStreamLoader(this, parent, fileName, 0, 0, false, MultiSampleTypes.None, SurfaceFormats.RGBAx8, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false);
 		}
 
 		public Texture2D(DisposableI parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat)
 		: base(parent)
 		{
-			init(parent, null, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage.PlatformDefault, false);
+			init(parent, null, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false);
 		}
 
 		protected Texture2D(DisposableI parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage)
 		: base(parent)
 		{
-			init(parent, null, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, false);
+			init(parent, null, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, BufferUsages.Default, false);
+		}
+
+		internal void load(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
+		{
+			init(parent, fileName, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, isRenderTarget);
 		}
 		
-		protected virtual void init(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool isRenderTarget)
+		protected virtual void init(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
 		{
 			try
 			{
@@ -70,6 +111,8 @@ namespace Reign.Video.XNA
 				Dispose();
 				throw e;
 			}
+
+			Loaded = true;
 		}
 
 		public override void Dispose()

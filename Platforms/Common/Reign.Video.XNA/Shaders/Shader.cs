@@ -7,10 +7,31 @@ using System.IO;
 
 namespace Reign.Video.XNA
 {
+	class ShaderStreamLoader : StreamLoaderI
+	{
+		private DisposableI parent;
+		private Shader shader;
+		private string fileName;
+		private ShaderVersions shaderVersion;
+
+		public ShaderStreamLoader(Shader shader, DisposableI parent, string fileName, ShaderVersions shaderVersion)
+		{
+			this.shader = shader;
+			this.parent = parent;
+			this.fileName = fileName;
+			this.shaderVersion = shaderVersion;
+		}
+
+		public override bool Load()
+		{
+			shader.load(parent, fileName, shaderVersion);
+			return true;
+		}
+	}
+
 	public class Shader : ShaderI
 	{
 		#region Properties
-		private Video video;
 		private Effect effect;
 		private EffectPass pass;
 		private List<ShaderVariable> variables;
@@ -22,10 +43,13 @@ namespace Reign.Video.XNA
 		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion)
 		: base(parent)
 		{
+			new ShaderStreamLoader(this, parent, fileName, shaderVersion);
+		}
+
+		internal void load(DisposableI parent, string fileName, ShaderVersions shaderVersion)
+		{
 			try
 			{
-				video = parent.FindParentOrSelfWithException<Video>();
-
 				effect = parent.FindParentOrSelfWithException<RootDisposable>().Content.Load<Effect>(Streams.StripFileExt(fileName));
 				loadedFromContentManager = true;
 				pass = effect.CurrentTechnique.Passes[0];
@@ -38,6 +62,8 @@ namespace Reign.Video.XNA
 				Dispose();
 				throw ex;
 			}
+
+			Loaded = true;
 		}
 
 		public override void Dispose()

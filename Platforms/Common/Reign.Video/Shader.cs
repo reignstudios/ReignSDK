@@ -84,7 +84,24 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
-		#if WINDOWS
+		#if METRO
+		protected async System.Threading.Tasks.Task<byte[][]> getShaders(string fileName)
+		{
+			var code = new byte[2][];
+			using (var file = await Streams.OpenFile(fileName))
+			using (var reader = new BinaryReader(file))
+			{
+				int vsSize = reader.ReadInt32();
+				int psSize = reader.ReadInt32();
+				code[0] = new byte[vsSize];
+				code[1] = new byte[psSize];
+				file.Read(code[0], 0, vsSize);
+				file.Read(code[1], 0, psSize);
+			}
+
+			return code;
+		}
+		#else
 		protected string[] getShaders(string fileName)
 		{
 			string code = null;
@@ -104,23 +121,6 @@ namespace Reign.Video
 			string pixelCode = Regex.Replace(match.Value, "#.*", "");
 
 			return new string[] {globalCode + vertexCode, globalCode + pixelCode};
-		}
-		#else
-		protected async System.Threading.Tasks.Task<byte[][]> getShaders(string fileName)
-		{
-			var code = new byte[2][];
-			using (var file = await Streams.OpenFile(fileName))
-			using (var reader = new BinaryReader(file))
-			{
-				int vsSize = reader.ReadInt32();
-				int psSize = reader.ReadInt32();
-				code[0] = new byte[vsSize];
-				code[1] = new byte[psSize];
-				file.Read(code[0], 0, vsSize);
-				file.Read(code[1], 0, psSize);
-			}
-
-			return code;
 		}
 		#endif
 
