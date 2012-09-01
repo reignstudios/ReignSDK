@@ -68,7 +68,7 @@ namespace ShaderCompiler.Core
 		
 		private void initProject(string fileName)
 		{
-			using (var reader = new XmlTextReader(fileName))
+			using (var reader = XmlReader.Create(fileName))
 			{
 				while (reader.Read())
 				{
