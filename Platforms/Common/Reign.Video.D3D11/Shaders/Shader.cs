@@ -101,54 +101,61 @@ namespace Reign.Video.D3D11
 			using (var file = await Streams.OpenFile(Streams.StripFileExt(fileName) + ".ref"))
 			using (var reader = new System.IO.StreamReader(file))
 			{
-				var values = reader.ReadLine().Split(' ');
-				bool vsVar = false, psVar = false, vsRes = false, psRes = false;
-				switch (values[0])
+				var value = reader.ReadLine();
+				while (value != null)
 				{
-					case ("gVar"):
-						vsVar = true;
-						psVar = true;
-						break;
+					var values = value.Split(' ');
 
-					case ("gRes"):
-						vsRes = true;
-						psRes = true;
-						break;
+					bool vsVar = false, psVar = false, vsRes = false, psRes = false;
+					switch (values[0])
+					{
+						case ("gVar"):
+							vsVar = true;
+							psVar = true;
+							break;
 
-					case ("vsVar"): vsVar = true; break;
-					case ("psVar"): vsVar = true; break;
-					case ("vsRes"): vsRes = true; break;
-					case ("psRes"): vsRes = true; break;
-				}
+						case ("gRes"):
+							vsRes = true;
+							psRes = true;
+							break;
 
-				if (vsVar)
-				{
-					vsVariableNames.Add(values[1]);
-					int size = int.Parse(values[2]);
-					vsVariableByteOffsets.Add(size);
-					vsVariableBufferSize += size;
-				}
+						case ("vsVar"): vsVar = true; break;
+						case ("psVar"): psVar = true; break;
+						case ("vsRes"): vsRes = true; break;
+						case ("psRes"): psRes = true; break;
+					}
 
-				if (psVar)
-				{
-					psVariableNames.Add(values[1]);
-					int size = int.Parse(values[2]);
-					psVariableByteOffsets.Add(size);
-					psVariableBufferSize += size;
-				}
+					if (vsVar)
+					{
+						vsVariableNames.Add(values[1]);
+						int offset = int.Parse(values[2]);
+						vsVariableByteOffsets.Add(offset);
+						vsVariableBufferSize += int.Parse(values[3]);
+					}
 
-				if (vsRes)
-				{
-					vsResourceNames.Add(values[1]);
-					vsResourceIndices.Add(int.Parse(values[2]));
-					++vsResourceCount;
-				}
+					if (psVar)
+					{
+						psVariableNames.Add(values[1]);
+						int offset = int.Parse(values[2]);
+						psVariableByteOffsets.Add(offset);
+						psVariableBufferSize += int.Parse(values[3]);
+					}
+
+					if (vsRes)
+					{
+						vsResourceNames.Add(values[1]);
+						vsResourceIndices.Add(int.Parse(values[2]));
+						++vsResourceCount;
+					}
 				
-				if (psRes)
-				{
-					psResourceNames.Add(values[1]);
-					psResourceIndices.Add(int.Parse(values[2]));
-					++psResourceCount;
+					if (psRes)
+					{
+						psResourceNames.Add(values[1]);
+						psResourceIndices.Add(int.Parse(values[2]));
+						++psResourceCount;
+					}
+
+					value = reader.ReadLine();
 				}
 			}
 		}

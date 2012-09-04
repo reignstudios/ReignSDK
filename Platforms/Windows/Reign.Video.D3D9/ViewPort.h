@@ -19,6 +19,7 @@ namespace Reign
 		#pragma endregion
 
 		#pragma region Methods
+		public: virtual void Apply() override;
 		public: virtual void Apply(RenderTargetI^ renderTarget) override;
 		#pragma endregion
 	};

@@ -4,7 +4,7 @@
 namespace Reign_Video_D3D11_Component
 {
 	#pragma region Constructors
-	TextureError Texture2DCom::Init(VideoCom^ video, int width, int height, bool generateMipmaps, const array<IntPtr>^ mipmaps, const array<int>^ mipmapSizes, const array<int>^ mipmapPitches, int multiSampleMultiple, REIGN_DXGI_FORMAT surfaceFormat, REIGN_D3D11_USAGE usage, REIGN_D3D11_CPU_ACCESS_FLAG cpuUsage, bool isRenderTarget)
+	TextureError Texture2DCom::Init(VideoCom^ video, int width, int height, bool generateMipmaps, const array<__int64>^ mipmaps, const array<int>^ mipmapSizes, const array<int>^ mipmapPitches, int multiSampleMultiple, REIGN_DXGI_FORMAT surfaceFormat, REIGN_D3D11_USAGE usage, REIGN_D3D11_CPU_ACCESS_FLAG cpuUsage, bool isRenderTarget)
 	{
 		null();
 		this->video = video;
@@ -36,7 +36,7 @@ namespace Reign_Video_D3D11_Component
 			for (int i = 0; i != mipmaps->Length; ++i)
 			{
 				ZeroMemory(&subData[i], sizeof(D3D11_SUBRESOURCE_DATA));
-				subData[i].pSysMem = mipmaps[i].ToPointer();
+				subData[i].pSysMem = (void*)mipmaps[i];
 				subData[i].SysMemPitch = mipmapPitches[i];
 			}
 		}

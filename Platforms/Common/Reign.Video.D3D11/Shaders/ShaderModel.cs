@@ -8,6 +8,9 @@ namespace Reign.Video.D3D11
 	public abstract class ShaderModel : Disposable
 	{
 		#region Properties
+		#if METRO
+		protected Shader shader;
+		#endif
 		internal ShaderModelCom com;
 		#endregion
 
@@ -21,6 +24,9 @@ namespace Reign.Video.D3D11
 		{
 			try
 			{
+				#if METRO
+				this.shader = shader;
+				#endif
 				var video = shader.FindParentOrSelfWithException<Video>();
 				com = new ShaderModelCom();
 
@@ -78,6 +84,7 @@ namespace Reign.Video.D3D11
 			com.Apply();
 		}
 
+		#if WINDOWS
 		public int Variable(string name)
 		{
 			return com.Variable(name);
@@ -87,6 +94,10 @@ namespace Reign.Video.D3D11
 		{
 			return com.Resource(name);
 		}
+		#else
+		public abstract int Variable(string name);
+		public abstract int Resource(string name);
+		#endif
 		#endregion
 	}
 }

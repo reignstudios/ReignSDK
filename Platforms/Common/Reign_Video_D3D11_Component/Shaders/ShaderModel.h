@@ -49,9 +49,9 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Methods
 		public: void Apply();
+		#if WINDOWS
 		public: int Variable(string^ name);
 		public: int Resource(string^ name);
-		#if WINDOWS
 		public: static string^ Compile(string^ code, int codeSize, string^ shaderType, [Out] IntPtr% buffer, [Out] int% bufferSize);
 		#endif
 		#pragma endregion

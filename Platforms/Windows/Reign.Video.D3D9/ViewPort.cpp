@@ -25,28 +25,26 @@ namespace Reign
 	#pragma endregion
 
 	#pragma region Methods
+	void ViewPort::Apply()
+	{
+		D3DVIEWPORT9 viewPort =
+		{
+			Location.X, video->lastWindowFrameSize.Height - Size.Height - Location.Y,
+			Size.Width, Size.Height,
+			0.0f, 1.0f
+		};
+		video->Device->SetViewport(&viewPort);
+	}
+
 	void ViewPort::Apply(RenderTargetI^ renderTarget)
 	{
-		if (renderTarget == nullptr)
+		D3DVIEWPORT9 viewPort =
 		{
-			D3DVIEWPORT9 viewPort =
-			{
-				Location.X, video->lastWindowFrameSize.Height - Size.Height - Location.Y,
-				Size.Width, Size.Height,
-				0.0f, 1.0f
-			};
-			video->Device->SetViewport(&viewPort);
-		}
-		else
-		{
-			D3DVIEWPORT9 viewPort =
-			{
-				Location.X, renderTarget->Size.Height - Size.Height - Location.Y,
-				Size.Width, Size.Height,
-				0.0f, 1.0f
-			};
-			video->Device->SetViewport(&viewPort);
-		}
+			Location.X, renderTarget->Size.Height - Size.Height - Location.Y,
+			Size.Width, Size.Height,
+			0.0f, 1.0f
+		};
+		video->Device->SetViewport(&viewPort);
 	}
 	#pragma endregion
 }

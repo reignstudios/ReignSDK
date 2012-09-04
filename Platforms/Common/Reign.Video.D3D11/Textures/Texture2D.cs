@@ -96,7 +96,7 @@ namespace Reign.Video.D3D11
 
 		protected virtual void init(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
 		{
-			IntPtr[] mipmaps = null;
+			long[] mipmaps = null;
 			int[] mipmapSizes = null, mipmapPitches = null;
 			try
 			{
@@ -105,7 +105,7 @@ namespace Reign.Video.D3D11
 				// load image data
 				if (image != null)
 				{
-					mipmaps = new IntPtr[image.Mipmaps.Length];
+					mipmaps = new long[image.Mipmaps.Length];
 					mipmapSizes = new int[image.Mipmaps.Length];
 					mipmapPitches = new int[image.Mipmaps.Length];
 					for (int i = 0; i != mipmaps.Length; ++i)
@@ -114,8 +114,8 @@ namespace Reign.Video.D3D11
 						IntPtr mipmapPtr = Marshal.AllocHGlobal(imageMipmap.Data.Length);
 						Marshal.Copy(imageMipmap.Data, 0, mipmapPtr, imageMipmap.Data.Length);
 						mipmapSizes[i] = imageMipmap.Data.Length;
-						mipmapPitches[i] = imageMipmap.Pitch;//(imageMipmap.Size.Width / 2) * 4;
-						mipmaps[i] = mipmapPtr;
+						mipmapPitches[i] = imageMipmap.Pitch;
+						mipmaps[i] = mipmapPtr.ToInt64();
 					}
 
 					Size = image.Size;
@@ -161,7 +161,7 @@ namespace Reign.Video.D3D11
 				{
 					for (int i = 0; i != mipmaps.Length; ++i)
 					{
-						if (mipmaps[i] != IntPtr.Zero) Marshal.FreeHGlobal(mipmaps[i]);
+						if (mipmaps[i] != 0) Marshal.FreeHGlobal(new IntPtr(mipmaps[i]));
 					}
 				}
 			}

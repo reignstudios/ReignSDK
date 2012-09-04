@@ -59,7 +59,7 @@ namespace Reign_Video_D3D11_Component
 		{
 			variableBufferBytesCount = constDesc.Size;
 			variableBufferBytes = new char[constDesc.Size];
-			for (uint i = 0; i != constDesc.Size; ++i) variableBufferBytes[i] = 0;
+			ZeroMemory(variableBufferBytes, sizeof(char) * constDesc.Size);
 
 			ID3D11Buffer* variableBufferTEMP = 0;
 			D3D11_BUFFER_DESC cbDesc;
@@ -105,7 +105,7 @@ namespace Reign_Video_D3D11_Component
 		{
 			variableBufferBytesCount = variableBufferSize;
 			variableBufferBytes = new char[variableBufferSize];
-			for (uint i = 0; i != variableBufferSize; ++i) variableBufferBytes[i] = 0;
+			ZeroMemory(variableBufferBytes, sizeof(char) * variableBufferSize);
 
 			ID3D11Buffer* variableBufferTEMP = 0;
 			D3D11_BUFFER_DESC cbDesc;
@@ -174,9 +174,9 @@ namespace Reign_Video_D3D11_Component
 		}
 	}
 
+	#if WINDOWS
 	int ShaderModelCom::Variable(string^ name)
 	{
-		#if WINDOWS
 		char* namePtr = StringToAscii(name);
 		ID3D11ShaderReflectionVariable* variable = variables->GetVariableByName(namePtr);
 		delete namePtr;
@@ -188,16 +188,12 @@ namespace Reign_Video_D3D11_Component
 		{
 			return desc.StartOffset;
 		}
-		#else
-
-		#endif
 
 		return -1;
 	}
 
 	int ShaderModelCom::Resource(string^ name)
 	{
-		#if WINDOWS
 		char* nameAscii = StringToAscii(name);
 		for (uint i = 0; i != resourcesCount; ++i)
 		{
@@ -211,14 +207,10 @@ namespace Reign_Video_D3D11_Component
 			}
 		}
 		delete nameAscii;
-		#else
-
-		#endif
 
 		return -1;
 	}
 
-	#if WINDOWS
 	string^ ShaderModelCom::Compile(string^ code, int codeSize, string^ shaderType, [Out] IntPtr% buffer, [Out] int% bufferSize)
 	{
 		char* shaderTypeName = StringToAscii(shaderType);

@@ -88,7 +88,7 @@ namespace Reign.Video
 		protected async System.Threading.Tasks.Task<byte[][]> getShaders(string fileName)
 		{
 			var code = new byte[2][];
-			using (var file = await Streams.OpenFile(fileName))
+			using (var file = await Streams.OpenFile(Streams.StripFileExt(fileName) + ".mrs"))
 			using (var reader = new BinaryReader(file))
 			{
 				int vsSize = reader.ReadInt32();

@@ -40,6 +40,15 @@ namespace Reign.Video
 			new SoftwareModelStreamLoader(this, fileName);
 		}
 
+		#if METRO
+		internal async void load(string fileName)
+		{
+			using (var file = await Streams.OpenFile(fileName))
+			{
+				init(file);
+			}
+		}
+		#else
 		internal void load(string fileName)
 		{
 			using (var file = Streams.OpenFile(fileName))
@@ -47,6 +56,7 @@ namespace Reign.Video
 				init(file);
 			}
 		}
+		#endif
 
 		private void init(Stream stream)
 		{

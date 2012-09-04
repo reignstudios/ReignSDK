@@ -53,6 +53,28 @@ namespace Reign.Video.D3D11
 			base.Apply();
 			vertexShaderCom.Apply();
 		}
+
+		#if METRO
+		public override int Variable(string name)
+		{
+			for (int i = 0; i != shader.vsVariableNames.Count; ++i)
+			{
+				if (shader.vsVariableNames[i] == name) return shader.vsVariableByteOffsets[i];
+			}
+
+			return -1;
+		}
+
+		public override int Resource(string name)
+		{
+			for (int i = 0; i != shader.vsResourceCount; ++i)
+			{
+				if (shader.vsResourceNames[i] == name) return shader.vsResourceIndices[i];
+			}
+
+			return -1;
+		}
+		#endif
 		#endregion
 	}
 }

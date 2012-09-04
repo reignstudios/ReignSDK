@@ -36,10 +36,14 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Methods
+		public override void Apply()
+		{
+			com.Apply(Location.X, video.windowFrameSize.Height - Size.Height - Location.Y, Size.Width, Size.Height);
+		}
+
 		public override void Apply(RenderTargetI renderTarget)
 		{
-			if (renderTarget == null) com.Apply(Location.X, video.windowFrameSize.Height - Size.Height - Location.Y, Size.Width, Size.Height);
-			else com.Apply(Location.X, renderTarget.Size.Height - Size.Height - Location.Y, Size.Width, Size.Height);
+			com.Apply(Location.X, renderTarget.Size.Height - Size.Height - Location.Y, Size.Width, Size.Height);
 		}
 		#endregion
 	}

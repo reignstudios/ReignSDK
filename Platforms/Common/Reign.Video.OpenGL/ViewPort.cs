@@ -24,6 +24,15 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Methods
+		public override void Apply()
+		{
+			GL.Viewport((int)Location.X, (int)Location.Y, Size.Width, Size.Height);
+
+			#if DEBUG
+			Video.checkForError();
+			#endif
+		}
+
 		public override void Apply(RenderTargetI renderTarget)
 		{
 			GL.Viewport((int)Location.X, (int)Location.Y, Size.Width, Size.Height);

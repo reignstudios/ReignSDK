@@ -53,6 +53,28 @@ namespace Reign.Video.D3D11
 			base.Apply();
 			pixelShaderCom.Apply();
 		}
+
+		#if METRO
+		public override int Variable(string name)
+		{
+			for (int i = 0; i != shader.psVariableNames.Count; ++i)
+			{
+				if (shader.psVariableNames[i] == name) return shader.psVariableByteOffsets[i];
+			}
+
+			return -1;
+		}
+
+		public override int Resource(string name)
+		{
+			for (int i = 0; i != shader.psResourceCount; ++i)
+			{
+				if (shader.psResourceNames[i] == name) return shader.psResourceIndices[i];
+			}
+
+			return -1;
+		}
+		#endif
 		#endregion
 	}
 }

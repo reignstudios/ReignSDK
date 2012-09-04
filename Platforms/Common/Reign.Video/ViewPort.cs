@@ -37,6 +37,7 @@ namespace Reign.Video
 			this.Size = size;
 		}
 
+		public abstract void Apply();
 		public abstract void Apply(RenderTargetI renderTarget);
 		#endregion
 	}

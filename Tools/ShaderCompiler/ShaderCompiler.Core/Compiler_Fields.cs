@@ -230,6 +230,7 @@ namespace ShaderCompiler.Core
 			if (vsConstansts == null) label = "g";
 			else if (vsConstansts == true) label = "vs";
 			else label = "ps";
+			int variableSize = 0;
 			foreach (var field in normalFields)
 			{
 				if (field.FieldType == typeof(Texture2D))
@@ -239,11 +240,13 @@ namespace ShaderCompiler.Core
 				}
 				else
 				{
-					reflectionStream.WriteLine(string.Format("{2}Var {0} {1}", field.Name, variableByteOffset, label));
-					if (field.FieldType == typeof(Vector2) || field.FieldType == typeof(Vector3) || field.FieldType == typeof(Vector4)) variableByteOffset += sizeof(float) * 4;
-					if (field.FieldType == typeof(Matrix2)) variableByteOffset += sizeof(float) * 4 * 2;
-					if (field.FieldType == typeof(Matrix3)) variableByteOffset += sizeof(float) * 4 * 3;
-					if (field.FieldType == typeof(Matrix4)) variableByteOffset += sizeof(float) * 4 * 4;
+					if (field.FieldType == typeof(Vector2) || field.FieldType == typeof(Vector3) || field.FieldType == typeof(Vector4)) variableSize = sizeof(float) * 4;
+					if (field.FieldType == typeof(Matrix2)) variableSize = sizeof(float) * 4 * 2;
+					if (field.FieldType == typeof(Matrix3)) variableSize = sizeof(float) * 4 * 3;
+					if (field.FieldType == typeof(Matrix4)) variableSize = sizeof(float) * 4 * 4;
+
+					reflectionStream.WriteLine(string.Format("{3}Var {0} {1} {2}", field.Name, variableByteOffset, variableSize, label));
+					variableByteOffset += variableSize;
 				}
 			}
 		}
