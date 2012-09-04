@@ -100,15 +100,26 @@ namespace ShaderCompiler.Core
 		{
 			this.outDirectory = outDirectory;
 			this.outputType = outputType;
+
+			// compile shader library
+			var exeDir = Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0", "MSBuildToolsPath", "") as string;
+			if (string.IsNullOrEmpty(exeDir)) throw new Exception("Cant find MSBuild for .NET 4.");
+
+			var process = new System.Diagnostics.Process();
+			process.StartInfo.FileName = exeDir + "MSBuild.exe";
+			process.StartInfo.Arguments = string.Format("{0} /property:Configuration=Debug", inDirectory + inFile);
+			process.StartInfo.CreateNoWindow = true;
+			process.StartInfo.UseShellExecute = false;
+			process.Start();
+			process.WaitForExit();
 			
+			// make sure output directory exists
 			if (!Directory.Exists(outDirectory))
 			{
 				Directory.CreateDirectory(outDirectory);
 			}
 			
-			var materialCode = new List<string>();
-			if (!compileMaterial) materialCode = null;
-			compileLibrary(inDirectory + "bin/Debug/" + inFile.Split('.')[0] + ".dll", false, materialCode, compileMetroShaders);
+			compileLibrary(inDirectory + "bin/Debug/" + inFile.Split('.')[0] + ".dll", false, compileMetroShaders);
 		}
 		
 		private string compileFromMemory(string code)
@@ -139,7 +150,7 @@ namespace ShaderCompiler.Core
 				if (compilerResults.Errors.Count != 0) throw new Exception(errors + Environment.NewLine + "CSharp Compiler Errors.");
 
 				// Convert Reign Code
-				code = compileLibrary(compilerResults.CompiledAssembly.Location, true, null, false);
+				code = compileLibrary(compilerResults.CompiledAssembly.Location, true, false);
 
 				Console.WriteLine("Compile Success!");
 			}
@@ -203,7 +214,7 @@ namespace ShaderCompiler.Core
 			}
 		}
 		
-		private string compileLibrary(string dllFileName, bool writeToMemory, List<string> materialCode, bool compileMetroShaders)
+		private string compileLibrary(string dllFileName, bool writeToMemory, bool compileMetroShaders)
 		{
 string xnaEndTechniqueBlock =
 @"
@@ -224,6 +235,7 @@ technique MainTechnique
 			var initLines = new List<string>();
 			var names = dllFileName.Split('/', '\\', '.');
 			string name = names[names.Length-2];
+			var materialCode = new Dictionary<string,string>();
 			foreach (var obj in objects)
 			{
 				var iFaces = obj.GetInterfaces();
@@ -239,21 +251,20 @@ technique MainTechnique
 							{
 								using (var reflectionFile = new FileStream(outDirectory + FileTag + obj.Name + ".ref", FileMode.Create, FileAccess.Write))
 								{
-									compileShader(obj, stream, vsStream, psStream, reflectionFile, materialCode);
+									compileShader(obj, stream, vsStream, psStream, reflectionFile);
 								}
-								var metroShader = new MetroShaderCompiler(outDirectory + FileTag + obj.Name + ".rs");
 							}
 							else
 							{
-								compileShader(obj, stream, vsStream, psStream, null, materialCode);
+								compileShader(obj, stream, vsStream, psStream, null);
 							}
 
-							if (materialCode != null)
+							if (compileMetroShaders)
 							{
 										
 								string initLine;
 								var codeFile = compileMaterial(name, obj, out initLine);
-								materialCode.Add(codeFile);
+								materialCode.Add(obj.Name, codeFile);
 								initLines.Add(initLine);
 							}
 									
@@ -308,83 +319,60 @@ technique MainTechnique
 									}
 								}
 							}
+
+							// compile metro shader bytecode
+							if (outputType == CompilerOutputs.D3D11 && compileMetroShaders)
+							{
+								new MetroShaderCompiler(outDirectory + FileTag + obj.Name + ".rs");
+							}
 						}
 					}
 				}
 			}
 
-			if (materialCode != null)
+			if (compileMetroShaders)
 			{
-				var codeProvider = new CSharpCodeProvider();
-				var options = new CompilerParameters(new string[] {"System.dll", "ShaderCompiler.Core.dll", "Reign.Core.dll", "Reign.Video.dll", "Reign.Video.API.dll"});
-				options.GenerateExecutable = false;
-				options.TreatWarningsAsErrors = false;
-				options.CompilerOptions = "/optimize";
-				options.OutputAssembly = outDirectory + name + ".dll";
+				string compiledShaders =
+@"
+using System;
+using System.Collections.Generic;
+using Reign.Core;
+using Reign.Video;
+using Reign.Video.API;
 
-				try
+namespace ShaderMaterials.{0}
+{{
+	public static class Materials
+	{{
+		public static List<Type> Types {{get; private set;}}
+
+		public static void Init(VideoTypes apiType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
+		{{
+			// init shaders
+			Types = new List<Type>();
+			{1}
+		}}
+	}}
+}}
+";
+				string initLineText = "";
+				foreach (var initLine in initLines) initLineText += initLine;
+				materialCode.Add("CompiledMaterials", string.Format(compiledShaders, name, initLineText));
+
+				foreach (var material in materialCode)
 				{
-					string compiledShaders =
-					@"
-						using System;
-						using System.Collections.Generic;
-						using Reign.Core;
-						using Reign.Video;
-						using Reign.Video.API;
-
-						namespace ShaderMaterials.{0}
-						{{
-							public static class Materials
-							{{
-								public static List<Type> Types {{get; private set;}}
-
-								public static void Init(VideoTypes apiType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
-								{{
-									// init shaders
-									Types = new List<Type>();
-									{1}
-								}}
-							}}
-						}}
-					";
-					string initLineText = "";
-					foreach (var initLine in initLines) initLineText += initLine;
-					materialCode.Add(string.Format(compiledShaders, name, initLineText));
-					var compilerResults = codeProvider.CompileAssemblyFromSource(options, materialCode.ToArray());
-
-					// Compiler Output
-					foreach (var line in compilerResults.Output)
+					using (var codeFile = new FileStream(outDirectory + material.Key + ".cs", FileMode.Create, FileAccess.Write))
+					using (var writer = new StreamWriter(codeFile))
 					{
-						Console.WriteLine(line);
+						writer.Write(material.Value);
 					}
-
-					// Compiler Errors
-					string errors = null;
-					foreach (var line in compilerResults.Errors)
-					{
-						errors += line + Environment.NewLine;
-					}
-					if (compilerResults.Errors.Count != 0) throw new Exception(errors + Environment.NewLine + "CSharp Material Compiler Errors.");
-
-					Console.WriteLine("Compile Material Success!");
-				}
-				catch(Exception e)
-				{
-					string message = "Material Compile Failer:" + Environment.NewLine + e.Message;
-					Console.WriteLine(message);
-					throw new Exception(message);
-				}
-				finally
-				{
-					codeProvider.Dispose();
-					options.TempFiles.Delete();
 				}
 			}
 			
 			return lastShaderOut;
 		}
 		
-		private void compileShader(Type shader, Stream stream, Stream vsStream, Stream psStream, Stream reflectionStream, List<string> materialCode)
+		private void compileShader(Type shader, Stream stream, Stream vsStream, Stream psStream, Stream reflectionStream)
 		{
 			using (var writer = new StreamWriter(stream))
 			using (var vsWriter = new StreamWriter(vsStream))
@@ -536,137 +524,137 @@ technique MainTechnique
 
 			// create class objects
 			string shaderFile = 
-			@"
-				using System.Collections.Generic;
-				using Reign.Core;
-				using Reign.Video;
-				using A = Reign.Video.API;
+@"
+using System.Collections.Generic;
+using Reign.Core;
+using Reign.Video;
+using A = Reign.Video.API;
 
-				namespace ShaderMaterials.{0}
-				{{
-					class {1}MaterialStreamLoader : StreamLoaderI
-					{{
-						private A.VideoTypes videoType;
-						private DisposableI parent;
-						private string contentPath;
-						private string tag;
-						private ShaderVersions shaderVersion;
+namespace ShaderMaterials.{0}
+{{
+	class {1}MaterialStreamLoader : StreamLoaderI
+	{{
+		private A.VideoTypes videoType;
+		private DisposableI parent;
+		private string contentPath;
+		private string tag;
+		private ShaderVersions shaderVersion;
 
-						public {1}MaterialStreamLoader(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
-						{{
-							this.videoType = videoType;
-							this.parent = parent;
-							this.contentPath = contentPath;
-							this.tag = tag;
-							this.shaderVersion = shaderVersion;
-						}}
+		public {1}MaterialStreamLoader(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
+		{{
+			this.videoType = videoType;
+			this.parent = parent;
+			this.contentPath = contentPath;
+			this.tag = tag;
+			this.shaderVersion = shaderVersion;
+		}}
 
-						public override bool Load()
-						{{
-							if (!{1}Material.load(videoType, parent, contentPath, tag, shaderVersion)) return false;
-							return true;
-						}}
-					}}
+		public override bool Load()
+		{{
+			if (!{1}Material.load(videoType, parent, contentPath, tag, shaderVersion)) return false;
+			return true;
+		}}
+	}}
 
-					public class {1}Material : MaterialI
-					{{
-						// static properties
-						public static bool Loaded {{get; private set;}}
-						public static ShaderI Shader {{get; private set;}}
-						public static BufferLayoutDescI BufferLayoutDesc {{get; private set;}}
-						public static BufferLayoutI BufferLayout {{get; private set;}}
-						{2}
+	public class {1}Material : MaterialI
+	{{
+		// static properties
+		public static bool Loaded {{get; private set;}}
+		public static ShaderI Shader {{get; private set;}}
+		public static BufferLayoutDescI BufferLayoutDesc {{get; private set;}}
+		public static BufferLayoutI BufferLayout {{get; private set;}}
+		{2}
 
-						// instance properties
-						public delegate void ApplyCallbackMethod({1}Material material, MeshI mesh);
-						public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
-						{3}
+		// instance properties
+		public delegate void ApplyCallbackMethod({1}Material material, MeshI mesh);
+		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
+		{3}
 
-						// constructors
-						public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
-						{{
-							new {1}MaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
-							var elements = new List<BufferLayoutElement>();
-							{7}
-							BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
-						}}
+		// constructors
+		public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
+		{{
+			new {1}MaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
+			var elements = new List<BufferLayoutElement>();
+			{7}
+			BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
+		}}
 
-						internal static bool load(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
-						{{
-							if (Shader == null)
-							{{
-								Shader = A.Shader.Create(videoType, parent, contentPath + tag + ""{1}.rs"", shaderVersion);
-								return false;
-							}}
-							if (!Shader.Loaded)
-							{{
-								return false;
-							}}
-							{8}
+		internal static bool load(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
+		{{
+			if (Shader == null)
+			{{
+				Shader = A.Shader.Create(videoType, parent, contentPath + tag + ""{1}.rs"", shaderVersion);
+				return false;
+			}}
+			if (!Shader.Loaded)
+			{{
+				return false;
+			}}
+			{8}
 
-							BufferLayout = A.BufferLayout.Create(videoType, Shader, Shader, BufferLayoutDesc);
+			BufferLayout = A.BufferLayout.Create(videoType, Shader, Shader, BufferLayoutDesc);
 
-							Loaded = true;
-							return true;
-						}}
+			Loaded = true;
+			return true;
+		}}
 
-						// methods
-						public void Enable()
-						{{
-							BufferLayout.Enable();
-						}}
+		// methods
+		public void Enable()
+		{{
+			BufferLayout.Enable();
+		}}
 
-						public void ApplyGlobalContants(MeshI mesh)
-						{{
-							if (ApplyGlobalConstantsCallback != null) ApplyGlobalConstantsCallback(this, mesh);
-							{4}
-						}}
+		public void ApplyGlobalContants(MeshI mesh)
+		{{
+			if (ApplyGlobalConstantsCallback != null) ApplyGlobalConstantsCallback(this, mesh);
+			{4}
+		}}
 
-						public void ApplyInstanceContants(MeshI mesh)
-						{{
-							if (ApplyInstanceConstantsCallback != null) ApplyInstanceConstantsCallback(this, mesh);
-							{5}
-						}}
+		public void ApplyInstanceContants(MeshI mesh)
+		{{
+			if (ApplyInstanceConstantsCallback != null) ApplyInstanceConstantsCallback(this, mesh);
+			{5}
+		}}
 
-						public void ApplyInstancingContants(MeshI mesh)
-						{{
-							if (ApplyInstancingConstantsCallback != null) ApplyInstancingConstantsCallback(this, mesh);
-							{6}
-						}}
+		public void ApplyInstancingContants(MeshI mesh)
+		{{
+			if (ApplyInstancingConstantsCallback != null) ApplyInstancingConstantsCallback(this, mesh);
+			{6}
+		}}
 
-						public void Apply(MeshI mesh)
-						{{
-							ApplyGlobalContants(mesh);
-							ApplyInstanceContants(mesh);
-							ApplyInstancingContants(mesh);
-							Shader.Apply();
-						}}
+		public void Apply(MeshI mesh)
+		{{
+			ApplyGlobalContants(mesh);
+			ApplyInstanceContants(mesh);
+			ApplyInstancingContants(mesh);
+			Shader.Apply();
+		}}
 
-						public void ApplyGlobalContants()
-						{{
-							{4}
-						}}
+		public void ApplyGlobalContants()
+		{{
+			{4}
+		}}
 
-						public void ApplyInstanceContants()
-						{{
-							{5}
-						}}
+		public void ApplyInstanceContants()
+		{{
+			{5}
+		}}
 
-						public void ApplyInstancingContants()
-						{{
-							{6}
-						}}
+		public void ApplyInstancingContants()
+		{{
+			{6}
+		}}
 
-						public void Apply()
-						{{
-							ApplyGlobalContants();
-							ApplyInstanceContants();
-							ApplyInstancingContants();
-							Shader.Apply();
-						}}
-					}}
-				}}
-			";
+		public void Apply()
+		{{
+			ApplyGlobalContants();
+			ApplyInstanceContants();
+			ApplyInstancingContants();
+			Shader.Apply();
+		}}
+	}}
+}}
+";
 
 			initLine = string.Format("Types.Add(typeof({0}Material)); ", shader.Name) + shader.Name + "Material.Init(apiType, parent, contentPath, tag, shaderVersion);";
 			return string.Format(shaderFile, shaderLibName, shader.Name, constantProperties, constantTypeProperties, applyGlobalMethodBody, applyInstanceMethodBody, applyInstancingMethodBody, elementsBody, constantInitBody);
