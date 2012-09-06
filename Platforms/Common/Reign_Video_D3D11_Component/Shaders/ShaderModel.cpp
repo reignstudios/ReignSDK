@@ -82,9 +82,9 @@ namespace Reign_Video_D3D11_Component
 		reflection->GetDesc(&shaderDesc);
 		if (shaderDesc.BoundResources != 0)
 		{
-			resourcesKnownCount = 0;
-			resourcesCount = shaderDesc.BoundResources;
-			resources = new ID3D11ShaderResourceView*[resourcesCount];
+			resourceKnownCount = 0;
+			resourceCount = shaderDesc.BoundResources;
+			resources = new ID3D11ShaderResourceView*[resourceCount];
 			for (uint i = 0; i != shaderDesc.BoundResources; ++i)
 			{
 				D3D11_SHADER_INPUT_BIND_DESC inputDesc;
@@ -92,7 +92,7 @@ namespace Reign_Video_D3D11_Component
 				reflection->GetResourceBindingDesc(i, &inputDesc);
 				if (inputDesc.Dimension != D3D11_SRV_DIMENSION_UNKNOWN)
 				{
-					++resourcesKnownCount;
+					++resourceKnownCount;
 				}
 			}
 		}
@@ -195,7 +195,7 @@ namespace Reign_Video_D3D11_Component
 	int ShaderModelCom::Resource(string^ name)
 	{
 		char* nameAscii = StringToAscii(name);
-		for (uint i = 0; i != resourcesCount; ++i)
+		for (uint i = 0; i != resourceCount; ++i)
 		{
 			D3D11_SHADER_INPUT_BIND_DESC desc;
 			ZeroMemory(&desc, sizeof(D3D11_SHADER_INPUT_BIND_DESC));
