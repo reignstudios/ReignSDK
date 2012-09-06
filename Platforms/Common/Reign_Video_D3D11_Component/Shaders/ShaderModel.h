@@ -33,8 +33,8 @@ namespace Reign_Video_D3D11_Component
 		private: uint variableBufferBytesCount;
 		
 		internal: ID3D11ShaderResourceView** resources;
-		internal: uint resourcesKnownCount;
-		private: uint resourcesCount;
+		internal: uint resourceKnownCount;
+		private: uint resourceCount;
 		#pragma endregion
 
 		#pragma region Constructors

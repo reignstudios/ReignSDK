@@ -125,9 +125,9 @@ namespace Reign_Video_D3D11_Component
 		// Resources
 		if (resourceCount != 0)
 		{
-			this->resourcesCount = resourcesCount;
-			this->resourcesKnownCount = resourcesCount;
-			resources = new ID3D11ShaderResourceView*[resourcesCount];
+			this->resourceCount = resourceCount;
+			this->resourceKnownCount = resourceCount;
+			resources = new ID3D11ShaderResourceView*[resourceCount];
 		}
 		#endif
 
@@ -152,8 +152,8 @@ namespace Reign_Video_D3D11_Component
 	{
 		code = 0;
 		resources = 0;
-		resourcesCount = 0;
-		resourcesKnownCount = 0;
+		resourceCount = 0;
+		resourceKnownCount = 0;
 		variableBufferBytes = 0;
 		variableBuffer = 0;
 		#if WINDOWS

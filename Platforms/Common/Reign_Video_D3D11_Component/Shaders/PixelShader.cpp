@@ -10,7 +10,7 @@ namespace Reign_Video_D3D11_Component
 		this->video = video;
 		resources = shaderModel->resources;
 		variableBuffer = shaderModel->variableBuffer;
-		resourcesKnownCount = shaderModel->resourcesKnownCount;
+		resourceKnownCount = shaderModel->resourceKnownCount;
 
 		ID3D11PixelShader* shaderTEMP;
 		#if WINDOWS
@@ -48,9 +48,9 @@ namespace Reign_Video_D3D11_Component
 			video->deviceContext->PSSetConstantBuffers(0, 1, &buffer);
 		}
 
-		if (resourcesKnownCount != 0 && resources)
+		if (resourceKnownCount != 0 && resources)
 		{
-			video->deviceContext->PSSetShaderResources(0, resourcesKnownCount, resources);
+			video->deviceContext->PSSetShaderResources(0, resourceKnownCount, resources);
 		}
 
 		video->deviceContext->PSSetShader(shader, NULL, 0);

@@ -19,7 +19,7 @@ namespace Reign_Video_D3D11_Component
 
 		private: ID3D11ShaderResourceView** resources;
 		private: ID3D11Buffer* variableBuffer;
-		private: uint resourcesKnownCount;
+		private: uint resourceKnownCount;
 		#pragma endregion
 
 		#pragma region Constructors

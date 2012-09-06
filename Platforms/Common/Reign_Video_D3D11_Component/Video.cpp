@@ -44,7 +44,7 @@ namespace Reign_Video_D3D11_Component
 		// Create Device and SwapShain
 		#if WINDOWS
 		DXGI_SWAP_CHAIN_DESC swapChainDesc;
-		ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
+		ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
 		swapChainDesc.BufferDesc.Width = width;
 		swapChainDesc.BufferDesc.Height = height;
 		swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -53,7 +53,7 @@ namespace Reign_Video_D3D11_Component
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 		#else
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc;
-		ZeroMemory(&swapChainDesc, sizeof(swapChainDesc));
+		ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC1));
 		swapChainDesc.Width = width;
 		swapChainDesc.Height = height;
 		swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
