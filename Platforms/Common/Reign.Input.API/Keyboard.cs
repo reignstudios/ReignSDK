@@ -14,6 +14,13 @@ namespace Reign.Input.API
 				return (KeyboardI)OS.CreateInstance(Input.WinForms, Input.WinForms, "Keyboard", args);
 			}
 			#endif
+
+			#if METRO
+			if (apiType == InputTypes.Metro)
+			{
+				return (KeyboardI)OS.CreateInstance(Input.Metro, Input.Metro, "Keyboard", args);
+			}
+			#endif
 			
 			#if OSX
 			if (apiType == InputTypes.Cocoa)

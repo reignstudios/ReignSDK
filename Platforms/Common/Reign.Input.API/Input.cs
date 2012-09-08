@@ -11,6 +11,10 @@ namespace Reign.Input.API
 		#if WINDOWS
 		WinForms,
 		#endif
+
+		#if METRO
+		Metro,
+		#endif
 		
 		#if XNA
 		XNA,
@@ -32,6 +36,7 @@ namespace Reign.Input.API
 	public static class Input
 	{
 		internal const string WinForms = "Reign.Input.WinForms";
+		internal const string Metro = "Reign.Input.Metro";
 		internal const string XNA = "Reign.Input.XNA";
 		internal const string Cocoa = "Reign.Input.Cocoa";
 		internal const string X11 = "Reign.Input.X11";
@@ -42,15 +47,23 @@ namespace Reign.Input.API
 			#if WINDOWS
 			bool winForms = (typeFlags & InputTypes.WinForms) != 0;
 			#endif
+
+			#if METRO
+			bool metro = (typeFlags & InputTypes.Metro) != 0;
+			#endif
+
 			#if XNA
 			bool xna = (typeFlags & InputTypes.XNA) != 0;
 			#endif
+
 			#if OSX || iOS
 			bool cocoa = (typeFlags & InputTypes.Cocoa) != 0;
 			#endif
+
 			#if LINUX
 			bool x11 = (typeFlags & InputTypes.X11) != 0;
 			#endif
+
 			#if ANDROID
 			bool android = (typeFlags & InputTypes.Android) != 0;
 			#endif
@@ -66,6 +79,15 @@ namespace Reign.Input.API
 						winForms = false;
 						type = InputTypes.WinForms;
 						return (InputI)OS.CreateInstance(WinForms, WinForms, "Input", args);
+					}
+					#endif
+
+					#if METRO
+					if (metro)
+					{
+						metro = false;
+						type = InputTypes.Metro;
+						return (InputI)OS.CreateInstance(Metro, Metro, "Input", args);
 					}
 					#endif
 

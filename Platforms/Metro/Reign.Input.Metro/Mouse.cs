@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Windows.Forms;
 using Reign.Core;
 
-namespace Reign.Input.WinForms
+namespace Reign.Input.Metro
 {
 	public class Mouse : Disposable, MouseI
 	{
@@ -20,7 +19,7 @@ namespace Reign.Input.WinForms
 		private bool leftOn, middleOn, rightOn, scollWheelChanged;
 		private float scrollWheelVelocity;
 		private Vector2 lastLocation, lastScreenLocation;
-		private Point viewLocation;
+		private Point cursorLocation;
 		#endregion
 	
 		#region Constructors
@@ -30,7 +29,6 @@ namespace Reign.Input.WinForms
 			input = parent.FindParentOrSelfWithException<Input>();
 			input.UpdateEventCallback += UpdateEvent;
 			input.UpdateCallback += Update;
-			viewLocation = this.input.window.ViewLocation;
 			
 			Left = new Button();
 			Middle = new Button();
@@ -51,26 +49,48 @@ namespace Reign.Input.WinForms
 		#endregion
 		
 		#region Methods
-		public void UpdateEvent(WindowEvent theEvent)
+		public void UpdateEvent(ApplicationEvent theEvent)
 		{
 			switch (theEvent.Type)
 			{
-				case (WindowEventTypes.LeftMouseDown): leftOn = true; break;
-				case (WindowEventTypes.LeftMouseUp): leftOn = false; break;
-				
-				case (WindowEventTypes.MiddleMouseDown): middleOn = true; break;
-				case (WindowEventTypes.MiddleMouseUp): middleOn = false; break;
-				
-				case (WindowEventTypes.RightMouseDown): rightOn = true; break;
-				case (WindowEventTypes.RightMouseUp): rightOn = false; break;
-				
-				case (WindowEventTypes.ScrollWheel):
-					scrollWheelVelocity = theEvent.ScrollWheelVelocity;
-					scollWheelChanged = true;
+				case (ApplicationEventTypes.LeftMouseDown):
+					leftOn = true;
+					cursorLocation = theEvent.CursorLocation;
 					break;
 
-				case (WindowEventTypes.Move):
-					viewLocation = input.window.ViewLocation;
+				case (ApplicationEventTypes.LeftMouseUp):
+					leftOn = false;
+					cursorLocation = theEvent.CursorLocation;
+					break;
+
+				case (ApplicationEventTypes.MiddleMouseDown):
+					middleOn = true;
+					cursorLocation = theEvent.CursorLocation;
+					break;
+
+				case (ApplicationEventTypes.MiddleMouseUp):
+					middleOn = false;
+					cursorLocation = theEvent.CursorLocation;
+					break;
+
+				case (ApplicationEventTypes.RightMouseDown):
+					rightOn = true;
+					cursorLocation = theEvent.CursorLocation;
+					break;
+
+				case (ApplicationEventTypes.RightMouseUp):
+					rightOn = false;
+					cursorLocation = theEvent.CursorLocation;
+					break;
+
+				case (ApplicationEventTypes.MouseMove):
+					cursorLocation = theEvent.CursorLocation;
+					break;
+				
+				case (ApplicationEventTypes.ScrollWheel):
+					scrollWheelVelocity = theEvent.ScrollWheelVelocity;
+					scollWheelChanged = true;
+					cursorLocation = theEvent.CursorLocation;
 					break;
 			}
 		}
@@ -91,15 +111,12 @@ namespace Reign.Input.WinForms
 			Middle.Update(middleOn);
 			Right.Update(rightOn);
 			
-			var cursorLoc = Cursor.Position;
-			
 			lastLocation = Location;
-			var loc = new Point(cursorLoc.X, cursorLoc.Y) - new Point(viewLocation.X, viewLocation.Y);
-			Location = new Vector2(loc.X, input.window.FrameSize.Height - loc.Y);
+			Location = new Vector2(cursorLocation.X, input.application.FrameSize.Height - cursorLocation.Y);
 			Velocity = Location - lastLocation;
 			
 			lastScreenLocation = ScreenLocation;
-			ScreenLocation = new Vector2(cursorLoc.X, cursorLoc.Y);
+			ScreenLocation = new Vector2(cursorLocation.X, cursorLocation.Y);
 		}
 		#endregion
 	}

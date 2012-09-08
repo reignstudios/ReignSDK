@@ -14,6 +14,13 @@ namespace Reign.Input.API
 				return (MouseI)OS.CreateInstance(Input.WinForms, Input.WinForms, "Mouse", args);
 			}
 			#endif
+
+			#if METRO
+			if (apiType == InputTypes.Metro)
+			{
+				return (MouseI)OS.CreateInstance(Input.Metro, Input.Metro, "Mouse", args);
+			}
+			#endif
 			
 			#if OSX
 			if (apiType == InputTypes.Cocoa)

@@ -6,7 +6,19 @@ namespace Reign.Core
 	{
 		Unkown,
 		Closed,
-		Touch
+		Touch,
+		#if METRO
+		KeyDown,
+		KeyUp,
+		MouseMove,
+		LeftMouseDown,
+		LeftMouseUp,
+		MiddleMouseDown,
+		MiddleMouseUp,
+		RightMouseDown,
+		RightMouseUp,
+		ScrollWheel
+		#endif
 	}
 
 	public class ApplicationEvent
@@ -15,6 +27,11 @@ namespace Reign.Core
 		public const int TouchCount = 10;
 		public bool[] TouchesOn;
 		public Vector2[] TouchLocations;
+		#if METRO
+		public int KeyCode;
+		public float ScrollWheelVelocity;
+		public Point CursorLocation;
+		#endif
 		
 		public ApplicationEvent()
 		{
@@ -70,8 +87,6 @@ namespace Reign.Core
 		#region Properties
 		public delegate void StateMethod();
 		public static StateMethod PauseCallback, ResumeCallback;
-		
-		internal ApplicationEvent theEvent;
 		internal ApplicationOrientations orientation;
 		
 		internal Size2 frameSize;
