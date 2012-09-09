@@ -7,6 +7,8 @@ namespace Reign.Video.D3D11
 {
 	class Texture2DStreamLoader : StreamLoaderI
 	{
+		private Image image;
+
 		private Texture2D texture;
 		private DisposableI parent;
 		private string fileName;
@@ -17,8 +19,6 @@ namespace Reign.Video.D3D11
 		private RenderTargetUsage renderTargetUsage;
 		private BufferUsages usage;
 		private bool isRenderTarget;
-
-		private Image image;
 
 		public Texture2DStreamLoader(Texture2D texture, DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
 		{

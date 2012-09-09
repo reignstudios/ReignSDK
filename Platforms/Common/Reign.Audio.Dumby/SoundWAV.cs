@@ -30,6 +30,8 @@ namespace Reign.Audio.Dumby
 			{
 				inactiveInstances.AddLast(new SoundWAVInstance(this, looped));
 			}
+
+			Loaded = true;
 		}
 	}
 }

@@ -84,7 +84,7 @@ namespace Reign.Audio.Android
 			lock (this)
 			{
 				if (instance == null) createPlayInstance();
-				volume = 1;
+				if (State != SoundStates.Paused) volume = 1;
 				instance.Play();
 				State = SoundStates.Playing;
 			}

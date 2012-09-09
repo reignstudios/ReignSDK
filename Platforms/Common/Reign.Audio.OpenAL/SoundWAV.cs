@@ -71,7 +71,7 @@ namespace Reign.Audio.OpenAL
 		
 		public void Play()
 		{
-			Volume = 1;
+			if (State != SoundStates.Paused) Volume = 1;
 			AL.SourcePlay(instance);
 			State = SoundStates.Playing;
 		}

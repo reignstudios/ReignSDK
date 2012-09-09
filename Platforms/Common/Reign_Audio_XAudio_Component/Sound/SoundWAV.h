@@ -24,8 +24,8 @@ namespace Reign_Audio_XAudio_Component
 		#pragma endregion
 
 		#pragma region Constructors
-		public: SoundWAVErrors Init(AudioCom^ audio, array<byte>^ data, WORD formatCode, WORD channels, DWORD sampleRate, DWORD formatAvgBytesPerSec, WORD formatBlockAlign, WORD bitDepth, WORD formatExtraSize);
-		public: ~SoundWAVCom();
+		public: SoundWAVErrors Init(AudioCom^ audio, const array<byte>^ data, short formatCode, short channels, int sampleRate, int formatAvgBytesPerSec, short formatBlockAlign, short bitDepth, short formatExtraSize);
+		public: virtual ~SoundWAVCom();
 		private: void null();
 		#pragma endregion
 	};
@@ -35,24 +35,17 @@ namespace Reign_Audio_XAudio_Component
 		#pragma region Properties
 		internal: IXAudio2SourceVoice* instance;
 		private: XAUDIO2_BUFFER* buffer;
-
-		//private: SoundStates state;
-		//public: property SoundStates State {virtual SoundStates get();}
-
-		//private: bool looped;
-		//public: property bool Looped {virtual bool get();}
-
-		//public: property float Volume {virtual float get(); virtual void set(float value);}
 		#pragma endregion
 		
 		#pragma region Constructors
 		public: SoundWAVInstanceErrors Init(SoundWAVCom^ sound, bool looped);
-		public: ~SoundWAVInstanceCom();
+		public: virtual ~SoundWAVInstanceCom();
 		private: void null();
 		#pragma endregion
 
 		#pragma region Methods
-		public: void Update();
+		public: void SetVolume(float volume);
+		public: bool Update();
 		public: void Play();
 		public: void Play(float volume);
 		public: void Pause();

@@ -1,11 +1,10 @@
 #include "pch.h"
 #include "SoundWAV.h"
-using namespace System::IO;
 
 namespace Reign_Audio_XAudio_Component
 {
 	#pragma region Constructors
-	SoundWAVErrors SoundWAVCom::Init(AudioCom^ audio, array<byte>^ data, WORD formatCode, WORD channels, DWORD sampleRate, DWORD formatAvgBytesPerSec, WORD formatBlockAlign, WORD bitDepth, WORD formatExtraSize)
+	SoundWAVErrors SoundWAVCom::Init(AudioCom^ audio, const array<byte>^ data, short formatCode, short channels, int sampleRate, int formatAvgBytesPerSec, short formatBlockAlign, short bitDepth, short formatExtraSize)
 	{
 		null();
 		this->audio = audio;
@@ -20,11 +19,10 @@ namespace Reign_Audio_XAudio_Component
 		waveFormat->wBitsPerSample = bitDepth;
 		waveFormat->cbSize = formatExtraSize;
 
-		pin_ptr<void> dataPtr = &data[0];
+		PinPtr(void) dataPtr = GetDataPtr(data);
 		buffer = new byte[data->Length];
 		memcpy(buffer, dataPtr, data->Length);
 		bufferLength = data->Length;
-		//data = nullptr;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Set in C#
 
 		return SoundWAVErrors::None;
 	}

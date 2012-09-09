@@ -43,6 +43,12 @@
     <Compile Include="..\..\Common\Reign.Audio.XAudio\Audio.cs">
       <Link>Audio.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Audio.XAudio\Sound.cs">
+      <Link>Sound.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Audio.XAudio\SoundWAV.cs">
+      <Link>SoundWAV.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -59,9 +65,7 @@
       <Name>Reign_Audio_XAudio_Component</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Sound\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

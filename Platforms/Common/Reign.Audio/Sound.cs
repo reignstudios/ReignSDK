@@ -26,6 +26,7 @@ namespace Reign.Audio
 	public class SoundI : Disposable
 	{
 		#region Properites
+		public bool Loaded {get; protected set;}
 		protected LinkedList<SoundInstanceI> activeInstances, inactiveInstances;
 		#endregion
 

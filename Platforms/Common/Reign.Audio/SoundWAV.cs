@@ -21,12 +21,6 @@ namespace Reign.Audio
 		{
 			// WAV will be handled by implomenting class
 		}
-
-		public SoundWAVI(DisposableI parent, string fileName)
-		: base(parent)
-		{
-			init(parent, fileName);
-		}
 		
 		protected void readMetaData(Stream stream)
 		{
@@ -87,14 +81,22 @@ namespace Reign.Audio
 			TotalTime = TimeSpan.FromSeconds(dataSize / formatAvgBytesPerSec);
 		}
 
-		private void init(DisposableI parent, string fileName)
+		#if METRO
+		protected virtual async void init(DisposableI parent, string fileName, int instanceCount, bool looped)
+		{
+			using (var stream = await Streams.OpenFile(fileName))
+		#else
+		protected virtual void init(DisposableI parent, string fileName, int instanceCount, bool looped)
 		{
 			using (var stream = Streams.OpenFile(fileName))
+		#endif
 			using (var reader = new BinaryReader(stream))
 			{
 				readMetaData(stream, reader);
 				data = reader.ReadBytes(dataSize);
 			}
+
+			Loaded = true;
 		}
 		#endregion
 	}

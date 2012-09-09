@@ -16,7 +16,7 @@ namespace Reign.Audio.API
 					return (SoundI)OS.InvokeStaticMethod(Audio.Dumby, Audio.Dumby, "Sound", "Load", args);
 				}
 
-				#if WINDOWS
+				#if WINDOWS || METRO
 				if (apiType == AudioTypes.XAudio)
 				{
 					return (SoundI)OS.InvokeStaticMethod(Audio.XAudio, Audio.XAudio, "Sound", "Load", args);

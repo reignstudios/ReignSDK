@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>0e5360db-f028-47b3-a31b-594a1a16bb60</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{8395d247-80ae-409b-8bf7-19c39971c504}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Audio_XAudio_Component\Audio.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Audio_XAudio_Component\Sound\SoundWAV.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Audio_XAudio_Component\Sound\SoundWAVInstance.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\CPP_CLR-CX_Helpers\Common.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="..\..\Common\Reign_Audio_XAudio_Component\Audio.h" />
+    <ClInclude Include="..\..\Common\Reign_Audio_XAudio_Component\Sound\SoundWAV.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\CPP_CLR-CX_Helpers\Common.h" />
+  </ItemGroup>
+</Project>

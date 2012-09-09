@@ -289,7 +289,7 @@ namespace Reign.Audio.Cocoa
 		{
 			lock (this)
 			{
-				volume = 1;
+				if (State != SoundStates.Paused) volume = 1;
 				instance.Start();
 				State = SoundStates.Playing;
 			}

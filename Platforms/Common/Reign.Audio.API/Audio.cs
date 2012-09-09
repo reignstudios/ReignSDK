@@ -9,7 +9,7 @@ namespace Reign.Audio.API
 	{
 		None,
 		Dumby,
-		#if WINDOWS
+		#if WINDOWS || METRO
 		XAudio,
 		#endif
 		
@@ -42,7 +42,7 @@ namespace Reign.Audio.API
 		public static AudioI Create(AudioTypes typeFlags, out AudioTypes type, params object[] args)
 		{
 			bool dumby = (typeFlags & AudioTypes.Dumby) != 0;
-			#if WINDOWS
+			#if WINDOWS || METRO
 			bool xAudio = (typeFlags & AudioTypes.XAudio) != 0;
 			#endif
 			#if XNA
@@ -63,7 +63,7 @@ namespace Reign.Audio.API
 			{
 				try
 				{
-					#if WINDOWS
+					#if WINDOWS || METRO
 					if (xAudio)
 					{
 						xAudio = false;
