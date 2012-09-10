@@ -7,9 +7,9 @@ namespace Reign.Video
 	{
 		#region Properties
 		public string Name;
-		public string[] DiffuseTextures, SpecularTextures, EmissionTextures;
-		public Vector4[] DiffuseColors, SpecularColors, EmissionColors;
-		public float[] ShininessValues, IndexOfRefractionValues;
+		public Dictionary<string,string> Textures;
+		public Dictionary<string,Vector4> Colors;
+		public Dictionary<string,float> Values;
 		#endregion
 
 		#region Methods
@@ -24,53 +24,99 @@ namespace Reign.Video
 			if (phong == null) Debug.ThrowError("SoftwareMaterial", "Only phong materials are supported");
 
 			// textures
-			var textures = phong.Diffuse.Textures;
-			if (textures != null)
+			var diffuseTextures = phong.Diffuse.Textures;
+			var specularTextures = phong.Specular.Textures;
+			var emissionTextures = phong.Emission.Textures;
+			Textures = new Dictionary<string,string>();
+
+			if (diffuseTextures != null)
 			{
-				DiffuseTextures = new string[textures.Length];
-				for (int i = 0; i != textures.Length; ++i)
+				for (int i = 0; i != diffuseTextures.Length; ++i)
 				{
-					DiffuseTextures[i] = getTexture(collada, effect, phong, textures[i]);
+					var image = getTexture(collada, effect, phong, diffuseTextures[i]);
+					Textures.Add(image.ID, image.InitFrom);
 				}
 			}
 
-			textures = phong.Specular.Textures;
-			if (textures != null)
+			if (specularTextures != null)
 			{
-				SpecularTextures = new string[textures.Length];
-				for (int i = 0; i != textures.Length; ++i)
+				for (int i = 0; i != specularTextures.Length; ++i)
 				{
-					SpecularTextures[i] = getTexture(collada, effect, phong, textures[i]);
+					var image = getTexture(collada, effect, phong, specularTextures[i]);
+					Textures.Add(image.ID, image.InitFrom);
 				}
 			}
 
-			textures = phong.Emission.Textures;
-			if (textures != null)
+			if (emissionTextures != null)
 			{
-				EmissionTextures = new string[textures.Length];
-				for (int i = 0; i != textures.Length; ++i)
+				for (int i = 0; i != emissionTextures.Length; ++i)
 				{
-					EmissionTextures[i] = getTexture(collada, effect, phong, textures[i]);
+					var image = getTexture(collada, effect, phong, emissionTextures[i]);
+					Textures.Add(image.ID, image.InitFrom);
 				}
 			}
 
 			// colors
-			DiffuseColors = getColors(phong.Diffuse.Colors);
-			SpecularColors = getColors(phong.Specular.Colors);
-			EmissionColors = getColors(phong.Emission.Colors);
+			Colors = new Dictionary<string,Vector4>();
+			string[] ids;
+			var colors = getColors(phong.Diffuse.Colors, out ids);
+			if (colors != null)
+			{
+				for (int i = 0; i != colors.Length; ++i)
+				{
+					Colors.Add(ids[i], colors[i]);
+				}
+			}
+
+			colors = getColors(phong.Specular.Colors, out ids);
+			if (colors != null)
+			{
+				for (int i = 0; i != colors.Length; ++i)
+				{
+					Colors.Add(ids[i], colors[i]);
+				}
+			}
+
+			colors = getColors(phong.Emission.Colors, out ids);
+			if (colors != null)
+			{
+				for (int i = 0; i != colors.Length; ++i)
+				{
+					Colors.Add(ids[i], colors[i]);
+				}
+			}
 
 			// values
-			ShininessValues = getValues(phong.Shininess.Floats);
-			IndexOfRefractionValues = getValues(phong.IndexOfRefraction.Floats);
+			Values = new Dictionary<string,float>();
+			var values = getValues(phong.Shininess.Floats, out ids);
+			if (values != null)
+			{
+				for (int i = 0; i != values.Length; ++i)
+				{
+					Values.Add(ids[i], values[i]);
+				}
+			}
+
+			values = getValues(phong.IndexOfRefraction.Floats, out ids);
+			if (values != null)
+			{
+				for (int i = 0; i != values.Length; ++i)
+				{
+					Values.Add(ids[i], values[i]);
+				}
+			}
 		}
 
-		private Vector4[] getColors(ColladaModel_Color[] colors)
+		private Vector4[] getColors(ColladaModel_Color[] colors, out string[] ids)
 		{
-			if (colors == null) return new Vector4[0];
+			ids = null;
+			if (colors == null) return null;
 
 			var vectorColors = new Vector4[colors.Length];
+			ids = new string[colors.Length];
 			for (int i = 0; i != colors.Length; ++i)
 			{
+				ids[i] = colors[i].SID;
 				var colorValues = colors[i].Colors;
 				vectorColors[i] = new Vector4(colorValues[0], colorValues[1], colorValues[2], colorValues[3]);
 			}
@@ -78,20 +124,23 @@ namespace Reign.Video
 			return vectorColors;
 		}
 
-		private float[] getValues(ColladaModel_Float[] values)
+		private float[] getValues(ColladaModel_Float[] values, out string[] ids)
 		{
-			if (values == null) return new float[0];
+			ids = null;
+			if (values == null) return null;
 
 			var scalarValues = new float[values.Length];
+			ids = new string[values.Length];
 			for (int i = 0; i != values.Length; ++i)
 			{
+				ids[i] = values[i].SID;
 				scalarValues[i] = values[i].Value;
 			}
 
 			return scalarValues;
 		}
 
-		private string getTexture(ColladaModel collada, ColladaModel_Effect effect, ColladaModel_Phong phong, ColladaModel_Texture texture)
+		private ColladaModel_Image getTexture(ColladaModel collada, ColladaModel_Effect effect, ColladaModel_Phong phong, ColladaModel_Texture texture)
 		{
 			var newParam = effect.ProfileCommon.FindNewParam(texture.Texture);
 			if (newParam == null) Debug.ThrowError("SoftwareMaterial", "Failed to find material effect newParam: " + texture.Texture);
@@ -102,7 +151,7 @@ namespace Reign.Video
 			var image = collada.LibraryImage.FindImage(newParam.Surface.InitFrom);
 			if (image == null) Debug.ThrowError("SoftwareMaterial", "Failed to find material image: " + newParam.Surface.InitFrom);
 
-			return image.InitFrom;
+			return image;
 		}
 		#endregion
 	}

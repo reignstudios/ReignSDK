@@ -65,6 +65,19 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
+		public static Texture2DI New(DisposableI parent, string fileName)
+		{
+			var texture = parent.FindChild<Texture2D>("New",
+				new ConstructorParam(typeof(DisposableI), parent),
+				new ConstructorParam(typeof(string), fileName));
+			if (texture != null)
+			{
+				++texture.referenceCount;
+				return texture;
+			}
+			return new Texture2D(parent, fileName);
+		}
+
 		public Texture2D(DisposableI parent, string fileName)
 		: base(parent)
 		{

@@ -1,4 +1,5 @@
 ﻿using Reign.Core;
+using System.Collections.Generic;
 
 namespace Reign.Video
 {
@@ -7,6 +8,7 @@ namespace Reign.Video
 		#region Properties
 		MeshI[] Meshes {get;}
 		MaterialI[] Materials {get;}
+		List<Texture2DI> Textures {get;}
 		#endregion
 
 		#region Methods

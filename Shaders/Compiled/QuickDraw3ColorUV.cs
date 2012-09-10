@@ -32,19 +32,21 @@ namespace ShaderMaterials.Shaders
 
 	public class QuickDraw3ColorUVMaterial : MaterialI
 	{
-		// static properties
+		#region Static Properties
 		public static bool Loaded {get; private set;}
 		public static ShaderI Shader {get; private set;}
 		public static BufferLayoutDescI BufferLayoutDesc {get; private set;}
 		public static BufferLayoutI BufferLayout {get; private set;}
 		public static ShaderVariableI CameraConstant {get; private set;}public static ShaderResourceI DiffuseConstant {get; private set;}
+		#endregion
 
-		// instance properties
+		#region Instance Properties
 		public delegate void ApplyCallbackMethod(QuickDraw3ColorUVMaterial material, MeshI mesh);
 		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
-		[MaterialField(MaterialFieldTypes.None, MaterialFieldUsages.Global)] public static Matrix4 Camera;[MaterialField(MaterialFieldTypes.None, MaterialFieldUsages.Instance)] public Texture2DI Diffuse;
+		[MaterialField(MaterialFieldUsages.Global)] public static Matrix4 Camera;[MaterialField(MaterialFieldUsages.Instance)] public Texture2DI Diffuse;
+		#endregion
 
-		// constructors
+		#region Constructors
 		public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
 		{
 			new QuickDraw3ColorUVMaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
@@ -71,8 +73,9 @@ namespace ShaderMaterials.Shaders
 			Loaded = true;
 			return true;
 		}
+		#endregion
 
-		// methods
+		#region Methods
 		public void Enable()
 		{
 			BufferLayout.Enable();
@@ -126,5 +129,6 @@ namespace ShaderMaterials.Shaders
 			ApplyInstancingContants();
 			Shader.Apply();
 		}
+		#endregion
 	}
 }

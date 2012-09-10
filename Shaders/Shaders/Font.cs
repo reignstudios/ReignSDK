@@ -14,8 +14,8 @@ namespace Shaders
 		[FieldUsage(FieldUsageTypes.VS, MaterialUsages.Global)] public Matrix4 Camera;
 		[FieldUsage(FieldUsageTypes.VS, MaterialUsages.Instance)] public Vector3 Location;
 		[FieldUsage(FieldUsageTypes.VS, MaterialUsages.Instance)] public Vector2 Size, LocationUV, SizeUV, TexelOffset;
-		[FieldUsage(FieldUsageTypes.PS, MaterialTypes.Diffuse, MaterialUsages.Instance)] public Vector4 Color;
-		[FieldUsage(FieldUsageTypes.PS, MaterialTypes.Diffuse, MaterialUsages.Instance)] public Texture2D DiffuseTexture;
+		[FieldUsage(FieldUsageTypes.PS, MaterialUsages.Instance)] public Vector4 Color;
+		[FieldUsage(FieldUsageTypes.PS, MaterialUsages.Instance)] public Texture2D DiffuseTexture;
 
 		[ShaderMethod(ShaderMethodTypes.VS)]
 		public void MainVS()

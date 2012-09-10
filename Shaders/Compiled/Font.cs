@@ -32,19 +32,21 @@ namespace ShaderMaterials.Shaders
 
 	public class FontMaterial : MaterialI
 	{
-		// static properties
+		#region Static Properties
 		public static bool Loaded {get; private set;}
 		public static ShaderI Shader {get; private set;}
 		public static BufferLayoutDescI BufferLayoutDesc {get; private set;}
 		public static BufferLayoutI BufferLayout {get; private set;}
 		public static ShaderVariableI CameraConstant {get; private set;}public static ShaderVariableI LocationConstant {get; private set;}public static ShaderVariableI SizeConstant {get; private set;}public static ShaderVariableI LocationUVConstant {get; private set;}public static ShaderVariableI SizeUVConstant {get; private set;}public static ShaderVariableI TexelOffsetConstant {get; private set;}public static ShaderVariableI ColorConstant {get; private set;}public static ShaderResourceI DiffuseTextureConstant {get; private set;}
+		#endregion
 
-		// instance properties
+		#region Instance Properties
 		public delegate void ApplyCallbackMethod(FontMaterial material, MeshI mesh);
 		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
-		[MaterialField(MaterialFieldTypes.None, MaterialFieldUsages.Global)] public static Matrix4 Camera;[MaterialField(MaterialFieldTypes.None, MaterialFieldUsages.Instance)] public Vector3 Location;[MaterialField(MaterialFieldTypes.None, MaterialFieldUsages.Instance)] public Vector2 Size;[MaterialField(MaterialFieldTypes.None, MaterialFieldUsages.Instance)] public Vector2 LocationUV;[MaterialField(MaterialFieldTypes.None, MaterialFieldUsages.Instance)] public Vector2 SizeUV;[MaterialField(MaterialFieldTypes.None, MaterialFieldUsages.Instance)] public Vector2 TexelOffset;[MaterialField(MaterialFieldTypes.Diffuse, MaterialFieldUsages.Instance)] public Vector4 Color;[MaterialField(MaterialFieldTypes.Diffuse, MaterialFieldUsages.Instance)] public Texture2DI DiffuseTexture;
+		[MaterialField(MaterialFieldUsages.Global)] public static Matrix4 Camera;[MaterialField(MaterialFieldUsages.Instance)] public Vector3 Location;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 Size;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 LocationUV;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 SizeUV;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 TexelOffset;[MaterialField(MaterialFieldUsages.Instance)] public Vector4 Color;[MaterialField(MaterialFieldUsages.Instance)] public Texture2DI DiffuseTexture;
+		#endregion
 
-		// constructors
+		#region Constructors
 		public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
 		{
 			new FontMaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
@@ -71,8 +73,9 @@ namespace ShaderMaterials.Shaders
 			Loaded = true;
 			return true;
 		}
+		#endregion
 
-		// methods
+		#region Methods
 		public void Enable()
 		{
 			BufferLayout.Enable();
@@ -126,5 +129,6 @@ namespace ShaderMaterials.Shaders
 			ApplyInstancingContants();
 			Shader.Apply();
 		}
+		#endregion
 	}
 }
