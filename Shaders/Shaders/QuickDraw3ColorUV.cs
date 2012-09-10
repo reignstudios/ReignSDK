@@ -28,7 +28,7 @@ namespace Shaders
 		[ShaderMethod(ShaderMethodTypes.PS)]
 		public void MainPS()
 		{
-			Color_PS = Diffuse.Sample(UV_VSPS);
+			Color_PS = Diffuse.Sample(UV_VSPS) * Color_VSPS;
 		}
 	}
 }

@@ -10,7 +10,7 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
-		
+		void Render();
 		#endregion
 	}
 }

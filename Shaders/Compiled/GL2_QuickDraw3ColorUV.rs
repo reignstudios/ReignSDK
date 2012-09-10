@@ -24,7 +24,7 @@ uniform sampler2D Diffuse;
 
 void main()
 {
-	gl_FragData[0] = texture2D(Diffuse, UV_VSPS);
+	gl_FragData[0] = texture2D(Diffuse, UV_VSPS) * Color_VSPS;
 }
 #END
 

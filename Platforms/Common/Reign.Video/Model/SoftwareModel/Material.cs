@@ -66,6 +66,8 @@ namespace Reign.Video
 
 		private Vector4[] getColors(ColladaModel_Color[] colors)
 		{
+			if (colors == null) return new Vector4[0];
+
 			var vectorColors = new Vector4[colors.Length];
 			for (int i = 0; i != colors.Length; ++i)
 			{
@@ -78,6 +80,8 @@ namespace Reign.Video
 
 		private float[] getValues(ColladaModel_Float[] values)
 		{
+			if (values == null) return new float[0];
+
 			var scalarValues = new float[values.Length];
 			for (int i = 0; i != values.Length; ++i)
 			{

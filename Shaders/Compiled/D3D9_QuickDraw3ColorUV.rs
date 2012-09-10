@@ -43,7 +43,7 @@ PSOut main(VSOutPSIn In)
 {
 	PSOut Out;
 
-	Out.Color_PS = tex2D(Diffuse, In.UV_VSPS);
+	Out.Color_PS = tex2D(Diffuse, In.UV_VSPS) * In.Color_VSPS;
 
 	return Out;
 }

@@ -44,7 +44,7 @@ PSOut main(VSOutPSIn In)
 {
 	PSOut Out;
 
-	Out.Color_PS = Diffuse.Sample(Samplers[0], In.UV_VSPS);
+	Out.Color_PS = Diffuse.Sample(Samplers[0], In.UV_VSPS) * In.Color_VSPS;
 
 	return Out;
 }

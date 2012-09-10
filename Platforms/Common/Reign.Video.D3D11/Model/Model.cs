@@ -6,16 +6,22 @@ namespace Reign.Video.D3D11
 {
 	class ModelStreamLoader : StreamLoaderI
 	{
+		private List<string[]> diffuseFileNames;
+
 		private Model model;
 		private SoftwareModel softwareModel;
 		private MeshVertexSizes positionSize;
+		private DisposableI contentParent;
+		private string contentDirectory;
 		private object materialTypes;
 
-		public ModelStreamLoader(Model model, SoftwareModel softwareModel, MeshVertexSizes positionSize, object materialTypes)
+		public ModelStreamLoader(Model model, SoftwareModel softwareModel, MeshVertexSizes positionSize, DisposableI contentParent, string contentDirectory, object materialTypes)
 		{
 			this.model = model;
 			this.softwareModel = softwareModel;
 			this.positionSize = positionSize;
+			this.contentParent = contentParent;
+			this.contentDirectory = contentDirectory;
 			this.materialTypes = materialTypes;
 		}
 
@@ -23,7 +29,16 @@ namespace Reign.Video.D3D11
 		{
 			if (!softwareModel.Loaded) return false;
 
-			model.load(softwareModel, positionSize, materialTypes);
+			if (model.Materials == null)
+			{
+				model.load(softwareModel, positionSize, materialTypes, out diffuseFileNames);
+				return false;
+			}
+			else if (!model.loadMaterials(diffuseFileNames, contentParent, contentDirectory))
+			{
+				return false;
+			}
+
 			return true;
 		}
 	}
@@ -38,22 +53,24 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
-		public Model(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, string contentDirectory, List<Type> materialTypes)
+		public Model(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, DisposableI contentParent, string contentDirectory, List<Type> materialTypes)
 		: base(parent)
 		{
-			new ModelStreamLoader(this, softwareModel, positionSize, materialTypes);
+			new ModelStreamLoader(this, softwareModel, positionSize, contentParent, contentDirectory, materialTypes);
 		}
 
-		public Model(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, string contentDirectory, Dictionary<string,Type> materialTypes)
+		public Model(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, DisposableI contentParent, string contentDirectory, Dictionary<string,Type> materialTypes)
 		: base(parent)
 		{
-			new ModelStreamLoader(this, softwareModel, positionSize, materialTypes);
+			new ModelStreamLoader(this, softwareModel, positionSize, contentParent, contentDirectory, materialTypes);
 		}
 
-		internal void load(SoftwareModel softwareModel, MeshVertexSizes positionSize, object materialTypes)
+		internal void load(SoftwareModel softwareModel, MeshVertexSizes positionSize, object materialTypes, out List<string[]> diffuseFileNames)
 		{
 			try
 			{
+				diffuseFileNames = new List<string[]>();
+
 				// create materials from matching field types
 				if (materialTypes.GetType() == typeof(List<Type>))
 				{
@@ -110,6 +127,7 @@ namespace Reign.Video.D3D11
 								shininessValues == mat.ShininessValues.Length && indexOfRefractionValues == mat.IndexOfRefractionValues.Length)
 							{
 								Materials[i] = (MaterialI)Activator.CreateInstance(materialType);
+								diffuseFileNames.Add(softwareModel.Materials[i].DiffuseTextures);
 								pass = true;
 								break;
 							}
@@ -129,6 +147,7 @@ namespace Reign.Video.D3D11
 							if (materialType.Key == softwareModel.Materials[i].Name)
 							{
 								Materials[i] = (MaterialI)Activator.CreateInstance(materialType.Value);
+								diffuseFileNames.Add(softwareModel.Materials[i].DiffuseTextures);
 								pass = true;
 								break;
 							}
@@ -150,8 +169,35 @@ namespace Reign.Video.D3D11
 				Dispose();
 				throw e;
 			}
+		}
+
+		internal bool loadMaterials(List<string[]> diffuseFileNames, DisposableI contentParent, string contentDirectory)
+		{
+			bool pass = true;
+			for (int i = 0; i != Materials.Length; ++i)
+			{
+				var material = Materials[i];
+				var diffuseTextures = material.DiffuseTextures;
+				var diffuseTextureList = new List<Texture2DI>();
+				for (int i2 = 0; i2 != diffuseTextures.Length; ++i2)
+				{
+					if (diffuseTextures[i2] == null)
+					{
+						diffuseTextureList.Add(new Texture2D(contentParent, contentDirectory + Streams.GetFileNameWithExt(diffuseFileNames[i][i2])));
+						pass = false;
+					}
+					else
+					{
+						if (!diffuseTextures[i2].Loaded) pass = false;
+					}
+				}
+
+				if (diffuseTextureList.Count != 0) material.DiffuseTextures = diffuseTextureList.ToArray();
+			}
+			if (!pass) return false;
 
 			Loaded = true;
+			return true;
 		}
 		#endregion
 

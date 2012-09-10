@@ -36,6 +36,15 @@ namespace Reign.Video
 
 	public interface MaterialI
 	{
+		Texture2DI[] DiffuseTextures {get; set;}
+		Texture2DI[] SpecularTextures {get; set;}
+		Texture2DI[] EmissionTextures {get; set;}
+		Vector4[] DiffuseColors {get; set;}
+		Vector4[] SpecularColors {get; set;}
+		Vector4[] EmissionColors {get; set;}
+		float[] ShininessValues {get; set;}
+		float[] IndexOfRefractionValues {get; set;}
+
 		void Enable();
 		void ApplyGlobalContants(MeshI mesh);
 		void ApplyInstanceContants(MeshI mesh);

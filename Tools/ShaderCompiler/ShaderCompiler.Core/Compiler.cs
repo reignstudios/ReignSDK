@@ -119,7 +119,7 @@ namespace ShaderCompiler.Core
 				Directory.CreateDirectory(outDirectory);
 			}
 			
-			compileLibrary(inDirectory + "bin/Debug/" + inFile.Split('.')[0] + ".dll", false, compileMetroShaders);
+			compileLibrary(inDirectory + "bin/Debug/" + inFile.Split('.')[0] + ".dll", false, compileMaterial, compileMetroShaders);
 		}
 		
 		private string compileFromMemory(string code)
@@ -150,7 +150,7 @@ namespace ShaderCompiler.Core
 				if (compilerResults.Errors.Count != 0) throw new Exception(errors + Environment.NewLine + "CSharp Compiler Errors.");
 
 				// Convert Reign Code
-				code = compileLibrary(compilerResults.CompiledAssembly.Location, true, false);
+				code = compileLibrary(compilerResults.CompiledAssembly.Location, true, false, false);
 
 				Console.WriteLine("Compile Success!");
 			}
@@ -214,7 +214,7 @@ namespace ShaderCompiler.Core
 			}
 		}
 		
-		private string compileLibrary(string dllFileName, bool writeToMemory, bool compileMetroShaders)
+		private string compileLibrary(string dllFileName, bool writeToMemory, bool compileMaterial, bool compileMetroShaders)
 		{
 string xnaEndTechniqueBlock =
 @"
@@ -259,11 +259,10 @@ technique MainTechnique
 								compileShader(obj, stream, vsStream, psStream, null);
 							}
 
-							if (compileMetroShaders)
-							{
-										
+							if (compileMaterial)
+							{	
 								string initLine;
-								var codeFile = compileMaterial(name, obj, out initLine);
+								var codeFile = compileMaterialFiles(name, obj, out initLine);
 								materialCode.Add(obj.Name, codeFile);
 								initLines.Add(initLine);
 							}
@@ -330,7 +329,7 @@ technique MainTechnique
 				}
 			}
 
-			if (compileMetroShaders)
+			if (compileMaterial)
 			{
 				string compiledShaders =
 @"
@@ -384,7 +383,7 @@ namespace ShaderMaterials.{0}
 			}
 		}
 
-		private string compileMaterial(string shaderLibName, Type shader, out string initLine)
+		private string compileMaterialFiles(string shaderLibName, Type shader, out string initLine)
 		{
 			// get fields
 			var fieldInfoList = new List<FieldInfo[]>();
@@ -403,7 +402,8 @@ namespace ShaderMaterials.{0}
 
 			// create properties and method property body
 			string constantProperties = null, constantTypeProperties = null, applyGlobalMethodBody = null, applyInstanceMethodBody = null, applyInstancingMethodBody = null, elementsBody = null, constantInitBody = null;
-			int floatOffset = 0;
+			string diffuseTexturesGet = null, diffuseTexturesSet = null;
+			int floatOffset = 0, diffuseIndex = 0;
 			foreach (var field in fields)
 			{
 				var attributes = field.GetCustomAttributes(true);
@@ -425,6 +425,13 @@ namespace ShaderMaterials.{0}
 						{
 							constantProperties += string.Format("public static ShaderResourceI {0}Constant {{get; private set;}}", field.Name);
 							constantInitBody += string.Format(@"{0}Constant = Shader.Resource(""{0}"");", field.Name);
+							switch (usage.MaterialType)
+							{
+								case (MaterialTypes.Diffuse):
+									diffuseTexturesGet += string.Format("list.Add({0});", field.Name);
+									diffuseTexturesSet += string.Format("if (i == {0}) {1} = value[i];", diffuseIndex, field.Name);
+									break;
+							}
 						}
 						else
 						{
@@ -558,19 +565,45 @@ namespace ShaderMaterials.{0}
 
 	public class {1}Material : MaterialI
 	{{
-		// static properties
+		#region Static Properties
 		public static bool Loaded {{get; private set;}}
 		public static ShaderI Shader {{get; private set;}}
 		public static BufferLayoutDescI BufferLayoutDesc {{get; private set;}}
 		public static BufferLayoutI BufferLayout {{get; private set;}}
 		{2}
+		#endregion
 
-		// instance properties
+		#region Instance Properties
 		public delegate void ApplyCallbackMethod({1}Material material, MeshI mesh);
 		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
 		{3}
 
-		// constructors
+		public Texture2DI[] DiffuseTextures
+		{{
+			get
+			{{
+				var list = new List<Texture2DI>();
+				{9}
+				return list.ToArray();
+			}}
+			set
+			{{
+				for (int i = 0; i != value.Length; ++i)
+				{{
+					{10}
+				}}
+			}}
+		}}
+		public Texture2DI[] SpecularTextures {{get; set;}}
+		public Texture2DI[] EmissionTextures {{get; set;}}
+		public Vector4[] DiffuseColors {{get; set;}}
+		public Vector4[] SpecularColors {{get; set;}}
+		public Vector4[] EmissionColors {{get; set;}}
+		public float[] ShininessValues {{get; set;}}
+		public float[] IndexOfRefractionValues {{get; set;}}
+		#endregion
+
+		#region Constructors
 		public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
 		{{
 			new {1}MaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
@@ -597,8 +630,9 @@ namespace ShaderMaterials.{0}
 			Loaded = true;
 			return true;
 		}}
+		#endregion
 
-		// methods
+		#region Methods
 		public void Enable()
 		{{
 			BufferLayout.Enable();
@@ -652,12 +686,17 @@ namespace ShaderMaterials.{0}
 			ApplyInstancingContants();
 			Shader.Apply();
 		}}
+		#endregion
 	}}
 }}
 ";
 
 			initLine = string.Format("Types.Add(typeof({0}Material)); ", shader.Name) + shader.Name + "Material.Init(apiType, parent, contentPath, tag, shaderVersion);";
-			return string.Format(shaderFile, shaderLibName, shader.Name, constantProperties, constantTypeProperties, applyGlobalMethodBody, applyInstanceMethodBody, applyInstancingMethodBody, elementsBody, constantInitBody);
+			return string.Format
+			(
+				shaderFile, shaderLibName, shader.Name, constantProperties, constantTypeProperties, applyGlobalMethodBody, applyInstanceMethodBody, applyInstancingMethodBody, elementsBody, constantInitBody,
+				diffuseTexturesGet, diffuseTexturesSet
+			);
 		}
 
 		private void createConstantType(FieldUsage usage, FieldInfo field, string methodValue, string globalFieldFormat, string fieldFormat, string constantType, ref string constantTypeProperties, ref string applyGlobalMethodBody, ref string applyInstanceMethodBody, ref string applyInstancingMethodBody)
