@@ -173,7 +173,7 @@ namespace Reign.Core
 			#endif
 		}
 
-		public Vector2 NormalizeSafe(out float distance)
+		public Vector2 NormalizeSafe(out float length)
 		{
 			#if SIMD
 			if (input.X == 0 && input.Y == 0) return new Vector2();
@@ -185,7 +185,7 @@ namespace Reign.Core
 			return input * factor;
 			#else
 			float dis = (float)MathS.Sqrt((X*X) + (Y*Y));
-			distance = dis;
+			length = dis;
 			if (dis == 0) return new Vector2();
 			else return this * (1/dis);
 			#endif
@@ -216,10 +216,10 @@ namespace Reign.Core
 
 		public bool ApproxEquals(Vector2 vector, float tolerance)
 		{
-		    return (Distance(vector) <= tolerance);
+		    return (Length(vector) <= tolerance);
 		}
 
-		public float Distance(Vector2 vector)
+		public float Length(Vector2 vector)
 		{
 			#if SIMD
 			var result = vector - input;
@@ -233,7 +233,7 @@ namespace Reign.Core
 			#endif
 		}
 		
-		public float DistanceSquared(Vector2 vector)
+		public float LengthSquared(Vector2 vector)
 		{
 			#if SIMD
 			var result = vector - input;
