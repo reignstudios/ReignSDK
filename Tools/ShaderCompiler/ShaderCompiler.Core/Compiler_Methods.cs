@@ -405,14 +405,15 @@ namespace ShaderCompiler.Core
 		
 			// Find matrix multiply block
 			string findParameters = @".*?;";
-			var match = Regex.Match(methodBlock, @"=\s*([\w\[\]]*)\.Multiply" + findParameters, RegexOptions.Singleline);
+			var match = Regex.Match(methodBlock, @"([\w\[\]]*)\.Multiply" + findParameters, RegexOptions.Singleline);
 			
 			// If matrix multiply block exists, replace it
 			var matrixGroups = match.Groups;
 			if (match.Success && matrixGroups.Count == 2)
 			{
 				// Find vector parameter
-				match = Regex.Match(matrixGroups[0].Value, @"\((.*)\)", RegexOptions.Singleline);
+				var line = removeAfterClosingBracket(matrixGroups[0].Value, '(', ')');
+				match = Regex.Match(line, @"\((.*)\)", RegexOptions.Singleline);
 
 				// Replace matrix multiply block
 				var vectorGroups = match.Groups;
@@ -420,25 +421,70 @@ namespace ShaderCompiler.Core
 				{
 					string matrixName = matrixGroups[1].Value;
 					string vectorName = vectorGroups[1].Value;
-					string formatString = "= mul({0}, {1});";
+					string formatString = "mul({0}, {1})";
 					if (outputType == CompilerOutputs.D3D9 || outputType == CompilerOutputs.XNA)
 					{
-						formatString = "= mul({1}, {0});";
+						formatString = "mul({1}, {0})";
 					}
 					else if (baseType == BaseCompilerOutputs.GLSL)
 					{
-						formatString = @"= {0} * {1};";
+						formatString = @"{0} * {1}";
 					}
 					string replace = string.Format(formatString, vectorName, matrixName);
 					matrixName = matrixName.Replace("[", @"\[");
 					matrixName = matrixName.Replace("]", @"\]");
-					methodBlock = Regex.Replace(methodBlock, @"=\s*" + matrixName + @"\.Multiply" + findParameters, replace, RegexOptions.Singleline);
+					methodBlock = Regex.Replace(methodBlock, convertToRegexLine(line), replace, RegexOptions.Singleline);
 
 					return true;
 				}
 			}
 
 			return false;
+		}
+
+		private string convertToRegexLine(string line)
+		{
+			string newLine = "";
+			for (int i = 0; i != line.Length; ++i)
+			{
+				char c = line[i];
+				if
+				(
+					c == '(' || c == ')' || c == '[' || c == ']' ||
+					c == '*' || c == '+' || c == '.'
+				)
+				{
+					newLine += '\\';
+				}
+
+				newLine += c;
+			}
+
+			return newLine;
+		}
+
+		private string removeAfterClosingBracket(string line, char openBracket, char closeBracket)
+		{
+			string newLine = "";
+			int openCount = -1;
+			for (int i = 0; i != line.Length; ++i)
+			{
+				char c = line[i];
+				if (c == openBracket)
+				{
+					if (openCount == -1) openCount = 0;
+					++openCount;
+				}
+				else if (c == closeBracket)
+				{
+					--openCount;
+				}
+
+				newLine += c;
+				if (openCount == 0) break;
+			}
+
+			return newLine;
 		}
 	}
 }

@@ -78,6 +78,16 @@ namespace Reign.Core
 			return base.GetHashCode();
 		}
 
+		public Vector3 DegToRad()
+		{
+			return new Vector3(Math.DegToRad(X), Math.DegToRad(Y), Math.DegToRad(Z));
+		}
+
+		public Vector3 RadToDeg()
+		{
+			return new Vector3(Math.RadToDeg(X), Math.RadToDeg(Y), Math.RadToDeg(Z));
+		}
+
 		public Vector3 Max(float value)
 		{
 			return new Vector3(MathS.Max(X, value), MathS.Max(Y, value), MathS.Max(Z, value));

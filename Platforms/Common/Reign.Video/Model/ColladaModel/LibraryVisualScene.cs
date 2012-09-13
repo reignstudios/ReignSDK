@@ -69,6 +69,16 @@ namespace Reign.Video
 				rotation.Init();
 			}
 		}
+
+		public ColladaModel_NodeElement FindRotation(string id)
+		{
+			foreach (var rot in Rotations)
+			{
+				if (rot.SID == id) return rot;
+			}
+
+			return null;
+		}
 	}
 
 	public class ColladaModel_VisualScene

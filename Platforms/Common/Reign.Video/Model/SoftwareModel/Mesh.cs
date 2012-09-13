@@ -182,9 +182,32 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
+		public void FlipUVs()
+		{
+			foreach (var key in TriangleComponentKeys)
+			{
+				if (key.Key == TriangleComponentKeyTypes.UVComponents)
+				{
+					var uvComponent = (TriangleUVComponent[])TriangleComponents[key.Value];
+					for (int i = 0; i != uvComponent.Length; ++i)
+					{
+						for (int i2 = 0; i2 != uvComponent[i].UVs.Length; ++i2)
+						{
+							uvComponent[i].UVs[i2].Y = 1.0f - uvComponent[i].UVs[i2].Y;
+						}
+					}
+				}
+			}
+		}
+
 		public void Rotate(float x, float y, float z)
 		{
-			var mat = Matrix3.Identity.RotateAroundWorldAxisX(x).RotateAroundWorldAxisY(y).RotateAroundWorldAxisZ(z);
+			var mat = Matrix3.FromEuler(x, y, z);
+			Location = Location.Transform(mat);
+
+			//var rotMat = Matrix3.FromEuler(Rotation.X, Rotation.Y, Rotation.Z);
+			//rotMat = rotMat.Multiply(mat);
+			//Rotation = rotMat.Euler();
 
 			// rotate positions
 			foreach (var key in VertexComponentKeys)

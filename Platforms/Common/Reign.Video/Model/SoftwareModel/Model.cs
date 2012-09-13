@@ -79,11 +79,6 @@ namespace Reign.Video
 				var mesh = new SoftwareMesh(geometry);
 				Meshes.Add(mesh);
 				meshIDHash.Add(geometry.ID, mesh);
-
-				switch (collada.Asset.UpAxis)
-				{
-					case ("Z_UP"): mesh.Rotate(-Reign.Core.Math.Pi * .5f, 0, 0); break;
-				}
 			}
 
 			// materials
@@ -111,6 +106,11 @@ namespace Reign.Video
 
 				values = node.Scale.Values;
 				mesh.Scale = new Vector3(values[0], values[1], values[2]);
+
+				var rotX = node.FindRotation("rotationX");
+				var rotY = node.FindRotation("rotationY");
+				var rotZ = node.FindRotation("rotationZ");
+				mesh.Rotation = new Vector3(rotX.Values[3], rotY.Values[3], rotZ.Values[3]).DegToRad();
 
 				// bind material
 				id = node.InstanceGeometry.BindMaterial.TechniqueCommon.InstanceMatrial.Target.Replace("#", "");

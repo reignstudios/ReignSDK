@@ -25,6 +25,42 @@ namespace Reign.Core
 			Z = z;
 		}
 
+		public static Matrix3 FromEuler(Vector3 euler)
+		{
+			float cx = (float)System.Math.Cos(euler.X);
+			float sx = (float)System.Math.Sin(euler.X);
+			float cy = (float)System.Math.Cos(euler.Y);
+			float sy = (float)System.Math.Sin(euler.Y);
+			float cz = (float)System.Math.Cos(euler.Z);
+			float sz = (float)System.Math.Sin(euler.Z);
+
+			// multiply ZYX
+			return new Matrix3
+			(
+			    new Vector3(cy*cz, cz*sx*sy - cx*sz, cx*cz*sy + sx*sz),
+			    new Vector3(cy*sz, cx*cz + sx*sy*sz, -cz*sx + cx*sy*sz),
+			    new Vector3(-sy, cy*sx, cx*cy)
+			);
+		}
+
+		public static Matrix3 FromEuler(float eulerX, float eulerY, float eulerZ)
+		{
+			float cx = (float)System.Math.Cos(eulerX);
+			float sx = (float)System.Math.Sin(eulerX);
+			float cy = (float)System.Math.Cos(eulerY);
+			float sy = (float)System.Math.Sin(eulerY);
+			float cz = (float)System.Math.Cos(eulerZ);
+			float sz = (float)System.Math.Sin(eulerZ);
+
+			// multiply ZYX
+			return new Matrix3
+			(
+			    new Vector3(cy*cz, cz*sx*sy - cx*sz, cx*cz*sy + sx*sz),
+			    new Vector3(cy*sz, cx*cz + sx*sy*sz, -cz*sx + cx*sy*sz),
+			    new Vector3(-sy, cy*sx, cx*cy)
+			);
+		}
+
 		public static Matrix3 Cross(Vector3 zVector, Vector3 yVector)
 		{
 			var Z = zVector.Normalize();
@@ -33,6 +69,7 @@ namespace Reign.Core
 
 			return new Matrix3(X, Y, Z);
 		}
+
 		public static readonly Matrix3 Identity = new Matrix3
 		(
 		    new Vector3(1, 0, 0),
@@ -78,6 +115,25 @@ namespace Reign.Core
 		{
 			return base.GetHashCode();
 		}
+
+		public Vector3 Euler()
+		{
+			if (Z.X < 1)
+			{
+				if (Z.X > -1)
+				{
+					return new Vector3((float)MathS.Atan2(Z.Y, Z.Z), (float)MathS.Asin(-Z.X), (float)MathS.Atan2(Y.X, X.X));
+				}
+				else
+				{
+					return new Vector3(0, Math.Pi*.5f, -(float)MathS.Atan2(Y.Z, Y.Y));
+				}
+			}
+			else
+			{
+				return new Vector3(0, -Math.Pi*.5f, (float)MathS.Atan2(-Y.Z, Y.Y));
+			}
+		}
 		
 		public Matrix3 Abs()
 		{
@@ -104,9 +160,9 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix3 RotateAroundAxisX(float radians)
+		public Matrix3 RotateAroundWorldAxisX(float radians)
 		{
-			float tCos = (float)MathS.Cos(-radians), tSin = (float)MathS.Sin(-radians);
+			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
 			return new Matrix3
 			(
 				X,
@@ -115,9 +171,9 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix3 RotateAroundAxisY(float radians)
+		public Matrix3 RotateAroundWorldAxisY(float radians)
 		{
-			float tCos = (float)MathS.Cos(-radians), tSin = (float)MathS.Sin(-radians);
+			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
 			return new Matrix3
 			(
 				new Vector3((Z.X*tSin) + (X.X*tCos), (Z.Y*tSin) + (X.Y*tCos), (Z.Z*tSin) + (X.Z*tCos)),
@@ -126,9 +182,9 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix3 RotateAroundAxisZ(float radians)
+		public Matrix3 RotateAroundWorldAxisZ(float radians)
 		{
-			float tCos = (float)MathS.Cos(-radians), tSin = (float)MathS.Sin(-radians);
+			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
 			return new Matrix3
 			(
 				new Vector3((X.X*tCos) - (Y.X*tSin), (X.Y*tCos) - (Y.Y*tSin), (X.Z*tCos) - (Y.Z*tSin)),
@@ -137,8 +193,9 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix3 RotateAroundWorldAxisX(float radians)
+		public Matrix3 RotateAroundAxisX(float radians)
 		{
+			radians = -radians;
 			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
 			return new Matrix3
 			(
@@ -148,8 +205,9 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix3 RotateAroundWorldAxisY(float radians)
+		public Matrix3 RotateAroundAxisY(float radians)
 		{
+			radians = -radians;
 			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
 			return new Matrix3
 			(
@@ -159,8 +217,9 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix3 RotateAroundWorldAxisZ(float radians)
+		public Matrix3 RotateAroundAxisZ(float radians)
 		{
+			radians = -radians;
 			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
 			return new Matrix3
 			(
