@@ -42,6 +42,32 @@ namespace Reign.Core
 			Z = vector.Z;
 			W = w;
 		}
+
+		public static Vector4 AsQuaternion(Matrix3 matrix)
+		{
+			float w = (float)MathS.Sqrt(1 + matrix.X.X + matrix.Y.Y + matrix.Z.Z) * .5f;
+			float w2 = 1 / (w * 4);
+			return new Vector4
+			(
+				(matrix.Z.Y - matrix.Y.Z) * w2,
+				(matrix.X.Z - matrix.Z.X) * w2,
+				(matrix.Y.X - matrix.X.Y) * w2,
+				w
+			);
+		}
+
+		public static Vector4 AsQuaternion(Vector3 axis, float angle)
+		{
+			angle *= .5f;
+			var sin = (float)MathS.Sin(angle);
+			return new Vector4
+			(
+				axis.X * sin,
+				axis.Y * sin,
+				axis.Z * sin,
+				(float)MathS.Cos(angle)
+			);
+		}
 		#endregion
 
 		#region Operators
@@ -132,7 +158,7 @@ namespace Reign.Core
 			#else
 			return (float)MathS.Sqrt((X*X) + (Y*Y) + (Z*Z) + (W*W));
 			#endif
-		}
+		}		
 
 		public Vector4 Normalize()
 		{
@@ -210,6 +236,17 @@ namespace Reign.Core
 			#else
 		    return (matrix.X*X) + (matrix.Y*Y) + (matrix.Z*Z) + (matrix.W*W);
 			#endif
+		}
+
+		public Vector4 Multiply(Vector4 quaternion)
+		{
+			return new Vector4
+			(
+				W*quaternion.X + X*quaternion.W + Y*quaternion.Z - Z*quaternion.Y,
+				W*quaternion.Y - X*quaternion.Z + Y*quaternion.W + Z*quaternion.X,
+				W*quaternion.Z + X*quaternion.Y - Y*quaternion.X + Z*quaternion.W,
+				W*quaternion.W - X*quaternion.X - Y*quaternion.Y - Z*quaternion.Z
+			);
 		}
 
 		public bool AproxEqualsBox(Vector4 vector, float tolerance)

@@ -61,6 +61,46 @@ namespace Reign.Core
 			);
 		}
 
+		public static Matrix3 FromQuaternion(Vector4 quaternion)
+		{
+			var squared = new Vector4(quaternion.X*quaternion.X, quaternion.Y*quaternion.Y, quaternion.Z*quaternion.Z, quaternion.W*quaternion.W);
+			float invSqLength = 1 / (squared.X + squared.Y + squared.Z + squared.W);
+
+			float temp1 = quaternion.X * quaternion.Y;
+			float temp2 = quaternion.Z * quaternion.W;
+			float temp3 = quaternion.X * quaternion.Z;
+			float temp4 = quaternion.Y * quaternion.W;
+			float temp5 = quaternion.Y * quaternion.Z;
+			float temp6 = quaternion.X * quaternion.W;
+
+			return new Matrix3
+			(
+				new Vector3((squared.X-squared.Y-squared.Z+squared.W) * invSqLength, 2*(temp1-temp2) * invSqLength, 2*(temp3+temp4) * invSqLength),
+				new Vector3(2*(temp1+temp2) * invSqLength, (-squared.X+squared.Y-squared.Z+squared.W) * invSqLength, 2*(temp5-temp6) * invSqLength),
+				new Vector3(2*(temp3-temp4) * invSqLength, 2*(temp5+temp6) * invSqLength, (-squared.X-squared.Y+squared.Z+squared.W) * invSqLength)
+			);
+		}
+
+		public static Matrix3 FromQuaternion(float quaternionX, float quaternionY, float quaternionZ, float quaternionW)
+		{
+			var squared = new Vector4(quaternionX*quaternionX, quaternionY*quaternionY, quaternionZ*quaternionZ, quaternionW*quaternionW);
+			float invSqLength = 1 / (squared.X + squared.Y + squared.Z + squared.W);
+
+			float temp1 = quaternionX * quaternionY;
+			float temp2 = quaternionZ * quaternionW;
+			float temp3 = quaternionX * quaternionZ;
+			float temp4 = quaternionY * quaternionW;
+			float temp5 = quaternionY * quaternionZ;
+			float temp6 = quaternionX * quaternionW;
+
+			return new Matrix3
+			(
+				new Vector3((squared.X-squared.Y-squared.Z+squared.W) * invSqLength, 2*(temp1-temp2) * invSqLength, 2*(temp3+temp4) * invSqLength),
+				new Vector3(2*(temp1+temp2) * invSqLength, (-squared.X+squared.Y-squared.Z+squared.W) * invSqLength, 2*(temp5-temp6) * invSqLength),
+				new Vector3(2*(temp3-temp4) * invSqLength, 2*(temp5+temp6) * invSqLength, (-squared.X-squared.Y+squared.Z+squared.W) * invSqLength)
+			);
+		}
+
 		public static Matrix3 Cross(Vector3 zVector, Vector3 yVector)
 		{
 			var Z = zVector.Normalize();
