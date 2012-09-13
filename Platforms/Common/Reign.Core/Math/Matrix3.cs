@@ -200,9 +200,9 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix3 RotateAroundWorldAxisX(float radians)
+		public Matrix3 RotateAroundWorldAxisX(float angle)
 		{
-			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
+			float tCos = (float)MathS.Cos(angle), tSin = (float)MathS.Sin(angle);
 			return new Matrix3
 			(
 				X,
@@ -211,9 +211,9 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix3 RotateAroundWorldAxisY(float radians)
+		public Matrix3 RotateAroundWorldAxisY(float angle)
 		{
-			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
+			float tCos = (float)MathS.Cos(angle), tSin = (float)MathS.Sin(angle);
 			return new Matrix3
 			(
 				new Vector3((Z.X*tSin) + (X.X*tCos), (Z.Y*tSin) + (X.Y*tCos), (Z.Z*tSin) + (X.Z*tCos)),
@@ -222,9 +222,9 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix3 RotateAroundWorldAxisZ(float radians)
+		public Matrix3 RotateAroundWorldAxisZ(float angle)
 		{
-			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
+			float tCos = (float)MathS.Cos(angle), tSin = (float)MathS.Sin(angle);
 			return new Matrix3
 			(
 				new Vector3((X.X*tCos) - (Y.X*tSin), (X.Y*tCos) - (Y.Y*tSin), (X.Z*tCos) - (Y.Z*tSin)),
@@ -233,10 +233,10 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix3 RotateAroundAxisX(float radians)
+		public Matrix3 RotateAroundAxisX(float angle)
 		{
-			radians = -radians;
-			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
+			angle = -angle;
+			float tCos = (float)MathS.Cos(angle), tSin = (float)MathS.Sin(angle);
 			return new Matrix3
 			(
 				new Vector3(X.X, (X.Y*tCos) - (X.Z*tSin), (X.Y*tSin) + (X.Z*tCos)),
@@ -245,10 +245,10 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix3 RotateAroundAxisY(float radians)
+		public Matrix3 RotateAroundAxisY(float angle)
 		{
-			radians = -radians;
-			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
+			angle = -angle;
+			float tCos = (float)MathS.Cos(angle), tSin = (float)MathS.Sin(angle);
 			return new Matrix3
 			(
 				new Vector3((X.Z*tSin) + (X.X*tCos), X.Y, (X.Z*tCos) - (X.X*tSin)),
@@ -257,10 +257,10 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix3 RotateAroundAxisZ(float radians)
+		public Matrix3 RotateAroundAxisZ(float angle)
 		{
-			radians = -radians;
-			float tCos = (float)MathS.Cos(radians), tSin = (float)MathS.Sin(radians);
+			angle = -angle;
+			float tCos = (float)MathS.Cos(angle), tSin = (float)MathS.Sin(angle);
 			return new Matrix3
 			(
 				new Vector3((X.X*tCos) - (X.Y*tSin), (X.X*tSin) + (X.Y*tCos), X.Z),
@@ -269,9 +269,9 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix3 Rotate(Vector3 vectorNormalized, float radians)
+		public Matrix3 Rotate(Vector3 axis, float angle)
 		{
-			return new Matrix3(X.Rotate(vectorNormalized, radians), Y.Rotate(vectorNormalized, radians), Z.Rotate(vectorNormalized, radians));
+			return new Matrix3(X.Rotate(axis, angle), Y.Rotate(axis, angle), Z.Rotate(axis, angle));
 		}
 		#endregion
 	}

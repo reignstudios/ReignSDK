@@ -258,24 +258,9 @@ namespace Reign.Core
 			#endif
 		}
 
-		public Vector3 Rotate(Vector3 vectorNormalized, float radians)
+		public Vector3 Rotate(Vector3 axis, float angle)
 		{
 			throw new System.NotImplementedException();
-
-			var y = new Vector3();
-			/*if (pVectorNormalized.Dot() != 0)
-			{
-				y = this.InersectRay(pVectorNormalized) - this;
-				if (y.Dot() != 0)
-				{
-					Matrix3f Matrix = new Matrix3f(pVectorNormalized, y);
-					Matrix3f MatrixTran = Matrix.Transpose();
-					Matrix = Matrix.RotateAroundAxisZ(pRadians);
-					y = this.Transform(MatrixTran);
-					y = y.Transform(Matrix);
-				}
-			}*/
-			return y;
 		}
 
 		public bool WithinTriangle(Triangle triangle)
