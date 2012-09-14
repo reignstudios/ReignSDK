@@ -17,10 +17,10 @@ namespace Reign.Video
 		private MeshVertexSizes positionSize;
 		private DisposableI contentParent;
 		private string contentDirectory;
-		private object materialTypes;
-		private Dictionary<Type,MaterialFieldBinder> materialFieldTypes;
+		private Dictionary<string,Type> materialTypes;
+		private List<MaterialFieldBinder> materialFieldTypes;
 
-		public ModelStreamLoader(ModelI model, SoftwareModel softwareModel, MeshVertexSizes positionSize, DisposableI contentParent, string contentDirectory, object materialTypes, Dictionary<Type,MaterialFieldBinder> materialFieldTypes)
+		public ModelStreamLoader(ModelI model, SoftwareModel softwareModel, MeshVertexSizes positionSize, DisposableI contentParent, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> materialFieldTypes)
 		{
 			this.model = model;
 			this.softwareModel = softwareModel;
@@ -60,43 +60,36 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public ModelI(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, DisposableI contentParent, string contentDirectory, Dictionary<string,Type> materialTypes, Dictionary<Type,MaterialFieldBinder> materialFieldTypes)
+		public ModelI(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, DisposableI contentParent, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> materialFieldTypes)
 		: base(parent)
 		{
 			new ModelStreamLoader(this, softwareModel, positionSize, contentParent, contentDirectory, materialTypes, materialFieldTypes);
 		}
 
-		internal void load(SoftwareModel softwareModel, MeshVertexSizes positionSize, object materialTypes, out List<SoftwareMaterial> textureFileNames)
+		internal void load(SoftwareModel softwareModel, MeshVertexSizes positionSize, Dictionary<string,Type> materialTypes, out List<SoftwareMaterial> textureFileNames)
 		{
 			try
 			{
 				textureFileNames = new List<SoftwareMaterial>();
 
 				// create materials from matching field types
-				if (materialTypes.GetType() == typeof(Dictionary<string,Type>))
+				Materials = new MaterialI[softwareModel.Materials.Count];
+				Textures = new List<Texture2DI>();
+				for (int i = 0; i != Materials.Length; ++i)
 				{
-					Materials = new MaterialI[softwareModel.Materials.Count];
-					Textures = new List<Texture2DI>();
-					for (int i = 0; i != Materials.Length; ++i)
+					bool pass = false;
+					foreach (var materialType in (Dictionary<string,Type>)materialTypes)
 					{
-						bool pass = false;
-						foreach (var materialType in (Dictionary<string,Type>)materialTypes)
+						if (materialType.Key == softwareModel.Materials[i].Name)
 						{
-							if (materialType.Key == softwareModel.Materials[i].Name)
-							{
-								Materials[i] = (MaterialI)Activator.CreateInstance(materialType.Value);
-								textureFileNames.Add(softwareModel.Materials[i]);
-								pass = true;
-								break;
-							}
+							Materials[i] = (MaterialI)Activator.CreateInstance(materialType.Value);
+							textureFileNames.Add(softwareModel.Materials[i]);
+							pass = true;
+							break;
 						}
-
-						if (!pass) Debug.ThrowError("Model", "Failed to find a valid material type for: " + softwareModel.Materials[i].Name);
 					}
-				}
-				else
-				{
-					Debug.ThrowError("Model", "Unsuported materialTypes");
+
+					if (!pass) Debug.ThrowError("Model", "Failed to find a valid material type for: " + softwareModel.Materials[i].Name);
 				}
 
 				// create meshes
@@ -113,24 +106,32 @@ namespace Reign.Video
 			}
 		}
 
-		internal bool loadMaterials(List<SoftwareMaterial> softwareMaterials, DisposableI contentParent, string contentDirectory, Dictionary<Type,MaterialFieldBinder> materialFieldTypes)
+		internal bool loadMaterials(List<SoftwareMaterial> softwareMaterials, DisposableI contentParent, string contentDirectory, List<MaterialFieldBinder> materialFieldTypes)
 		{
 			for (int i = 0; i != Materials.Length; ++i)
 			{
 				// make sure there is a field binder for the material
 				var material = Materials[i];
 				var materialType = material.GetType();
-				if (!materialFieldTypes.ContainsKey(materialType)) Debug.ThrowError("Model", "Material field types do not contain a material type: " + materialType.ToString());
+				MaterialFieldBinder binder = null;
+				foreach (var materialFieldType in materialFieldTypes)
+				{
+					if (materialFieldType.MaterialName == softwareMaterials[i].Name)
+					{
+						binder = materialFieldType;
+						break;
+					}
+				}
+				if (binder == null) Debug.ThrowError("Model", "Material field types do not contain a material type: " + materialType.ToString());
 				
 				// get texture field
-				var binder = materialFieldTypes[materialType];
-				var textureFileName = softwareMaterials[i].Textures[binder.ID];
+				var textureFileName = softwareMaterials[i].Textures[binder.TextureID];
 				#if METRO
-				var field = materialType.GetTypeInfo().GetDeclaredField(binder.MaterialFieldName);
+				var field = materialType.GetTypeInfo().GetDeclaredField(binder.ShaderMaterialFieldName);
 				#else
-				var field = materialType.GetField(binder.MaterialFieldName);
+				var field = materialType.GetField(binder.ShaderMaterialFieldName);
 				#endif
-				if (field == null) Debug.ThrowError("Model", "Material field name does not exist: " + binder.MaterialFieldName);
+				if (field == null) Debug.ThrowError("Model", "Material field name does not exist: " + binder.ShaderMaterialFieldName);
 
 				// load texture
 				var value = field.GetValue(material);

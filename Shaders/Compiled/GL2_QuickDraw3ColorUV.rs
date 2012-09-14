@@ -13,7 +13,7 @@ uniform mat4 Camera;
 
 void main()
 {
-	gl_Position = Position_VSPS =  vec4(Position0, 1) * Camera;
+	gl_Position = Position_VSPS = ( vec4(Position0, 1) * Camera);
 	Color_VSPS = Color0;
 	UV_VSPS = vec2(Texcoord0.x, 1.0-Texcoord0.y);
 }

@@ -287,37 +287,32 @@ namespace Reign.Audio.Cocoa
 
 		public void Play()
 		{
-			lock (this)
-			{
-				if (State != SoundStates.Paused) volume = 1;
-				instance.Start();
-				State = SoundStates.Playing;
-			}
+			if (State == SoundStates.Playing) return;
+			if (State != SoundStates.Paused) volume = 1;
+			instance.Start();
+			State = SoundStates.Playing;
 		}
 		
 		public void Play(float volume)
 		{
-			lock (this)
-			{
-				this.volume = volume;
-				instance.Start();
-				State = SoundStates.Playing;
-			}
+			if (State == SoundStates.Playing) return;
+			this.volume = volume;
+			instance.Start();
+			State = SoundStates.Playing;
 		}
 
 		public void Pause()
 		{
-			lock (this)
-			{
-				instance.Stop();
-				State = SoundStates.Paused;
-			}
+			if (State == SoundStates.Paused) return;
+			instance.Stop();
+			State = SoundStates.Paused;
 		}
 
 		public void Stop()
 		{
 			lock (this)
 			{
+				if (State == SoundStates.Stopped) return;
 				instance.Stop();
 				State = SoundStates.Stopped;
 				dataOffset = 0;

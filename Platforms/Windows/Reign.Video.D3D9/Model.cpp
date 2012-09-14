@@ -7,7 +7,7 @@ namespace Reign
 {namespace D3D9
 {
 	#pragma region Constructors
-	Model::Model(DisposableI^ parent, SoftwareModel^ softwareModel, MeshVertexSizes positionSize, DisposableI^ contentParent, string^ contentDirectory, Dictionary<string^,Type^>^ materialTypes, Dictionary<Type^,MaterialFieldBinder^>^ materialFieldTypes)
+	Model::Model(DisposableI^ parent, SoftwareModel^ softwareModel, MeshVertexSizes positionSize, DisposableI^ contentParent, string^ contentDirectory, Dictionary<string^,Type^>^ materialTypes, List<MaterialFieldBinder^>^ materialFieldTypes)
 	: ModelI(parent, softwareModel, positionSize, contentParent, contentDirectory, materialTypes, materialFieldTypes)
 	{
 		

@@ -69,6 +69,7 @@ namespace Reign.Audio.XAudio
 
 		public void Play()
 		{
+			if (State == SoundStates.Playing) return;
 			if (State != SoundStates.Paused) Volume = 1;
 			com.Play();
 			State = SoundStates.Playing;
@@ -76,6 +77,7 @@ namespace Reign.Audio.XAudio
 
 		public void Play(float volume)
 		{
+			if (State == SoundStates.Playing) return;
 			this.volume = volume;
 			com.Play(volume);
 			State = SoundStates.Playing;
@@ -83,12 +85,14 @@ namespace Reign.Audio.XAudio
 
 		public void Pause()
 		{
+			if (State == SoundStates.Paused) return;
 			com.Pause();
 			State = SoundStates.Paused;
 		}
 
 		public void Stop()
 		{
+			if (State == SoundStates.Stopped) return;
 			com.Stop();
 			State = SoundStates.Stopped;
 		}

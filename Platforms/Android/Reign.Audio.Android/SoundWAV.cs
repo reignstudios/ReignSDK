@@ -81,48 +81,40 @@ namespace Reign.Audio.Android
 
 		public void Play()
 		{
-			lock (this)
-			{
-				if (instance == null) createPlayInstance();
-				if (State != SoundStates.Paused) volume = 1;
-				instance.Play();
-				State = SoundStates.Playing;
-			}
+			if (State == SoundStates.Playing) return;
+			if (instance == null) createPlayInstance();
+			if (State != SoundStates.Paused) volume = 1;
+			instance.Play();
+			State = SoundStates.Playing;
 		}
 		
 		public void Play(float volume)
 		{
-			lock (this)
-			{
-				if (instance == null) createPlayInstance();
-				this.volume = volume;
-				instance.Play();
-				State = SoundStates.Playing;
-			}
+			if (State == SoundStates.Playing) return;
+			if (instance == null) createPlayInstance();
+			this.volume = volume;
+			instance.Play();
+			State = SoundStates.Playing;
 		}
 
 		public void Pause()
 		{
-			lock (this)
-			{
-				if (instance == null) return;
-				instance.Pause();
-				State = SoundStates.Paused;
-			}
+			if (State == SoundStates.Paused) return;
+			if (instance == null) return;
+			instance.Pause();
+			State = SoundStates.Paused;
 		}
 
 		public void Stop()
 		{
-			lock (this)
-			{
-				if (instance == null) return;
-				instance.Stop();
-				instance.Release();
-				instance.Dispose();
-				instance = null;
-				audio.removeinstance();
-				State = SoundStates.Stopped;
-			}
+			if (State == SoundStates.Stopped) return;
+			if (instance == null) return;
+			instance.Stop();
+			instance.Release();
+			instance.Dispose();
+			instance = null;
+			audio.removeinstance();
+			State = SoundStates.Stopped;
 		}
 		#endregion
 	}

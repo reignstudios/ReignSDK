@@ -7,7 +7,7 @@ namespace Reign.Video.OpenGL
 	public class Model : ModelI
 	{
 		#region Constructors
-		public Model(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, DisposableI contentParent, string contentDirectory, Dictionary<string,Type> materialTypes, Dictionary<Type,MaterialFieldBinder> materialFieldTypes)
+		public Model(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, DisposableI contentParent, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> materialFieldTypes)
 		: base(parent, softwareModel, positionSize, contentParent, contentDirectory, materialTypes, materialFieldTypes)
 		{
 			

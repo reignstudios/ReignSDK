@@ -16,7 +16,7 @@ uniform vec2 TexelOffset;
 void main()
 {
 	vec3 loc = vec3((Position0 * Size) + Location.xy, Location.z);
-	gl_Position = Position_VSPS =  vec4(loc, 1.0) * Camera;
+	gl_Position = Position_VSPS = ( vec4(loc, 1.0) * Camera);
 
 	vec2 uv = Position0 + TexelOffset;
 	UV_VSPS = ( vec2(uv.x, 1.0-uv.y) * SizeUV) + LocationUV;

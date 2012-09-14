@@ -9,7 +9,7 @@ namespace Reign
 	public ref class Model : ModelI
 	{
 		#pragma region Constructors
-		public: Model(DisposableI^ parent, SoftwareModel^ softwareModel, MeshVertexSizes positionSize, DisposableI^ contentParent, string^ contentDirectory, Dictionary<string^,Type^>^ materialTypes, Dictionary<Type^,MaterialFieldBinder^>^ materialFieldTypes);
+		public: Model(DisposableI^ parent, SoftwareModel^ softwareModel, MeshVertexSizes positionSize, DisposableI^ contentParent, string^ contentDirectory, Dictionary<string^,Type^>^ materialTypes, List<MaterialFieldBinder^>^ materialFieldTypes);
 		protected: virtual MeshI^ createMesh(ModelI^ model, SoftwareModel^ softwareModel, SoftwareMesh^ softwareMesh, MeshVertexSizes positionSize) override;
 		protected: virtual Texture2DI^ createTexture(DisposableI^ parent, string^ fileName) override;
 		#pragma endregion

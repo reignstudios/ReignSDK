@@ -59,12 +59,14 @@ namespace Reign.Audio.XNA
 
 		public void Play()
 		{
+			if (State == SoundStates.Playing) return;
 			instance.Play();
 			State = SoundStates.Playing;
 		}
 
 		public void Play(float volume)
 		{
+			if (State == SoundStates.Playing) return;
 			instance.Volume = volume;
 			instance.Play();
 			State = SoundStates.Playing;
@@ -72,16 +74,42 @@ namespace Reign.Audio.XNA
 
 		public void Pause()
 		{
+			if (State == SoundStates.Paused) return;
 			instance.Pause();
 			State = SoundStates.Paused;
 		}
 
 		public void Stop()
 		{
+			if (State == SoundStates.Stopped) return;
 			instance.Stop();
 			State = SoundStates.Stopped;
 		}
 		#endregion
+	}
+
+	class SoundWAVStreamLoader : StreamLoaderI
+	{
+		SoundWAV sound;
+		private DisposableI parent;
+		private string fileName;
+		private int instanceCount;
+		private bool looped;
+
+		public SoundWAVStreamLoader(SoundWAV sound, DisposableI parent, string fileName, int instanceCount, bool looped)
+		{
+			this.sound = sound;
+			this.parent = parent;
+			this.fileName = fileName;
+			this.instanceCount = instanceCount;
+			this.looped = looped;
+		}
+
+		public override bool Load()
+		{
+			sound.load(parent, fileName, instanceCount, looped);
+			return true;
+		}
 	}
 
 	public class SoundWAV : SoundWAVI
@@ -95,6 +123,16 @@ namespace Reign.Audio.XNA
 		#region Constructors
 		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped)
 		: base(parent)
+		{
+			new SoundWAVStreamLoader(this, parent, fileName, instanceCount, looped);
+		}
+
+		internal void load(DisposableI parent, string fileName, int instanceCount, bool looped)
+		{
+			init(parent, fileName, instanceCount, looped);
+		}
+
+		protected override void init(DisposableI parent, string fileName, int instanceCount, bool looped)
 		{
 			audio = parent.FindParentOrSelfWithException<Audio>();
 			audio.UpdateCallback += Update;
