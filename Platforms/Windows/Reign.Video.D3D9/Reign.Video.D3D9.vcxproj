@@ -96,6 +96,8 @@
     <ClInclude Include="DepthStencilState.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="PixelShader.h" />
     <ClInclude Include="QuickDraw.h" />
     <ClInclude Include="RasterizerState.h" />
@@ -125,6 +127,8 @@
     <ClCompile Include="DepthStencilStateDesc.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="IndexBuffer.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="PixelShader.cpp" />
     <ClCompile Include="QuickDraw.cpp" />
     <ClCompile Include="RasterizerState.cpp" />

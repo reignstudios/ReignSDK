@@ -40,11 +40,13 @@ namespace Reign.Core
 		}
 	}
 	
+	#if !XNA
 	public enum ApplicationOrientations
 	{
 		Landscape,
 		Portrait
 	}
+	#endif
 	
 	public enum ApplicationAdGravity
 	{
@@ -87,7 +89,10 @@ namespace Reign.Core
 		#region Properties
 		public delegate void StateMethod();
 		public static StateMethod PauseCallback, ResumeCallback;
+
+		#if !XNA
 		internal ApplicationOrientations orientation;
+		#endif
 		
 		internal Size2 frameSize;
 		public Size2 FrameSize
@@ -111,16 +116,22 @@ namespace Reign.Core
 		: base(enableAds, publisherID)
 		#elif METRO
 		public Application(ApplicationOrientations orientation)
+		#elif XNA
+		public Application(int width, int height)
 		#else
 		public Application(int width, int height, ApplicationOrientations orientation)
 		#endif
 		{
+			#if !XNA
 			this.orientation = orientation;
+			#endif
 			theEvent = new ApplicationEvent();
 				
 			OS.CurrentApplication = this;
 			#if iOS || ANDROID || METRO
 			setApplication(this);
+			#elif XNA
+			init(this, width, height);
 			#else
 			init(this, width, height, orientation);
 			#endif

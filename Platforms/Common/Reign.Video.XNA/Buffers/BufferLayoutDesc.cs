@@ -36,6 +36,7 @@ namespace Reign.Video.XNA
 					case (BufferLayoutElementUsages.Position): Desc[i].VertexElementUsage = VertexElementUsage.Position; break;
 					case (BufferLayoutElementUsages.Color): Desc[i].VertexElementUsage = VertexElementUsage.Color; break;
 					case (BufferLayoutElementUsages.UV): Desc[i].VertexElementUsage = VertexElementUsage.TextureCoordinate; break;
+					case (BufferLayoutElementUsages.Normal): Desc[i].VertexElementUsage = VertexElementUsage.Normal; break;
 					case (BufferLayoutElementUsages.Index): Desc[i].VertexElementUsage = VertexElementUsage.BlendIndices; break;
 					case (BufferLayoutElementUsages.IndexClassic): Desc[i].VertexElementUsage = VertexElementUsage.BlendIndices; break;
 				}

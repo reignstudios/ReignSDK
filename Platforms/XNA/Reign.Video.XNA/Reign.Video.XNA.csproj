@@ -29,6 +29,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <PlatformTarget>x86</PlatformTarget>
     <XnaCompressContent>false</XnaCompressContent>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
@@ -76,6 +77,12 @@
     </Compile>
     <Compile Include="..\..\Common\Reign.Video.XNA\Font.cs">
       <Link>Font.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\Model\Mesh.cs">
+      <Link>Model\Mesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\Model\Model.cs">
+      <Link>Model\Model.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Video.XNA\QuickDraw.cs">
       <Link>QuickDraw.cs</Link>

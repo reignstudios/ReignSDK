@@ -23,6 +23,18 @@ namespace Reign.Video.XNA
 					MultisampleEnable = false;
 					break;
 
+				case (RasterizerStateTypes.Solid_CullCW):
+					FillMode = X.FillMode.Solid;
+					CullMode = X.CullMode.CullClockwiseFace;
+					MultisampleEnable = false;
+					break;
+
+				case (RasterizerStateTypes.Solid_CullCCW):
+					FillMode = X.FillMode.Solid;
+					CullMode = X.CullMode.CullCounterClockwiseFace;
+					MultisampleEnable = false;
+					break;
+
 				default:
 					Debug.ThrowError("RasterizerStateDesc", "Unsuported RasterizerStateType");
 					break;

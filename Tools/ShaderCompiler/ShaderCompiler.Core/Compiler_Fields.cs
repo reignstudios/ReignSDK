@@ -41,6 +41,14 @@ namespace ShaderCompiler.Core
 					if (t == typeof(ArrayType)) isField = true;
 					if (t == typeof(FieldUsage))
 					{
+						if (!(field.FieldType == typeof(Vector2) || field.FieldType == typeof(Vector3) || field.FieldType == typeof(Vector4) ||
+							field.FieldType == typeof(Vector2[]) || field.FieldType == typeof(Vector3[]) || field.FieldType == typeof(Vector4[]) ||
+							field.FieldType == typeof(Matrix4) || field.FieldType == typeof(Matrix4[]) ||
+							field.FieldType == typeof(Texture2D)))
+						{
+							throw new Exception("Field types must be either of a Vector4, Matrix4 or Texture");
+						}
+
 						isField = true;
 						var aValue = (FieldUsage)a;
 						if (aValue.Type == FieldUsageTypes.VS)
@@ -144,7 +152,8 @@ namespace ShaderCompiler.Core
 						if (a.Type == VSInputTypes.IndexClassic || outputType == CompilerOutputs.GL2) fieldType = "float";
 						else if (fieldName == "gl_InstanceID") continue;
 					}
-					vsStream.WriteLine(string.Format("attribute {0} {1};", fieldType, fieldName));
+					if (outputType == CompilerOutputs.GL2 || outputType == CompilerOutputs.GLES2) vsStream.WriteLine(string.Format("attribute {0} {1};", fieldType, fieldName));
+					else vsStream.WriteLine(string.Format("in {0} {1};", fieldType, fieldName));
 				}
 			}
 			vsStream.WriteLine();

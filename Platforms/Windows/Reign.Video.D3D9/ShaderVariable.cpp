@@ -39,61 +39,67 @@ namespace Reign
 	void ShaderVariable::setVector2()
 	{
 		pin_ptr<void> valuePtr = &valueObject.Vector2;
-		if (vertexHandle) vertexVariables->SetValue(video->Device, vertexHandle, valuePtr, sizeof(Vector2));
-		if (pixelHandle) pixelVariables->SetValue(video->Device, pixelHandle, valuePtr, sizeof(Vector2));
+		D3DXVECTOR4* ptr = (D3DXVECTOR4*)(void*)valuePtr;
+		if (vertexHandle) vertexVariables->SetVector(video->Device, vertexHandle, ptr);
+		if (pixelHandle) pixelVariables->SetVector(video->Device, pixelHandle, ptr);
 	}
 
 	void ShaderVariable::setVector3()
 	{
 		pin_ptr<void> valuePtr = &valueObject.Vector3;
-		if (vertexHandle) vertexVariables->SetValue(video->Device, vertexHandle, valuePtr, sizeof(Vector3));
-		if (pixelHandle) pixelVariables->SetValue(video->Device, pixelHandle, valuePtr, sizeof(Vector3));
+		D3DXVECTOR4* ptr = (D3DXVECTOR4*)(void*)valuePtr;
+		if (vertexHandle) vertexVariables->SetVector(video->Device, vertexHandle, ptr);
+		if (pixelHandle) pixelVariables->SetVector(video->Device, pixelHandle, ptr);
 	}
 
 	void ShaderVariable::setVector4()
 	{
 		pin_ptr<void> valuePtr = &valueObject.Vector4;
-		if (vertexHandle) vertexVariables->SetValue(video->Device, vertexHandle, valuePtr, sizeof(Vector4));
-		if (pixelHandle) pixelVariables->SetValue(video->Device, pixelHandle, valuePtr, sizeof(Vector4));
+		D3DXVECTOR4* ptr = (D3DXVECTOR4*)(void*)valuePtr;
+		if (vertexHandle) vertexVariables->SetVector(video->Device, vertexHandle, ptr);
+		if (pixelHandle) pixelVariables->SetVector(video->Device, pixelHandle, ptr);
 	}
 
 	void ShaderVariable::setMatrix2()
 	{
 		pin_ptr<void> valuePtr = &valueObject.Matrix2;
-		if (vertexHandle) vertexVariables->SetValue(video->Device, vertexHandle, valuePtr, sizeof(Matrix2));
-		if (pixelHandle) pixelVariables->SetValue(video->Device, pixelHandle, valuePtr, sizeof(Matrix2));
+		D3DXMATRIX* ptr = (D3DXMATRIX*)(void*)valuePtr;
+		if (vertexHandle) vertexVariables->SetMatrix(video->Device, vertexHandle, ptr);
+		if (pixelHandle) pixelVariables->SetMatrix(video->Device, pixelHandle, ptr);
 	}
 
 	void ShaderVariable::setMatrix3()
 	{
 		pin_ptr<void> valuePtr = &valueObject.Matrix3;
-		if (vertexHandle) vertexVariables->SetValue(video->Device, vertexHandle, valuePtr, sizeof(Matrix3));
-		if (pixelHandle) pixelVariables->SetValue(video->Device, pixelHandle, valuePtr, sizeof(Matrix3));
+		D3DXMATRIX* ptr = (D3DXMATRIX*)(void*)valuePtr;
+		if (vertexHandle) vertexVariables->SetMatrix(video->Device, vertexHandle, ptr);
+		if (pixelHandle) pixelVariables->SetMatrix(video->Device, pixelHandle, ptr);
 	}
 
 	void ShaderVariable::setMatrix4()
 	{
 		pin_ptr<void> valuePtr = &valueObject.Matrix4;
-		if (vertexHandle) vertexVariables->SetValue(video->Device, vertexHandle, valuePtr, sizeof(Matrix4));
-		if (pixelHandle) pixelVariables->SetValue(video->Device, pixelHandle, valuePtr, sizeof(Matrix4));
+		D3DXMATRIX* ptr = (D3DXMATRIX*)(void*)valuePtr;
+		if (vertexHandle) vertexVariables->SetMatrix(video->Device, vertexHandle, ptr);
+		if (pixelHandle) pixelVariables->SetMatrix(video->Device, pixelHandle, ptr);
 	}
 
 	void ShaderVariable::setFloatArray()
 	{
 		array<float>^ value = (array<float>^)valueArrayObject->Target;
 		pin_ptr<void> valuePtr = &value[valueArrayOffset];
-		int size = sizeof(float) * valueArrayCount;
-		if (vertexHandle) vertexVariables->SetValue(video->Device, vertexHandle, valuePtr, size);
-		if (pixelHandle) pixelVariables->SetValue(video->Device, pixelHandle, valuePtr, size);
+		float* ptr = (float*)(void*)valuePtr;
+		if (vertexHandle) vertexVariables->SetFloatArray(video->Device, vertexHandle, ptr, value->Length);
+		if (pixelHandle) pixelVariables->SetFloatArray(video->Device, pixelHandle, ptr, value->Length);
 	}
 
 	void ShaderVariable::setVector4Array()
 	{
 		array<Vector4>^ value = (array<Vector4>^)valueArrayObject->Target;
 		pin_ptr<void> valuePtr = &value[valueArrayOffset];
-		int size = sizeof(Vector4) * valueArrayCount;
-		if (vertexHandle) vertexVariables->SetValue(video->Device, vertexHandle, valuePtr, size);
-		if (pixelHandle) pixelVariables->SetValue(video->Device, pixelHandle, valuePtr, size);
+		D3DXVECTOR4* ptr = (D3DXVECTOR4*)(void*)valuePtr;
+		if (vertexHandle) vertexVariables->SetVectorArray(video->Device, vertexHandle, ptr, value->Length);
+		if (pixelHandle) pixelVariables->SetVectorArray(video->Device, pixelHandle, ptr, value->Length);
 	}
 
 	void ShaderVariable::Set(float value)

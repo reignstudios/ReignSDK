@@ -41,34 +41,19 @@ namespace Reign.Video.XNA
 			parameter.SetValue(new X.Vector4(value.X, value.Y, value.Z, value.W));
 		}
 
-		public void Set(Matrix2 value)
+		public unsafe void Set(Matrix2 value)
 		{
-			parameter.SetValue(new float[]
-			{
-				value.X.X, value.X.Y,
-				value.Y.X, value.Y.Y
-			});
+			parameter.SetValue(*(X.Matrix*)&value);
 		}
 
-		public void Set(Matrix3 value)
+		public unsafe void Set(Matrix3 value)
 		{
-			parameter.SetValue(new float[]
-			{
-				value.X.X, value.X.Y, value.X.Z,
-				value.Y.X, value.Y.Y, value.Y.Z,
-				value.Z.X, value.Z.Y, value.Z.Z
-			});
+			parameter.SetValue(*(X.Matrix*)&value);
 		}
 
-		public void Set(Matrix4 value)
+		public unsafe void Set(Matrix4 value)
 		{
-			parameter.SetValue(new X.Matrix
-			(
-				value.X.X, value.X.Y, value.X.Z, value.X.W,
-				value.Y.X, value.Y.Y, value.Y.Z, value.Y.W,
-				value.Z.X, value.Z.Y, value.Z.Z, value.Z.W,
-				value.W.X, value.W.Y, value.W.Z, value.W.W)
-			);
+			parameter.SetValue(*(X.Matrix*)&value);
 		}
 
 		public void Set(float[] values)
@@ -76,58 +61,38 @@ namespace Reign.Video.XNA
 			parameter.SetValue(values);
 		}
 
-		public void Set(Vector2[] values)
-		{
-			var data = new X.Vector2[values.Length];
-			for (int i = 0; i != values.Length; ++i)
-			{
-				var value = values[i];
-				data[i] = new X.Vector2(value.X, value.Y);
-			}
-			parameter.SetValue(data);
-		}
-
-		public void Set(Vector3[] values)
-		{
-			var data = new X.Vector3[values.Length];
-			for (int i = 0; i != values.Length; ++i)
-			{
-				var value = values[i];
-				data[i] = new X.Vector3(value.X, value.Y, value.Z);
-			}
-			parameter.SetValue(data);
-		}
-
-		public void Set(Vector4[] values)
+		public unsafe void Set(Vector4[] values)
 		{
 			var data = new X.Vector4[values.Length];
-			for (int i = 0; i != values.Length; ++i)
+			fixed (Vector4* ptr = values)
 			{
-				var value = values[i];
-				data[i] = new X.Vector4(value.X, value.Y, value.Z, value.W);
+				var ptrOffset = ptr;
+				fixed (X.Vector4* ptr2 = data)
+				{ 
+					var ptrOffset2 = ptr2;
+					for (int i = 0; i != values.Length; ++i)
+					{
+						*ptrOffset2++ = *(X.Vector4*)(ptrOffset++);
+					}
+				}
 			}
-			parameter.SetValue(data);
 		}
 
-		public void Set(Matrix2[] values)
+		public unsafe void Set(Matrix4[] values)
 		{
-			var data = new float[values.Length * 4];
-			Array.Copy(values, data, values.Length);
-			parameter.SetValue(data);
-		}
-
-		public void Set(Matrix3[] values)
-		{
-			var data = new float[values.Length * 9];
-			Array.Copy(values, data, values.Length);
-			parameter.SetValue(data);
-		}
-
-		public void Set(Matrix4[] values)
-		{
-			var data = new float[values.Length * 12];
-			Array.Copy(values, data, values.Length);
-			parameter.SetValue(data);
+			var data = new X.Matrix[values.Length];
+			fixed (Matrix4* ptr = values)
+			{
+				var ptrOffset = ptr;
+				fixed (X.Matrix* ptr2 = data)
+				{ 
+					var ptrOffset2 = ptr2;
+					for (int i = 0; i != values.Length; ++i)
+					{
+						*ptrOffset2++ = *(X.Matrix*)(ptrOffset++);
+					}
+				}
+			}
 		}
 
 		public void Set(float[] values, int count)
@@ -137,58 +102,38 @@ namespace Reign.Video.XNA
 			parameter.SetValue(data);
 		}
 
-		public void Set(Vector2[] values, int count)
-		{
-			var data = new X.Vector2[count];
-			for (int i = 0; i != count; ++i)
-			{
-				var value = values[i];
-				data[i] = new X.Vector2(value.X, value.Y);
-			}
-			parameter.SetValue(data);
-		}
-
-		public void Set(Vector3[] values, int count)
-		{
-			var data = new X.Vector3[count];
-			for (int i = 0; i != count; ++i)
-			{
-				var value = values[i];
-				data[i] = new X.Vector3(value.X, value.Y, value.Z);
-			}
-			parameter.SetValue(data);
-		}
-
-		public void Set(Vector4[] values, int count)
+		public unsafe void Set(Vector4[] values, int count)
 		{
 			var data = new X.Vector4[count];
-			for (int i = 0; i != count; ++i)
+			fixed (Vector4* ptr = values)
 			{
-				var value = values[i];
-				data[i] = new X.Vector4(value.X, value.Y, value.Z, value.W);
+				var ptrOffset = ptr;
+				fixed (X.Vector4* ptr2 = data)
+				{ 
+					var ptrOffset2 = ptr2;
+					for (int i = 0; i != count; ++i)
+					{
+						*ptrOffset2++ = *(X.Vector4*)(ptrOffset++);
+					}
+				}
 			}
-			parameter.SetValue(data);
 		}
 
-		public void Set(Matrix2[] values, int count)
+		public unsafe void Set(Matrix4[] values, int count)
 		{
-			var data = new float[values.Length * 4];
-			Array.Copy(values, data, count);
-			parameter.SetValue(data);
-		}
-
-		public void Set(Matrix3[] values, int count)
-		{
-			var data = new float[values.Length * 9];
-			Array.Copy(values, data, count);
-			parameter.SetValue(data);
-		}
-
-		public void Set(Matrix4[] values, int count)
-		{
-			var data = new float[values.Length * 12];
-			Array.Copy(values, data, count);
-			parameter.SetValue(data);
+			var data = new X.Matrix[count];
+			fixed (Matrix4* ptr = values)
+			{
+				var ptrOffset = ptr;
+				fixed (X.Matrix* ptr2 = data)
+				{ 
+					var ptrOffset2 = ptr2;
+					for (int i = 0; i != count; ++i)
+					{
+						*ptrOffset2++ = *(X.Matrix*)(ptrOffset++);
+					}
+				}
+			}
 		}
 
 		public void Set(float[] values, int offset, int count)
@@ -198,64 +143,38 @@ namespace Reign.Video.XNA
 			parameter.SetValue(data);
 		}
 
-		public void Set(Vector2[] values, int offset, int count)
-		{
-			var data = new X.Vector2[count];
-			int i2 = offset;
-			for (int i = 0; i != count; ++i)
-			{
-				var value = values[i2];
-				data[i] = new X.Vector2(value.X, value.Y);
-				++i2;
-			}
-			parameter.SetValue(data);
-		}
-
-		public void Set(Vector3[] values, int offset, int count)
-		{
-			var data = new X.Vector3[count];
-			int i2 = offset;
-			for (int i = 0; i != count; ++i)
-			{
-				var value = values[i2];
-				data[i] = new X.Vector3(value.X, value.Y, value.Z);
-				++i2;
-			}
-			parameter.SetValue(data);
-		}
-
-		public void Set(Vector4[] values, int offset, int count)
+		public unsafe void Set(Vector4[] values, int offset, int count)
 		{
 			var data = new X.Vector4[count];
-			int i2 = offset;
-			for (int i = 0; i != count; ++i)
+			fixed (Vector4* ptr = values)
 			{
-				var value = values[i2];
-				data[i] = new X.Vector4(value.X, value.Y, value.Z, value.W);
-				++i2;
+				var ptrOffset = ptr + offset;
+				fixed (X.Vector4* ptr2 = data)
+				{ 
+					var ptrOffset2 = ptr2;
+					for (int i = 0; i != count; ++i)
+					{
+						*ptrOffset2++ = *(X.Vector4*)(ptrOffset++);
+					}
+				}
 			}
-			parameter.SetValue(data);
 		}
 
-		public void Set(Matrix2[] values, int offset, int count)
+		public unsafe void Set(Matrix4[] values, int offset, int count)
 		{
-			var data = new float[values.Length * 4];
-			Array.Copy(values, offset, data, 0, count);
-			parameter.SetValue(data);
-		}
-
-		public void Set(Matrix3[] values, int offset, int count)
-		{
-			var data = new float[values.Length * 9];
-			Array.Copy(values, offset, data, 0, count);
-			parameter.SetValue(data);
-		}
-
-		public void Set(Matrix4[] values, int offset, int count)
-		{
-			var data = new float[values.Length * 12];
-			Array.Copy(values, offset, data, 0, count);
-			parameter.SetValue(data);
+			var data = new X.Matrix[count];
+			fixed (Matrix4* ptr = values)
+			{
+				var ptrOffset = ptr + offset;
+				fixed (X.Matrix* ptr2 = data)
+				{ 
+					var ptrOffset2 = ptr2;
+					for (int i = 0; i != count; ++i)
+					{
+						*ptrOffset2++ = *(X.Matrix*)(ptrOffset++);
+					}
+				}
+			}
 		}
 		#endregion
 	}

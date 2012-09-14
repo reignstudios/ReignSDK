@@ -236,7 +236,7 @@ namespace Reign
 
 	void Texture2D::dispose()
 	{
-		video->removeActiveTexture(this);
+		if (video) video->removeActiveTexture(this);
 		if (surface) surface->Release();
 		if (texture) texture->Release();
 		null();
@@ -247,6 +247,7 @@ namespace Reign
 		loaded = false;
 		surface = 0;
 		texture = 0;
+		video = nullptr;
 	}
 
 	void Texture2D::deviceLost()

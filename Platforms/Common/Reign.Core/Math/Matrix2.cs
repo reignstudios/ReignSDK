@@ -8,6 +8,7 @@ namespace Reign.Core
 	{
 		#region Properties
 		public Vector2 X, Y;
+		private Vector2 z, w;
 		#endregion
 
 		#region Constructors
@@ -15,12 +16,16 @@ namespace Reign.Core
 		{
 			X = new Vector2(value);
 			Y = new Vector2(value);
+			z = new Vector2();
+			w = new Vector2();
 		}
 
 		public Matrix2(Vector2 x, Vector2 y)
 		{
 			X = x;
 			Y = y;
+			z = new Vector2();
+			w = new Vector2();
 		}
 
 		public static Matrix2 Cross(Vector2 xVector)

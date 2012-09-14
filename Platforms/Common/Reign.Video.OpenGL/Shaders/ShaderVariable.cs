@@ -92,7 +92,7 @@ namespace Reign.Video.OpenGL
 		{
 			fixed (void* ptr = &valueObject.Matrix2)
 			{
-				GL.UniformMatrix2fv(location, 1, false, (float*)ptr);
+				GL.UniformMatrix4fv(location, 1, false, (float*)ptr);
 			}
 		}
 
@@ -100,7 +100,7 @@ namespace Reign.Video.OpenGL
 		{
 			fixed (void* ptr = &valueObject.Matrix3)
 			{
-				GL.UniformMatrix3fv(location, 1, false, (float*)ptr);
+				GL.UniformMatrix4fv(location, 1, false, (float*)ptr);
 			}
 		}
 

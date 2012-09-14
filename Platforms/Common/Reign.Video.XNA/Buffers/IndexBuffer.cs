@@ -24,6 +24,12 @@ namespace Reign.Video.XNA
 			init(parent, indices);
 		}
 
+		public IndexBuffer(DisposableI parent, BufferUsages bufferUsage, int[] indices, bool _32BitIndices)
+		: base(parent, bufferUsage, _32BitIndices)
+		{
+			init(parent, indices);
+		}
+
 		void init(DisposableI parent, int[] indices)
 		{
 			try

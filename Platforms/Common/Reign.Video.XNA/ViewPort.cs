@@ -28,34 +28,32 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Methods
+		public override void Apply()
+		{
+			var viewPort = new Microsoft.Xna.Framework.Graphics.Viewport()
+			{
+				X = Location.X,
+				Y = video.Device.PresentationParameters.BackBufferHeight - Size.Height - Location.Y,
+				Width = Size.Width,
+				Height = Size.Height,
+				MinDepth = 0,
+				MaxDepth = 1
+			};
+			video.Device.Viewport = viewPort;
+		}
+
 		public override void Apply(RenderTargetI renderTarget)
 		{
-			if (renderTarget == null)
+			var viewPort = new Microsoft.Xna.Framework.Graphics.Viewport()
 			{
-				var viewPort = new Microsoft.Xna.Framework.Graphics.Viewport()
-				{
-					X = Location.X,
-					Y = video.Device.PresentationParameters.BackBufferHeight - Size.Height - Location.Y,
-					Width = Size.Width,
-					Height = Size.Height,
-					MinDepth = 0,
-					MaxDepth = 1
-				};
-				video.Device.Viewport = viewPort;
-			}
-			else
-			{
-				var viewPort = new Microsoft.Xna.Framework.Graphics.Viewport()
-				{
-					X = Location.X,
-					Y = renderTarget.Size.Height - Size.Height - Location.Y,
-					Width = Size.Width,
-					Height = Size.Height,
-					MinDepth = 0,
-					MaxDepth = 1
-				};
-				video.Device.Viewport = viewPort;
-			}
+				X = Location.X,
+				Y = renderTarget.Size.Height - Size.Height - Location.Y,
+				Width = Size.Width,
+				Height = Size.Height,
+				MinDepth = 0,
+				MaxDepth = 1
+			};
+			video.Device.Viewport = viewPort;
 		}
 		#endregion
 	}

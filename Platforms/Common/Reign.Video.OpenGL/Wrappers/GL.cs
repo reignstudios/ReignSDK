@@ -418,6 +418,8 @@ namespace Reign.Video.OpenGL
 
 		public const uint NONE = 0;
 		public const uint FRONT_AND_BACK = 0x0408;
+		public const uint FRONT = 0x0404;
+		public const uint BACK = 0x0405;
 		public const uint CULL_FACE = 0x0b44;
 		public const uint CW = 0x0900;
 		public const uint CCW = 0x0901;

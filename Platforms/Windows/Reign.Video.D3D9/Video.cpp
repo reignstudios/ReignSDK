@@ -224,6 +224,7 @@ namespace Reign
 
 	Video::~Video()
 	{
+		auto v = currentVertexTextures;
 		disposeChilderen();
 		if (active)
 		{

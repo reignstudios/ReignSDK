@@ -22,6 +22,18 @@ namespace Reign
 				multisampleEnable = false;
 				break;
 
+			case (RasterizerStateTypes::Solid_CullCW):
+				fillMode = D3DFILL_SOLID;
+				cullMode = D3DCULL_CW;
+				multisampleEnable = false;
+				break;
+
+			case (RasterizerStateTypes::Solid_CullCCW):
+				fillMode = D3DFILL_SOLID;
+				cullMode = D3DCULL_CCW;
+				multisampleEnable = false;
+				break;
+
 			default:
 				Debug::ThrowError(L"RasterizerStateDesc", L"Unsuported RasterizerStateType");
 				break;

@@ -256,6 +256,7 @@ namespace ShaderCompiler.Core
 			
 			// Convert SL types
 			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Distance", "distance");
+			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Dot", "dot");
 			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Normalize", "normalize");
 			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Cross", "cross");
 			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Sin", "sin");
@@ -428,7 +429,7 @@ namespace ShaderCompiler.Core
 					}
 					else if (baseType == BaseCompilerOutputs.GLSL)
 					{
-						formatString = @"{0} * {1}";
+						formatString = @"({0} * {1})";
 					}
 					string replace = string.Format(formatString, vectorName, matrixName);
 					matrixName = matrixName.Replace("[", @"\[");

@@ -28,6 +28,9 @@
     <Filter Include="Font">
       <UniqueIdentifier>{17329e99-2a62-4edb-8e5d-830459001e2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{cda41848-0a4e-45cc-9d82-6f4ed71a6be6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Video.h" />
@@ -95,6 +98,12 @@
       <Filter>Base</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Common\CPP_CLR-CX_Helpers\Common.h" />
+    <ClInclude Include="Model.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -180,5 +189,11 @@
       <Filter>Base</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Common\CPP_CLR-CX_Helpers\Common.cpp" />
+    <ClCompile Include="Model.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

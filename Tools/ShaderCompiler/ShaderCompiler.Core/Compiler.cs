@@ -102,7 +102,7 @@ namespace ShaderCompiler.Core
 			this.outputType = outputType;
 
 			// compile shader library
-			var exeDir = Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0", "MSBuildToolsPath", "") as string;
+			/*var exeDir = Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\4.0", "MSBuildToolsPath", "") as string;
 			if (string.IsNullOrEmpty(exeDir)) throw new Exception("Cant find MSBuild for .NET 4.");
 
 			var process = new System.Diagnostics.Process();
@@ -111,7 +111,7 @@ namespace ShaderCompiler.Core
 			process.StartInfo.CreateNoWindow = true;
 			process.StartInfo.UseShellExecute = false;
 			process.Start();
-			process.WaitForExit();
+			process.WaitForExit();*/
 			
 			// make sure output directory exists
 			if (!Directory.Exists(outDirectory))

@@ -8,6 +8,7 @@ namespace Reign.Core
 	{
 		#region Properties
 		public Vector3 X, Y, Z;
+		private Vector3 w;
 		#endregion
 
 		#region Constructors
@@ -16,6 +17,7 @@ namespace Reign.Core
 			X = new Vector3(value);
 			Y = new Vector3(value);
 			Z = new Vector3(value);
+			w = new Vector3();
 		}
 
 		public Matrix3(Vector3 x, Vector3 y, Vector3 z)
@@ -23,6 +25,7 @@ namespace Reign.Core
 			X = x;
 			Y = y;
 			Z = z;
+			w = new Vector3();
 		}
 
 		public static Matrix3 FromEuler(Vector3 euler)

@@ -22,6 +22,11 @@ namespace ShaderCompiler.Core
 			return vector;
 		}
 
+		public Matrix4 Multiply(Matrix4 matrix)
+		{
+			return matrix;
+		}
+
 		internal static string Output(CompilerOutputs output)
 		{
 			var baseType = Compiler.getBaseCompilerOutput(output);

@@ -11,7 +11,7 @@ namespace Reign_Video_D3D11_Component
 		desc = new D3D11_DEPTH_STENCIL_DESC();
 		ZeroMemory(desc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 
-		desc->DepthEnable = false;
+		desc->DepthEnable = enable;
 		desc->DepthWriteMask = (D3D11_DEPTH_WRITE_MASK)mask;
 		desc->DepthFunc = (D3D11_COMPARISON_FUNC)func;
 

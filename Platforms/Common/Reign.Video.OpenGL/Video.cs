@@ -637,11 +637,6 @@ namespace Reign.Video.OpenGL
 
 		public void Present()
 		{
-			#if !iOS && !ANDROID && !NaCl
-			GL.Flush();
-			GL.Finish();
-			#endif
-			
 			#if WINDOWS
 			WGL.SwapBuffers(dc);
 			#endif

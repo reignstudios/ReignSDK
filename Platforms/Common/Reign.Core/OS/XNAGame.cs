@@ -11,6 +11,7 @@ namespace Reign.Core
 		#region Properties
 		private Application application;
 		private GraphicsDeviceManager graphics;
+		protected ApplicationEvent theEvent;
 
 		public bool SimulateTrailMode
 		{
@@ -31,7 +32,7 @@ namespace Reign.Core
 		#endregion
 
 		#region Constructors
-		protected void init(Application application, int width, int height, ApplicationOrientations orientation)
+		protected void init(Application application, int width, int height)
 		{
 			this.application = application;
 
@@ -41,6 +42,7 @@ namespace Reign.Core
 				graphics = new GraphicsDeviceManager(this);
 				graphics.PreparingDeviceSettings += graphics_PreparingDeviceSettings;
 				graphics.SynchronizeWithVerticalRetrace = true;
+				graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
 
 				#if XBOX360
 				graphics.PreferredBackBufferWidth = width == 0 ? GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width : width;
@@ -54,7 +56,7 @@ namespace Reign.Core
 				var gsc = new GamerServicesComponent(this); 
 				Components.Add(gsc);
 
-				Content.RootDirectory = "Content";
+				Content.RootDirectory = "";//"Content";
 				#endif
 			}
 			catch (Exception e)

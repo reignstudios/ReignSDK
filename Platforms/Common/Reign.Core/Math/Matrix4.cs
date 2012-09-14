@@ -27,6 +27,14 @@ namespace Reign.Core
 			W = w;
 		}
 
+		public Matrix4(Matrix3 rotation, Vector3 scale, Vector3 location)
+		{
+			X = new Vector4(rotation.X * scale.X, location.X);
+			Y = new Vector4(rotation.Y * scale.Y, location.Y);
+			Z = new Vector4(rotation.Z * scale.Z, location.Z);
+			W = new Vector4(0, 0, 0, 1);
+		}
+
 		public static readonly Matrix4 Identity = new Matrix4
 		(
 		    new Vector4(1, 0, 0, 0),

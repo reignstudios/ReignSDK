@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System;
 
+#if METRO
+using System.Reflection;
+#endif
+
 namespace Reign.Video
 {
 	class ModelStreamLoader : StreamLoaderI
@@ -117,11 +121,15 @@ namespace Reign.Video
 				var material = Materials[i];
 				var materialType = material.GetType();
 				if (!materialFieldTypes.ContainsKey(materialType)) Debug.ThrowError("Model", "Material field types do not contain a material type: " + materialType.ToString());
-
+				
 				// get texture field
 				var binder = materialFieldTypes[materialType];
 				var textureFileName = softwareMaterials[i].Textures[binder.ID];
+				#if METRO
+				var field = materialType.GetTypeInfo().GetDeclaredField(binder.MaterialFieldName);
+				#else
 				var field = materialType.GetField(binder.MaterialFieldName);
+				#endif
 				if (field == null) Debug.ThrowError("Model", "Material field name does not exist: " + binder.MaterialFieldName);
 
 				// load texture
@@ -133,7 +141,7 @@ namespace Reign.Video
 				else
 				{
 					var texture = createTexture(contentParent, contentDirectory + Streams.GetFileNameWithExt(textureFileName));
-					if (!Textures.Exists(x => x == texture)) Textures.Add(texture);
+					if (!Textures.Contains(texture)) Textures.Add(texture);
 					field.SetValue(material, texture);
 					return false;
 				}

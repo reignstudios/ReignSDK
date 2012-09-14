@@ -17,8 +17,9 @@ namespace Reign_Video_D3D11_Component
 
 	public enum class REIGN_D3D11_COMPARISON_FUNC
 	{
-		ALWAYS = 8,
-		LESS = 2
+		ALWAYS = D3D11_COMPARISON_ALWAYS,
+		LESS = D3D11_COMPARISON_LESS,
+		GREATER = D3D11_COMPARISON_GREATER
 	};
 
 	public ref class DepthStencilStateDescCom sealed
