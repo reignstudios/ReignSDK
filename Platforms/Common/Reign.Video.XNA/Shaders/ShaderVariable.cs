@@ -76,6 +76,7 @@ namespace Reign.Video.XNA
 					}
 				}
 			}
+			parameter.SetValue(data);
 		}
 
 		public unsafe void Set(Matrix4[] values)
@@ -93,6 +94,7 @@ namespace Reign.Video.XNA
 					}
 				}
 			}
+			parameter.SetValue(data);
 		}
 
 		public void Set(float[] values, int count)
@@ -117,6 +119,7 @@ namespace Reign.Video.XNA
 					}
 				}
 			}
+			parameter.SetValue(data);
 		}
 
 		public unsafe void Set(Matrix4[] values, int count)
@@ -134,6 +137,7 @@ namespace Reign.Video.XNA
 					}
 				}
 			}
+			parameter.SetValue(data);
 		}
 
 		public void Set(float[] values, int offset, int count)
@@ -158,6 +162,7 @@ namespace Reign.Video.XNA
 					}
 				}
 			}
+			parameter.SetValue(data);
 		}
 
 		public unsafe void Set(Matrix4[] values, int offset, int count)
@@ -175,6 +180,7 @@ namespace Reign.Video.XNA
 					}
 				}
 			}
+			parameter.SetValue(data);
 		}
 		#endregion
 	}
