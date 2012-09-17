@@ -30,35 +30,33 @@ namespace Reign.Video
 		}
 	}
 
+	[XmlRoot("FontMetrics")]
+	public class FontMetrics
+	{
+		public class Character
+		{
+			[XmlAttribute("Key")]
+			public char Key;
+
+			[XmlElement("X")]
+			public int X;
+
+			[XmlElement("Y")]
+			public int Y;
+				
+			[XmlElement("Width")]
+			public int Width;
+				
+			[XmlElement("Height")]
+			public int Height;
+		}
+
+		[XmlElement("Character")]
+		public Character[] Characters;
+	}
+
 	public abstract class FontI : Disposable
 	{
-		#region Metric Types
-		[XmlRoot("fontMetrics")]
-		public class FontMetrics
-		{
-			public class Character
-			{
-				[XmlAttribute("key")]
-				public int Key;
-
-				[XmlElement("x")]
-				public int X;
-
-				[XmlElement("y")]
-				public int Y;
-				
-				[XmlElement("width")]
-				public int Width;
-				
-				[XmlElement("height")]
-				public int Height;
-			}
-
-			[XmlElement("character")]
-			public List<Character> Characters;
-		}
-		#endregion
-
 		#region Properties
 		public bool Loaded {get; protected set;}
 		public Character[] Characters {get; private set;}
@@ -109,11 +107,11 @@ namespace Reign.Video
 				var metrics = xml.Deserialize(stream) as FontMetrics;
 				if (metrics == null) Debug.ThrowError("FontI", "Failed to deserialize font metrics: " + metricsFileName);
 
-				Characters = new Character[metrics.Characters.Count];
-				for (int i = 0; i != metrics.Characters.Count; ++i)
+				Characters = new Character[metrics.Characters.Length];
+				for (int i = 0; i != metrics.Characters.Length; ++i)
 				{
 					var character = metrics.Characters[i];
-					Characters[i] = new Character((char)character.Key, new Vector2(character.X, character.Y), new Vector2(character.Width, character.Height));
+					Characters[i] = new Character(character.Key, new Vector2(character.X, character.Y), new Vector2(character.Width, character.Height));
 				}
 			}
 		}

@@ -18,7 +18,7 @@ namespace Reign.Video.OpenGL
 			{
 				case (RasterizerStateTypes.Solid_CullNone):
 					FillMode = GL.FILL;
-					CullMode = GL.FRONT_AND_BACK;
+					CullMode = GL.NONE;
 					MultisampleEnable = false;
 					break;
 

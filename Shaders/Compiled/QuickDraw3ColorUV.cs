@@ -49,6 +49,7 @@ namespace ShaderMaterials.Shaders
 		#region Constructors
 		public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
 		{
+			Shader = A.Shader.Create(videoType, parent, contentPath + tag + "QuickDraw3ColorUV.rs", shaderVersion);
 			new QuickDraw3ColorUVMaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
 			var elements = new List<BufferLayoutElement>();
 			elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.RGBAx8, BufferLayoutElementUsages.Color, 0, 0, 3));elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 4));
@@ -57,11 +58,6 @@ namespace ShaderMaterials.Shaders
 
 		internal static bool load(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
 		{
-			if (Shader == null)
-			{
-				Shader = A.Shader.Create(videoType, parent, contentPath + tag + "QuickDraw3ColorUV.rs", shaderVersion);
-				return false;
-			}
 			if (!Shader.Loaded)
 			{
 				return false;

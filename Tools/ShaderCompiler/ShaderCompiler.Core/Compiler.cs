@@ -574,6 +574,7 @@ namespace ShaderMaterials.{0}
 		#region Constructors
 		public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
 		{{
+			Shader = A.Shader.Create(videoType, parent, contentPath + tag + ""{1}.rs"", shaderVersion);
 			new {1}MaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
 			var elements = new List<BufferLayoutElement>();
 			{7}
@@ -582,11 +583,6 @@ namespace ShaderMaterials.{0}
 
 		internal static bool load(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
 		{{
-			if (Shader == null)
-			{{
-				Shader = A.Shader.Create(videoType, parent, contentPath + tag + ""{1}.rs"", shaderVersion);
-				return false;
-			}}
 			if (!Shader.Loaded)
 			{{
 				return false;

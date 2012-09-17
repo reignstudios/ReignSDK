@@ -1,3 +1,8 @@
+#if METRO
+using System;
+using Windows.UI.Popups;
+#endif
+
 #if WINDOWS
 using System.Windows.Forms;
 #endif
@@ -24,8 +29,17 @@ namespace Reign.Core
 {
 	public static class Message
 	{
+		#if METRO
+		public static async void Show(string title, string message)
+		#else
 		public static void Show(string title, string message)
+		#endif
 		{
+			#if METRO
+			var msg = new MessageDialog(message, title);
+			await msg.ShowAsync();
+			#endif
+
 			#if WINDOWS
 			MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			#endif

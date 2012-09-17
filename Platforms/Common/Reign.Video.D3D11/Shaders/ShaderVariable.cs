@@ -29,13 +29,13 @@ namespace Reign.Video.D3D11
 		public unsafe void Set(float x, float y)
 		{
 			var vector = new Vector2(x, y);
-			com.Set((long)&vector, sizeof(Vector2));
+			com.Set((long)&vector, sizeof(float)*2);
 		}
 
 		public unsafe void Set(float x, float y, float z)
 		{
 			var vector = new Vector3(x, y, z);
-			com.Set((long)&vector, sizeof(Vector3));
+			com.Set((long)&vector, sizeof(float)*3);
 		}
 
 		public unsafe void Set(float x, float y, float z, float w)
@@ -46,12 +46,12 @@ namespace Reign.Video.D3D11
 
 		public unsafe void Set(Vector2 value)
 		{
-			com.Set((long)&value, sizeof(Vector2));
+			com.Set((long)&value, sizeof(float)*2);
 		}
 
 		public unsafe void Set(Vector3 value)
 		{
-			com.Set((long)&value, sizeof(Vector3));
+			com.Set((long)&value, sizeof(float)*3);
 		}
 
 		public unsafe void Set(Vector4 value)

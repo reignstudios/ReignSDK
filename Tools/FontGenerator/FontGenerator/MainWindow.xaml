@@ -1,0 +1,55 @@
+﻿<Window x:Class="FontGenerator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Font Generator" Height="600" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+
+	<Grid Background="#ff111111">
+		<Border Name="finalImageBorder" HorizontalAlignment="Left" Margin="10,67,0,108" Width="278" BorderBrush="LightGray" BorderThickness="2" Background="DarkGray">
+			<Image Name="finalImage" Source="face.png"/>
+		</Border>
+
+		<Border Name="testImageBorder" BorderBrush="LightGray" BorderThickness="2" Height="68" Margin="10,0,90,12" VerticalAlignment="Bottom" Background="DarkGray">
+			<Image Name="testImage" Source="face.png" Height="66" VerticalAlignment="Bottom" Margin="0,-2,-2,0"/>
+		</Border>
+
+		<Button Name="saveButton" Content="Save" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="75" Click="saveButton_Click"/>
+		<ListBox Name="colorListBox" HorizontalAlignment="Right" Height="83" Margin="0,41,10,0" VerticalAlignment="Top" Width="215" Background="DarkGray" BorderBrush="LightGray" BorderThickness="2" SelectionChanged="colorListBox_SelectionChanged"/>
+		<TextBox Name="testText" Margin="10,0,90,85" TextWrapping="Wrap" Text="Hello World!" VerticalAlignment="Bottom" TextChanged="testText_TextChanged"/>
+		<Slider Name="colorOffsetSlider" HorizontalAlignment="Left" Margin="369,44,0,0" VerticalAlignment="Top" Width="192" ValueChanged="colorOffsetSlider_ValueChanged"/>
+		<Label Content="Color Offset" HorizontalAlignment="Left" Margin="290,36,0,0" VerticalAlignment="Top" Foreground="Gray"/>
+		<Label Content="Gradient Colors" HorizontalAlignment="Left" Margin="569,10,0,0" VerticalAlignment="Top" Foreground="Gray"/>
+		<CheckBox Name="enableColors" Content="Enable Gradient Colors" HorizontalAlignment="Left" Margin="293,16,0,0" VerticalAlignment="Top" Foreground="Gray" Unchecked="render_Checked" Checked="render_Checked"/>
+		<Rectangle Name="colorRect" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="32" Margin="293,67,0,0" Stroke="Black" VerticalAlignment="Top" Width="32"/>
+		<Button Name="setColorButton" Content="Set Color" HorizontalAlignment="Left" Margin="369,79,0,0" VerticalAlignment="Top" Width="75" Click="setColorButton_Click"/>
+		<CheckBox Name="enableDropShadow" Content="Enable Drop Shadow" HorizontalAlignment="Left" Margin="293,148,0,0" VerticalAlignment="Top" Foreground="Gray" Unchecked="render_Checked" Checked="render_Checked"/>
+		<CheckBox Name="enableOuterGlow" Content="Enable Outer Glow" HorizontalAlignment="Left" Margin="293,279,0,0" VerticalAlignment="Top" Foreground="Gray" Unchecked="render_Checked" Checked="render_Checked"/>
+		<Rectangle Name="shadowColorRect" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="32" Margin="293,230,0,0" Stroke="Black" VerticalAlignment="Top" Width="32"/>
+		<Button Name="shadowColorButton" Content="Set Color" HorizontalAlignment="Left" Margin="398,242,0,0" VerticalAlignment="Top" Width="75" Click="shadowColorButton_Click"/>
+		<Slider Name="shadowDirectionSlider" HorizontalAlignment="Left" Margin="398,176,0,0" VerticalAlignment="Top" Width="386" Value="9" ValueChanged="slider_ValueChanged"/>
+		<Label Content="Shadow Direction" HorizontalAlignment="Left" Margin="290,168,0,0" VerticalAlignment="Top" Foreground="Gray"/>
+		<Rectangle Fill="DarkCyan" HorizontalAlignment="Left" Height="7" Margin="293,136,0,0" Stroke="Gray" VerticalAlignment="Top" Width="491"/>
+		<Rectangle Fill="DarkCyan" HorizontalAlignment="Left" Height="7" Margin="293,267,0,0" Stroke="Gray" VerticalAlignment="Top" Width="491"/>
+		<Slider Name="shadowBlur" HorizontalAlignment="Left" Margin="398,207,0,0" VerticalAlignment="Top" Width="386" Value="5" ValueChanged="slider_ValueChanged"/>
+		<Label Content="Shadow Blur" HorizontalAlignment="Left" Margin="290,199,0,0" VerticalAlignment="Top" Foreground="Gray"/>
+		<Slider Name="glowBlurSlider" HorizontalAlignment="Left" Margin="356,307,0,0" VerticalAlignment="Top" Width="428" Value="5" ValueChanged="slider_ValueChanged"/>
+		<Label Content="Glow Blur" HorizontalAlignment="Left" Margin="290,299,0,0" VerticalAlignment="Top" Foreground="Gray"/>
+		<Rectangle Name="glowColorRect" Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="32" Margin="293,330,0,0" Stroke="Black" VerticalAlignment="Top" Width="32"/>
+		<Button Name="glowColorButton" Content="Set Color" HorizontalAlignment="Left" Margin="356,342,0,0" VerticalAlignment="Top" Width="75" Click="glowColorButton_Click"/>
+		<Rectangle Fill="DarkCyan" HorizontalAlignment="Left" Height="7" Margin="293,367,0,0" Stroke="Gray" VerticalAlignment="Top" Width="491"/>
+		<ComboBox  Name="currentFont" HorizontalAlignment="Left" Margin="369,406,0,0" VerticalAlignment="Top" Width="229" SelectionChanged="currentFont_SelectionChanged"/>
+		<Label Content="Font" HorizontalAlignment="Left" Margin="293,406,0,0" VerticalAlignment="Top" Foreground="Gray"/>
+		<Label Content="Font Size" HorizontalAlignment="Left" Margin="293,429,0,0" VerticalAlignment="Top" Foreground="Gray"/>
+		<ComboBox Name="fontSizeComboBox" HorizontalAlignment="Left" Margin="369,433,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="fontSize_SelectionChanged"/>
+		<Label Content="Texture Size" HorizontalAlignment="Left" Margin="293,380,0,0" VerticalAlignment="Top" Foreground="Gray"/>
+		<ComboBox Name="textureSizeComboBox" HorizontalAlignment="Left" Margin="369,380,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="textureSize_SelectionChanged"/>
+		<Button Name="addColorButton" Content="+" HorizontalAlignment="Left" Margin="759,16,0,0" VerticalAlignment="Top" Width="25" Click="addColorButton_Click"/>
+		<Button Name="subColorButton" Content="-" HorizontalAlignment="Left" Margin="729,16,0,0" VerticalAlignment="Top" Width="25" Click="subColorButton_Click"/>
+		<Button Name="bgColorButton" Content="BG Color" Margin="0,0,10,60" VerticalAlignment="Bottom" Click="bgColorButton_Click" HorizontalAlignment="Right" Width="75"/>
+		<Label Content="Buffer Bleed" HorizontalAlignment="Left" Margin="494,433,0,0" VerticalAlignment="Top" Foreground="Gray"/>
+		<Slider Name="bufferBleedSlider" HorizontalAlignment="Left" Margin="573,437,0,0" VerticalAlignment="Top" Width="211" Value="3" ValueChanged="slider_ValueChanged"/>
+		<Label Content="Angle" HorizontalAlignment="Left" Margin="293,105,0,0" VerticalAlignment="Top" Foreground="Gray"/>
+		<Slider Name="angleSlider" HorizontalAlignment="Left" Margin="369,106,0,0" VerticalAlignment="Top" Width="192" Value="3.5" ValueChanged="slider_ValueChanged"/>
+		<Button Name="viewImageButton" Content="View Image" HorizontalAlignment="Left" Margin="210,36,0,0" VerticalAlignment="Top" Width="75" Click="viewImageButton_Click"/>
+		<CheckBox Name="generateFinalImage" Content="Generate Final Image" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Foreground="Gray" Click="render_Checked"/>
+	</Grid>
+</Window>

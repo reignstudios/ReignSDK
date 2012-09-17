@@ -51,7 +51,7 @@ namespace Reign
 	{
 		if (metricsFileName != nullptr) FontI::init(shader, texture, metricsFileName);
 
-		this->fontTexture = fontTexture;
+		this->fontTexture = texture;
 		this->shader = shader;
 		shaderCamera = shader->Variable(L"Camera");
 		shaderLocation = shader->Variable(L"Location");

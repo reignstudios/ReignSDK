@@ -8,7 +8,7 @@ out vec4 Position_VSPS;
 out vec2 UV_VSPS;
 
 uniform mat4 Camera;
-uniform vec3 Location;
+uniform vec2 Location;
 uniform vec2 Size;
 uniform vec2 LocationUV;
 uniform vec2 SizeUV;
@@ -16,7 +16,7 @@ uniform vec2 TexelOffset;
 
 void main()
 {
-	vec3 loc = vec3((Position0 * Size) + Location.xy, Location.z);
+	vec3 loc = vec3((Position0 * Size) + Location, 0);
 	gl_Position = Position_VSPS = ( vec4(loc, 1.0) * Camera);
 
 	vec2 uv = Position0 + TexelOffset;

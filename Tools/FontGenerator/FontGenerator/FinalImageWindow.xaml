@@ -1,0 +1,8 @@
+﻿<Window x:Class="FontGenerator.FinalImageWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="FinalImageWindow" Height="512" Width="512" WindowStartupLocation="CenterScreen">
+    <Grid Name="grid">
+		<Image Name="image" Source="face.png"/>
+	</Grid>
+</Window>
