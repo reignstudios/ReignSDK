@@ -158,19 +158,13 @@ namespace Reign.Core
 		{
 			if (HandleEvent != null) HandleEvent(theEvent);
 		}
-
-		public void UpdateAndRender()
-		{
-			update();
-			render();
-		}
 		
-		protected internal virtual void update()
+		protected internal virtual void update(Time time)
 		{
 			
 		}
 
-		protected internal virtual void render()
+		protected internal virtual void render(Time time)
 		{
 			
 		}

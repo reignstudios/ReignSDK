@@ -155,7 +155,7 @@ namespace Reign.Core
 				if (visible)
 				{
 					CoreWindow.GetForCurrentThread().Dispatcher.ProcessEvents(CoreProcessEventsOption.ProcessAllIfPresent);
-					application.UpdateAndRender();
+					OS.UpdateAndRender();
 				}
 				else
 				{

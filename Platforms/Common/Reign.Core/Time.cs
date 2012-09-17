@@ -14,14 +14,14 @@ namespace Reign.Core
 		private Stopwatch stopWatch;
 		private long fps;
 
-		public long Milliseconds {get; private set;}
-		public long FPS {get; private set;}
-		public long FPSGoal {get{return fps;}}
+		public int Milliseconds {get; private set;}
+		public int FPS {get; private set;}
+		public int FPSGoal {get{return (int)fps;}}
 		public float Delta {get; private set;}
 		#endregion
 
 		#region Constructors
-		public Time(long fps)
+		public Time(int fps)
 		{
 			this.fps = fps;
 			FPS = fps;
@@ -82,9 +82,9 @@ namespace Reign.Core
 			long tics = (stopWatch.ElapsedTicks / (Stopwatch.Frequency/fps));
 			if (tics != 0)
 			{
-			    Milliseconds = stopWatch.ElapsedMilliseconds;
+			    Milliseconds = (int)stopWatch.ElapsedMilliseconds;
 				Delta = Milliseconds / 1000f;
-				FPS = fps / tics;
+				FPS = (int)(fps / tics);
 
 				stopWatch.Restart();
 			    return true;
@@ -97,8 +97,15 @@ namespace Reign.Core
 		{
 			Milliseconds = 0;
 			Delta = 0;
-			FPS = fps;
+			FPS = (int)fps;
 			stopWatch.Restart();
+		}
+
+		public void ManualUpdate(int milliseconds, float delta, int fps)
+		{
+			Milliseconds = milliseconds;
+			Delta = delta;
+			FPS = fps;
 		}
 
 		public void Sleep()

@@ -86,13 +86,15 @@ namespace Reign.Core
 		
 		protected override void Update(GameTime gameTime)
 		{
-			application.update();
+			OS.updateTime.ManualUpdate(gameTime.ElapsedGameTime.Milliseconds, gameTime.ElapsedGameTime.Milliseconds / 1000f, 0);
+			application.update(OS.updateTime);
 			base.Update(gameTime);
 		}
 
 		protected override void Draw(GameTime gameTime)
 		{
-			application.render();
+			OS.renderTime.ManualUpdate(gameTime.ElapsedGameTime.Milliseconds, gameTime.ElapsedGameTime.Milliseconds / 1000f, 0);
+			application.render(OS.renderTime);
 			base.Draw(gameTime);
 		}
 		#endregion

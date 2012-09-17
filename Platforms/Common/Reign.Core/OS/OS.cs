@@ -66,7 +66,7 @@ namespace Reign.Core
 		#region Properites
 		public static bool AutoDisposedGL {get; internal set;}
 		public static UpdateAndRenderModes UpdateAndRenderMode {get; private set;}
-		private static Time updateTime, renderTime;
+		internal static Time updateTime, renderTime;
 
 		#if WINDOWS || OSX || LINUX || NaCl
 		public static Size2 ScreenSize
@@ -219,7 +219,7 @@ namespace Reign.Core
 		#endif
 		
 		#if WINDOWS || OSX || LINUX || NaCl
-		public static void Run(Window window, UpdateAndRenderModes updateAndRenderMode, long fps)
+		public static void Run(Window window, UpdateAndRenderModes updateAndRenderMode, int fps)
 		{
 			CurrentWindow = window;
 			OS.UpdateAndRenderMode = updateAndRenderMode;
@@ -273,17 +273,22 @@ namespace Reign.Core
 		#endif
 		
 		#if iOS || XNA || METRO
-		public static void Run(Application application, UpdateAndRenderModes updateAndRenderMode, long fps)
+		public static void Run(Application application, UpdateAndRenderModes updateAndRenderMode, int fps)
 		{
 			CurrentApplication = application;
-			OS.updateAndRenderMode = updateAndRenderMode;
+			OS.UpdateAndRenderMode = updateAndRenderMode;
 			updateTime = new Time(fps);
 			updateTime.Start();
+			#if XNA
+			renderTime = new Time(fps);
+			renderTime.Start();
+			#else
 			if (updateAndRenderMode == UpdateAndRenderModes.Adaptive)
 			{
 				renderTime = new Time(fps);
 				renderTime.Start();
 			}
+			#endif
 
 			#if METRO
 			CoreApplication.Run(application.source);
@@ -335,6 +340,7 @@ namespace Reign.Core
 		}
 		#endif
 
+		#if WINDOWS || OSX || LINUX || NaCl
 		public static void UpdateAndRender()
 		{
 			if (UpdateAndRenderMode == UpdateAndRenderModes.Stepping)
@@ -364,6 +370,37 @@ namespace Reign.Core
 				}
 			}
 		}
+		#else
+		public static void UpdateAndRender()
+		{
+			if (UpdateAndRenderMode == UpdateAndRenderModes.Stepping)
+			{
+				if (updateTime.Update())
+				{
+					CurrentApplication.update(updateTime);
+					CurrentApplication.render(updateTime);
+					updateTime.Sleep();
+				}
+			}
+			else// Adaptive
+			{
+				if (updateTime.Update())
+				{
+					CurrentApplication.update(updateTime);
+					int loop = (int)System.Math.Max((updateTime.FPSGoal / updateTime.FPS) - 1, 0);
+					for (int i = 0; i != loop; ++i)
+					{
+						updateTime.AdaptiveUpdate();
+						CurrentApplication.update(updateTime);
+					}
+
+					renderTime.Update();
+					CurrentApplication.render(renderTime);
+					updateTime.Sleep();
+				}
+			}
+		}
+		#endif
 		#endregion
 	}
 }
