@@ -55,10 +55,18 @@ namespace Reign.Core
 	}
 	#endif
 
+	public enum UpdateAndRenderModes
+	{
+		Stepping,
+		Adaptive
+	}
+
 	public static class OS
 	{
 		#region Properites
 		public static bool AutoDisposedGL {get; internal set;}
+		public static UpdateAndRenderModes UpdateAndRenderMode {get; private set;}
+		private static Time updateTime, renderTime;
 
 		#if WINDOWS || OSX || LINUX || NaCl
 		public static Size2 ScreenSize
@@ -211,14 +219,24 @@ namespace Reign.Core
 		#endif
 		
 		#if WINDOWS || OSX || LINUX || NaCl
-		public static void Run(Window window)
+		public static void Run(Window window, UpdateAndRenderModes updateAndRenderMode, long fps)
 		{
 			CurrentWindow = window;
+			OS.UpdateAndRenderMode = updateAndRenderMode;
+			updateTime = new Time(fps);
+			updateTime.Start();
+			if (updateAndRenderMode == UpdateAndRenderModes.Adaptive)
+			{
+				renderTime = new Time(fps);
+				renderTime.Start();
+			}
 
 			#if WINDOWS
+			Time.OptimizedMode();
 			window.Show();
 			Application.Idle += mainLoop;
 			Application.Run(window);
+			Time.EndOptimizedMode();
 			#endif
 			
 			#if OSX
@@ -255,9 +273,17 @@ namespace Reign.Core
 		#endif
 		
 		#if iOS || XNA || METRO
-		public static void Run(Application application)
+		public static void Run(Application application, UpdateAndRenderModes updateAndRenderMode, long fps)
 		{
 			CurrentApplication = application;
+			OS.updateAndRenderMode = updateAndRenderMode;
+			updateTime = new Time(fps);
+			updateTime.Start();
+			if (updateAndRenderMode == UpdateAndRenderModes.Adaptive)
+			{
+				renderTime = new Time(fps);
+				renderTime.Start();
+			}
 
 			#if METRO
 			CoreApplication.Run(application.source);
@@ -268,10 +294,16 @@ namespace Reign.Core
 			#endif
 
 			#if XNA
+			#if !XBOX360
+			Time.OptimizedMode();
+			#endif
 			using (var game = application)
 			{
 				game.Run();
 			}
+			#if !XBOX360
+			Time.EndOptimizedMode();
+			#endif
 			#endif
 		}
 		#endif
@@ -298,10 +330,40 @@ namespace Reign.Core
 			var msg = new Message();
 			while (!PeekMessage(out msg, IntPtr.Zero, 0, 0, 0))
 			{
-				CurrentWindow.UpdateAndRender();
+				OS.UpdateAndRender();
 			}
 		}
 		#endif
+
+		public static void UpdateAndRender()
+		{
+			if (UpdateAndRenderMode == UpdateAndRenderModes.Stepping)
+			{
+				if (updateTime.Update())
+				{
+					CurrentWindow.update(updateTime);
+					CurrentWindow.render(updateTime);
+					updateTime.Sleep();
+				}
+			}
+			else// Adaptive
+			{
+				if (updateTime.Update())
+				{
+					CurrentWindow.update(updateTime);
+					int loop = (int)System.Math.Max((updateTime.FPSGoal / updateTime.FPS) - 1, 0);
+					for (int i = 0; i != loop; ++i)
+					{
+						updateTime.AdaptiveUpdate();
+						CurrentWindow.update(updateTime);
+					}
+
+					renderTime.Update();
+					CurrentWindow.render(renderTime);
+					updateTime.Sleep();
+				}
+			}
+		}
 		#endregion
 	}
 }

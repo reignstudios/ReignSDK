@@ -110,11 +110,11 @@
     <Compile Include="..\..\Common\Reign.Core\Random.cs">
       <Link>Random.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\StopWatch.cs">
-      <Link>StopWatch.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Core\Streams.cs">
       <Link>Streams.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Time.cs">
+      <Link>Time.cs</Link>
     </Compile>
     <Compile Include="OS\WinForm.cs">
       <SubType>Form</SubType>
