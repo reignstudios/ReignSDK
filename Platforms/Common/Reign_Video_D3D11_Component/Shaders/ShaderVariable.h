@@ -17,8 +17,8 @@ namespace Reign_Video_D3D11_Component
 		#pragma endregion
 
 		#pragma region Methods
-		public: void Set(__int64 data, int size);
-		public: void Set(__int64 data, int size, int objectCount, int dataOffset);
+		public: void Set(__int32 data, int size);
+		public: void Set(__int32 data, int size, int objectCount, int dataOffset);
 		#pragma endregion
 	};
 }

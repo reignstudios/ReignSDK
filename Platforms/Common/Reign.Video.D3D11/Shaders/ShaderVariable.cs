@@ -23,60 +23,60 @@ namespace Reign.Video.D3D11
 		#region Methods
 		public unsafe void Set(float value)
 		{
-			com.Set((long)&value, sizeof(float));
+			com.Set((int)&value, sizeof(float));
 		}
 
 		public unsafe void Set(float x, float y)
 		{
 			var vector = new Vector2(x, y);
-			com.Set((long)&vector, sizeof(float)*2);
+			com.Set((int)&vector, sizeof(float)*2);
 		}
 
 		public unsafe void Set(float x, float y, float z)
 		{
 			var vector = new Vector3(x, y, z);
-			com.Set((long)&vector, sizeof(float)*3);
+			com.Set((int)&vector, sizeof(float)*3);
 		}
 
 		public unsafe void Set(float x, float y, float z, float w)
 		{
 			var vector = new Vector4(x, y, z, w);
-			com.Set((long)&vector, sizeof(Vector4));
+			com.Set((int)&vector, sizeof(Vector4));
 		}
 
 		public unsafe void Set(Vector2 value)
 		{
-			com.Set((long)&value, sizeof(float)*2);
+			com.Set((int)&value, sizeof(float)*2);
 		}
 
 		public unsafe void Set(Vector3 value)
 		{
-			com.Set((long)&value, sizeof(float)*3);
+			com.Set((int)&value, sizeof(float)*3);
 		}
 
 		public unsafe void Set(Vector4 value)
 		{
-			com.Set((long)&value, sizeof(Vector4));
+			com.Set((int)&value, sizeof(Vector4));
 		}
 
 		public unsafe void Set(Matrix2 value)
 		{
-			com.Set((long)&value, sizeof(Matrix2));
+			com.Set((int)&value, sizeof(Matrix2));
 		}
 
 		public unsafe void Set(Matrix3 value)
 		{
-			com.Set((long)&value, sizeof(Matrix3));
+			com.Set((int)&value, sizeof(Matrix3));
 		}
 
 		public unsafe void Set(Matrix4 value)
 		{
-			com.Set((long)&value, sizeof(Matrix4));
+			com.Set((int)&value, sizeof(Matrix4));
 		}
 
 		public unsafe void Set(float[] values)
 		{
-			fixed (float* data = values) com.Set((long)data, sizeof(float), values.Length, 16);
+			fixed (float* data = values) com.Set((int)data, sizeof(float), values.Length, 16);
 		}
 
 		public unsafe void Set(Vector4[] values)
