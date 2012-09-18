@@ -54,6 +54,17 @@ namespace Reign.Core
 		}
 	}
 	#endif
+	
+	#if OSX
+	[Register ("AppDelegate")]
+	class AppDelegate : NSApplicationDelegate
+	{
+		public override void FinishedLaunching (NSObject notification)
+		{
+			
+		}
+	}
+	#endif
 
 	public enum UpdateAndRenderModes
 	{
@@ -120,6 +131,7 @@ namespace Reign.Core
 		
 		#if OSX
 		private static NSAutoreleasePool pool;
+		public static NSOpenGLContext NSContext;
 		#endif
 		
 		#if NaCl
@@ -243,6 +255,15 @@ namespace Reign.Core
 			window.Show();
 			pool.Dispose();
 			pool = null;
+			NSTimer.CreateRepeatingScheduledTimer(0, delegate
+			{
+				using (var autoPool = new NSAutoreleasePool())
+				{
+					if (NSContext != null) NSContext.CGLContext.Lock();
+					UpdateAndRender();
+					if (NSContext != null) NSContext.CGLContext.Unlock();
+				}
+			});
 			NSApplication.SharedApplication.ApplicationShouldTerminateAfterLastWindowClosed = delegate {return true;};
 			NSApplication.Main(new string[0]);
 			#endif

@@ -320,6 +320,30 @@ namespace Reign.Audio.Cocoa
 		}
 		#endregion
 	}
+	
+	class SoundWAVStreamLoader : StreamLoaderI
+	{
+		SoundWAV sound;
+		private DisposableI parent;
+		private string fileName;
+		private int instanceCount;
+		private bool looped;
+		
+		public SoundWAVStreamLoader(SoundWAV sound, DisposableI parent, string fileName, int instanceCount, bool looped)
+		{
+			this.sound = sound;
+			this.parent = parent;
+			this.fileName = fileName;
+			this.instanceCount = instanceCount;
+			this.looped = looped;
+		}
+		
+		public override bool Load()
+		{
+			sound.load(parent, fileName, instanceCount, looped);
+			return true;
+		}
+	}
 
 	public class SoundWAV : SoundWAVI
 	{
@@ -332,20 +356,38 @@ namespace Reign.Audio.Cocoa
 
 		#region Constructors
 		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped)
-		: base(parent, fileName)
+		: base(parent)
 		{
-			audio = parent.FindParentOrSelfWithException<Audio>();
-			audio.UpdateCallback += Update;
-			this.data = base.data;
-			this.channels = base.channels;
-			this.bitDepth = base.bitDepth;
-			
-			desc = AudioUnitUtils.AUCanonicalASBD(sampleRate, channels);
-			desc.FormatFlags = (AudioFormatFlags)((int)AudioFormatFlags.IsSignedInteger | (int)AudioFormatFlags.IsPacked | (int)AudioFormatFlags.IsNonInterleaved);
-
-			for (int i = 0; i != instanceCount; ++i)
+			new SoundWAVStreamLoader(this, parent, fileName, instanceCount, looped);
+		}
+		
+		internal void load(DisposableI parent, string fileName, int instanceCount, bool looped)
+		{
+			init(parent, fileName, instanceCount, looped);
+		}
+		
+		protected override void init(DisposableI parent, string fileName, int instanceCount, bool looped)
+		{
+			try
 			{
-				inactiveInstances.AddLast(new SoundWAVInstance(this, looped));
+				audio = parent.FindParentOrSelfWithException<Audio>();
+				audio.UpdateCallback += Update;
+				this.data = base.data;
+				this.channels = base.channels;
+				this.bitDepth = base.bitDepth;
+				
+				desc = AudioUnitUtils.AUCanonicalASBD(sampleRate, channels);
+				desc.FormatFlags = (AudioFormatFlags)((int)AudioFormatFlags.IsSignedInteger | (int)AudioFormatFlags.IsPacked | (int)AudioFormatFlags.IsNonInterleaved);
+	
+				for (int i = 0; i != instanceCount; ++i)
+				{
+					inactiveInstances.AddLast(new SoundWAVInstance(this, looped));
+				}
+			}
+			catch (Exception e)
+			{
+				Dispose();
+				throw e;
 			}
 		}
 

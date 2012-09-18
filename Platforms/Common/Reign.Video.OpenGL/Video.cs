@@ -50,11 +50,7 @@ namespace Reign.Video.OpenGL
 		private IntPtr ctx, dc, handle;
 		uint frameBuffer;
 		#if OSX
-		public delegate void UpdateCallbackMethod();
-		public UpdateCallbackMethod UpdateCallback;
-	
 		public NSOpenGLContext NSContext {get; private set;}
-		private CVDisplayLink displayLink;
 		#endif
 		
 		#if iOS
@@ -76,7 +72,6 @@ namespace Reign.Video.OpenGL
 			
 			#if OSX
 			NSContext.View = window.View;
-			UpdateCallback = window.UpdateAndRender;
 			#endif
 		}
 		#endif
@@ -213,11 +208,7 @@ namespace Reign.Video.OpenGL
 				NSContext.MakeCurrentContext();
 				NSContext.SwapInterval = vSync;
 				ctx = NSContext.CGLContext.Handle;
-				
-				displayLink = new CVDisplayLink();
-				displayLink.SetCurrentDisplay(NSContext.CGLContext, new CGLPixelFormat(attribs));
-				displayLink.SetOutputCallback(displayLinkCallback);
-				displayLink.Start();
+				OS.NSContext = NSContext;
 				
 				/*//Get DC
 				dc = CGL.DisplayIDToOpenGLDisplayMask(CGL.MainDisplayID());
@@ -425,15 +416,6 @@ namespace Reign.Video.OpenGL
 			disposed = true;
 			disposeChilderen();
 			
-			#if OSX
-			if (displayLink != null)
-			{
-				displayLink.Stop();
-				displayLink.SetOutputCallback(null);
-				displayLink = null;
-			}
-			#endif
-			
 			#if NaCl
 			PPAPI.StopSwapBufferLoop();
 			#endif
@@ -620,20 +602,6 @@ namespace Reign.Video.OpenGL
 		{
 			GL.Clear(GL.DEPTH_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
 		}
-		
-		#if OSX
-		private CVReturn displayLinkCallback(CVDisplayLink displayLink, ref CVTimeStamp inNow, ref CVTimeStamp inOutputTime, CVOptionFlags flagsIn, ref CVOptionFlags flagsOut)
-		{
-			using (var pool = new NSAutoreleasePool())
-			{
-				NSContext.CGLContext.Lock();
-				if (UpdateCallback != null) UpdateCallback();
-				NSContext.CGLContext.Unlock();
-			}
-
-			return CVReturn.Success;
-		}
-		#endif
 
 		public void Present()
 		{

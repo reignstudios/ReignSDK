@@ -93,7 +93,7 @@ namespace Reign.Core
 				case (NSEventType.RightMouseDown): theEvent.Type = WindowEventTypes.RightMouseDown; break;
 			}
 			
-			window.HandleEvent(theEvent);
+			window.handleEvent(theEvent);
 		}
 		
 		public override void MouseUp(NSEvent e)
@@ -105,21 +105,21 @@ namespace Reign.Core
 				case (NSEventType.RightMouseUp): theEvent.Type = WindowEventTypes.RightMouseUp; break;
 			}
 
-			window.HandleEvent(theEvent);
+			window.handleEvent(theEvent);
 		}
 		
 		public override void KeyDown(NSEvent e)
 		{
 			theEvent.Type = WindowEventTypes.KeyDown;
 			theEvent.KeyCode = e.KeyCode;
-			window.HandleEvent(theEvent);
+			window.handleEvent(theEvent);
 		}
 		
 		public override void KeyUp(NSEvent e)
 		{
 			theEvent.Type = WindowEventTypes.KeyUp;
 			theEvent.KeyCode = e.KeyCode;
-			window.HandleEvent(theEvent);
+			window.handleEvent(theEvent);
 		}
 		#endregion
 	}

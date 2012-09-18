@@ -165,6 +165,7 @@ namespace Reign.Core
 		#endif
 		{
 			#if OSX || iOS
+			fileName = fileName.Replace('\\', '/');
 			string directory = GetFileDirectory(fileName);
 			string ext = GetFileExt(fileName);
 			ext = (ext.Length > 0) ? ext.Remove(0, 1) : "";
