@@ -12,25 +12,25 @@
     <AssemblyName>Reign.Core</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>..\Lib</OutputPath>
     <DefineConstants>DEBUG;iOS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ConsolePause>False</ConsolePause>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>..\Lib</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
     <DefineConstants>iOS</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -48,9 +48,6 @@
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Random.cs">
       <Link>Random.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Core\StopWatch.cs">
-      <Link>StopWatch.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Streams.cs">
       <Link>Streams.cs</Link>
@@ -110,6 +107,9 @@
       <Link>OS\OS.cs</Link>
     </Compile>
     <Compile Include="OS\GLController.cs" />
+    <Compile Include="..\..\Common\Reign.Core\Time.cs">
+      <Link>Time.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Disposable\" />

@@ -19,8 +19,9 @@ namespace Reign.Video
 		private string contentDirectory;
 		private Dictionary<string,Type> materialTypes;
 		private List<MaterialFieldBinder> materialFieldTypes;
+		private Dictionary<string,string> fileExtOverrides;
 
-		public ModelStreamLoader(ModelI model, SoftwareModel softwareModel, MeshVertexSizes positionSize, DisposableI contentParent, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> materialFieldTypes)
+		public ModelStreamLoader(ModelI model, SoftwareModel softwareModel, MeshVertexSizes positionSize, DisposableI contentParent, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> materialFieldTypes, Dictionary<string,string> fileExtOverrides)
 		{
 			this.model = model;
 			this.softwareModel = softwareModel;
@@ -29,6 +30,7 @@ namespace Reign.Video
 			this.contentDirectory = contentDirectory;
 			this.materialTypes = materialTypes;
 			this.materialFieldTypes = materialFieldTypes;
+			this.fileExtOverrides = fileExtOverrides;
 		}
 
 		public override bool Load()
@@ -40,7 +42,7 @@ namespace Reign.Video
 				model.load(softwareModel, positionSize, materialTypes, out diffuseFileNames);
 				return false;
 			}
-			else if (!model.loadMaterials(diffuseFileNames, contentParent, contentDirectory, materialFieldTypes))
+			else if (!model.loadMaterials(diffuseFileNames, contentParent, contentDirectory, materialFieldTypes, fileExtOverrides))
 			{
 				return false;
 			}
@@ -60,10 +62,10 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public ModelI(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, DisposableI contentParent, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> materialFieldTypes)
+		public ModelI(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, DisposableI contentParent, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> materialFieldTypes, Dictionary<string,string> fileExtOverrides)
 		: base(parent)
 		{
-			new ModelStreamLoader(this, softwareModel, positionSize, contentParent, contentDirectory, materialTypes, materialFieldTypes);
+			new ModelStreamLoader(this, softwareModel, positionSize, contentParent, contentDirectory, materialTypes, materialFieldTypes, fileExtOverrides);
 		}
 
 		internal void load(SoftwareModel softwareModel, MeshVertexSizes positionSize, Dictionary<string,Type> materialTypes, out List<SoftwareMaterial> textureFileNames)
@@ -106,7 +108,7 @@ namespace Reign.Video
 			}
 		}
 
-		internal bool loadMaterials(List<SoftwareMaterial> softwareMaterials, DisposableI contentParent, string contentDirectory, List<MaterialFieldBinder> materialFieldTypes)
+		internal bool loadMaterials(List<SoftwareMaterial> softwareMaterials, DisposableI contentParent, string contentDirectory, List<MaterialFieldBinder> materialFieldTypes, Dictionary<string,string> fileExtOverrides)
 		{
 			for (int i = 0; i != Materials.Length; ++i)
 			{
@@ -141,7 +143,17 @@ namespace Reign.Video
 				}
 				else
 				{
-					var texture = createTexture(contentParent, contentDirectory + Streams.GetFileNameWithExt(textureFileName));
+					if (fileExtOverrides != null)
+					{
+						string ext = Streams.GetFileExt(textureFileName);
+						if (fileExtOverrides.ContainsKey(ext)) textureFileName = Streams.GetFileNameWithoutExt(textureFileName) + fileExtOverrides[ext];
+						else textureFileName = Streams.GetFileNameWithExt(textureFileName);
+					}
+					else
+					{
+						textureFileName = Streams.GetFileNameWithExt(textureFileName);
+					}
+					var texture = createTexture(contentParent, contentDirectory + textureFileName);
 					if (!Textures.Contains(texture)) Textures.Add(texture);
 					field.SetValue(material, texture);
 					return false;

@@ -45,14 +45,13 @@ namespace Reign.Core
 					application.shown();
 					shown = true;
 				}
-				application.update();
-				application.render();
+				OS.UpdateAndRender();
 			}
 		}
 	
 		#region Properties
 		private Application application;
-		private ApplicationEvent theEvent;
+		protected ApplicationEvent theEvent;
 		private EAGLContext context;
 		private GLRenderer renderer;
 		private Vector2 frameRatio;
@@ -69,7 +68,6 @@ namespace Reign.Core
 		protected void setApplication(Application application)
 		{
 			this.application = application;
-			this.theEvent = application.theEvent;
 		}
 		
 		public override void ViewDidLoad ()

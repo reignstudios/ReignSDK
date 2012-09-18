@@ -10,43 +10,33 @@ namespace Reign.Video
 {
 	public class ImageIOS : Image
 	{
-		public ImageIOS(string fileName, bool flip, bool generateMipmaps)
+		public ImageIOS(string fileName, bool flip)
 		{
-			using (var stream = Streams.OpenFile(fileName))
-			{
-				init(stream, flip, generateMipmaps);
-			}
+			new ImageStreamLoader(this, fileName, flip);
 		}
 
-		public ImageIOS(Stream stream, bool flip, bool generateMipmaps)
+		public ImageIOS(Stream stream, bool flip)
 		{
-			init(stream, flip, generateMipmaps);
+			init(stream, flip);
 		}
 
-		private void init(Stream stream, bool flip, bool generateMipmaps)
+		protected override void init(Stream stream, bool flip)
 		{
 			using (var imageData = NSData.FromStream(stream))
 			using (var image = UIImage.LoadFromData(imageData))
 			{
 				int width = (int)image.Size.Width;
 				int height = (int)image.Size.Height;
-				int mipLvls = generateMipmaps ? Image.Mipmap.CalculateMipmapLvls(width, height) : 1;
-				Mipmaps = new Mipmap[mipLvls];
+				Mipmaps = new Mipmap[1];
 				Size = new Size2(width, height);
 			
-				for (int i = 0; i != mipLvls; ++i)
+				var data = new byte[width * height * 4];
+				using (CGContext imageContext = new CGBitmapContext(data, width, height, 8, width*4, CGColorSpace.CreateDeviceRGB(), CGImageAlphaInfo.PremultipliedLast))
 				{
-					var data = new byte[width * height * 4];
-					using (CGContext imageContext = new CGBitmapContext(data, width, height, 8, width*4, CGColorSpace.CreateDeviceRGB(), CGImageAlphaInfo.PremultipliedLast))
-					{
-						imageContext.DrawImage(new RectangleF(0, 0, width, height), image.CGImage);
-					
-						Mipmaps[i] = new Mipmap(data, width, height);
-						if (flip) Mipmaps[i].FlipVertical();
-						
-						width /= 2;
-						height /= 2;
-					}
+					imageContext.DrawImage(new RectangleF(0, 0, width, height), image.CGImage);
+				
+					Mipmaps[0] = new Mipmap(data, width, height, 1, 4);
+					if (flip) Mipmaps[0].FlipVertical();
 				}
 			}
 		}

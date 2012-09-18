@@ -324,7 +324,7 @@ namespace Reign.Video.OpenGL
 					if (shaderValue >= 1.0f)
 					{
 						Caps.Version = Versions.GL2;
-						ShaderI.FileTag = "GLES2_";
+						FileTag = "GLES2_";
 						Caps.MaxShaderVersion = ShaderVersions.GLSL_1_00;
 					}
 					#else
