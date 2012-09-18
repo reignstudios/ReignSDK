@@ -14,25 +14,25 @@
     <AssemblyName>Reign.Video.API</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>..\Lib</OutputPath>
     <DefineConstants>DEBUG;ANDROID</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>..\Lib</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
-    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
     <DefineConstants>ANDROID</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
@@ -47,13 +47,13 @@
       <Project>{83B5077A-13E7-4EB4-8E9E-1A6E7CB1F387}</Project>
       <Name>Reign.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Reign.Video\Reign.Video.csproj">
-      <Project>{52995164-BF34-4C34-915B-4C63CCEDA5F9}</Project>
-      <Name>Reign.Video</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Reign.Video.OpenGL\Reign.Video.OpenGL.csproj">
       <Project>{2EFA8A7B-C405-4154-9271-5A13ED17D379}</Project>
       <Name>Reign.Video.OpenGL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Video\Reign.Video.csproj">
+      <Project>{52995164-BF34-4C34-915B-4C63CCEDA5F9}</Project>
+      <Name>Reign.Video</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -99,10 +99,17 @@
     <Compile Include="..\..\Common\Reign.Video.API\Textures\Texture2D.cs">
       <Link>Textures\Texture2D.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\Model\Mesh.cs">
+      <Link>Model\Mesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\Model\Model.cs">
+      <Link>Model\Model.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Buffers\" />
     <Folder Include="States\" />
     <Folder Include="Textures\" />
+    <Folder Include="Model\" />
   </ItemGroup>
 </Project>

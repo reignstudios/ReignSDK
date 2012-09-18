@@ -47,8 +47,7 @@ namespace Reign.Core
 				
 				public void OnDrawFrame (IGL10 gl)
 				{
-					application.update();
-					application.render();
+					OS.UpdateAndRender();
 				}
 			}
 			
@@ -96,6 +95,7 @@ namespace Reign.Core
 		}
 		
 		internal Application application;
+		protected ApplicationEvent theEvent;
 		private View view;
 		private PowerManager.WakeLock wakeLock;
 		private View adMobView;

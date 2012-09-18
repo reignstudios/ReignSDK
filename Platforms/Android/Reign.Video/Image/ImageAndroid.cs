@@ -7,55 +7,42 @@ namespace Reign.Video
 {
 	public class ImageAndroid : Image
 	{
-		public ImageAndroid(string fileName, bool flip, bool generateMipmaps)
+		public ImageAndroid(string fileName, bool flip)
 		{
-			using (var stream = Streams.OpenFile(fileName))
-			{
-				init(stream, flip, generateMipmaps);
-			}
+			new ImageStreamLoader(this, fileName, flip);
 		}
 
-		public ImageAndroid(Stream stream, bool flip, bool generateMipmaps)
+		public ImageAndroid(Stream stream, bool flip)
 		{
-			init(stream, flip, generateMipmaps);
+			init(stream, flip);
 		}
 
-		private void init(Stream stream, bool flip, bool generateMipmaps)
+		protected override void init(Stream stream, bool flip)
 		{
 			using (var bitmap = Android.Graphics.BitmapFactory.DecodeStream(stream))
 			{
 				int width = bitmap.Width;
 				int height = bitmap.Height;
-				int mipLvls = generateMipmaps ? Image.Mipmap.CalculateMipmapLvls(width, height) : 1;
-				Mipmaps = new Mipmap[mipLvls];
+				Mipmaps = new Mipmap[1];
 				Size = new Size2(bitmap.Width, bitmap.Height);
 			
-				for (int i = 0; i != mipLvls; ++i)
+				var pixels = new int[width * height];
+				bitmap.GetPixels(pixels, 0, width, 0, 0, width, height);
+				
+				// Convert to bytes
+				var data = new byte[pixels.Length * 4];
+				int i3 = 0;
+				for (int i2 = 0; i2 != pixels.Length; ++i2)
 				{
-					using (var scaledBitmap = Bitmap.CreateScaledBitmap(bitmap, width, height, true))
-					{
-						var pixels = new int[width * height];
-						scaledBitmap.GetPixels(pixels, 0, width, 0, 0, width, height);
-						
-						// Convert to bytes
-						var data = new byte[pixels.Length * 4];
-						int i3 = 0;
-						for (int i2 = 0; i2 != pixels.Length; ++i2)
-						{
-							data[i3] = (byte)Color.GetRedComponent(pixels[i2]);
-							data[i3+1] = (byte)Color.GetGreenComponent(pixels[i2]);
-							data[i3+2] = (byte)Color.GetBlueComponent(pixels[i2]);
-							data[i3+3] = (byte)Color.GetAlphaComponent(pixels[i2]);
-							i3 += 4;
-						}
-						
-						Mipmaps[i] = new Mipmap(data, width, height);
-						if (flip) Mipmaps[i].FlipVertical();
-						
-						width /= 2;
-						height /= 2;
-					}
+					data[i3] = (byte)Color.GetRedComponent(pixels[i2]);
+					data[i3+1] = (byte)Color.GetGreenComponent(pixels[i2]);
+					data[i3+2] = (byte)Color.GetBlueComponent(pixels[i2]);
+					data[i3+3] = (byte)Color.GetAlphaComponent(pixels[i2]);
+					i3 += 4;
 				}
+				
+				Mipmaps[0] = new Mipmap(data, width, height, 1, 4);
+				if (flip) Mipmaps[0].FlipVertical();
 			}
 		}
 	}
