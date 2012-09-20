@@ -6,8 +6,8 @@ namespace Reign
 {namespace D3D9
 {
 	#pragma region Constructors
-	Mesh::Mesh(ModelI^ model, SoftwareModel^ softwareModel, SoftwareMesh^ softwareMesh, MeshVertexSizes positionSize)
-	: MeshI(model, softwareModel, softwareMesh, positionSize)
+	Mesh::Mesh(ModelI^ model, SoftwareModel^ softwareModel, SoftwareMesh^ softwareMesh, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals)
+	: MeshI(model, softwareModel, softwareMesh, positionSize, loadColors, loadUVs, loadNormals)
 	{
 		
 	}

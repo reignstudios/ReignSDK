@@ -165,7 +165,7 @@ namespace Reign.Core
 			return mat.Transpose();
 		}
 
-		public Matrix4 RotateAroundWorldAxisX(float angle)
+		public Matrix4 RotateAroundAxisX(float angle)
 		{
 			float tCos = (float)MathS.Cos(-angle), tSin = (float)MathS.Sin(angle);
 			return new Matrix4
@@ -177,7 +177,7 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix4 RotateAroundWorldAxisY(float angle)
+		public Matrix4 RotateAroundAxisY(float angle)
 		{
 			float tCos = (float)MathS.Cos(-angle), tSin = (float)MathS.Sin(angle);
 			return new Matrix4
@@ -189,7 +189,7 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix4 RotateAroundWorldAxisZ(float angle)
+		public Matrix4 RotateAroundAxisZ(float angle)
 		{
 			float tCos = (float)MathS.Cos(-angle), tSin = (float)MathS.Sin(angle);
 			return new Matrix4
@@ -201,7 +201,7 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix4 RotateAroundAxisX(float angle)
+		public Matrix4 RotateAroundWorldAxisX(float angle)
 		{
 			angle = -angle;
 			float tCos = (float)MathS.Cos(angle), tSin = (float)MathS.Sin(angle);
@@ -214,7 +214,7 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix4 RotateAroundAxisY(float angle)
+		public Matrix4 RotateAroundWorldAxisY(float angle)
 		{
 			angle = -angle;
 			float tCos = (float)MathS.Cos(angle), tSin = (float)MathS.Sin(angle);
@@ -227,7 +227,7 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix4 RotateAroundAxisZ(float angle)
+		public Matrix4 RotateAroundWorldAxisZ(float angle)
 		{
 			angle = -angle;
 			float tCos = (float)MathS.Cos(angle), tSin = (float)MathS.Sin(angle);

@@ -22,11 +22,11 @@ namespace Reign.Video
 		}
 	}
 
-	public class MaterialFieldBinder
+	public class MaterialTextureBinder
 	{
 		public string MaterialName, TextureID, ShaderMaterialFieldName;
 
-		public MaterialFieldBinder(string materialName, string textureID, string shaderMaterialFieldName)
+		public MaterialTextureBinder(string materialName, string textureID, string shaderMaterialFieldName)
 		{
 			MaterialName = materialName;
 			TextureID = textureID;

@@ -199,6 +199,7 @@ namespace Reign.Core
 			Debug.ThrowError("Streams", "Could not find file: " + fileName);
 			return new MemoryStream();
 			#elif METRO
+			fileName = fileName.Replace('/', '\\');
 			var storageFolder = Package.Current.InstalledLocation;
 			var stream = await storageFolder.OpenStreamForReadAsync(fileName);
 			return stream;

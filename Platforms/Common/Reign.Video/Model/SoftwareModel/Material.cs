@@ -12,7 +12,7 @@ namespace Reign.Video
 		public Dictionary<string,float> Values;
 		#endregion
 
-		#region Methods
+		#region Constructors
 		public SoftwareMaterial(ColladaModel collada, ColladaModel_Material material)
 		{
 			Name = material.Name;

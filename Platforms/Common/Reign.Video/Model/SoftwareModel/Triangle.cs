@@ -23,6 +23,16 @@ namespace Reign.Video
 		}
 	}
 
+	public class TriangleColorComponent
+	{
+		public Vector4[] Colors;
+
+		public TriangleColorComponent(Vector4 color1, Vector4 color2, Vector4 color3)
+		{
+			Colors = new Vector4[3] {color1, color2, color3};
+		}
+	}
+
 	public class SoftwareTriangle
 	{
 		public int Index;

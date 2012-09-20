@@ -12,7 +12,8 @@ namespace Reign.Video
 	{
 		Normals,
 		NormalComponents,
-		UVComponents
+		UVComponents,
+		ColorComponents
 	}
 
 	public enum EdgeComponentKeyTypes
@@ -75,18 +76,29 @@ namespace Reign.Video
 
 			// triangles
 			var indexData = geometry.Mesh.Polylist.IndexData;
-			int posIndex = -1, normalIndex = -1, uvIndex = -1;
+			int posIndex = -1, colorIndex = -1, normalIndex = -1, uvIndex = -1;
 			var inputs = geometry.Mesh.Polylist.Inputs;
 			for (int i = 0; i != inputs.Length; ++i)
 			{
 				switch (inputs[i].Semantic)
 				{
 					case ("VERTEX"): posIndex = inputs[i].Offset; break;
+					case ("COLOR"): colorIndex = inputs[i].Offset; break;
 					case ("NORMAL"): normalIndex = inputs[i].Offset; break;
 					case ("TEXCOORD"): uvIndex = inputs[i].Offset; break;
 				}
 			}
 			if (posIndex == -1) Debug.ThrowError("SoftwareMesh", "Polylist missing vertex data");
+
+			float[] colors = null;
+			if (colorIndex != -1)
+			{
+				var input = geometry.Mesh.Polylist.Inputs[colorIndex];
+				var source = geometry.Mesh.FindSource(input.Source);
+				if (source == null) Debug.ThrowError("SoftwareMesh", "Failed to find color source data: " + input.Source);
+
+				colors = source.FloatArray.Values;
+			}
 
 			float[] normals = null;
 			if (normalIndex != -1)
@@ -111,6 +123,7 @@ namespace Reign.Video
 			int vertOffset = geometry.Mesh.Polylist.Inputs.Length;
 			int polyOffset = 0;
 			var indices = geometry.Mesh.Polylist.IndexData;
+			var triangleColors = new List<TriangleColorComponent>();
 			var triangleNormals = new List<TriangleNormalComponent>();
 			var triangleUVs = new List<TriangleUVComponent>();
 			int ti = 0;
@@ -119,6 +132,10 @@ namespace Reign.Video
 				int vi = posIndex + polyOffset;
 				int vi2 = vi + vertOffset;
 				int vi3 = vi + (vertOffset * 2);
+
+				int ci = colorIndex + polyOffset;
+				int ci2 = ci + vertOffset;
+				int ci3 = ci + (vertOffset * 2);
 
 				int ni = normalIndex + polyOffset;
 				int ni2 = ni + vertOffset;
@@ -136,6 +153,19 @@ namespace Reign.Video
 					Triangles.Add(triangle);
 					vi2 += vertOffset;
 				    vi3 += vertOffset;
+
+					if (colorIndex != -1)
+					{
+						int cii = indices[ci] * 3, cii2 = indices[ci2] * 3, cii3 = indices[ci3] * 3;
+						triangleColors.Add(new TriangleColorComponent
+						(
+							new Vector4(colors[cii], colors[cii+1], colors[cii+2], colors[cii+3]),
+							new Vector4(colors[cii2], colors[cii2+1], colors[cii2+2], colors[cii2+3]),
+							new Vector4(colors[cii3], colors[cii3+1], colors[cii3+2], colors[cii3+3]))
+						);
+						ci2 += vertOffset;
+						ci3 += vertOffset;
+					}
 
 					if (normalIndex != -1)
 					{
@@ -167,16 +197,26 @@ namespace Reign.Video
 				polyOffset += geometry.Mesh.Polylist.VertexCounts[i] * vertOffset;
 			}
 
+			int componentIndex = 0;
+			if (colorIndex != -1)
+			{
+				TriangleComponents.Add(triangleColors.ToArray());
+				TriangleComponentKeys.Add(TriangleComponentKeyTypes.ColorComponents, componentIndex);
+				++componentIndex;
+			}
+
 			if (normalIndex != -1)
 			{
 				TriangleComponents.Add(triangleNormals.ToArray());
-				TriangleComponentKeys.Add(TriangleComponentKeyTypes.NormalComponents, 0);
+				TriangleComponentKeys.Add(TriangleComponentKeyTypes.NormalComponents, componentIndex);
+				++componentIndex;
 			}
 
 			if (uvIndex != -1)
 			{
 				TriangleComponents.Add(triangleUVs.ToArray());
-				TriangleComponentKeys.Add(TriangleComponentKeyTypes.UVComponents, 1);
+				TriangleComponentKeys.Add(TriangleComponentKeyTypes.UVComponents, componentIndex);
+				++componentIndex;
 			}
 		}
 		#endregion

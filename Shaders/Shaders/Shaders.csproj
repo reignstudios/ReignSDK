@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Diffuse\DiffuseTexture.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickDraw3Color.cs" />

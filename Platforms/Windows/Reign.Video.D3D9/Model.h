@@ -9,8 +9,8 @@ namespace Reign
 	public ref class Model : ModelI
 	{
 		#pragma region Constructors
-		public: Model(DisposableI^ parent, SoftwareModel^ softwareModel, MeshVertexSizes positionSize, DisposableI^ contentParent, string^ contentDirectory, Dictionary<string^,Type^>^ materialTypes, List<MaterialFieldBinder^>^ materialFieldTypes);
-		protected: virtual MeshI^ createMesh(ModelI^ model, SoftwareModel^ softwareModel, SoftwareMesh^ softwareMesh, MeshVertexSizes positionSize) override;
+		public: Model(DisposableI^ parent, SoftwareModel^ softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, DisposableI^ contentParent, string^ contentDirectory, Dictionary<string^,Type^>^ materialTypes, List<MaterialTextureBinder^>^ materialFieldTypes, Dictionary<string^,string^>^ fileExtOverrides);
+		protected: virtual MeshI^ createMesh(ModelI^ model, SoftwareModel^ softwareModel, SoftwareMesh^ softwareMesh, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals) override;
 		protected: virtual Texture2DI^ createTexture(DisposableI^ parent, string^ fileName) override;
 		#pragma endregion
 	};

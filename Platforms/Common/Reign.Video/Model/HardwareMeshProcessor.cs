@@ -5,11 +5,13 @@ namespace Reign.Video
 {
 	public class VertexProcessor
 	{
-		public Vector3[] Positions, Normals;
+		public Vector3[] Positions;
+		public Vector4[] Colors;
+		public Vector3[] Normals;
 		public Vector2[] UVs;
 		public int Index;
 
-		public VertexProcessor(SoftwareVertex vertex, Vector3[] normals, Vector2[] uvs, HardwareMeshProcessor mesh)
+		public VertexProcessor(SoftwareVertex vertex, Vector4[] colors, Vector3[] normals, Vector2[] uvs, HardwareMeshProcessor mesh)
 		{
 			Positions = new Vector3[mesh.positions.Count];
 			for (int i = 0; i != Positions.Length; ++i)
@@ -17,6 +19,7 @@ namespace Reign.Video
 				Positions[i] = mesh.positions[i][vertex.Index];
 			}
 
+			Colors = colors;
 			Normals = normals;
 			UVs = uvs;
 
@@ -28,44 +31,69 @@ namespace Reign.Video
 	{
 		public VertexProcessor[] Verticies;
 
-		public TriangleProcessor(SoftwareTriangle triangle, HardwareMeshProcessor mesh)
+		public TriangleProcessor(SoftwareTriangle triangle, HardwareMeshProcessor mesh, bool loadColors, bool loadUVs, bool loadNormals)
 		{
-			// get normal components
-			int componentCount = mesh.normalComponents.Count;
-			var normals = new Vector3[3][];
-			for (int i = 0; i != normals.Length; ++i)
+			// get color components
+			var colors = new Vector4[3][];
+			if (loadColors)
 			{
-				normals[i] = new Vector3[componentCount];
+				int componentCount = mesh.colorComponents.Count;
+				for (int i = 0; i != colors.Length; ++i)
+				{
+					colors[i] = new Vector4[componentCount];
+				}
+
+				for (int i = 0; i != componentCount; ++i)
+				{
+					var colorComponent = mesh.colorComponents[i][triangle.Index].Colors;
+					colors[0][i] = colorComponent[0];
+					colors[1][i] = colorComponent[1];
+					colors[2][i] = colorComponent[2];
+				}
 			}
 
-			for (int i = 0; i != componentCount; ++i)
+			// get normal components
+			var normals = new Vector3[3][];
+			if (loadNormals)
 			{
-				var normalComponent = mesh.normalComponents[i][triangle.Index].Normals;
-				normals[0][i] = normalComponent[0];
-				normals[1][i] = normalComponent[1];
-				normals[2][i] = normalComponent[2];
+				int componentCount = mesh.normalComponents.Count;
+				for (int i = 0; i != normals.Length; ++i)
+				{
+					normals[i] = new Vector3[componentCount];
+				}
+
+				for (int i = 0; i != componentCount; ++i)
+				{
+					var normalComponent = mesh.normalComponents[i][triangle.Index].Normals;
+					normals[0][i] = normalComponent[0];
+					normals[1][i] = normalComponent[1];
+					normals[2][i] = normalComponent[2];
+				}
 			}
 
 			// get uv components
-			componentCount = mesh.uvComponents.Count;
 			var uvs = new Vector2[3][];
-			for (int i = 0; i != uvs.Length; ++i)
+			if (loadUVs)
 			{
-				uvs[i] = new Vector2[componentCount];
-			}
+				int componentCount = mesh.uvComponents.Count;
+				for (int i = 0; i != uvs.Length; ++i)
+				{
+					uvs[i] = new Vector2[componentCount];
+				}
 
-			for (int i = 0; i != componentCount; ++i)
-			{
-				var normalComponent = mesh.uvComponents[i][triangle.Index].UVs;
-				uvs[0][i] = normalComponent[0];
-				uvs[1][i] = normalComponent[1];
-				uvs[2][i] = normalComponent[2];
+				for (int i = 0; i != componentCount; ++i)
+				{
+					var normalComponent = mesh.uvComponents[i][triangle.Index].UVs;
+					uvs[0][i] = normalComponent[0];
+					uvs[1][i] = normalComponent[1];
+					uvs[2][i] = normalComponent[2];
+				}
 			}
 
 			// add verticies
-			var vertex1 = new VertexProcessor(triangle.Verticies[0], normals[0], uvs[0], mesh);
-			var vertex2 = new VertexProcessor(triangle.Verticies[1], normals[1], uvs[1], mesh);
-			var vertex3 = new VertexProcessor(triangle.Verticies[2], normals[2], uvs[2], mesh);
+			var vertex1 = new VertexProcessor(triangle.Verticies[0], colors[0], normals[0], uvs[0], mesh);
+			var vertex2 = new VertexProcessor(triangle.Verticies[1], colors[1], normals[1], uvs[1], mesh);
+			var vertex3 = new VertexProcessor(triangle.Verticies[2], colors[2], normals[2], uvs[2], mesh);
 			Verticies = new VertexProcessor[3] {vertex1, vertex2, vertex3};
 
 			mesh.Triangles.Add(this);
@@ -78,10 +106,11 @@ namespace Reign.Video
 		public List<TriangleProcessor> Triangles;
 		internal SoftwareMesh mesh;
 		internal List<Vector3[]> positions;
+		internal List<TriangleColorComponent[]> colorComponents;
 		internal List<TriangleNormalComponent[]> normalComponents;
 		internal List<TriangleUVComponent[]> uvComponents;
 
-		public HardwareMeshProcessor(SoftwareMesh mesh)
+		public HardwareMeshProcessor(SoftwareMesh mesh, bool loadColors, bool loadUVs, bool loadNormals)
 		{
 			this.mesh = mesh;
 
@@ -96,14 +125,24 @@ namespace Reign.Video
 			}
 
 			// get triangle component types
-			normalComponents = new List<TriangleNormalComponent[]>();
-			uvComponents = new List<TriangleUVComponent[]>();
+			if (loadColors) colorComponents = new List<TriangleColorComponent[]>();
+			if (loadNormals) normalComponents = new List<TriangleNormalComponent[]>();
+			if (loadUVs) uvComponents = new List<TriangleUVComponent[]>();
 			foreach (var key in mesh.TriangleComponentKeys)
 			{
 				switch (key.Key)
 				{
-					case (TriangleComponentKeyTypes.NormalComponents): normalComponents.Add((TriangleNormalComponent[])mesh.TriangleComponents[key.Value]); break;
-					case (TriangleComponentKeyTypes.UVComponents): uvComponents.Add((TriangleUVComponent[])mesh.TriangleComponents[key.Value]); break;
+					case (TriangleComponentKeyTypes.ColorComponents):
+						if (loadColors) colorComponents.Add((TriangleColorComponent[])mesh.TriangleComponents[key.Value]);
+						break;
+
+					case (TriangleComponentKeyTypes.NormalComponents):
+						if (loadNormals) normalComponents.Add((TriangleNormalComponent[])mesh.TriangleComponents[key.Value]);
+						break;
+
+					case (TriangleComponentKeyTypes.UVComponents):
+						if (loadUVs) uvComponents.Add((TriangleUVComponent[])mesh.TriangleComponents[key.Value]);
+						break;
 				}
 			}
 
@@ -112,7 +151,7 @@ namespace Reign.Video
 			Triangles = new List<TriangleProcessor>();
 			foreach (var triangle in mesh.Triangles)
 			{
-				var newTriangle = new TriangleProcessor(triangle, this);
+				var newTriangle = new TriangleProcessor(triangle, this, loadColors, loadUVs, loadNormals);
 			}
 
 			// process (remove duplicate verticies from triangles)
@@ -141,8 +180,21 @@ namespace Reign.Video
 								}
 							}
 
+							// color tolerance
+							if (pass && loadColors)
+							{
+								for (int pi = 0; pi != vertex.Colors.Length; ++pi)
+								{
+									if (!vertex.Colors[pi].AproxEqualsBox(vertex2.Colors[pi], tolerance))
+									{
+										pass = false;
+										break;
+									}
+								}
+							}
+
 							// normal tolerance
-							if (pass)
+							if (pass && loadNormals)
 							{
 								for (int pi = 0; pi != vertex.Normals.Length; ++pi)
 								{
@@ -155,7 +207,7 @@ namespace Reign.Video
 							}
 
 							// uv tolerance
-							if (pass)
+							if (pass && loadUVs)
 							{
 								for (int pi = 0; pi != vertex.UVs.Length; ++pi)
 								{

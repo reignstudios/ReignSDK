@@ -22,7 +22,7 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public MeshI(ModelI model, SoftwareModel softwareModel, SoftwareMesh softwareMesh, MeshVertexSizes positionSize)
+		public MeshI(ModelI model, SoftwareModel softwareModel, SoftwareMesh softwareMesh, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals)
 		: base(model)
 		{
 			try
@@ -64,7 +64,7 @@ namespace Reign.Video
 
 				// get vertex float size and create layout
 				var elements = new List<BufferLayoutElement>();
-				int vertFloatCount = 0, posCount = 0, normalCount = 0, uvCount = 0;
+				int vertFloatCount = 0, posCount = 0, colorCount = 0, normalCount = 0, uvCount = 0;
 				foreach (var key in softwareMesh.VertexComponentKeys)
 				{
 					switch (key.Key)
@@ -81,6 +81,12 @@ namespace Reign.Video
 				{
 					switch (key.Key)
 					{
+						case (TriangleComponentKeyTypes.ColorComponents):
+							elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector4, BufferLayoutElementUsages.Color, 0, colorCount, vertFloatCount));
+							vertFloatCount += 4;
+							++colorCount;
+							break;
+
 						case (TriangleComponentKeyTypes.NormalComponents):
 						    elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Normal, 0, normalCount, vertFloatCount));
 						    vertFloatCount += 3;
@@ -97,12 +103,12 @@ namespace Reign.Video
 
 				// create vertex buffer
 				LayoutDesc = createBufferLayoutDesc(elements);
-				var meshProcessor = new HardwareMeshProcessor(softwareMesh);
+				var meshProcessor = new HardwareMeshProcessor(softwareMesh, loadColors, loadUVs, loadNormals);
 				var verts = new float[meshProcessor.Verticies.Count * vertFloatCount];
 				int vi = 0;
 				foreach (var vertex in meshProcessor.Verticies)
 				{
-					int posIndex = 0, normIndex = 0, uvIndex = 0;
+					int posIndex = 0, colorIndex = 0, normIndex = 0, uvIndex = 0;
 					foreach (var element in elements)
 					{
 						switch (element.Usage)
@@ -115,19 +121,35 @@ namespace Reign.Video
 								++posIndex;
 								break;
 
+							case (BufferLayoutElementUsages.Color):
+								if (loadColors)
+								{
+									verts[vi] = vertex.Colors[uvIndex].X;
+									verts[vi+1] = vertex.Colors[uvIndex].Y;
+									vi += 4;
+									++colorIndex;
+								}
+								break;
+
 							case (BufferLayoutElementUsages.Normal):
-								verts[vi] = vertex.Normals[normIndex].X;
-								verts[vi+1] = vertex.Normals[normIndex].Y;
-								verts[vi+2] = vertex.Normals[normIndex].Z;
-								vi += 3;
-								++normIndex;
+								if (loadNormals)
+								{
+									verts[vi] = vertex.Normals[normIndex].X;
+									verts[vi+1] = vertex.Normals[normIndex].Y;
+									verts[vi+2] = vertex.Normals[normIndex].Z;
+									vi += 3;
+									++normIndex;
+								}
 								break;
 
 							case (BufferLayoutElementUsages.UV):
-								verts[vi] = vertex.UVs[uvIndex].X;
-								verts[vi+1] = vertex.UVs[uvIndex].Y;
-								vi += 2;
-								++uvIndex;
+								if (loadUVs)
+								{
+									verts[vi] = vertex.UVs[uvIndex].X;
+									verts[vi+1] = vertex.UVs[uvIndex].Y;
+									vi += 2;
+									++uvIndex;
+								}
 								break;
 						}
 					}
