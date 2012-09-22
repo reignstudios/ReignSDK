@@ -8,8 +8,10 @@ namespace Reign.Video
 		#region Properties
 		public string Name;
 		public Dictionary<string,string> Textures;
-		public Dictionary<string,Vector4> Colors;
-		public Dictionary<string,float> Values;
+		public Dictionary<string,float> Values1;
+		public Dictionary<string,Vector2> Values2;
+		public Dictionary<string,Vector3> Values3;
+		public Dictionary<string,Vector4> Values4;
 		#endregion
 
 		#region Constructors
@@ -57,14 +59,14 @@ namespace Reign.Video
 			}
 
 			// colors
-			Colors = new Dictionary<string,Vector4>();
+			Values4 = new Dictionary<string,Vector4>();
 			string[] ids;
 			var colors = getColors(phong.Diffuse.Colors, out ids);
 			if (colors != null)
 			{
 				for (int i = 0; i != colors.Length; ++i)
 				{
-					Colors.Add(ids[i], colors[i]);
+					Values4.Add(ids[i], colors[i]);
 				}
 			}
 
@@ -73,7 +75,7 @@ namespace Reign.Video
 			{
 				for (int i = 0; i != colors.Length; ++i)
 				{
-					Colors.Add(ids[i], colors[i]);
+					Values4.Add(ids[i], colors[i]);
 				}
 			}
 
@@ -82,18 +84,18 @@ namespace Reign.Video
 			{
 				for (int i = 0; i != colors.Length; ++i)
 				{
-					Colors.Add(ids[i], colors[i]);
+					Values4.Add(ids[i], colors[i]);
 				}
 			}
 
 			// values
-			Values = new Dictionary<string,float>();
+			Values1 = new Dictionary<string,float>();
 			var values = getValues(phong.Shininess.Floats, out ids);
 			if (values != null)
 			{
 				for (int i = 0; i != values.Length; ++i)
 				{
-					Values.Add(ids[i], values[i]);
+					Values1.Add(ids[i], values[i]);
 				}
 			}
 
@@ -102,9 +104,13 @@ namespace Reign.Video
 			{
 				for (int i = 0; i != values.Length; ++i)
 				{
-					Values.Add(ids[i], values[i]);
+					Values1.Add(ids[i], values[i]);
 				}
 			}
+
+			// other
+			Values2 = new Dictionary<string,Vector2>();
+			Values3 = new Dictionary<string,Vector3>();
 		}
 
 		private Vector4[] getColors(ColladaModel_Color[] colors, out string[] ids)

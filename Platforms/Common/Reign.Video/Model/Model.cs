@@ -1,6 +1,7 @@
 ﻿using Reign.Core;
 using System.Collections.Generic;
 using System;
+using System.IO;
 
 #if METRO
 using System.Reflection;
@@ -10,19 +11,99 @@ namespace Reign.Video
 {
 	class ModelStreamLoader : StreamLoaderI
 	{
-		private List<SoftwareMaterial> softwareMaterials;
+		private Dictionary<string,string>[] textures;
+		#if METRO
+		private System.Threading.Tasks.Task<Stream> fileStream;
+		#endif
 
+		private ModelI model;
+		private string fileName;
+		private Stream stream;
+		private string contentDirectory;
+		private Dictionary<string,Type> materialTypes;
+		private List<MaterialFieldBinder> textureBinderTypes;
+		private Dictionary<string,string> fileExtOverrides;
+
+		public ModelStreamLoader(ModelI model, string fileName, Stream stream, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides)
+		{
+			this.model = model;
+			this.fileName = fileName;
+			this.stream = stream;
+			this.contentDirectory = contentDirectory;
+			this.materialTypes = materialTypes;
+			this.textureBinderTypes = textureBinderTypes;
+			this.fileExtOverrides = fileExtOverrides;
+		}
+
+		public override bool Load()
+		{
+			if (stream != null)
+			{
+				return model.load(fileName, stream, contentDirectory, materialTypes, textureBinderTypes, fileExtOverrides, ref textures);
+			}
+			else
+			{
+				if (fileName != null)
+				{
+					#if METRO
+					if (fileStream == null)
+					{
+						fileStream = Streams.OpenFile(fileName);
+						return false;
+					}
+					else
+					{
+						if (!fileStream.IsCompleted) return false;
+						bool pass = model.load(fileName, fileStream.Result, contentDirectory, materialTypes, textureBinderTypes, fileExtOverrides, ref textures);
+						fileName = null;
+						return pass;
+					}
+					#else
+					using (var file = Streams.OpenFile(fileName))
+					{
+						bool pass = model.load(fileName, file, contentDirectory, materialTypes, textureBinderTypes, fileExtOverrides, ref textures);
+						fileName = null;
+						return pass;
+					}
+					#endif
+				}
+				else
+				{
+					return model.load(null, null, contentDirectory, materialTypes, textureBinderTypes, fileExtOverrides, ref textures);
+				}
+			}
+		}
+
+		public override void Dispose()
+		{
+			if (stream != null)
+			{
+				stream.Dispose();
+				stream = null;
+			}
+
+			#if METRO
+			if (fileStream != null && fileStream.Result != null)
+			{
+				fileStream.Result.Dispose();
+				fileStream = null;
+			}
+			#endif
+		}
+	}
+
+	class ModelSoftwareStreamLoader : StreamLoaderI
+	{
 		private ModelI model;
 		private SoftwareModel softwareModel;
 		private MeshVertexSizes positionSize;
 		private bool loadColors, loadUVs, loadNormals;
-		private DisposableI contentParent;
 		private string contentDirectory;
 		private Dictionary<string,Type> materialTypes;
-		private List<MaterialTextureBinder> materialFieldTypes;
+		private List<MaterialFieldBinder> textureBinderTypes;
 		private Dictionary<string,string> fileExtOverrides;
 
-		public ModelStreamLoader(ModelI model, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, DisposableI contentParent, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialTextureBinder> materialFieldTypes, Dictionary<string,string> fileExtOverrides)
+		public ModelSoftwareStreamLoader(ModelI model, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides)
 		{
 			this.model = model;
 			this.softwareModel = softwareModel;
@@ -30,27 +111,19 @@ namespace Reign.Video
 			this.loadColors = loadColors;
 			this.loadUVs = loadUVs;
 			this.loadNormals = loadNormals;
-			this.contentParent = contentParent;
 			this.contentDirectory = contentDirectory;
 			this.materialTypes = materialTypes;
-			this.materialFieldTypes = materialFieldTypes;
+			this.textureBinderTypes = textureBinderTypes;
 			this.fileExtOverrides = fileExtOverrides;
 		}
 
 		public override bool Load()
 		{
 			if (!softwareModel.Loaded) return false;
-
-			if (model.Materials == null)
-			{
-				model.load(softwareModel, positionSize, loadColors, loadUVs, loadNormals, materialTypes, out softwareMaterials);
-				return false;
-			}
-			else if (!model.loadMaterials(softwareMaterials, contentParent, contentDirectory, materialFieldTypes, fileExtOverrides))
-			{
-				return false;
-			}
-
+			var stream = new MemoryStream();
+			ModelI.Save(stream, false, softwareModel, positionSize, loadColors, loadUVs, loadNormals);
+			stream.Position = 0;
+			new ModelStreamLoader(model, null, stream, contentDirectory, materialTypes, textureBinderTypes, fileExtOverrides);
 			return true;
 		}
 	}
@@ -66,43 +139,163 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public ModelI(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, DisposableI contentParent, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialTextureBinder> materialFieldTypes, Dictionary<string,string> fileExtOverrides)
+		public ModelI(DisposableI parent, string fileName, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides)
 		: base(parent)
 		{
-			new ModelStreamLoader(this, softwareModel, positionSize, loadColors, loadUVs, loadNormals, contentParent, contentDirectory, materialTypes, materialFieldTypes, fileExtOverrides);
+			new ModelStreamLoader(this, fileName, null, contentDirectory, materialTypes, textureBinderTypes, fileExtOverrides);
 		}
 
-		internal void load(SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, Dictionary<string,Type> materialTypes, out List<SoftwareMaterial> softwareMaterials)
+		public ModelI(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides)
+		: base(parent)
+		{
+			new ModelSoftwareStreamLoader(this, softwareModel, positionSize, loadColors, loadUVs, loadNormals, contentDirectory, materialTypes, textureBinderTypes, fileExtOverrides);
+		}
+
+		internal bool load(string fileName, Stream stream, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, ref Dictionary<string,string>[] textures)
 		{
 			try
 			{
-				softwareMaterials = new List<SoftwareMaterial>();
-
-				// create materials from matching field types
-				Materials = new MaterialI[softwareModel.Materials.Count];
-				Textures = new List<Texture2DI>();
-				for (int i = 0; i != Materials.Length; ++i)
+				if (Materials == null)
 				{
-					bool pass = false;
-					foreach (var materialType in (Dictionary<string,Type>)materialTypes)
+					var reader = new BinaryReader(stream);
+					// meta data
+					if (reader.ReadInt32() != Streams.MakeFourCC('R', 'M', 'F', 'T')) Debug.ThrowError("Error", "Not a ReignModel file: " + fileName);
+					float version = reader.ReadSingle();
+					if (version != 1.0f) Debug.ThrowError("Error", "Unsuported model version: " + version.ToString());
+					bool compressed = reader.ReadBoolean();
+
+					// materials
+					int materialCount = reader.ReadInt32();
+					Materials = new MaterialI[materialCount];
+					textures = new Dictionary<string,string>[materialCount];
+					Textures = new List<Texture2DI>();
+					for (int i = 0; i != materialCount; ++i)
 					{
-						if (materialType.Key == softwareModel.Materials[i].Name)
+						string name = reader.ReadString();
+
+						// create material
+						bool pass = false;
+						foreach (var materialType in (Dictionary<string,Type>)materialTypes)
 						{
-							Materials[i] = (MaterialI)Activator.CreateInstance(materialType.Value);
-							softwareMaterials.Add(softwareModel.Materials[i]);
-							pass = true;
-							break;
+							if (materialType.Key == name)
+							{
+								Materials[i] = (MaterialI)Activator.CreateInstance(materialType.Value);
+								Materials[i].Name = name;
+								pass = true;
+								break;
+							}
+						}
+						if (!pass) Debug.ThrowError("Model", "Failed to find a valid material type for: " + name);
+
+						// values1
+						int valueCount = reader.ReadInt32();
+						for (int i2 = 0; i2 != valueCount; ++i2)
+						{
+							string id = reader.ReadString();
+							float textureFileName = reader.ReadSingle();
+						}
+
+						// values2
+						valueCount = reader.ReadInt32();
+						for (int i2 = 0; i2 != valueCount; ++i2)
+						{
+							string id = reader.ReadString();
+							var textureFileName = reader.ReadVector2();
+						}
+
+						// values3
+						valueCount = reader.ReadInt32();
+						for (int i2 = 0; i2 != valueCount; ++i2)
+						{
+							string id = reader.ReadString();
+							var textureFileName = reader.ReadVector3();
+						}
+
+						// values4
+						valueCount = reader.ReadInt32();
+						for (int i2 = 0; i2 != valueCount; ++i2)
+						{
+							string id = reader.ReadString();
+							var textureFileName = reader.ReadVector4();
+						}
+
+						// textures
+						textures[i] = new Dictionary<string,string>();
+						int textureCount = reader.ReadInt32();
+						for (int i2 = 0; i2 != textureCount; ++i2)
+						{
+							textures[i].Add(reader.ReadString(), reader.ReadString());
 						}
 					}
 
-					if (!pass) Debug.ThrowError("Model", "Failed to find a valid material type for: " + softwareModel.Materials[i].Name);
-				}
+					// meshes
+					int meshCount = reader.ReadInt32();
+					Meshes = new MeshI[meshCount];
+					for (int i = 0; i != meshCount; ++i)
+					{
+						Meshes[i] = createMesh(reader, this);
+					}
 
-				// create meshes
-				Meshes = new MeshI[softwareModel.Meshes.Count];
-				for (int i = 0; i != Meshes.Length; ++i)
+					return false;
+				}
+				else
 				{
-					Meshes[i] = createMesh(this, softwareModel, softwareModel.Meshes[i], positionSize, loadColors, loadUVs, loadNormals);
+					for (int i = 0; i != Materials.Length; ++i)
+					{
+						var material = Materials[i];
+						var materialType = material.GetType();
+						var materialTexture = textures[i];
+
+						// TEXTURES
+						if (textureBinderTypes != null && textureBinderTypes.Count != 0)
+						{
+							// get texture field binder
+							MaterialFieldBinder textureBinder = null;
+							foreach (var binderType in textureBinderTypes)
+							{
+								if (binderType.MaterialName == material.Name && materialTexture.ContainsKey(binderType.ID))
+								{
+									textureBinder = binderType;
+									break;
+								}
+							}
+							if (textureBinder == null) Debug.ThrowError("Model", "Failed to find a texture binder for: " + materialType.ToString());
+				
+							// get texture fileName and field
+							var textureFileName = materialTexture[textureBinder.ID];
+							#if METRO
+							var field = materialType.GetTypeInfo().GetDeclaredField(textureBinder.ShaderMaterialFieldName);
+							#else
+							var field = materialType.GetField(textureBinder.ShaderMaterialFieldName);
+							#endif
+							if (field == null) Debug.ThrowError("Model", "Shader material field name does not exist: " + textureBinder.ShaderMaterialFieldName);
+
+							// load texture
+							var value = field.GetValue(material);
+							if (value != null)
+							{
+								if (!((Texture2DI)value).Loaded) return false;
+							}
+							else
+							{
+								if (fileExtOverrides != null)
+								{
+									string ext = Streams.GetFileExt(textureFileName);
+									if (fileExtOverrides.ContainsKey(ext)) textureFileName = Streams.GetFileNameWithoutExt(textureFileName) + fileExtOverrides[ext];
+									else textureFileName = Streams.GetFileNameWithExt(textureFileName);
+								}
+								else
+								{
+									textureFileName = Streams.GetFileNameWithExt(textureFileName);
+								}
+
+								var texture = createTexture(Parent, contentDirectory + textureFileName);
+								if (!Textures.Contains(texture)) Textures.Add(texture);
+								field.SetValue(material, texture);
+								return false;
+							}
+						}
+					}
 				}
 			}
 			catch (Exception e)
@@ -110,68 +303,12 @@ namespace Reign.Video
 				Dispose();
 				throw e;
 			}
-		}
-
-		internal bool loadMaterials(List<SoftwareMaterial> softwareMaterials, DisposableI contentParent, string contentDirectory, List<MaterialTextureBinder> materialFieldTypes, Dictionary<string,string> fileExtOverrides)
-		{
-			for (int i = 0; i != Materials.Length; ++i)
-			{
-				// make sure there is a field binder for the material
-				var material = Materials[i];
-				var materialType = material.GetType();
-				MaterialTextureBinder binder = null;
-				foreach (var materialFieldType in materialFieldTypes)
-				{
-					if (materialFieldType.MaterialName == softwareMaterials[i].Name)
-					{
-						if (softwareMaterials[i].Textures.ContainsKey(materialFieldType.TextureID))
-						{
-							binder = materialFieldType;
-							break;
-						}
-					}
-				}
-				if (binder == null) Debug.ThrowError("Model", "Material field types do not contain a material type: " + materialType.ToString());
-				
-				// get texture field
-				var textureFileName = softwareMaterials[i].Textures[binder.TextureID];
-				#if METRO
-				var field = materialType.GetTypeInfo().GetDeclaredField(binder.ShaderMaterialFieldName);
-				#else
-				var field = materialType.GetField(binder.ShaderMaterialFieldName);
-				#endif
-				if (field == null) Debug.ThrowError("Model", "Material field name does not exist: " + binder.ShaderMaterialFieldName);
-
-				// load texture
-				var value = field.GetValue(material);
-				if (value != null)
-				{
-					if (!((Texture2DI)value).Loaded) return false;
-				}
-				else
-				{
-					if (fileExtOverrides != null)
-					{
-						string ext = Streams.GetFileExt(textureFileName);
-						if (fileExtOverrides.ContainsKey(ext)) textureFileName = Streams.GetFileNameWithoutExt(textureFileName) + fileExtOverrides[ext];
-						else textureFileName = Streams.GetFileNameWithExt(textureFileName);
-					}
-					else
-					{
-						textureFileName = Streams.GetFileNameWithExt(textureFileName);
-					}
-					var texture = createTexture(contentParent, contentDirectory + textureFileName);
-					if (!Textures.Contains(texture)) Textures.Add(texture);
-					field.SetValue(material, texture);
-					return false;
-				}
-			}
 
 			Loaded = true;
 			return true;
 		}
 
-		protected abstract MeshI createMesh(ModelI model, SoftwareModel softwareModel, SoftwareMesh softwareMesh, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals);
+		protected abstract MeshI createMesh(BinaryReader reader, ModelI model);
 		protected abstract Texture2DI createTexture(DisposableI parent, string fileName);
 
 		public override void Dispose()
@@ -190,6 +327,78 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
+		public static void Save(string fileName, bool compress, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals)
+		{
+			using (var file = Streams.SaveFile(fileName))
+			{
+				Save(file, compress, softwareModel, positionSize, loadColors, loadUVs, loadNormals);
+			}
+		}
+
+		public static void Save(Stream stream, bool compress, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals)
+		{
+			var writer = new BinaryWriter(stream);
+
+			// meta data
+			writer.Write(Streams.MakeFourCC('R', 'M', 'F', 'T'));// tag
+			writer.Write(1.0f);// version
+			writer.Write(compress);
+
+			// materials
+			writer.Write(softwareModel.Materials.Count);
+			foreach (var material in softwareModel.Materials)
+			{
+				writer.Write(material.Name);
+
+				// values1
+				writer.Write(material.Values1.Count);
+				foreach (var value in material.Values1)
+				{
+					writer.Write(value.Key);
+					writer.Write(value.Value);
+				}
+
+				// values2
+				writer.Write(material.Values2.Count);
+				foreach (var value in material.Values2)
+				{
+					writer.Write(value.Key);
+					writer.WriteVector(value.Value);
+				}
+
+				// values3
+				writer.Write(material.Values3.Count);
+				foreach (var value in material.Values3)
+				{
+					writer.Write(value.Key);
+					writer.WriteVector(value.Value);
+				}
+
+				// values4
+				writer.Write(material.Values4.Count);
+				foreach (var value in material.Values4)
+				{
+					writer.Write(value.Key);
+					writer.WriteVector(value.Value);
+				}
+
+				// textures
+				writer.Write(material.Textures.Count);
+				foreach (var texture in material.Textures)
+				{
+					writer.Write(texture.Key);
+					writer.Write(texture.Value);
+				}
+			}
+
+			// meshes
+			writer.Write(softwareModel.Meshes.Count);
+			foreach (var mesh in softwareModel.Meshes)
+			{
+				MeshI.Write(writer, softwareModel, mesh, positionSize, loadColors, loadUVs, loadNormals);
+			}
+		}
+
 		public void Render()
 		{
 			foreach (var mesh in Meshes)

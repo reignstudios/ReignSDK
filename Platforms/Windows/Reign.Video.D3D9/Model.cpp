@@ -7,15 +7,21 @@ namespace Reign
 {namespace D3D9
 {
 	#pragma region Constructors
-	Model::Model(DisposableI^ parent, SoftwareModel^ softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, DisposableI^ contentParent, string^ contentDirectory, Dictionary<string^,Type^>^ materialTypes, List<MaterialTextureBinder^>^ materialFieldTypes, Dictionary<string^,string^>^ fileExtOverrides)
-	: ModelI(parent, softwareModel, positionSize, loadColors, loadUVs, loadNormals, contentParent, contentDirectory, materialTypes, materialFieldTypes, fileExtOverrides)
+	Model::Model(DisposableI^ parent, string^ fileName, string^ contentDirectory, Dictionary<string^,Type^>^ materialTypes, List<MaterialFieldBinder^>^ textureBinderTypes, Dictionary<string^,string^>^ fileExtOverrides)
+	: ModelI(parent, fileName, contentDirectory, materialTypes, textureBinderTypes, fileExtOverrides)
 	{
 		
 	}
 
-	MeshI^ Model::createMesh(ModelI^ model, SoftwareModel^ softwareModel, SoftwareMesh^ softwareMesh, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals)
+	Model::Model(DisposableI^ parent, SoftwareModel^ softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string^ contentDirectory, Dictionary<string^,Type^>^ materialTypes, List<MaterialFieldBinder^>^ textureBinderTypes, Dictionary<string^,string^>^ fileExtOverrides)
+	: ModelI(parent, softwareModel, positionSize, loadColors, loadUVs, loadNormals, contentDirectory, materialTypes, textureBinderTypes, fileExtOverrides)
 	{
-		return gcnew Mesh(model, softwareModel, softwareMesh, positionSize, loadColors, loadUVs, loadNormals);
+		
+	}
+
+	MeshI^ Model::createMesh(BinaryReader^ reader, ModelI^ model)
+	{
+		return gcnew Mesh(reader, model);
 	}
 
 	Texture2DI^ Model::createTexture(DisposableI^ parent, string^ fileName)

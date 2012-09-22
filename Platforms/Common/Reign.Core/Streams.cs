@@ -39,6 +39,7 @@ namespace Reign.Core
 		}
 
 		public abstract bool Load();
+		public virtual void Dispose() {}
 	}
 	
 	public static class Streams
@@ -55,18 +56,24 @@ namespace Reign.Core
 		{
 			if (loaders.Count != 0)
 			{
-				try
+				var currentLoaders = new StreamLoaderI[loaders.Count];
+				loaders.CopyTo(currentLoaders);
+				foreach (var loader in currentLoaders)
 				{
-					var currentLoaders = new StreamLoaderI[loaders.Count];
-					loaders.CopyTo(currentLoaders);
-					foreach (var loader in currentLoaders)
+					try
 					{
-						if (loader.Load()) loaders.Remove(loader);
+						if (loader.Load())
+						{
+							loader.Dispose();
+							loaders.Remove(loader);
+						}
 					}
-				}
-				catch (Exception e)
-				{
-					return e;
+					catch (Exception e)
+					{
+						loader.Dispose();
+						loaders.Remove(loader);
+						return e;
+					}
 				}
 			}
 
@@ -207,6 +214,15 @@ namespace Reign.Core
 			return new FileStream(fileName, FileMode.Open, FileAccess.Read);
 			#endif
 		}
+
+		public static Stream SaveFile(string fileName)
+		{
+			#if WINDOWS
+			return new FileStream(fileName, FileMode.Create, FileAccess.Write);
+			#else
+			throw new NotImplementedException();
+			#endif
+		}
 		
 		public static MemoryStream CopyToMemoryStream(Stream stream)
 		{
@@ -283,6 +299,45 @@ namespace Reign.Core
 		public static int MakeFourCC(char ch0, char ch1, char ch2, char ch3)
 		{
 			return (((int)(byte)(ch0)) | ((int)(byte)(ch1) << 8) | ((int)(byte)(ch2) << 16) | ((int)(byte)(ch3) << 24));
+		}
+	}
+
+	public static class SteamExtensions
+	{
+		public static void WriteVector(this BinaryWriter writer, Vector2 value)
+		{
+			writer.Write(value.X);
+			writer.Write(value.Y);
+		}
+
+		public static void WriteVector(this BinaryWriter writer, Vector3 value)
+		{
+			writer.Write(value.X);
+			writer.Write(value.Y);
+			writer.Write(value.Z);
+		}
+
+		public static void WriteVector(this BinaryWriter writer, Vector4 value)
+		{
+			writer.Write(value.X);
+			writer.Write(value.Y);
+			writer.Write(value.Z);
+			writer.Write(value.W);
+		}
+
+		public static Vector2 ReadVector2(this BinaryReader reader)
+		{
+			return new Vector2(reader.ReadSingle(), reader.ReadSingle());
+		}
+
+		public static Vector3 ReadVector3(this BinaryReader reader)
+		{
+			return new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+		}
+
+		public static Vector4 ReadVector4(this BinaryReader reader)
+		{
+			return new Vector4(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
 		}
 	}
 }

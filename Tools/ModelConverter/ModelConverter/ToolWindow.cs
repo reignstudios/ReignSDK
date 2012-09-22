@@ -33,16 +33,16 @@ namespace ModelConverter
 
 		class MaterialTextureBinderWrapper
 		{
-			public MaterialTextureBinder Binder;
+			public MaterialFieldBinder Binder;
 
-			public MaterialTextureBinderWrapper(MaterialTextureBinder binder)
+			public MaterialTextureBinderWrapper(MaterialFieldBinder binder)
 			{
 				Binder = binder;
 			}
 
 			public override string ToString()
 			{
-				return string.Format("{0}, {1}, {2}", Binder.MaterialName, Binder.TextureID, Binder.ShaderMaterialFieldName);
+				return string.Format("{0}, {1}, {2}", Binder.MaterialName, Binder.ID, Binder.ShaderMaterialFieldName);
 			}
 		}
 
@@ -114,7 +114,7 @@ namespace ModelConverter
 				materialTypes.Add(mat.Material.Name, mat.ShaderMaterialType);
 			}
 
-			var materialFieldTypes = new List<MaterialTextureBinder>();
+			var materialFieldTypes = new List<MaterialFieldBinder>();
 			foreach (var binder in materialTextureBinderListBox.Items)
 			{
 				var b = (MaterialTextureBinderWrapper)binder;
@@ -122,6 +122,14 @@ namespace ModelConverter
 			}
 
 			mainWindow.Convert(contentTextBox.Text, materialTypes, materialFieldTypes);
+		}
+
+		private void saveButton_Click(object sender, EventArgs e)
+		{
+			var dlg = new SaveFileDialog();
+			if (dlg.ShowDialog() != DialogResult.OK) return;
+
+			mainWindow.Save(dlg.FileName);
 		}
 
 		public void LoadSoftwareModelData(SoftwareModel softwareModel, List<Type> materials)
@@ -208,7 +216,7 @@ namespace ModelConverter
 			if (shaderConstantComboBox.SelectedIndex == -1) return;
 
 			var material = (SoftwareMaterialWrapper)materialListBox.SelectedItem;
-			materialTextureBinderListBox.Items.Add(new MaterialTextureBinderWrapper(new MaterialTextureBinder(material.Material.Name, material.Texture.Key, material.ShaderConstant)));
+			materialTextureBinderListBox.Items.Add(new MaterialTextureBinderWrapper(new MaterialFieldBinder(material.Material.Name, material.Texture.Key, material.ShaderConstant)));
 		}
 
 		private void removeBinderButton_Click(object sender, EventArgs e)

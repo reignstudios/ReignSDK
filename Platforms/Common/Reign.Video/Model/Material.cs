@@ -22,20 +22,22 @@ namespace Reign.Video
 		}
 	}
 
-	public class MaterialTextureBinder
+	public class MaterialFieldBinder
 	{
-		public string MaterialName, TextureID, ShaderMaterialFieldName;
+		public string MaterialName, ID, ShaderMaterialFieldName;
 
-		public MaterialTextureBinder(string materialName, string textureID, string shaderMaterialFieldName)
+		public MaterialFieldBinder(string materialName, string id, string shaderMaterialFieldName)
 		{
 			MaterialName = materialName;
-			TextureID = textureID;
+			ID = id;
 			ShaderMaterialFieldName = shaderMaterialFieldName;
 		}
 	}
 
 	public interface MaterialI
 	{
+		string Name {get; set;}
+
 		void Enable();
 		void ApplyGlobalContants(MeshI mesh);
 		void ApplyInstanceContants(MeshI mesh);

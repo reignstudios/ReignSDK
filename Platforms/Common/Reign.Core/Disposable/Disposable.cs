@@ -33,6 +33,7 @@ namespace Reign.Core
 		#region Properties
 		public bool IsDisposed {get; private set;}
 		private Disposable parent;
+		public Disposable Parent {get{return parent;}}
 		private List<Disposable> children;
 		protected uint referenceCount;
 		private Dictionary<string, object> constructorParameters;

@@ -1,14 +1,15 @@
 ﻿using System;
 using Reign.Core;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Reign.Video.D3D11
 {
 	public class Mesh : MeshI
 	{
 		#region Constructors
-		public Mesh(ModelI model, SoftwareModel softwareModel, SoftwareMesh softwareMesh, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals)
-		: base(model, softwareModel, softwareMesh, positionSize, loadColors, loadUVs, loadNormals)
+		public Mesh(BinaryReader reader, ModelI model)
+		: base(reader, model)
 		{
 			
 		}

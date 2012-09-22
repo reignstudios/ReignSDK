@@ -4,6 +4,8 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 
+using namespace System::IO;
+
 namespace Reign
 {namespace Video
 {namespace D3D9
@@ -11,7 +13,7 @@ namespace Reign
 	public ref class Mesh : MeshI
 	{
 		#pragma region Constructors
-		public: Mesh(ModelI^ model, SoftwareModel^ softwareModel, SoftwareMesh^ softwareMesh, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals);
+		public: Mesh(BinaryReader^ reader, ModelI^ model);
 		protected: virtual BufferLayoutDescI^ createBufferLayoutDesc(List<BufferLayoutElement>^ elements) override;
 		protected: virtual VertexBufferI^ createVertexBuffer(DisposableI^ parent, BufferLayoutDescI^ layoutDesc, BufferUsages usage, VertexBufferTopologys topology, array<float>^ vertices) override;
 		protected: virtual IndexBufferI^ createIndexBuffer(DisposableI^ parent, BufferUsages usage, array<int>^ indices, bool _32BitIndices) override;

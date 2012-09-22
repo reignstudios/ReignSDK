@@ -1,14 +1,15 @@
 ﻿using System;
 using Reign.Core;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Reign.Video.XNA
 {
 	public class Mesh : MeshI
 	{
 		#region Constructors
-		public Mesh(ModelI model, SoftwareModel softwareModel, SoftwareMesh softwareMesh, MeshVertexSizes positionSize)
-		: base(model, softwareModel, softwareMesh, positionSize)
+		public Mesh(BinaryReader reader, ModelI model)
+		: base(reader, model)
 		{
 			
 		}

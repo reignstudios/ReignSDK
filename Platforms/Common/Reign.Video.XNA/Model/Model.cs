@@ -1,21 +1,28 @@
 ﻿using System;
 using Reign.Core;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Reign.Video.XNA
 {
 	public class Model : ModelI
 	{
 		#region Constructors
-		public Model(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, DisposableI contentParent, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> materialFieldTypes)
-		: base(parent, softwareModel, positionSize, contentParent, contentDirectory, materialTypes, materialFieldTypes)
+		public Model(DisposableI parent, string fileName, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides)
+		: base(parent, fileName, contentDirectory, materialTypes, textureBinderTypes, fileExtOverrides)
 		{
 			
 		}
 
-		protected override MeshI createMesh(ModelI model, SoftwareModel softwareModel, SoftwareMesh softwareMesh, MeshVertexSizes positionSize)
+		public Model(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides)
+		: base(parent, softwareModel, positionSize, loadColors, loadUVs, loadNormals, contentDirectory, materialTypes, textureBinderTypes, fileExtOverrides)
 		{
-			return new Mesh(model, softwareModel, softwareMesh, positionSize);
+			
+		}
+
+		protected override MeshI createMesh(BinaryReader reader, ModelI model)
+		{
+			return new Mesh(reader, model);
 		}
 
 		protected override Texture2DI createTexture(DisposableI parent, string fileName)

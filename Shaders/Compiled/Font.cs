@@ -41,6 +41,7 @@ namespace ShaderMaterials.Shaders
 		#endregion
 
 		#region Instance Properties
+		public string Name {get; set;}
 		public delegate void ApplyCallbackMethod(FontMaterial material, MeshI mesh);
 		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
 		[MaterialField(MaterialFieldUsages.Global)] public static Matrix4 Camera;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 Location;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 Size;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 LocationUV;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 SizeUV;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 TexelOffset;[MaterialField(MaterialFieldUsages.Instance)] public Vector4 Color;[MaterialField(MaterialFieldUsages.Instance)] public Texture2DI DiffuseTexture;

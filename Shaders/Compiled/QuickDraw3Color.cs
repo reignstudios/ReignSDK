@@ -41,6 +41,7 @@ namespace ShaderMaterials.Shaders
 		#endregion
 
 		#region Instance Properties
+		public string Name {get; set;}
 		public delegate void ApplyCallbackMethod(QuickDraw3ColorMaterial material, MeshI mesh);
 		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
 		[MaterialField(MaterialFieldUsages.Global)] public static Matrix4 Camera;

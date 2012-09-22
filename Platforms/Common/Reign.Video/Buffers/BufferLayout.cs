@@ -51,7 +51,8 @@ namespace Reign.Video
 		#region Properties
 		public BufferLayoutElementTypes Type;
 		public BufferLayoutElementUsages Usage;
-		public int StreamIndex, UsageIndex, FloatOffset, ByteOffset;
+		public int StreamIndex, UsageIndex, FloatOffset;
+		public int ByteOffset {get {return FloatOffset * 4;}}
 
 		public int TypeSize
 		{
@@ -94,7 +95,6 @@ namespace Reign.Video
 			StreamIndex = streamIndex;
 			UsageIndex = usageIndex;
 			FloatOffset = floatOffset;
-			ByteOffset = floatOffset * 4;
 		}
 		#endregion
 	}

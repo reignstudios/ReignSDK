@@ -566,6 +566,7 @@ namespace ShaderMaterials.{0}
 		#endregion
 
 		#region Instance Properties
+		public string Name {{get; set;}}
 		public delegate void ApplyCallbackMethod({1}Material material, MeshI mesh);
 		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
 		{3}

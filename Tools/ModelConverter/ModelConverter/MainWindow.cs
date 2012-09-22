@@ -85,10 +85,16 @@ namespace ModelConverter
 			softwareModel = new SoftwareModel(fileName);
 		}
 
-		public void Convert(string contentPath, Dictionary<string,Type> materialTypes, List<MaterialTextureBinder> materialFieldTypes)
+		public void Convert(string contentPath, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> materialFieldTypes)
 		{
 			if (model != null) model.Dispose();
-			model = Model.Create(videoType, video, softwareModel, MeshVertexSizes.Float3, false, true, true, video, contentPath, materialTypes, materialFieldTypes, null);
+			model = Model.Create(videoType, video, softwareModel, MeshVertexSizes.Float3, false, true, true, contentPath, materialTypes, materialFieldTypes, null);
+		}
+
+		public void Save(string fileName)
+		{
+			if (softwareModel == null) return;
+			ModelI.Save(fileName, false, softwareModel, MeshVertexSizes.Float3, false, true, true);
 		}
 
 		protected override void update(Time time)

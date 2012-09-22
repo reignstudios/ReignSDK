@@ -41,6 +41,7 @@ namespace ShaderMaterials.Shaders
 		#endregion
 
 		#region Instance Properties
+		public string Name {get; set;}
 		public delegate void ApplyCallbackMethod(DiffuseTextureMaterial material, MeshI mesh);
 		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
 		[MaterialField(MaterialFieldUsages.Global)] public static Matrix4 Camera;[MaterialField(MaterialFieldUsages.Global)] public static Vector3 LightDirection;[MaterialField(MaterialFieldUsages.Instance)] public Matrix4 Transform;[MaterialField(MaterialFieldUsages.Instance)] public Texture2DI Diffuse;
