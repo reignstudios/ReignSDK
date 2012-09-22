@@ -40,7 +40,7 @@ namespace Reign.Core
 						GetRenderbufferParameteriv(RENDERBUFFER, RENDERBUFFER_WIDTH, &width);
 						GetRenderbufferParameteriv(RENDERBUFFER, RENDERBUFFER_HEIGHT, &height);
 						application.frameSize = new Size2(width, height);
-						glController.frameRatio = application.frameSize.ToVector2() / glController.frameRatio;
+						glController.frameVector = application.frameSize.ToVector2() / glController.frameVector;
 					}
 					application.shown();
 					shown = true;
@@ -54,7 +54,7 @@ namespace Reign.Core
 		protected ApplicationEvent theEvent;
 		private EAGLContext context;
 		private GLRenderer renderer;
-		private Vector2 frameRatio;
+		private Vector2 frameVector;
 		private bool enableAds;
 		private ADBannerView iAdView;
 		#endregion
@@ -91,20 +91,17 @@ namespace Reign.Core
 				
 				// set view stuff
 				View.MultipleTouchEnabled = true;
-				if (application.orientation == ApplicationOrientations.Landscape) frameRatio = new Vector2(view.Frame.Height, view.Frame.Width);
-				else frameRatio = new Vector2(view.Frame.Width, view.Frame.Height);
+				if (application.orientation == ApplicationOrientations.Landscape) frameVector = new Vector2(view.Frame.Height, view.Frame.Width);
+				else frameVector = new Vector2(view.Frame.Width, view.Frame.Height);
 			
 				// iAd
 				if (enableAds)
 				{
 					iAdView = new ADBannerView();
-					var nsM = new NSMutableSet();
-					nsM.Add(ADBannerView.SizeIdentifierLandscape);
-					iAdView.RequiredContentSizeIdentifiers = nsM;
 					iAdView.AdLoaded += new EventHandler(iAdLoaded);
 					iAdView.FailedToReceiveAd += new EventHandler<AdErrorEventArgs>(iAdFailedToReceiveAd);
-					var adSize = ADBannerView.SizeFromContentSizeIdentifier(ADBannerView.SizeIdentifierLandscape);
-					iAdView.Frame = new RectangleF(0, frameRatio.Y-adSize.Height, 1, 1);
+					var adSize = iAdView.SizeThatFits(new SizeF(frameVector.X, frameVector.Y));
+					iAdView.Frame = new RectangleF(0, frameVector.Y-adSize.Height, 1, 1);
 					View.AddSubview(iAdView);
 					iAdView.Hidden = true;
 				}
@@ -118,10 +115,9 @@ namespace Reign.Core
 		#endregion
 		
 		#region Methods
-		public override bool ShouldAutorotateToInterfaceOrientation (UIInterfaceOrientation toInterfaceOrientation)
+		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations ()
 		{
-			var requiredOrientation = (application.orientation == ApplicationOrientations.Landscape) ? UIInterfaceOrientation.LandscapeRight : UIInterfaceOrientation.Portrait;
-			return toInterfaceOrientation == requiredOrientation;
+			return (application.orientation == ApplicationOrientations.Landscape) ? UIInterfaceOrientationMask.LandscapeRight : UIInterfaceOrientationMask.Portrait;
 		}
 		
 		private void iAdLoaded(object sender, EventArgs e)
@@ -134,12 +130,12 @@ namespace Reign.Core
 			iAdView.Hidden = true;
 		}
 		
-		public override void ViewDidUnload ()
+		public override void DidReceiveMemoryWarning ()
 		{
 			EAGLContext.SetCurrentContext(context);
 			application.Close();
 			EAGLContext.SetCurrentContext(null);
-			base.ViewDidUnload ();
+			base.DidReceiveMemoryWarning ();
 		}
 		
 		public override void ViewDidAppear (bool animated)
@@ -167,7 +163,7 @@ namespace Reign.Core
 				var touch = theTouches[i];
 			
 				var loc = touch.LocationInView(View);
-				theEvent.TouchLocations[i] = new Vector2(loc.X, loc.Y) * frameRatio;
+				theEvent.TouchLocations[i] = new Vector2(loc.X, loc.Y) * frameVector;
 				theEvent.TouchesOn[i] = !isUpEvent;
 			}
 			
