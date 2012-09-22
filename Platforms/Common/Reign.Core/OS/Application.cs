@@ -112,7 +112,7 @@ namespace Reign.Core
 		public Application(ApplicationOrientations orientation, bool enableAds)
 		: base(enableAds)
 		#elif ANDROID
-		public Application(ApplicationOrientations orientation, bool enableAds, string publisherID)
+		public Application(ApplicationOrientations orientation, UpdateAndRenderModes updateAndRenderMode, int fps, bool enableAds, string publisherID)
 		: base(enableAds, publisherID)
 		#elif METRO
 		public Application(ApplicationOrientations orientation)
@@ -134,6 +134,17 @@ namespace Reign.Core
 			init(this, width, height);
 			#else
 			init(this, width, height, orientation);
+			#endif
+			
+			#if ANDROID
+			OS.UpdateAndRenderMode = updateAndRenderMode;
+			OS.updateTime = new Time(fps);
+			OS.updateTime.Start();
+			if (updateAndRenderMode == UpdateAndRenderModes.Adaptive)
+			{
+				OS.renderTime = new Time(fps);
+				OS.renderTime.Start();
+			}
 			#endif
 		}
 		#endregion

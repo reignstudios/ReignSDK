@@ -6,7 +6,6 @@ using Android.OS;
 using Android.Content.PM;
 using Android.Content;
 using Android.Opengl;
-using Android.Views;
 using Android.Views.InputMethods;
 using Android.Widget;
 using Javax.Microedition.Khronos.Egl;
@@ -65,6 +64,7 @@ namespace Reign.Core
 				SetEGLConfigChooser(true);//8, 8, 8, 8, 16, 0);
 				renderer = new GLRenderer(application);
 				SetRenderer(renderer);
+				
 			}
 			
 			protected override void OnSizeChanged (int w, int h, int oldw, int oldh)

@@ -127,6 +127,7 @@ namespace Reign.Video
 			switch (ext.ToLower())
 			{
 				case (".dds"): return new ImageDDS(fileName, flip);
+				case (".atc"): return new ImageDDS(fileName, flip);
 				case (".pvr"): return new ImagePVR(fileName, flip);
 				#if !XNA && NaCl
 				case (".bmpc"): return new ImageBMPC(fileName, flip);

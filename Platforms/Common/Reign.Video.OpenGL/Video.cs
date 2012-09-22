@@ -84,20 +84,14 @@ namespace Reign.Video.OpenGL
 		}
 		#endif
 		
-		#if iOS
-		public Video(DisposableI parent, Application application, bool vSync)
+		#if iOS || ANDROID
+		public Video(DisposableI parent, Application application)
 		: base(parent)
 		{
+			#if iOS
 			this.application = application;
-			init(IntPtr.Zero, 0, 0, true, vSync);
-		}
-		#endif
-		
-		#if ANDROID
-		public Video(DisposableI parent, bool vSync)
-		: base(parent)
-		{
-			init(IntPtr.Zero, 0, 0, true, vSync);
+			#endif
+			init(IntPtr.Zero, 0, 0, true, true);
 		}
 		#endif
 		

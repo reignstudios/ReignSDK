@@ -185,6 +185,7 @@ namespace Reign.Core
 			#elif ANDROID
 			try
 			{
+				fileName = fileName.Replace('\\', '/');
 				using (var stream = OS.CurrentApplication.Assets.Open(fileName))
 				{
 					return CopyToMemoryStream(stream);

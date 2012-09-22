@@ -76,7 +76,7 @@ namespace Reign.Core
 	{
 		#region Properites
 		public static bool AutoDisposedGL {get; internal set;}
-		public static UpdateAndRenderModes UpdateAndRenderMode {get; private set;}
+		public static UpdateAndRenderModes UpdateAndRenderMode {get; internal set;}
 		internal static Time updateTime, renderTime;
 
 		#if WINDOWS || OSX || LINUX || NaCl
