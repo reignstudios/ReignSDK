@@ -6,12 +6,20 @@ using System.Threading;
 using System.Runtime.InteropServices;
 #endif
 
+#if ANDROID
+using Java.Lang;
+#endif
+
 namespace Reign.Core
 {
 	public class Time
 	{
 		#region Properties
+		#if ANDROID
+		private long millisecond;
+		#else
 		private Stopwatch stopWatch;
+		#endif
 		private long fps;
 
 		public int Milliseconds {get; private set;}
@@ -25,7 +33,9 @@ namespace Reign.Core
 		{
 			this.fps = fps;
 			FPS = fps;
+			#if !ANDROID
 			stopWatch = new Stopwatch();
+			#endif
 		}
 		#endregion
 
@@ -74,21 +84,48 @@ namespace Reign.Core
 
 		public void Start()
 		{
+			#if ANDROID
+			millisecond = JavaSystem.CurrentTimeMillis();
+			#else
 			stopWatch.Start();
+			#endif
 		}
 
 		public bool Update()
 		{
+			#if ANDROID
+			long currentMilli = JavaSystem.CurrentTimeMillis();
+			long mili = currentMilli - millisecond;
+			long fpsSec = 1000 / fps;
+			if (mili >= fpsSec)
+			{
+				Milliseconds = (int)mili;
+				Delta += ((Milliseconds / 1000f) - Delta) * .1f;
+				FPS = (int)(fps / (mili / fpsSec));
+				millisecond = currentMilli;
+				
+				return true;
+			}
+			else
+			{
+				Delta = (mili / 1000f);
+			}
+			#else
 			long tics = (stopWatch.ElapsedTicks / (Stopwatch.Frequency/fps));
 			if (tics != 0)
 			{
 			    Milliseconds = (int)stopWatch.ElapsedMilliseconds;
-				Delta = Milliseconds / 1000f;
+				Delta += ((Milliseconds / 1000f) - Delta) * .1f;
 				FPS = (int)(fps / tics);
 
 				stopWatch.Restart();
 			    return true;
 			}
+			else
+			{
+				Delta = (stopWatch.ElapsedMilliseconds / 1000f);
+			}
+			#endif
 
 			return false;
 		}
@@ -98,7 +135,11 @@ namespace Reign.Core
 			Milliseconds = 0;
 			Delta = 0;
 			FPS = (int)fps;
+			#if ANDROID
+			millisecond = JavaSystem.CurrentTimeMillis();
+			#else
 			stopWatch.Restart();
+			#endif
 		}
 
 		public void ManualUpdate(int milliseconds, float delta, int fps)
@@ -108,6 +149,7 @@ namespace Reign.Core
 			FPS = fps;
 		}
 
+		#if !iOS && !ANDROID
 		public void Sleep()
 		{
 			int sleepTime = (int)System.Math.Max((1000/fps) - 1 - stopWatch.ElapsedMilliseconds, 0);
@@ -117,6 +159,7 @@ namespace Reign.Core
 			Thread.Sleep(sleepTime);
 			#endif
 		}
+		#endif
 		#endregion
 	}
 }

@@ -56,7 +56,7 @@ namespace Reign.Video.XNA
 
 		public void Present()
 		{
-			Device.Present();
+			//Device.Present();
 		}
 
 		public void EnableRenderTarget()
