@@ -145,7 +145,7 @@ namespace Reign.Core
 				OS.renderTime = new Time(fps);
 				OS.renderTime.Start();
 			}
-			OS.syncUpdate = false;
+			OS.syncMode = false;
 			#endif
 		}
 		#endregion

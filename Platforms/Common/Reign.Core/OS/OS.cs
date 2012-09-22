@@ -78,7 +78,7 @@ namespace Reign.Core
 		public static bool AutoDisposedGL {get; internal set;}
 		public static UpdateAndRenderModes UpdateAndRenderMode {get; internal set;}
 		internal static Time updateTime, renderTime;
-		internal static bool syncUpdate;
+		internal static bool syncMode;
 
 		#if WINDOWS || OSX || LINUX || NaCl
 		public static Size2 ScreenSize
@@ -232,7 +232,7 @@ namespace Reign.Core
 		#endif
 		
 		#if WINDOWS || OSX || LINUX || NaCl
-		public static void Run(Window window, UpdateAndRenderModes updateAndRenderMode, int fps, bool syncUpdate)
+		public static void Run(Window window, UpdateAndRenderModes updateAndRenderMode, int fps, bool syncMode)
 		{
 			CurrentWindow = window;
 			OS.UpdateAndRenderMode = updateAndRenderMode;
@@ -243,7 +243,7 @@ namespace Reign.Core
 				renderTime = new Time(fps);
 				renderTime.Start();
 			}
-			OS.syncUpdate = syncUpdate;
+			OS.syncMode = syncMode;
 
 			#if WINDOWS
 			Time.OptimizedMode();
@@ -296,7 +296,7 @@ namespace Reign.Core
 		#endif
 		
 		#if iOS || XNA || METRO
-		public static void Run(Application application, UpdateAndRenderModes updateAndRenderMode, int fps, bool syncUpdate)
+		public static void Run(Application application, UpdateAndRenderModes updateAndRenderMode, int fps, bool syncMode)
 		{
 			CurrentApplication = application;
 			OS.UpdateAndRenderMode = updateAndRenderMode;
@@ -313,9 +313,9 @@ namespace Reign.Core
 			}
 			#endif
 			
-			OS.syncUpdate = syncUpdate;
+			OS.syncMode = syncMode;
 			#if iOS || XNA
-			OS.syncUpdate = false;
+			OS.syncMode = false;
 			#endif
 
 			#if METRO
@@ -373,16 +373,16 @@ namespace Reign.Core
 		{
 			if (UpdateAndRenderMode == UpdateAndRenderModes.Stepping)
 			{
-				if (updateTime.Update() || !syncUpdate)
+				if (updateTime.Update() || !syncMode)
 				{
 					CurrentWindow.update(updateTime);
 					CurrentWindow.render(updateTime);
-					if (syncUpdate) updateTime.Sleep();
+					if (syncMode) updateTime.Sleep();
 				}
 			}
 			else// Adaptive
 			{
-				if (updateTime.Update() || !syncUpdate)
+				if (updateTime.Update() || !syncMode)
 				{
 					CurrentWindow.update(updateTime);
 					int loop = (int)System.Math.Max((updateTime.FPSGoal / updateTime.FPS) - 1, 0);
@@ -394,7 +394,7 @@ namespace Reign.Core
 
 					renderTime.Update();
 					CurrentWindow.render(renderTime);
-					if (syncUpdate) updateTime.Sleep();
+					if (syncMode) updateTime.Sleep();
 				}
 			}
 		}
@@ -403,19 +403,19 @@ namespace Reign.Core
 		{
 			if (UpdateAndRenderMode == UpdateAndRenderModes.Stepping)
 			{
-				if (updateTime.Update() || !syncUpdate)
+				if (updateTime.Update() || !syncMode)
 				{
 					CurrentApplication.update(updateTime);
 					CurrentApplication.render(updateTime);
 					
 					#if !iOS && !ANDROID
-					if (syncUpdate) updateTime.Sleep();
+					if (syncMode) updateTime.Sleep();
 					#endif
 				}
 			}
 			else// Adaptive
 			{
-				if (updateTime.Update() || !syncUpdate)
+				if (updateTime.Update() || !syncMode)
 				{
 					CurrentApplication.update(updateTime);
 					int loop = (int)System.Math.Max((updateTime.FPSGoal / updateTime.FPS) - 1, 0);
@@ -428,7 +428,7 @@ namespace Reign.Core
 					renderTime.Update();
 					CurrentApplication.render(renderTime);
 					#if !iOS && !ANDROID
-					if (syncUpdate) updateTime.Sleep();
+					if (syncMode) updateTime.Sleep();
 					#endif
 				}
 			}
