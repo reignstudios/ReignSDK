@@ -106,10 +106,6 @@ namespace Reign.Core
 				
 				return true;
 			}
-			else
-			{
-				Delta = (mili / 1000f);
-			}
 			#else
 			long tics = (stopWatch.ElapsedTicks / (Stopwatch.Frequency/fps));
 			if (tics != 0)
@@ -120,10 +116,6 @@ namespace Reign.Core
 
 				stopWatch.Restart();
 			    return true;
-			}
-			else
-			{
-				Delta = (stopWatch.ElapsedMilliseconds / 1000f);
 			}
 			#endif
 
@@ -152,7 +144,7 @@ namespace Reign.Core
 		#if !iOS && !ANDROID
 		public void Sleep()
 		{
-			int sleepTime = (int)System.Math.Max((1000/fps) - 1 - stopWatch.ElapsedMilliseconds, 0);
+			int sleepTime = (int)System.Math.Max((1000/fps) - 5 - stopWatch.ElapsedMilliseconds, 0);
 			#if METRO
 			new ManualResetEvent(false).WaitOne(sleepTime);
 			#else

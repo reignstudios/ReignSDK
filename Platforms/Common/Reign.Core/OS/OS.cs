@@ -373,29 +373,25 @@ namespace Reign.Core
 		{
 			if (UpdateAndRenderMode == UpdateAndRenderModes.Stepping)
 			{
-				if (updateTime.Update() || !syncMode)
-				{
-					CurrentWindow.update(updateTime);
-					CurrentWindow.render(updateTime);
-					if (syncMode) updateTime.Sleep();
-				}
+				while (!updateTime.Update() && syncMode) Thread.SpinWait(1);
+				CurrentWindow.update(updateTime);
+				CurrentWindow.render(updateTime);
+				if (syncMode) updateTime.Sleep();
 			}
 			else// Adaptive
 			{
-				if (updateTime.Update() || !syncMode)
+				while (!updateTime.Update() && syncMode) Thread.SpinWait(1);
+				CurrentWindow.update(updateTime);
+				int loop = (int)System.Math.Max((updateTime.FPSGoal / updateTime.FPS) - 1, 0);
+				for (int i = 0; i != loop; ++i)
 				{
+					updateTime.AdaptiveUpdate();
 					CurrentWindow.update(updateTime);
-					int loop = (int)System.Math.Max((updateTime.FPSGoal / updateTime.FPS) - 1, 0);
-					for (int i = 0; i != loop; ++i)
-					{
-						updateTime.AdaptiveUpdate();
-						CurrentWindow.update(updateTime);
-					}
-
-					renderTime.Update();
-					CurrentWindow.render(renderTime);
-					if (syncMode) updateTime.Sleep();
 				}
+
+				renderTime.Update();
+				CurrentWindow.render(renderTime);
+				if (syncMode) updateTime.Sleep();
 			}
 		}
 		#else
