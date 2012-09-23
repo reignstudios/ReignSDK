@@ -12,22 +12,22 @@
     <AssemblyName>Reign.Audio.API</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>..\Lib</OutputPath>
     <DefineConstants>DEBUG;iOS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>..\Lib</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
     <DefineConstants>iOS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
@@ -49,6 +49,10 @@
     <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
       <Project>{3C1E902C-B902-4064-8F60-AE81074C5618}</Project>
       <Name>Reign.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Audio.Dumby\Reign.Audio.Dumby.csproj">
+      <Project>{8BAE50CF-1E8F-40B7-BB4B-9E4FA996A5B2}</Project>
+      <Name>Reign.Audio.Dumby</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

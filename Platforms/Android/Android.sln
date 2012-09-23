@@ -21,12 +21,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.OpenGL", "Reign
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.API", "Reign.Video.API\Reign.Video.API.csproj", "{5EB1FE39-B8C5-441D-A560-9A87E9B213D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Audio.Dumby", "Reign.Audio.Dumby\Reign.Audio.Dumby.csproj", "{20937A9C-A884-46AC-B5D8-4414F1974E61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{20937A9C-A884-46AC-B5D8-4414F1974E61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20937A9C-A884-46AC-B5D8-4414F1974E61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20937A9C-A884-46AC-B5D8-4414F1974E61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20937A9C-A884-46AC-B5D8-4414F1974E61}.Release|Any CPU.Build.0 = Release|Any CPU
 		{264E9A41-C0A6-41A0-8E29-D423C53F4CD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{264E9A41-C0A6-41A0-8E29-D423C53F4CD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{264E9A41-C0A6-41A0-8E29-D423C53F4CD7}.Release|Any CPU.ActiveCfg = Release|Any CPU

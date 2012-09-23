@@ -5,18 +5,17 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{10F0713D-F9D6-42CA-B9E9-54D5AEE7DF94}</ProjectGuid>
-    <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{BFADBA6C-840A-42D5-BFCC-D882AFE94F33}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Reign.Input.Cocoa</RootNamespace>
-    <AssemblyName>Reign.Input.Cocoa</AssemblyName>
+    <RootNamespace>Reign.Audio.Dumby</RootNamespace>
+    <AssemblyName>Reign.Audio.Dumby</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>False</Optimize>
-    <OutputPath>..\Lib</OutputPath>
-    <DefineConstants>DEBUG;iOS</DefineConstants>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
@@ -24,35 +23,35 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
     <Optimize>True</Optimize>
-    <OutputPath>..\Lib</OutputPath>
+    <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
-    <DefineConstants>iOS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Core" />
-    <Reference Include="monotouch" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="..\..\Common\Reign.Audio.Dumby\Audio.cs">
+      <Link>Audio.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Audio.Dumby\Sound.cs">
+      <Link>Sound.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Audio.Dumby\SoundWAV.cs">
+      <Link>SoundWAV.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\Reign.Audio\Reign.Audio.csproj">
+      <Project>{084832F7-28A7-4182-A987-6AEED346AEE2}</Project>
+      <Name>Reign.Audio</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
-      <Project>{3C1E902C-B902-4064-8F60-AE81074C5618}</Project>
+      <Project>{6FC91DF3-4F4F-4667-A0DC-14D4CDA97F99}</Project>
       <Name>Reign.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Reign.Input\Reign.Input.csproj">
-      <Project>{C0C44646-EED6-4603-AC93-711156C77C12}</Project>
-      <Name>Reign.Input</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\Common\Reign.Input.Cocoa\Input.cs">
-      <Link>Input.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Input.Cocoa\TouchScreen.cs">
-      <Link>TouchScreen.cs</Link>
-    </Compile>
   </ItemGroup>
 </Project>

@@ -5,11 +5,12 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{10F0713D-F9D6-42CA-B9E9-54D5AEE7DF94}</ProjectGuid>
+    <ProjectGuid>{8BAE50CF-1E8F-40B7-BB4B-9E4FA996A5B2}</ProjectGuid>
     <ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>Reign.Input.Cocoa</RootNamespace>
-    <AssemblyName>Reign.Input.Cocoa</AssemblyName>
+    <RootNamespace>Reign.Audio.Dumby</RootNamespace>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <AssemblyName>Reign.Audio.Dumby</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -38,21 +39,24 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <ProjectReference Include="..\Reign.Audio\Reign.Audio.csproj">
+      <Project>{953B7A7D-4297-4E04-8D1E-C47D73FF8BE5}</Project>
+      <Name>Reign.Audio</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
       <Project>{3C1E902C-B902-4064-8F60-AE81074C5618}</Project>
       <Name>Reign.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Reign.Input\Reign.Input.csproj">
-      <Project>{C0C44646-EED6-4603-AC93-711156C77C12}</Project>
-      <Name>Reign.Input</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\Reign.Input.Cocoa\Input.cs">
-      <Link>Input.cs</Link>
+    <Compile Include="..\..\Common\Reign.Audio.Dumby\Audio.cs">
+      <Link>Audio.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Input.Cocoa\TouchScreen.cs">
-      <Link>TouchScreen.cs</Link>
+    <Compile Include="..\..\Common\Reign.Audio.Dumby\Sound.cs">
+      <Link>Sound.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Audio.Dumby\SoundWAV.cs">
+      <Link>SoundWAV.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

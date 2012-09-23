@@ -97,19 +97,10 @@ namespace Reign.Core
 		{
 			#if ANDROID
 			long currentMilli = JavaSystem.CurrentTimeMillis();
-			long mili = currentMilli - millisecond;
-			long fpsSec = 1000 / fps;
-			if (mili >= fpsSec)
-			{
-				Milliseconds = (int)mili;
-				Delta += ((Milliseconds / 1000f) - Delta) * .1f;
-				FPS = (int)(fps / (mili / fpsSec));
-				millisecond = currentMilli;
-				
-				return true;
-			}
+			Delta += (((currentMilli - millisecond) / 1000f) - Delta) * .1f;
+			millisecond = currentMilli;
 			#else
-			Delta = stopWatch.ElapsedTicks / (float)(Stopwatch.Frequency);
+			Delta += ((stopWatch.ElapsedTicks / (float)(Stopwatch.Frequency)) - Delta) * .1f;
 			stopWatch.Restart();
 			#endif
 

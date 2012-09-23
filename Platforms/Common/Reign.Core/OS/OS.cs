@@ -350,9 +350,7 @@ namespace Reign.Core
 		#if WINDOWS || OSX || LINUX || NaCl
 		public static void UpdateAndRender()
 		{
-			#if !iOS && !ANDROID
 			if (time.FPSGoal != 0) time.Sleep();
-			#endif
 			time.Update();
 
 			CurrentWindow.update(time);
@@ -361,7 +359,10 @@ namespace Reign.Core
 		#else
 		public static void UpdateAndRender()
 		{
+			#if !iOS && !ANDROID
 			if (time.FPSGoal != 0) time.Sleep();
+			#endif
+			time.Update();
 			CurrentApplication.update(time);
 			CurrentApplication.render(time);
 		}

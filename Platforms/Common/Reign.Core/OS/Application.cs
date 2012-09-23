@@ -137,15 +137,8 @@ namespace Reign.Core
 			#endif
 			
 			#if ANDROID
-			OS.UpdateAndRenderMode = updateAndRenderMode;
-			OS.updateTime = new Time(fps);
-			OS.updateTime.Start();
-			if (updateAndRenderMode == UpdateAndRenderModes.Adaptive)
-			{
-				OS.renderTime = new Time(fps);
-				OS.renderTime.Start();
-			}
-			OS.syncMode = false;
+			OS.time = new Time(fps);
+			OS.time.Start();
 			#endif
 		}
 		#endregion

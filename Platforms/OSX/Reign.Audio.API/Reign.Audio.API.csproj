@@ -58,5 +58,9 @@
       <Project>{6FC91DF3-4F4F-4667-A0DC-14D4CDA97F99}</Project>
       <Name>Reign.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Reign.Audio.Dumby\Reign.Audio.Dumby.csproj">
+      <Project>{BFADBA6C-840A-42D5-BFCC-D882AFE94F33}</Project>
+      <Name>Reign.Audio.Dumby</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
