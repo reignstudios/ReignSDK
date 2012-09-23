@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 
+#if METRO
+using System.Threading.Tasks;
+#endif
+
 namespace Reign.Audio
 {
 	public class SoundWAVI : SoundI
@@ -82,7 +86,7 @@ namespace Reign.Audio
 		}
 
 		#if METRO
-		protected virtual async void init(DisposableI parent, string fileName, int instanceCount, bool looped)
+		protected virtual async Task<bool> init(DisposableI parent, string fileName, int instanceCount, bool looped)
 		{
 			using (var stream = await Streams.OpenFile(fileName))
 		#else
@@ -97,6 +101,10 @@ namespace Reign.Audio
 			}
 
 			Loaded = true;
+
+			#if METRO
+			return true;
+			#endif
 		}
 		#endregion
 	}

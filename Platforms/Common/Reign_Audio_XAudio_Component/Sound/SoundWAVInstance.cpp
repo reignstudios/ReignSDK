@@ -60,13 +60,17 @@ namespace Reign_Audio_XAudio_Component
 
 	void SoundWAVInstanceCom::Play()
 	{
-		instance->SubmitSourceBuffer(buffer);
+		XAUDIO2_VOICE_STATE stateDesc;
+		instance->GetState(&stateDesc);
+		if (stateDesc.BuffersQueued == 0) instance->SubmitSourceBuffer(buffer);
 		instance->Start();
 	}
 
 	void SoundWAVInstanceCom::Play(float volume)
 	{
-		instance->SubmitSourceBuffer(buffer);
+		XAUDIO2_VOICE_STATE stateDesc;
+		instance->GetState(&stateDesc);
+		if (stateDesc.BuffersQueued == 0) instance->SubmitSourceBuffer(buffer);
 		instance->SetVolume(volume, XAUDIO2_COMMIT_NOW);
 		instance->Start();
 	}

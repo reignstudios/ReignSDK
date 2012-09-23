@@ -139,13 +139,23 @@ namespace Reign.Audio.XAudio
 
 		internal void load(DisposableI parent, string fileName, int instanceCount, bool looped)
 		{
+			#if METRO
+			var task = init(parent, fileName, instanceCount, looped);
+			task.Wait();
+			#else
 			init(parent, fileName, instanceCount, looped);
+			#endif
 		}
 
+		#if METRO
+		protected override async System.Threading.Tasks.Task<bool> init(DisposableI parent, string fileName, int instanceCount, bool looped)
+		{
+			if (await base.init(parent, fileName, instanceCount, looped) == false) return false;
+		#else
 		protected override void init(DisposableI parent, string fileName, int instanceCount, bool looped)
 		{
 			base.init(parent, fileName, instanceCount, looped);
-
+		#endif
 			try
 			{
 				audio = parent.FindParentOrSelfWithException<Audio>();
@@ -165,6 +175,10 @@ namespace Reign.Audio.XAudio
 				Dispose();
 				throw e;
 			}
+
+			#if METRO
+			return true;
+			#endif
 		}
 
 		public override void Dispose()

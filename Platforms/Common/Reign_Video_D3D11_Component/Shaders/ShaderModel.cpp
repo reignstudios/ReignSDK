@@ -97,7 +97,8 @@ namespace Reign_Video_D3D11_Component
 			}
 		}
 		#else
-		this->code = &code->get(0);
+		this->code = new byte[code->Length];
+		memcpy(this->code, (void*)code->Data, code->Length);
 		this->codeSize = codeSize;
 
 		// Variable Buffers

@@ -98,33 +98,29 @@ namespace Reign_Video_D3D11_Component
 		deviceContext = deviceContextTEMP;
 		swapChain = swapChainTEMP;
 		#else
-		ComPtr<ID3D11Device> deviceTEMP;
-		ComPtr<ID3D11DeviceContext> deviceContextTEMP;
-		ComPtr<IDXGISwapChain1> swapChainTEMP;
+		ID3D11Device* deviceTEMP;
+		ID3D11DeviceContext* deviceContextTEMP;
+		IDXGISwapChain1* swapChainTEMP;
 
 		if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevelTypes, featureCount, D3D11_SDK_VERSION, &deviceTEMP, &featureLevelType, &deviceContextTEMP)))
 		{
 			return VideoError::DeviceFailed;
 		}
-		ComPtr<ID3D11Device1> device1;
-		deviceTEMP.As(&device1);
-		device = device1.Get();
-		ComPtr<ID3D11DeviceContext1> deviceContext1;
-		deviceContextTEMP.As(&deviceContext1);
-		deviceContext = deviceContext1.Get();
+		deviceTEMP->QueryInterface(__uuidof(ID3D11Device1), (void**)&device);
+		deviceContextTEMP->QueryInterface(__uuidof(ID3D11DeviceContext1), (void**)&deviceContext);
 
-		ComPtr<IDXGIDevice1> dxgiDevice;
-		device1.As(&dxgiDevice);
+		IDXGIDevice1* dxgiDevice;
+		deviceTEMP->QueryInterface(__uuidof(IDXGIDevice1), (void**)&dxgiDevice);
 		dxgiDevice->SetMaximumFrameLatency(vSync ? 1 : 0);
-		ComPtr<IDXGIAdapter> dxgiAdapter;
+		IDXGIAdapter* dxgiAdapter;
 		dxgiDevice->GetAdapter(&dxgiAdapter);
-		ComPtr<IDXGIFactory2> dxgiFactory;
+		IDXGIFactory2* dxgiFactory;
 		dxgiAdapter->GetParent(IID_PPV_ARGS(&dxgiFactory));
-		if (FAILED(dxgiFactory->CreateSwapChainForCoreWindow(deviceTEMP.Get(), reinterpret_cast<IUnknown*>(coreWindow), &swapChainDesc, 0, &swapChainTEMP)))
+		if (FAILED(dxgiFactory->CreateSwapChainForCoreWindow(deviceTEMP, reinterpret_cast<IUnknown*>(coreWindow), &swapChainDesc, 0, &swapChainTEMP)))
 		{
 			return VideoError::SwapChainFailed;
 		}
-		swapChain = swapChainTEMP.Get();
+		swapChain = swapChainTEMP;
 		#endif
 
 		this->vSync = vSync ? 1 : 0;
@@ -147,20 +143,11 @@ namespace Reign_Video_D3D11_Component
 	VideoError VideoCom::createViews(int width, int height)
 	{
 		// RenterTarget View
-		#if WINDOWS
 		ID3D11Texture2D* backBuffer = 0;
 		if (FAILED(swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&backBuffer)))
-		#else
-		ComPtr<ID3D11Texture2D> backBufferPtr;
-		if (FAILED(swapChain->GetBuffer(0, IID_PPV_ARGS(&backBufferPtr))))
-		#endif
 		{
 			return VideoError::GetSwapChainFailed;
 		}
-
-		#if METRO
-		ID3D11Texture2D* backBuffer = backBufferPtr.Get();
-		#endif
 
 		ID3D11RenderTargetView* renderTargetTEMP;
 		if (FAILED(device->CreateRenderTargetView(backBuffer, 0, &renderTargetTEMP)))
@@ -168,7 +155,6 @@ namespace Reign_Video_D3D11_Component
 			return VideoError::RenderTargetViewFailed;
 		}
 		renderTarget = renderTargetTEMP;
-		if (backBuffer) backBuffer->Release();
 		
 		// DepthStencil Texture
 		D3D11_TEXTURE2D_DESC descDepth;
