@@ -43,19 +43,6 @@ namespace Reign.Core
 			W = w;
 		}
 
-		public static Vector4 AsQuaternion(Matrix3 matrix)
-		{
-			float w = (float)MathS.Sqrt(1 + matrix.X.X + matrix.Y.Y + matrix.Z.Z) * .5f;
-			float w2 = 1 / (w * 4);
-			return new Vector4
-			(
-				(matrix.Z.Y - matrix.Y.Z) * w2,
-				(matrix.X.Z - matrix.Z.X) * w2,
-				(matrix.Y.X - matrix.X.Y) * w2,
-				w
-			);
-		}
-
 		public static Vector4 AsQuaternion(Vector3 axis, float angle)
 		{
 			angle *= .5f;

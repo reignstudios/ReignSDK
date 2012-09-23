@@ -177,6 +177,19 @@ namespace Reign.Core
 				return new Vector3(0, -Math.Pi*.5f, (float)MathS.Atan2(-Y.Z, Y.Y));
 			}
 		}
+
+		public Vector4 Quaternion()
+		{
+			float w = (float)MathS.Sqrt(1 + X.X + Y.Y + Z.Z) * .5f;
+			float delta = 1 / (w * 4);
+			return new Vector4
+			(
+				(Z.Y - Y.Z) * delta,
+				(X.Z - Z.X) * delta,
+				(Y.X - X.Y) * delta,
+				w
+			);
+		}
 		
 		public Matrix3 Abs()
 		{
