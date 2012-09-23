@@ -287,7 +287,7 @@ namespace Reign.Core
 
 		public Matrix3 Rotate(Vector3 axis, float angle)
 		{
-			return new Matrix3(X.Rotate(axis, angle), Y.Rotate(axis, angle), Z.Rotate(axis, angle));
+			return new Matrix3(X.RotateAround(axis, angle), Y.RotateAround(axis, angle), Z.RotateAround(axis, angle));
 		}
 		#endregion
 	}

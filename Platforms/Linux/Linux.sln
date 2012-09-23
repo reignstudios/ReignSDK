@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.OpenGL", "Reign
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.API", "Reign.Video.API\Reign.Video.API.csproj", "{106401C3-113F-49A8-AAD3-F53D2380F6A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Audio.API", "Reign.Audio.API\Reign.Audio.API.csproj", "{BE2C0018-E47E-4057-8384-2FE6337CD737}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -51,6 +53,10 @@ Global
 		{A413C5B3-9881-413B-976C-4DA355BD2A16}.Debug|x86.Build.0 = Debug|Any CPU
 		{A413C5B3-9881-413B-976C-4DA355BD2A16}.Release|x86.ActiveCfg = Release|Any CPU
 		{A413C5B3-9881-413B-976C-4DA355BD2A16}.Release|x86.Build.0 = Release|Any CPU
+		{BE2C0018-E47E-4057-8384-2FE6337CD737}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BE2C0018-E47E-4057-8384-2FE6337CD737}.Debug|x86.Build.0 = Debug|Any CPU
+		{BE2C0018-E47E-4057-8384-2FE6337CD737}.Release|x86.ActiveCfg = Release|Any CPU
+		{BE2C0018-E47E-4057-8384-2FE6337CD737}.Release|x86.Build.0 = Release|Any CPU
 		{BE9C9E86-1DAE-452A-A9E9-18B79E53D0CF}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{BE9C9E86-1DAE-452A-A9E9-18B79E53D0CF}.Debug|x86.Build.0 = Debug|Any CPU
 		{BE9C9E86-1DAE-452A-A9E9-18B79E53D0CF}.Release|x86.ActiveCfg = Release|Any CPU

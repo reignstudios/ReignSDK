@@ -57,6 +57,10 @@ namespace Reign.Video.OpenGL
 		private Application application;
 		#endif
 		
+		#if LINUX
+		private bool vSync;
+		#endif
+		
 		#if NaCl
 		private int context;
 		private IntPtr graphics;
@@ -165,21 +169,16 @@ namespace Reign.Video.OpenGL
 				ctx = GLX.CreateContext(dc, visual, new IntPtr(0), true);
 				GLX.MakeCurrent(dc, handle, ctx);
 				
-				bool failed = false;
-				try
-				{
-					GLX.SwapInterval(vSync ? 1 : 0);
-				}
-				catch
-				{
-					failed = true;
-				}
+				this.vSync = vSync;
+				/*bool failed = false;
+				try {GLX.SwapIntervalSGI(vSync ? 1 : 0);
+				catch {failed = true;}
 				
 				if (failed)
 				{
 					GLX.Init();
 					GLX.SwapIntervalMesa(vSync ? 1 : 0);
-				}
+				}*/
 				#endif
 				
 				#if OSX
@@ -604,7 +603,17 @@ namespace Reign.Video.OpenGL
 			#endif
 			
 			#if LINUX
-			GLX.SwapBuffers(dc, handle);
+			unsafe
+			{
+				if (vSync)
+				{
+					uint retraceCount = 0;
+					GLX.GetVideoSyncSGI(&retraceCount);
+					GLX.WaitVideoSyncSGI(2, ((int)retraceCount+1)%2, &retraceCount);
+				}
+				
+				GLX.SwapBuffers(dc, handle);
+			}
 			#endif
 			
 			#if OSX

@@ -35,8 +35,23 @@ namespace Reign.Video.OpenGL
 		[DllImport(DLL, EntryPoint = "glXDestroyContext", ExactSpelling = true)]
 		public static extern void DestroyContext(IntPtr dpy, IntPtr drawable);
 		
+		[DllImport(DLL, EntryPoint = "glXGetCurrentDisplay", ExactSpelling = true)]
+		public static extern IntPtr GetCurrentDisplay();
+		
+		[DllImport(DLL, EntryPoint = "glXGetCurrentDrawable", ExactSpelling = true)]
+		public static extern IntPtr GetCurrentDrawable();
+		
 		[DllImport(DLL, EntryPoint = "glXSwapIntervalSGI", ExactSpelling = true)]
-		public static extern void SwapInterval(int interval);
+		public static extern int SwapIntervalSGI(int interval);
+		
+		[DllImport(DLL, EntryPoint = "glXSwapIntervalEXT", ExactSpelling = true)]
+		public static extern void SwapIntervalEXT(IntPtr dpy, IntPtr drawable, int interval);
+		
+		[DllImport(DLL, EntryPoint = "glXGetVideoSyncSGI", ExactSpelling = true)]
+		public unsafe static extern int GetVideoSyncSGI(uint* count);
+		
+		[DllImport(DLL, EntryPoint = "glXWaitVideoSyncSGI", ExactSpelling = true)]
+		public unsafe static extern int WaitVideoSyncSGI(int divisor, int remainder, uint* count);
 		
 		[SuppressUnmanagedCodeSecurity()]
 		public delegate uint SwapIntervalMesaFunc(int interval);

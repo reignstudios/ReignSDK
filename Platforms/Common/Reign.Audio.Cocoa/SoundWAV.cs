@@ -368,6 +368,8 @@ namespace Reign.Audio.Cocoa
 		
 		protected override void init(DisposableI parent, string fileName, int instanceCount, bool looped)
 		{
+			base.init(parent, fileName, instanceCount, looped);
+		
 			try
 			{
 				audio = parent.FindParentOrSelfWithException<Audio>();

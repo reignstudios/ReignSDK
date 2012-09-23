@@ -76,12 +76,19 @@
     <Compile Include="..\..\Common\Reign.Video.API\Textures\Texture2D.cs">
       <Link>Textures\Texture2D.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\Model\Mesh.cs">
+      <Link>Model\Mesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\Model\Model.cs">
+      <Link>Model\Model.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="Buffers\" />
     <Folder Include="States\" />
     <Folder Include="Textures\" />
+    <Folder Include="Model\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">

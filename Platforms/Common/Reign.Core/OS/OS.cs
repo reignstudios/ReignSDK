@@ -269,8 +269,7 @@ namespace Reign.Core
 			while (!window.Closed)
 			{
 				window.updateWindowEvents();
-				window.UpdateAndRender();
-				Thread.Sleep(1);
+				UpdateAndRender();
 			}
 			#endif
 			

@@ -212,6 +212,11 @@ namespace Reign.Core
 			var stream = await storageFolder.OpenStreamForReadAsync(fileName);
 			return stream;
 			#else
+			#if LINUX
+			fileName = fileName.Replace('\\', '/');
+			#else
+			fileName = fileName.Replace('/', '\\');
+			#endif
 			return new FileStream(fileName, FileMode.Open, FileAccess.Read);
 			#endif
 		}

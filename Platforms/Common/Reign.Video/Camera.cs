@@ -181,9 +181,9 @@ namespace Reign.Video
 			Location -= pLine.P1;
 			LookLocation -= pLine.P1;
 			UpLocation -= pLine.P1;
-			Location = Location.Rotate(vector, radians);
-			LookLocation = LookLocation.Rotate(vector, radians);
-			UpLocation = UpLocation.Rotate(vector, radians);
+			Location = Location.RotateAround(vector, radians);
+			LookLocation = LookLocation.RotateAround(vector, radians);
+			UpLocation = UpLocation.RotateAround(vector, radians);
 			Location += pLine.P1;
 			LookLocation += pLine.P1;
 			UpLocation += pLine.P1;

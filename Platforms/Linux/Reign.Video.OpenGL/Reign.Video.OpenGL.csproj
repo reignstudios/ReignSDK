@@ -115,6 +115,12 @@
       <Link>Wrappers\GL.cs</Link>
     </Compile>
     <Compile Include="Wrappers\GLX.cs" />
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Model\Mesh.cs">
+      <Link>Model\Mesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Model\Model.cs">
+      <Link>Model\Model.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -133,5 +139,6 @@
     <Folder Include="States\" />
     <Folder Include="Textures\" />
     <Folder Include="Wrappers\" />
+    <Folder Include="Model\" />
   </ItemGroup>
 </Project>
