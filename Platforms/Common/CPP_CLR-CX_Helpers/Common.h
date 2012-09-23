@@ -1,4 +1,5 @@
 #pragma once
+
 #define ushort unsigned short
 #define uint unsigned int
 #define ulong unsigned long

@@ -12,6 +12,7 @@ namespace Reign.Core
 		private Application application;
 		private GraphicsDeviceManager graphics;
 		protected ApplicationEvent theEvent;
+		private Time renderTime;
 
 		public bool SimulateTrailMode
 		{
@@ -86,15 +87,15 @@ namespace Reign.Core
 		
 		protected override void Update(GameTime gameTime)
 		{
-			OS.time.ManualUpdate(gameTime.ElapsedGameTime.Milliseconds, gameTime.ElapsedGameTime.Milliseconds / 1000f);
+			OS.time.ManualUpdate(gameTime.ElapsedGameTime.Milliseconds / 1000f);
 			application.update(OS.time);
 			base.Update(gameTime);
 		}
 
 		protected override void Draw(GameTime gameTime)
 		{
-			OS.time.ManualUpdate(gameTime.ElapsedGameTime.Milliseconds, gameTime.ElapsedGameTime.Milliseconds / 1000f);
-			application.render(OS.time);
+			OS.renderTime.ManualUpdate(gameTime.ElapsedGameTime.Milliseconds / 1000f);
+			application.render(OS.renderTime);
 			base.Draw(gameTime);
 		}
 		#endregion

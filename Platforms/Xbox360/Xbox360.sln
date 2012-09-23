@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Audio.API", "Reign.Au
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Input.API", "Reign.Input.API\Reign.Input.API.csproj", "{4F6713E7-49AB-4299-8FDE-D343B5C7C02A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Audio.Dumby", "Reign.Audio.Dumby\Reign.Audio.Dumby.csproj", "{738CB056-EC01-4C1C-B0C3-E0280BB39F1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Xbox 360 = Debug|Xbox 360
@@ -67,6 +69,10 @@ Global
 		{4F6713E7-49AB-4299-8FDE-D343B5C7C02A}.Debug|Xbox 360.Build.0 = Debug|Xbox 360
 		{4F6713E7-49AB-4299-8FDE-D343B5C7C02A}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
 		{4F6713E7-49AB-4299-8FDE-D343B5C7C02A}.Release|Xbox 360.Build.0 = Release|Xbox 360
+		{738CB056-EC01-4C1C-B0C3-E0280BB39F1B}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
+		{738CB056-EC01-4C1C-B0C3-E0280BB39F1B}.Debug|Xbox 360.Build.0 = Debug|Xbox 360
+		{738CB056-EC01-4C1C-B0C3-E0280BB39F1B}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
+		{738CB056-EC01-4C1C-B0C3-E0280BB39F1B}.Release|Xbox 360.Build.0 = Release|Xbox 360
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

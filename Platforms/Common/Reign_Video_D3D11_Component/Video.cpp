@@ -100,9 +100,9 @@ namespace Reign_Video_D3D11_Component
 		#else
 		ComPtr<ID3D11Device> deviceTEMP;
 		ComPtr<ID3D11DeviceContext> deviceContextTEMP;
-		IDXGISwapChain1* swapChainTEMP;
+		ComPtr<IDXGISwapChain1> swapChainTEMP;
 
-		if (FAILED(D3D11CreateDevice(0, D3D_DRIVER_TYPE_HARDWARE, 0, 0, featureLevelTypes, featureCount, D3D11_SDK_VERSION, &deviceTEMP, &featureLevelType, &deviceContextTEMP)))
+		if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevelTypes, featureCount, D3D11_SDK_VERSION, &deviceTEMP, &featureLevelType, &deviceContextTEMP)))
 		{
 			return VideoError::DeviceFailed;
 		}
@@ -124,7 +124,7 @@ namespace Reign_Video_D3D11_Component
 		{
 			return VideoError::SwapChainFailed;
 		}
-		swapChain = swapChainTEMP;
+		swapChain = swapChainTEMP.Get();
 		#endif
 
 		this->vSync = vSync ? 1 : 0;
@@ -204,7 +204,6 @@ namespace Reign_Video_D3D11_Component
 			return VideoError::DepthStencilViewFailed;
 		}
 		depthStencil = depthStencilTEMP;
-		if (depthTexture) depthTexture->Release();
 
 		return VideoError::None;
 	}

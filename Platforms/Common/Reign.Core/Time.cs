@@ -24,7 +24,6 @@ namespace Reign.Core
 		private int fpsTic;
 		private float seconds;
 
-		public int Milliseconds {get; private set;}
 		public int FPS {get; private set;}
 		public int FPSGoal {get{return (int)fps;}}
 		public float Delta {get; private set;}
@@ -101,8 +100,15 @@ namespace Reign.Core
 			millisecond = currentMilli;
 			#else
 			Delta += ((stopWatch.ElapsedTicks / (float)(Stopwatch.Frequency)) - Delta) * .1f;
+			#if XBOX360
+			stopWatch.Reset();
+			stopWatch.Start();
+			#else
 			stopWatch.Restart();
 			#endif
+			#endif
+
+			Delta = (Delta > 1) ? 1 : Delta;
 
 			++fpsTic;
 			seconds += Delta;
@@ -114,9 +120,8 @@ namespace Reign.Core
 			}
 		}
 
-		public void ManualUpdate(int milliseconds, float delta)
+		public void ManualUpdate(float delta)
 		{
-			Milliseconds = milliseconds;
 			Delta = delta;
 			
 			++fpsTic;

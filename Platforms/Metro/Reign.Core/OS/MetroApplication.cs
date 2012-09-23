@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
+using Windows.Graphics.Display;
 using Windows.UI.Core;
 
 namespace Reign.Core
@@ -146,7 +147,7 @@ namespace Reign.Core
 		{
 			var coreWindow = CoreWindow.GetForCurrentThread();
 			CoreWindow = coreWindow;
-			application.frameSize = new Size2((int)coreWindow.Bounds.Width, (int)coreWindow.Bounds.Height);
+			application.frameSize = new Size2(convertDipsToPixels(coreWindow.Bounds.Width), convertDipsToPixels(coreWindow.Bounds.Height));
 			application.shown();
 
 			running = true;
@@ -164,9 +165,14 @@ namespace Reign.Core
 			}
 		}
 
+		private int convertDipsToPixels(double dips)
+		{
+			return (int)(dips * DisplayProperties.LogicalDpi / 96f + .5f);
+		}
+
 		private void sizeChanged(CoreWindow sender, WindowSizeChangedEventArgs args)
 		{
-			application.frameSize = new Size2((int)args.Size.Width, (int)args.Size.Height);
+			application.frameSize = new Size2(convertDipsToPixels(args.Size.Width), convertDipsToPixels(args.Size.Height));
 		}
 
 		private void visibilityChanged(CoreWindow sender, VisibilityChangedEventArgs args)

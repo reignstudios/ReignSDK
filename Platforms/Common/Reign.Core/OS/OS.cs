@@ -77,6 +77,9 @@ namespace Reign.Core
 		#region Properites
 		public static bool AutoDisposedGL {get; internal set;}
 		internal static Time time;
+		#if XNA
+		internal static Time renderTime;
+		#endif
 
 		#if WINDOWS || OSX || LINUX || NaCl
 		public static Size2 ScreenSize
@@ -306,6 +309,8 @@ namespace Reign.Core
 			#endif
 
 			#if XNA
+			renderTime = new Time(fps);
+			renderTime.Start();
 			#if !XBOX360
 			Time.OptimizedMode();
 			#endif
