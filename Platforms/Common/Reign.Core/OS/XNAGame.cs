@@ -56,7 +56,7 @@ namespace Reign.Core
 				var gsc = new GamerServicesComponent(this); 
 				Components.Add(gsc);
 
-				Content.RootDirectory = "";//"Content";
+				Content.RootDirectory = "";
 				#endif
 			}
 			catch (Exception e)
@@ -86,15 +86,15 @@ namespace Reign.Core
 		
 		protected override void Update(GameTime gameTime)
 		{
-			OS.updateTime.ManualUpdate(gameTime.ElapsedGameTime.Milliseconds, gameTime.ElapsedGameTime.Milliseconds / 1000f, 0);
-			application.update(OS.updateTime);
+			OS.time.ManualUpdate(gameTime.ElapsedGameTime.Milliseconds, gameTime.ElapsedGameTime.Milliseconds / 1000f);
+			application.update(OS.time);
 			base.Update(gameTime);
 		}
 
 		protected override void Draw(GameTime gameTime)
 		{
-			OS.renderTime.ManualUpdate(gameTime.ElapsedGameTime.Milliseconds, gameTime.ElapsedGameTime.Milliseconds / 1000f, 0);
-			application.render(OS.renderTime);
+			OS.time.ManualUpdate(gameTime.ElapsedGameTime.Milliseconds, gameTime.ElapsedGameTime.Milliseconds / 1000f);
+			application.render(OS.time);
 			base.Draw(gameTime);
 		}
 		#endregion

@@ -102,6 +102,10 @@
       <Project>{4889BC73-F2D9-4F03-B9A9-316B83FD9063}</Project>
       <Name>Reign.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Reign.Video.D3D11\Reign.Video.D3D11.csproj">
+      <Project>{86E7C7E2-7E48-4371-81F6-C85BA4958372}</Project>
+      <Name>Reign.Video.D3D11</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Reign.Video.D3D9\Reign.Video.D3D9.vcxproj">
       <Project>{53E100D6-70F9-4A71-8960-3F9442401826}</Project>
       <Name>Reign.Video.D3D9</Name>
@@ -113,6 +117,10 @@
     <ProjectReference Include="..\Reign.Video\Reign.Video.csproj">
       <Project>{2E74C4E8-20F5-4EED-821C-FEA6DBF98532}</Project>
       <Name>Reign.Video</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign_Video_D3D11_Component\Reign_Video_D3D11_Component.vcxproj">
+      <Project>{001985F2-1E42-489C-8C50-2C646E0C4333}</Project>
+      <Name>Reign_Video_D3D11_Component</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -143,7 +143,7 @@ namespace Reign_Video_D3D11_Component
 		if (code) code->Release();
 		if (reflection) reflection->Release();
 		#else
-		delete code;
+		if (code) delete code;
 		#endif
 		null();
 	}

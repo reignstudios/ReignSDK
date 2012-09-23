@@ -78,7 +78,7 @@ namespace Reign.Input.API
 					{
 						winForms = false;
 						type = InputTypes.WinForms;
-						return (InputI)OS.CreateInstance(WinForms, WinForms, "Input", args);
+						return (InputI)OS.CreateInstance(typeof(Reign.Input.WinForms.Input), args);
 					}
 					#endif
 
@@ -87,7 +87,7 @@ namespace Reign.Input.API
 					{
 						metro = false;
 						type = InputTypes.Metro;
-						return (InputI)OS.CreateInstance(Metro, Metro, "Input", args);
+						return (InputI)OS.CreateInstance(typeof(Reign.Input.Metro.Input), args);
 					}
 					#endif
 

@@ -76,9 +76,7 @@ namespace Reign.Core
 	{
 		#region Properites
 		public static bool AutoDisposedGL {get; internal set;}
-		public static UpdateAndRenderModes UpdateAndRenderMode {get; internal set;}
-		internal static Time updateTime, renderTime;
-		internal static bool syncMode;
+		internal static Time time;
 
 		#if WINDOWS || OSX || LINUX || NaCl
 		public static Size2 ScreenSize
@@ -232,18 +230,11 @@ namespace Reign.Core
 		#endif
 		
 		#if WINDOWS || OSX || LINUX || NaCl
-		public static void Run(Window window, UpdateAndRenderModes updateAndRenderMode, int fps, bool syncMode)
+		public static void Run(Window window, int fps)
 		{
 			CurrentWindow = window;
-			OS.UpdateAndRenderMode = updateAndRenderMode;
-			updateTime = new Time(fps);
-			updateTime.Start();
-			if (updateAndRenderMode == UpdateAndRenderModes.Adaptive)
-			{
-				renderTime = new Time(fps);
-				renderTime.Start();
-			}
-			OS.syncMode = syncMode;
+			time = new Time(fps);
+			time.Start();
 
 			#if WINDOWS
 			Time.OptimizedMode();
@@ -296,27 +287,15 @@ namespace Reign.Core
 		#endif
 		
 		#if iOS || XNA || METRO
-		public static void Run(Application application, UpdateAndRenderModes updateAndRenderMode, int fps, bool syncMode)
+		public static void Run(Application application, int fps)
 		{
 			CurrentApplication = application;
-			OS.UpdateAndRenderMode = updateAndRenderMode;
-			updateTime = new Time(fps);
-			updateTime.Start();
-			#if XNA
-			renderTime = new Time(fps);
-			renderTime.Start();
-			#else
-			if (updateAndRenderMode == UpdateAndRenderModes.Adaptive)
-			{
-				renderTime = new Time(fps);
-				renderTime.Start();
-			}
-			#endif
-			
-			OS.syncMode = syncMode;
+
 			#if iOS || XNA
-			OS.syncMode = false;
+			fps = 0;
 			#endif
+			time = new Time(fps);
+			time.Start();
 
 			#if METRO
 			CoreApplication.Run(application.source);
@@ -371,63 +350,20 @@ namespace Reign.Core
 		#if WINDOWS || OSX || LINUX || NaCl
 		public static void UpdateAndRender()
 		{
-			if (UpdateAndRenderMode == UpdateAndRenderModes.Stepping)
-			{
-				while (!updateTime.Update() && syncMode) Thread.SpinWait(1);
-				CurrentWindow.update(updateTime);
-				CurrentWindow.render(updateTime);
-				if (syncMode) updateTime.Sleep();
-			}
-			else// Adaptive
-			{
-				while (!updateTime.Update() && syncMode) Thread.SpinWait(1);
-				CurrentWindow.update(updateTime);
-				int loop = (int)System.Math.Max((updateTime.FPSGoal / updateTime.FPS) - 1, 0);
-				for (int i = 0; i != loop; ++i)
-				{
-					updateTime.AdaptiveUpdate();
-					CurrentWindow.update(updateTime);
-				}
+			#if !iOS && !ANDROID
+			if (time.FPSGoal != 0) time.Sleep();
+			#endif
+			time.Update();
 
-				renderTime.Update();
-				CurrentWindow.render(renderTime);
-				if (syncMode) updateTime.Sleep();
-			}
+			CurrentWindow.update(time);
+			CurrentWindow.render(time);
 		}
 		#else
 		public static void UpdateAndRender()
 		{
-			if (UpdateAndRenderMode == UpdateAndRenderModes.Stepping)
-			{
-				if (updateTime.Update() || !syncMode)
-				{
-					CurrentApplication.update(updateTime);
-					CurrentApplication.render(updateTime);
-					
-					#if !iOS && !ANDROID
-					if (syncMode) updateTime.Sleep();
-					#endif
-				}
-			}
-			else// Adaptive
-			{
-				if (updateTime.Update() || !syncMode)
-				{
-					CurrentApplication.update(updateTime);
-					int loop = (int)System.Math.Max((updateTime.FPSGoal / updateTime.FPS) - 1, 0);
-					for (int i = 0; i != loop; ++i)
-					{
-						updateTime.AdaptiveUpdate();
-						CurrentApplication.update(updateTime);
-					}
-
-					renderTime.Update();
-					CurrentApplication.render(renderTime);
-					#if !iOS && !ANDROID
-					if (syncMode) updateTime.Sleep();
-					#endif
-				}
-			}
+			if (time.FPSGoal != 0) time.Sleep();
+			CurrentApplication.update(time);
+			CurrentApplication.render(time);
 		}
 		#endif
 		#endregion

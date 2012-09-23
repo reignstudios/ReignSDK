@@ -68,7 +68,7 @@ namespace Reign.Audio.API
 					{
 						xAudio = false;
 						type = AudioTypes.XAudio;
-						return (AudioI)OS.CreateInstance(XAudio, XAudio, "Audio", args);
+						return (AudioI)OS.CreateInstance(typeof(Reign.Audio.XAudio.Audio), args);
 					}
 					else
 					#endif
@@ -117,7 +117,7 @@ namespace Reign.Audio.API
 					{
 						dumby = false;
 						type = AudioTypes.Dumby;
-						return (AudioI)OS.CreateInstance(Dumby, Dumby, "Audio", args);
+						return (AudioI)OS.CreateInstance(typeof(Reign.Audio.Dumby.Audio), args);
 					}
 
 					else break;

@@ -84,7 +84,7 @@ namespace Reign.Video.API
 					{
 						d3d11 = false;
 						type = VideoTypes.D3D11;
-						return (VideoI)OS.CreateInstance(D3D11, D3D11, "Video", args);
+						return (VideoI)OS.CreateInstance(typeof(Reign.Video.D3D11.Video), args);
 					}
 					#endif
 
@@ -93,7 +93,7 @@ namespace Reign.Video.API
 					{
 						d3d9 = false;
 						type = VideoTypes.D3D9;
-						return (VideoI)OS.CreateInstance(D3D9, D3D9, "Video", args);
+						return (VideoI)OS.CreateInstance(typeof(Reign.Video.D3D9.Video), args);
 					}
 					#endif
 
@@ -103,7 +103,7 @@ namespace Reign.Video.API
 						gl = false;
 						type = VideoTypes.OpenGL;
 						#if WINDOWS
-						return (VideoI)OS.CreateInstance(OpenGL, OpenGL, "Video", args);
+						return (VideoI)OS.CreateInstance(typeof(Reign.Video.OpenGL.Video), args);
 						#else
 						return (VideoI)OS.CreateInstance(typeof(Reign.Video.OpenGL.Video), args);
 						#endif

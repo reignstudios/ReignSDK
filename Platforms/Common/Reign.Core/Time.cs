@@ -21,6 +21,8 @@ namespace Reign.Core
 		private Stopwatch stopWatch;
 		#endif
 		private long fps;
+		private int fpsTic;
+		private float seconds;
 
 		public int Milliseconds {get; private set;}
 		public int FPS {get; private set;}
@@ -91,7 +93,7 @@ namespace Reign.Core
 			#endif
 		}
 
-		public bool Update()
+		public void Update()
 		{
 			#if ANDROID
 			long currentMilli = JavaSystem.CurrentTimeMillis();
@@ -107,44 +109,40 @@ namespace Reign.Core
 				return true;
 			}
 			#else
-			long tics = (stopWatch.ElapsedTicks / (Stopwatch.Frequency/fps));
-			if (tics != 0)
-			{
-			    Milliseconds = (int)stopWatch.ElapsedMilliseconds;
-				Delta += ((Milliseconds / 1000f) - Delta) * .1f;
-				FPS = (int)(fps / tics);
-
-				stopWatch.Restart();
-			    return true;
-			}
-			#endif
-
-			return false;
-		}
-
-		public void AdaptiveUpdate()
-		{
-			Milliseconds = 0;
-			Delta = 0;
-			FPS = (int)fps;
-			#if ANDROID
-			millisecond = JavaSystem.CurrentTimeMillis();
-			#else
+			Delta = stopWatch.ElapsedTicks / (float)(Stopwatch.Frequency);
 			stopWatch.Restart();
 			#endif
+
+			++fpsTic;
+			seconds += Delta;
+			if (seconds >= 1)
+			{
+				FPS = fpsTic;
+				fpsTic = 0;
+				seconds = 0;
+			}
 		}
 
-		public void ManualUpdate(int milliseconds, float delta, int fps)
+		public void ManualUpdate(int milliseconds, float delta)
 		{
 			Milliseconds = milliseconds;
 			Delta = delta;
-			FPS = fps;
+			
+			++fpsTic;
+			seconds += Delta;
+			if (seconds >= 1)
+			{
+				FPS = fpsTic;
+				fpsTic = 0;
+				seconds = 0;
+			}
 		}
 
 		#if !iOS && !ANDROID
 		public void Sleep()
 		{
-			int sleepTime = (int)System.Math.Max((1000/fps) - 5 - stopWatch.ElapsedMilliseconds, 0);
+			int sleepTime = (int)System.Math.Max((1000/fps) - stopWatch.ElapsedMilliseconds, 0);
+
 			#if METRO
 			new ManualResetEvent(false).WaitOne(sleepTime);
 			#else

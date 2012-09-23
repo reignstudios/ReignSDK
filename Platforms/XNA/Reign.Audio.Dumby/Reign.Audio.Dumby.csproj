@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{E32F5F2B-C339-4178-8418-7743A8174017}</ProjectGuid>
+    <ProjectGuid>{B4C0220E-5993-44A3-B287-30A43AC1FFC0}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Reign.Audio.API</RootNamespace>
-    <AssemblyName>Reign.Audio.API</AssemblyName>
+    <RootNamespace>Reign.Audio.Dumby</RootNamespace>
+    <AssemblyName>Reign.Audio.Dumby</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaProfile>HiDef</XnaProfile>
-    <XnaCrossPlatformGroupID>d2ee4333-1733-44a6-95e5-456ac0c6e32a</XnaCrossPlatformGroupID>
+    <XnaCrossPlatformGroupID>c5e3125a-1714-452b-9abc-e6a469b90851</XnaCrossPlatformGroupID>
     <XnaOutputType>Library</XnaOutputType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -43,42 +43,67 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Xact, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Video, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Avatar, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Net, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Storage, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="mscorlib">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Core">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="System.Net" />
+    <Reference Include="System.Net">
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\Reign.Audio.API\Audio.cs">
+    <Compile Include="..\..\Common\Reign.Audio.Dumby\Audio.cs">
       <Link>Audio.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Audio.API\Music.cs">
-      <Link>Music.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Audio.API\Sound.cs">
+    <Compile Include="..\..\Common\Reign.Audio.Dumby\Sound.cs">
       <Link>Sound.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Audio.Dumby\SoundWAV.cs">
+      <Link>SoundWAV.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Reign.Audio.Dumby\Reign.Audio.Dumby.csproj">
-      <Project>{B4C0220E-5993-44A3-B287-30A43AC1FFC0}</Project>
-      <Name>Reign.Audio.Dumby</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Reign.Audio.XNA\Reign.Audio.XNA.csproj">
-      <Project>{AE6FE7FB-6262-4B04-B870-5AF1A05D692F}</Project>
-      <Name>Reign.Audio.XNA</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Reign.Audio\Reign.Audio.csproj">
       <Project>{5ABD717F-B707-44FF-B507-38B8DAE6EFCE}</Project>
       <Name>Reign.Audio</Name>
