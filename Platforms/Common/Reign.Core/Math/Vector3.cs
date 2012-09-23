@@ -258,7 +258,7 @@ namespace Reign.Core
 			#endif
 		}
 
-		public Vector3 Rotate(Vector3 axis, float angle)
+		public Vector3 RotateAround(Vector3 axis, float angle)
 		{
 			throw new System.NotImplementedException();
 		}

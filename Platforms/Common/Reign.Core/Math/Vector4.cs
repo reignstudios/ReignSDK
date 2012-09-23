@@ -43,7 +43,7 @@ namespace Reign.Core
 			W = w;
 		}
 
-		public static Vector4 AsQuaternion(Vector3 axis, float angle)
+		public static Vector4 FromRotationAxis(Vector3 axis, float angle)
 		{
 			angle *= .5f;
 			var sin = (float)MathS.Sin(angle);
@@ -54,6 +54,39 @@ namespace Reign.Core
 				axis.Z * sin,
 				(float)MathS.Cos(angle)
 			);
+		}
+
+		public static Vector4 FromRotationAxis(float axisX, float axisY, float axisZ, float angle)
+		{
+			angle *= .5f;
+			var sin = (float)MathS.Sin(angle);
+			return new Vector4
+			(
+				axisX * sin,
+				axisY * sin,
+				axisZ * sin,
+				(float)MathS.Cos(angle)
+			);
+		}
+
+		public static Vector4 FromSphericalRotation(float latitude, float longitude, float angle)
+		{
+			angle *= .5f;
+			float ca = (float)MathS.Cos(angle);
+			float sa = (float)MathS.Sin(angle);
+			float cLat = (float)MathS.Cos(latitude);
+			float sLat = (float)MathS.Sin(latitude);
+			float cLong = (float)MathS.Cos(longitude);
+			float sLong = (float)MathS.Sin(longitude);
+			return new Vector4(sa*cLat*sLong, sa*sLat, sa*sLat*cLong, ca);
+		}
+
+		public static Vector4 FromEuler(float eulerX, float eulerY, float eulerZ)
+		{
+			var qX = Vector4.FromRotationAxis(1, 0, 0, eulerX);
+			var qY = Vector4.FromRotationAxis(0, 1, 0, eulerY);
+			var qZ = Vector4.FromRotationAxis(0, 0, 1, eulerZ);
+			return qX.Multiply(qY).Multiply(qZ);
 		}
 		#endregion
 
@@ -234,6 +267,37 @@ namespace Reign.Core
 				W*quaternion.Z + X*quaternion.Y - Y*quaternion.X + Z*quaternion.W,
 				W*quaternion.W - X*quaternion.X - Y*quaternion.Y - Z*quaternion.Z
 			);
+		}
+
+		public Vector4 Conjugate()
+		{
+			return new Vector4(-X, -Y, -Z, W);
+		}
+
+		public void RotationAxis(out Vector3 axis, out float angle)
+		{
+			angle = (float)MathS.Acos(W) * Math.Pi2;
+			float sinAngle = (float)MathS.Sqrt(1 - (W*W));
+			if (sinAngle == 0) sinAngle = 1;
+			sinAngle = 1 / sinAngle;
+			axis = new Vector3(X*sinAngle, Y*sinAngle, Z*sinAngle);
+		}
+
+		public void SphericalRotation(out float latitude, out float longitude, out float angle)
+		{
+			angle = (float)MathS.Acos(W) * Math.Pi2;
+			float sinAngle = (float)MathS.Sqrt(1 - (W*W));
+			if (sinAngle == 0) sinAngle = 1;
+			sinAngle = 1 / sinAngle;
+
+			float x = X * sinAngle;
+			float y = Y * sinAngle;
+			float z = Z * sinAngle;
+
+			latitude = -(float)MathS.Asin(y);
+			if ((x*x) + (z*z) == 0) longitude = 0;
+			else longitude = (float)MathS.Atan2(x, z) * Math.Pi;
+			if (longitude < 0) longitude += Math.Pi2;
 		}
 
 		public bool AproxEqualsBox(Vector4 vector, float tolerance)
