@@ -14,6 +14,7 @@ namespace Reign.Video.XNA
 		#region Properties
 		public GraphicsDevice Device {get; private set;}
 		public string FileTag {get; private set;}
+		public Size2 BackBufferSize {get; private set;}
 		#endregion
 
 		#region Constructors
@@ -24,6 +25,7 @@ namespace Reign.Video.XNA
 			defualtStates();
 
 			FileTag = "XNA_";
+			BackBufferSize = application.FrameSize;
 		}
 
 		public override void Dispose()
