@@ -152,9 +152,11 @@ namespace Reign_Video_D3D11_Component
 		ID3D11RenderTargetView* renderTargetTEMP;
 		if (FAILED(device->CreateRenderTargetView(backBuffer, 0, &renderTargetTEMP)))
 		{
+			backBuffer->Release();
 			return VideoError::RenderTargetViewFailed;
 		}
 		renderTarget = renderTargetTEMP;
+		backBuffer->Release();
 		
 		// DepthStencil Texture
 		D3D11_TEXTURE2D_DESC descDepth;
@@ -225,12 +227,12 @@ namespace Reign_Video_D3D11_Component
 	#pragma region Methods
 	void VideoCom::Update(int width, int height)
 	{
-		if (lastWidth != width && lastHeight != height && width != 0 && height != 0)
+		if ((lastWidth != width || lastHeight != height) && width != 0 && height != 0)
 		{
 			renderTarget->Release();
 			depthStencil->Release();
 			depthTexture->Release();
-			swapChain->ResizeBuffers(1, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+			swapChain->ResizeBuffers(2, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
 			createViews(width, height);
 			lastWidth = width;
 			lastHeight = height;

@@ -76,8 +76,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\Shaders\Compiled\DiffuseTexture.cs">
-      <Link>Materials\DiffuseTexture.cs</Link>
+    <Compile Include="..\..\..\..\ReignShaders\DiffuseTexture.cs">
+      <Link>DiffuseTexture.cs</Link>
     </Compile>
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
@@ -102,19 +102,19 @@
     <EmbeddedResource Include="ToolWindow.resx">
       <DependentUpon>ToolWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <Content Include="..\..\..\Shaders\Compiled\D3D11_DiffuseTexture.rs">
+    <Content Include="..\..\..\..\ReignShaders\D3D11_DiffuseTexture.rs">
       <Link>Materials\D3D11_DiffuseTexture.rs</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\Shaders\Compiled\D3D9_DiffuseTexture.rs">
+    <Content Include="..\..\..\..\ReignShaders\D3D9_DiffuseTexture.rs">
       <Link>Materials\D3D9_DiffuseTexture.rs</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\Shaders\Compiled\GL2_DiffuseTexture.rs">
+    <Content Include="..\..\..\..\ReignShaders\GL2_DiffuseTexture.rs">
       <Link>Materials\GL2_DiffuseTexture.rs</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="..\..\..\Shaders\Compiled\GL3_DiffuseTexture.rs">
+    <Content Include="..\..\..\..\ReignShaders\GL3_DiffuseTexture.rs">
       <Link>Materials\GL3_DiffuseTexture.rs</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -27,6 +27,7 @@ namespace Reign.Video.D3D11
 	{
 		#region Properties
 		public string FileTag {get; private set;}
+		public Size2 BackBufferSize {get; private set;}
 
 		#if WINDOWS
 		private Window window;
@@ -35,7 +36,6 @@ namespace Reign.Video.D3D11
 		#endif
 
 		internal VideoCom com;
-		internal Size2 windowFrameSize;
 		public Caps Cap {get; private set;}
 		#endregion
 
@@ -66,9 +66,9 @@ namespace Reign.Video.D3D11
 				var error = com.Init(window.Handle, vSync, frame.Width, frame.Height, false, out featureLevel);
 				#else
 				var frame = application.FrameSize;
-				windowFrameSize = frame;
 				var error = com.Init(OS.CurrentApplication.CoreWindow, vSync, frame.Width, frame.Height, out featureLevel);
 				#endif
+				BackBufferSize = frame;
 
 				switch (error)
 				{
@@ -152,7 +152,7 @@ namespace Reign.Video.D3D11
 			var frame = application.FrameSize;
 			#endif
 
-			if (frame.Width != 0 && frame.Height != 0) windowFrameSize = frame;
+			if (frame.Width != 0 && frame.Height != 0) BackBufferSize = frame;
 			com.Update(frame.Width, frame.Height);
 		}
 

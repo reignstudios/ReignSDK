@@ -1,4 +1,0 @@
-vsVar Camera 0 64
-vsVar Transform 64 64
-psVar LightDirection 0 16
-psRes Diffuse 0

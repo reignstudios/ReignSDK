@@ -28,6 +28,7 @@ namespace Reign
 
 	#pragma region Properties
 	string^ Video::FileTag::get() {return fileTag;}
+	Size2 Video::BackBufferSize::get() {return backBufferSize;}
 
 	bool Video::IsExDevice::get() {return isExDevice;}
 	IDirect3DDevice9* Video::Device::get() {return device;}
@@ -47,15 +48,7 @@ namespace Reign
 	Video::Video(DisposableI^ parent, Window^ window, bool vSync)
 	: Disposable(parent)
 	{
-		this->window = window;
-		lastWindowFrameSize = window->FrameSize;
-		init(parent, window->Handle, 0, 0, false, vSync, false, SoftwareModes::None);
-	}
-
-	Video::Video(DisposableI^ parent, IntPtr handle, int width, int height, bool fullScreen, bool vSync, bool multithreaded, SoftwareModes softwareMode)
-	: Disposable(parent)
-	{
-		init(parent, handle, width, height, fullScreen, vSync, multithreaded, softwareMode);
+		init(window, false, vSync, false, SoftwareModes::None);
 	}
 
 	IDirect3D9* Video::createD3D9Ex()
@@ -84,14 +77,14 @@ namespace Reign
 		return direct3DEx;
 	}
 
-	void Video::init(DisposableI^ parent, IntPtr handle, int width, int height, bool fullScreen, bool vSync, bool multithreaded, SoftwareModes softwareMode)
+	void Video::init(Window^ window, bool fullScreen, bool vSync, bool multithreaded, SoftwareModes softwareMode)
 	{
 		null();
 		IDirect3D9* direct3D = 0;
 
 		try
 		{
-			this->handle = handle;
+			this->window = window;
 			this->fullScreen = fullScreen;
 			this->vSync = vSync;
 			caps = gcnew Reign::Video::D3D9::Caps();
@@ -99,6 +92,7 @@ namespace Reign
 			currentVertexTextures = gcnew array<Texture2D^>(4);
 			currentPixelTextures = gcnew array<Texture2D^>(8);
 			fileTag = L"D3D9_";
+			backBufferSize = window->FrameSize;
 
 			//Create D3D Object
 			direct3D = createD3D9Ex();
@@ -191,7 +185,7 @@ namespace Reign
 			IDirect3DDevice9* deviceTEMP;
 			if (isExDevice)
 			{
-				if (FAILED(direct3D->CreateDevice(D3DADAPTER_DEFAULT, deviceType, (HWND)handle.ToPointer(), flags, &createPresentParameters(), &deviceTEMP)))
+				if (FAILED(direct3D->CreateDevice(D3DADAPTER_DEFAULT, deviceType, (HWND)window->Handle.ToPointer(), flags, &createPresentParameters(), &deviceTEMP)))
 				{
 					device = 0;
 					Debug::ThrowError(L"Video", "Failed to Create Direct3D9Ex Device");
@@ -199,7 +193,7 @@ namespace Reign
 			}
 			else
 			{
-				if (FAILED(direct3D->CreateDevice(D3DADAPTER_DEFAULT, deviceType, (HWND)handle.ToPointer(), flags, &createPresentParameters(), &deviceTEMP)))
+				if (FAILED(direct3D->CreateDevice(D3DADAPTER_DEFAULT, deviceType, (HWND)window->Handle.ToPointer(), flags, &createPresentParameters(), &deviceTEMP)))
 				{
 					device = 0;
 					Debug::ThrowError(L"Video", "Failed to Create Direct3D9 Device");
@@ -299,7 +293,7 @@ namespace Reign
 		presentParameters.AutoDepthStencilFormat = D3DFMT_D24S8;
 		presentParameters.PresentationInterval = vSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
 		presentParameters.Flags = D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
-		presentParameters.hDeviceWindow = (HWND)handle.ToPointer();
+		presentParameters.hDeviceWindow = (HWND)window->Handle.ToPointer();
 		presentParameters.MultiSampleQuality = 0;
 		presentParameters.MultiSampleType = D3DMULTISAMPLE_NONE;
 
@@ -316,9 +310,9 @@ namespace Reign
 
 		bool resetDevice = false, screenSizeChanged = false;
 		Size2 frame = window->FrameSize;
-		if (window != nullptr && lastWindowFrameSize != frame && frame.Width != 0 && frame.Height != 0)
+		if (backBufferSize != frame && frame.Width != 0 && frame.Height != 0)
 		{
-			lastWindowFrameSize = frame;
+			backBufferSize = frame;
 			resetDevice = true;
 			screenSizeChanged = true;
 		}

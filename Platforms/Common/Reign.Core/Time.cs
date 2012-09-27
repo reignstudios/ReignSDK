@@ -25,8 +25,13 @@ namespace Reign.Core
 		private float seconds;
 
 		public int FPS {get; private set;}
-		public int FPSGoal {get{return (int)fps;}}
 		public float Delta {get; private set;}
+
+		public int FPSGoal
+		{
+			get {return (int)fps;}
+			set {fps = value;}
+		}
 		#endregion
 
 		#region Constructors

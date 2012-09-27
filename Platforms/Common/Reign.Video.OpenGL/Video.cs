@@ -40,6 +40,14 @@ namespace Reign.Video.OpenGL
 	{
 		#region Properties
 		public string FileTag {get; private set;}
+		public Size2 BackBufferSize {get; private set;}
+
+		#if WINDOWS || OSX || LINUX || NaCl
+		private Window window;
+		#else
+		private Application application;
+		#endif
+
 		public Caps Caps;
 		private bool disposed;
 		internal Texture2D[] currentTextures;
@@ -47,14 +55,15 @@ namespace Reign.Video.OpenGL
 		internal BufferLayout currentBufferLayout;
 		internal VertexBuffer currentVertexBuffer;
 
-		private IntPtr ctx, dc, handle;
+		private IntPtr ctx, dc;
 		uint frameBuffer;
+
+		#if WINDOWS || LINUX
+		private IntPtr handle;
+		#endif
+
 		#if OSX
 		public NSOpenGLContext NSContext {get; private set;}
-		#endif
-		
-		#if iOS
-		private Application application;
 		#endif
 		
 		#if NaCl
@@ -64,56 +73,31 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		#if WINDOWS || OSX || LINUX
+		#if WINDOWS || OSX || LINUX || NaCl
 		public Video(DisposableI parent, Window window, bool vSync)
-		: base(parent)
-		{
-			init(window.Handle, 0, 0, false, vSync);
-			
-			#if OSX
-			NSContext.View = window.View;
-			#endif
-		}
-		#endif
-
-		#if WINDOWS || LINUX
-		public Video(DisposableI parent, IntPtr handle, bool vSync)
-		: base(parent)
-		{
-			init(handle, 0, 0, false, vSync);
-		}
-		#endif
-		
-		#if iOS || ANDROID
+		#elif iOS || ANDROID
 		public Video(DisposableI parent, Application application)
-		: base(parent)
-		{
-			#if iOS
-			this.application = application;
-			#endif
-			init(IntPtr.Zero, 0, 0, true, true);
-		}
+		#else
+		public Video(DisposableI parent, Application application, bool vSync)
 		#endif
-		
-		#if NaCl
-		public Video(DisposableI parent, Window window, bool vSync)
 		: base(parent)
-		{
-			var frameSize = window.FrameSize;
-			init(IntPtr.Zero, frameSize.Width, frameSize.Height, false, vSync);
-		}
-		#endif
-
-		private void init(IntPtr handle, int width, int height, bool fullscreen, bool vSync)
 		{
 			try
 			{
 				currentTextures = new Texture2D[8];
 				currentSamplerStates = new SamplerState[8];
 
-				this.handle = handle;
+				#if WINDOWS || OSX || LINUX
+				BackBufferSize = window.FrameSize;
+				this.window = window;
+				#else
+				BackBufferSize = application.FrameSize;
+				this.application = application;
+				#endif
+				
 				#if WINDOWS
 				//Get DC
+				handle = window.Handle;
 				dc = WGL.GetDC(handle);
 				WGL.SwapBuffers(dc);
 
@@ -143,6 +127,7 @@ namespace Reign.Video.OpenGL
 				
 				#if LINUX
 				//Get DC
+				handle = window.Handle;
 				dc = X11.XOpenDisplay(IntPtr.Zero);
 				int screen = X11.XDefaultScreen(dc);
 		
@@ -195,6 +180,7 @@ namespace Reign.Video.OpenGL
 				if (NSContext == null) Debug.ThrowError("Video", "Failed to create GL context");
 				NSContext.MakeCurrentContext();
 				NSContext.SwapInterval = vSync;
+				NSContext.View = window.View;
 				ctx = NSContext.CGLContext.Handle;
 				OS.NSContext = NSContext;
 				
@@ -240,6 +226,7 @@ namespace Reign.Video.OpenGL
 				#endif
 				
 				#if NaCl
+				var frame = window.FrameSize;
 				int[] attribs =
 				{
 			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 8,
@@ -247,8 +234,8 @@ namespace Reign.Video.OpenGL
 			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_STENCIL_SIZE, 8,
 			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_SAMPLES, 0,
 			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_SAMPLE_BUFFERS, 0,
-			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_WIDTH, width,
-			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_HEIGHT, height,
+			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_WIDTH, frame.Width,
+			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_HEIGHT, frame.Height,
 			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_NONE
 			    };
 			    
@@ -493,6 +480,13 @@ namespace Reign.Video.OpenGL
 
 		public void Update()
 		{
+			#if WINDOWS || OSX || LINUX || NaCl
+			var frame = window.FrameSize;
+			#else
+			var frame = application.FrameSize;
+			#endif
+			if (frame.Width != 0 && frame.Height != 0) BackBufferSize = frame;
+
 			#if WINDOWS
 			WGL.MakeCurrent(dc, ctx);
 			#endif

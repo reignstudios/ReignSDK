@@ -17,6 +17,9 @@ namespace ModelConverter
 		VideoTypes videoType;
 		VideoI video;
 		RasterizerStateI rasterizerState;
+		DepthStencilStateI depthStencilState;
+		BlendStateI blendState;
+		SamplerStateI samplerState;
 		Camera camera;
 		ViewPortI viewPort;
 
@@ -38,8 +41,11 @@ namespace ModelConverter
 			try
 			{
 				root = new RootDisposable();
-				video = Video.Create(VideoTypes.D3D11 | VideoTypes.D3D9 | VideoTypes.OpenGL, out videoType, root, this, false);
+				video = Video.Create(VideoTypes.D3D11 | VideoTypes.D3D9 | VideoTypes.OpenGL, out videoType, root, this, true);
 				rasterizerState = RasterizerState.Create(videoType, video, RasterizerStateDesc.Create(videoType, RasterizerStateTypes.Solid_CullNone));
+				depthStencilState = DepthStencilState.Create(videoType, video, DepthStencilStateDesc.Create(videoType, DepthStencilStateTypes.ReadWrite_Less));
+				blendState = BlendState.Create(videoType, video, BlendStateDesc.Create(videoType, BlendStateTypes.None));
+				samplerState = SamplerState.Create(videoType, video, SamplerStateDesc.Create(videoType, SamplerStateTypes.Linear_Wrap));
 
 				var frame = FrameSize;
 				viewPort = ViewPort.Create(videoType, video, 0, 0, frame.Width, frame.Height);
@@ -88,7 +94,7 @@ namespace ModelConverter
 		public void Convert(string contentPath, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> materialFieldTypes)
 		{
 			if (model != null) model.Dispose();
-			model = Model.Create(videoType, video, softwareModel, MeshVertexSizes.Float3, false, true, true, contentPath, materialTypes, materialFieldTypes, null);
+			model = Model.Create(videoType, video, softwareModel, MeshVertexSizes.Float3, false, true, true, contentPath, materialTypes, null, null, null, null, materialFieldTypes, null);
 		}
 
 		public void Save(string fileName)
@@ -156,10 +162,15 @@ namespace ModelConverter
 				loadingSoftwareModelDone = true;
 			}
 			
+			video.EnableRenderTarget();
+			viewPort.Size = FrameSize;
 			viewPort.Apply();
 			camera.Apply();
 			video.Clear(0, .3f, .3f, 1);
 			rasterizerState.Enable();
+			depthStencilState.Enable();
+			blendState.Enable();
+			samplerState.Enable(0);
 			if (model != null) model.Render();
 			video.Present();
 		}

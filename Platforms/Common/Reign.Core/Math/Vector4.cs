@@ -88,6 +88,13 @@ namespace Reign.Core
 			var qZ = Vector4.FromRotationAxis(0, 0, 1, eulerZ);
 			return qX.Multiply(qY).Multiply(qZ);
 		}
+
+		public static readonly Vector4 One = new Vector4(1);
+		public static readonly Vector4 Zero = new Vector4(0);
+		public static readonly Vector4 Right = new Vector4(1, 0, 0, 0);
+		public static readonly Vector4 Up = new Vector4(0, 1, 0, 0);
+		public static readonly Vector4 Forward = new Vector4(0, 0, 1, 0);
+		public static readonly Vector4 Spissitude = new Vector4(0, 0, 0, 1);
 		#endregion
 
 		#region Operators

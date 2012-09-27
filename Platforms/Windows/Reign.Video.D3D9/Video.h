@@ -46,7 +46,6 @@ namespace Reign
 	{
 		#pragma region Properties
 		private: Window^ window;
-		internal: Size2 lastWindowFrameSize;
 		internal: array<Texture2D^>^ currentVertexTextures, ^currentPixelTextures;
 		private: IDirect3DSurface9* backBuffer, *depthStencilBuffer;
 		internal: ID3DXEffect* LastEffect;
@@ -57,6 +56,9 @@ namespace Reign
 		public: delegate void DeviceLostMethod();
 		public: DeviceLostMethod ^DeviceLost, ^DeviceReset;
 		internal: bool deviceReseting;
+
+		private: Size2 backBufferSize;
+		public: property Size2 BackBufferSize {virtual Size2 get();}
 
 		private: bool isExDevice;
 		public: property bool IsExDevice {bool get();}
@@ -82,8 +84,7 @@ namespace Reign
 
 		#pragma region Constructors
 		public: Video(DisposableI^ parent, Window^ window, bool vSync);
-		public: Video(DisposableI^ parent, IntPtr handle, int width, int height, bool fullScreen, bool vSync, bool multithreaded, SoftwareModes softwareMode);
-		private: void init(DisposableI^ parent, IntPtr handle, int width, int height, bool fullScreen, bool vSync, bool multithreaded, SoftwareModes softwareMode);
+		private: void init(Window^ window, bool fullScreen, bool vSync, bool multithreaded, SoftwareModes softwareMode);
 		private: IDirect3D9* createD3D9Ex();
 		public: ~Video();
 		private: void null();

@@ -29,7 +29,7 @@ namespace Reign
 	{
 		D3DVIEWPORT9 viewPort =
 		{
-			Location.X, video->lastWindowFrameSize.Height - Size.Height - Location.Y,
+			Location.X, video->BackBufferSize.Height - Size.Height - Location.Y,
 			Size.Width, Size.Height,
 			0.0f, 1.0f
 		};

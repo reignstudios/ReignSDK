@@ -38,7 +38,7 @@ namespace Reign.Video.D3D11
 		#region Methods
 		public override void Apply()
 		{
-			com.Apply(Location.X, video.windowFrameSize.Height - Size.Height - Location.Y, Size.Width, Size.Height);
+			com.Apply(Location.X, video.BackBufferSize.Height - Size.Height - Location.Y, Size.Width, Size.Height);
 		}
 
 		public override void Apply(RenderTargetI renderTarget)

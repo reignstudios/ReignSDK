@@ -8,7 +8,7 @@ namespace ModelConverter
 		[STAThread]
 		static void Main()
 		{
-			OS.Run(new MainWindow(), UpdateAndRenderModes.Stepping, 60);
+			OS.Run(new MainWindow(), 0);
 		}
 	}
 }

@@ -5,6 +5,7 @@ namespace Reign.Video
 	public interface VideoI : DisposableI
 	{
 		string FileTag {get;}
+		Size2 BackBufferSize {get;}
 
 		void Update();
 		void EnableRenderTarget();
