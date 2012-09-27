@@ -14,11 +14,13 @@ namespace Reign.Video
 	public abstract class MeshI : Disposable
 	{
 		#region Properties
+		public ModelI Model;
 		public Vector3 Location, Rotation, Scale;
+		public Matrix3 RotationMatrix;
 		public MaterialI Material;
 
-		private VertexBufferI vertexBuffer;
-		private IndexBufferI indexBuffer;
+		public VertexBufferI VertexBuffer {get; private set;}
+		public IndexBufferI IndexBuffer {get; private set;}
 		public BufferLayoutDescI LayoutDesc {get; private set;}
 		#endregion
 
@@ -28,6 +30,8 @@ namespace Reign.Video
 		{
 			try
 			{
+				Model = model;
+
 				// material
 				int materialIndex = reader.ReadInt32();
 				if (materialIndex != -1) Material = model.Materials[materialIndex];
@@ -36,6 +40,7 @@ namespace Reign.Video
 				Location = reader.ReadVector3();
 				Scale = reader.ReadVector3();
 				Rotation = reader.ReadVector3();
+				RotationMatrix = Matrix3.FromEuler(Rotation);
 
 				// elements
 				int elementCount = reader.ReadInt32();
@@ -53,7 +58,7 @@ namespace Reign.Video
 				{
 					vertices[i] = reader.ReadSingle();
 				}
-				vertexBuffer = createVertexBuffer(this, LayoutDesc, BufferUsages.Default, VertexBufferTopologys.Triangle, vertices);
+				VertexBuffer = createVertexBuffer(this, LayoutDesc, BufferUsages.Default, VertexBufferTopologys.Triangle, vertices);
 
 				// indices
 				int indexCount = reader.ReadInt32();
@@ -62,7 +67,7 @@ namespace Reign.Video
 				{
 					indices[i] = reader.ReadInt32();
 				}
-				indexBuffer = createIndexBuffer(this, BufferUsages.Default, indices, indices.Length > short.MaxValue);
+				IndexBuffer = createIndexBuffer(this, BufferUsages.Default, indices, indices.Length > short.MaxValue);
 			}
 			catch (Exception e)
 			{
@@ -258,12 +263,12 @@ namespace Reign.Video
 				Material.Enable();
 				Material.Apply(this);
 			}
-			vertexBuffer.Enable(indexBuffer);
+			VertexBuffer.Enable(IndexBuffer);
 		}
 
 		public void Draw()
 		{
-			vertexBuffer.Draw();
+			VertexBuffer.Draw();
 		}
 
 		public void Render()

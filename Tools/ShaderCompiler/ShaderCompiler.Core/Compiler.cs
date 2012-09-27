@@ -462,8 +462,8 @@ namespace ShaderMaterials.{0}
 							createConstantType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Texture2DI", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
 						}
 
-						globalFieldFormat = "private static WeakReference {2}; [MaterialField(MaterialFieldUsages.{3})] public static {0} {1} {{ get{{return {2}.Target;}} set{{{2} = new WeakReference(value);}} }}";
-						fieldFormat = "private WeakReference {2}; [MaterialField(MaterialFieldUsages.{3})] public {0} {1} {{ get{{return {2}.Target;}} set{{{2} = new WeakReference(value);}} }}";
+						globalFieldFormat = "private static WeakReference {2}; [MaterialField(MaterialFieldUsages.{3})] public static {0} {1} {{ get{{return ({0}){2}.Target;}} set{{{2} = new WeakReference(value);}} }}";
+						fieldFormat = "private WeakReference {2}; [MaterialField(MaterialFieldUsages.{3})] public {0} {1} {{ get{{return ({0}){2}.Target;}} set{{{2} = new WeakReference(value);}} }}";
 						if (field.FieldType == typeof(Vector2[]))
 						{
 							createConstantArrayType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Vector2[]", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
@@ -524,6 +524,7 @@ namespace ShaderMaterials.{0}
 			// create class objects
 			string shaderFile = 
 @"
+using System;
 using System.Collections.Generic;
 using Reign.Core;
 using Reign.Video;
@@ -629,7 +630,7 @@ namespace ShaderMaterials.{0}
 			Shader.Apply();
 		}}
 
-		public void ApplyGlobalContants()
+		public static void ApplyGlobalContants()
 		{{
 			{4}
 		}}
@@ -639,7 +640,7 @@ namespace ShaderMaterials.{0}
 			{5}
 		}}
 
-		public void ApplyInstancingContants()
+		public static void ApplyInstancingContants()
 		{{
 			{6}
 		}}
@@ -674,7 +675,7 @@ namespace ShaderMaterials.{0}
 			}
 			else if (usage.MaterialUsages == MaterialUsages.Instancing)
 			{
-				constantTypeProperties += string.Format(fieldFormat, constantType, field.Name, usage.MaterialUsages);
+				constantTypeProperties += string.Format(globalFieldFormat, constantType, field.Name, usage.MaterialUsages);
 				applyInstancingMethodBody += string.Format(methodValue, field.Name);
 			}
 			else
@@ -687,7 +688,7 @@ namespace ShaderMaterials.{0}
 		{
 			if (usage.MaterialUsages == MaterialUsages.Global)
 			{
-				constantTypeProperties += string.Format(fieldFormat, constantType, field.Name, field.Name.ToLower(), usage.MaterialUsages);
+				constantTypeProperties += string.Format(globalFieldFormat, constantType, field.Name, field.Name.ToLower(), usage.MaterialUsages);
 				applyGlobalMethodBody += string.Format(methodValue, field.Name);
 			}
 			else if (usage.MaterialUsages == MaterialUsages.Instance)
@@ -697,7 +698,7 @@ namespace ShaderMaterials.{0}
 			}
 			else if (usage.MaterialUsages == MaterialUsages.Instancing)
 			{
-				constantTypeProperties += string.Format(fieldFormat, constantType, field.Name, field.Name.ToLower(), usage.MaterialUsages);
+				constantTypeProperties += string.Format(globalFieldFormat, constantType, field.Name, field.Name.ToLower(), usage.MaterialUsages);
 				applyInstancingMethodBody += string.Format(methodValue, field.Name);
 			}
 			else

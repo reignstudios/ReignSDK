@@ -11,7 +11,7 @@ namespace Reign.Video
 		Instancing
 	}
 
-	[AttributeUsage(AttributeTargets.Field)]
+	[AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
 	public class MaterialField : Attribute
 	{
 		public MaterialFieldUsages Usage;

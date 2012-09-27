@@ -43,12 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Diffuse\Diffuse2Texture.cs" />
     <Compile Include="Diffuse\DiffuseTexture.cs" />
-    <Compile Include="Font.cs" />
+    <Compile Include="Font\Font.cs" />
+    <Compile Include="Particle\ParticleColor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuickDraw3Color.cs" />
-    <Compile Include="QuickDraw3ColorUV.cs" />
+    <Compile Include="QuickDraw\QuickDraw3Color.cs" />
+    <Compile Include="QuickDraw\QuickDraw3ColorUV.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -2,7 +2,7 @@
 
 namespace Shaders
 {
-	public sealed class DiffuseTexture : ShaderI
+	public sealed class Diffuse2Texture : ShaderI
 	{
 		[VSInput(VSInputTypes.Position, 0)] public Vector3 Position_VS;
 		[VSInput(VSInputTypes.Normal, 0)] public Vector3 Normal_VS;
@@ -15,8 +15,8 @@ namespace Shaders
 		[PSOutput(PSOutputTypes.Color, 0)] public Vector4 Color_PS;
 
 		[FieldUsage(FieldUsageTypes.VS, MaterialUsages.Global)] public Matrix4 Camera;
-		[FieldUsage(FieldUsageTypes.PS, MaterialUsages.Global)] public Vector3 LightDirection;
-		[FieldUsage(FieldUsageTypes.PS, MaterialUsages.Global)] public Vector4 LightColor;
+		[FieldUsage(FieldUsageTypes.PS, MaterialUsages.Global)] public Vector3 LightDirection, LightDirection2;
+		[FieldUsage(FieldUsageTypes.PS, MaterialUsages.Global)] public Vector4 LightColor, LightColor2;
 		[FieldUsage(FieldUsageTypes.VS, MaterialUsages.Instance)] public Matrix4 Transform;
 		[FieldUsage(FieldUsageTypes.PS, MaterialUsages.Instance)] public Texture2D Diffuse;
 
@@ -33,7 +33,8 @@ namespace Shaders
 		public void MainPS()
 		{
 			double light = SL.Dot(-LightDirection, Normal_VSPS);
-			Color_PS = Diffuse.Sample(UV_VSPS) * LightColor * light;
+			double light2 = SL.Dot(-LightDirection2, Normal_VSPS);
+			Color_PS = Diffuse.Sample(UV_VSPS) * ((light * LightColor) + (light2 * LightColor2));
 		}
 	}
 }

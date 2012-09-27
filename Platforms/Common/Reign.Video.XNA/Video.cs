@@ -15,6 +15,7 @@ namespace Reign.Video.XNA
 		public GraphicsDevice Device {get; private set;}
 		public string FileTag {get; private set;}
 		public Size2 BackBufferSize {get; private set;}
+		private RenderTargetBinding[] backBuffers;
 		#endregion
 
 		#region Constructors
@@ -26,6 +27,8 @@ namespace Reign.Video.XNA
 
 			FileTag = "XNA_";
 			BackBufferSize = application.FrameSize;
+
+			backBuffers = Device.GetRenderTargets();
 		}
 
 		public override void Dispose()
@@ -58,6 +61,7 @@ namespace Reign.Video.XNA
 
 		public void Present()
 		{
+			// XNA will already call this.
 			//Device.Present();
 		}
 
@@ -74,14 +78,13 @@ namespace Reign.Video.XNA
 			}
 			else
 			{
-				throw new NotImplementedException();
-				//var buffer = (DepthStencil)depthStencil;
-				//var buffers = new RenderTargetBinding[2]
-				//{
-				//    backBuffer,
-				//    buffer.depthStencil
-				//};
-				//Device.SetRenderTargets(buffers);
+				var buffer = (DepthStencil)depthStencil;
+				var buffers = new RenderTargetBinding[2]
+				{
+				    backBuffers[0],
+				    buffer.depthStencil
+				};
+				Device.SetRenderTargets(buffers);
 			}
 		}
 

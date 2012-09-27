@@ -142,6 +142,8 @@ namespace Reign.Video
 	{
 		#region Properties
 		public bool Loaded {get; private set;}
+		public Vector3 Location, Rotation, Scale;
+		public Matrix3 RotationMatrix;
 
 		public MeshI[] Meshes {get; private set;}
 		public MaterialI[] Materials {get; private set;}
@@ -167,6 +169,12 @@ namespace Reign.Video
 			{
 				if (Materials == null)
 				{
+					// transform
+					Location = new Vector3();
+					Scale = new Vector3(1);
+					Rotation = new Vector3();
+					RotationMatrix = Matrix3.Identity;
+
 					var reader = new BinaryReader(stream);
 					// meta data
 					if (reader.ReadInt32() != Streams.MakeFourCC('R', 'M', 'F', 'T')) Debug.ThrowError("Error", "Not a ReignModel file: " + fileName);

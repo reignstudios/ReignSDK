@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\ArrayType.cs" />
-    <Compile Include="Attributes\FieldType.cs" />
+    <Compile Include="Attributes\FieldUsage.cs" />
     <Compile Include="Attributes\PSOutput.cs" />
     <Compile Include="Attributes\ShaderMethod.cs" />
     <Compile Include="Attributes\VSInput.cs" />
