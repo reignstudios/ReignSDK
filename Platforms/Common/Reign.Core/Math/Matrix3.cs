@@ -285,9 +285,14 @@ namespace Reign.Core
 			);
 		}
 
-		public Matrix3 Rotate(Vector3 axis, float angle)
+		public Matrix3 RotateAround(Vector3 axis, float angle)
 		{
-			return new Matrix3(X.RotateAround(axis, angle), Y.RotateAround(axis, angle), Z.RotateAround(axis, angle));
+			// rotate into world space
+			var quaternion = Vector4.FromRotationAxis(axis, 0);
+			var worldSpaceMatrix = this.Multiply(Matrix3.FromQuaternion(quaternion).Transpose());
+			// rotate back to matrix space
+			quaternion = Vector4.FromRotationAxis(axis, angle);
+			return worldSpaceMatrix.Multiply(Matrix3.FromQuaternion(quaternion));
 		}
 		#endregion
 	}

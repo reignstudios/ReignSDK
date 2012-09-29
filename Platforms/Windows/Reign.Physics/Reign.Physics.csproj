@@ -47,11 +47,20 @@
     <Compile Include="..\..\Common\Reign.Physics\Collision.cs">
       <Link>Collision.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Physics\Enviroment.cs">
+      <Link>Enviroment.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics\Material.cs">
+      <Link>Material.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.Physics\ParticleSystem.cs">
       <Link>ParticleSystem.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Physics\Physics.cs">
       <Link>Physics.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics\Plane.cs">
+      <Link>Plane.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Physics\Transform.cs">
       <Link>Transform.cs</Link>

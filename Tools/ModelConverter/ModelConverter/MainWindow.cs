@@ -82,6 +82,11 @@ namespace ModelConverter
 
 		protected override void closing()
 		{
+			if (toolWindow != null)
+			{
+				toolWindow.Close();
+				toolWindow = null;
+			}
 			dispose();
 		}
 
@@ -127,6 +132,7 @@ namespace ModelConverter
 		{
 			DiffuseTextureMaterial.Camera = camera.TransformMatrix;
 			DiffuseTextureMaterial.LightDirection = -camera.Location.Normalize();
+			DiffuseTextureMaterial.LightColor = new Vector4(1);
 		}
 
 		void diffuseTextureInstanceApply(DiffuseTextureMaterial material, MeshI mesh)

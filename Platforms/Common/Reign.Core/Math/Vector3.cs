@@ -266,7 +266,12 @@ namespace Reign.Core
 
 		public Vector3 RotateAround(Vector3 axis, float angle)
 		{
-			throw new System.NotImplementedException();
+			// rotate into world space
+			var quaternion = Vector4.FromRotationAxis(axis, 0);
+			var worldSpaceVector = this.Transform(Matrix3.FromQuaternion(quaternion).Transpose());
+			// rotate back to vector space
+			quaternion = Vector4.FromRotationAxis(axis, angle);
+			return worldSpaceVector.Transform(Matrix3.FromQuaternion(quaternion));
 		}
 
 		public bool WithinTriangle(Triangle triangle)
@@ -290,12 +295,12 @@ namespace Reign.Core
 			return this - (planeNormal * this.Dot(planeNormal) * 2);
 		}
 
-		public Vector3 InersectNormal3(Vector3 normal)
+		public Vector3 InersectNormal(Vector3 normal)
 		{
 			return (normal * this.Dot(normal));
 		}
 
-		public Vector3 InersectRay3(Vector3 rayLocation, Vector3 rayNormal)
+		public Vector3 InersectRay(Vector3 rayLocation, Vector3 rayNormal)
 		{
 			return (rayNormal * (this-rayLocation).Dot(rayNormal)) + rayLocation;
 		}
@@ -306,7 +311,12 @@ namespace Reign.Core
 			return (vector * pointOffset.Dot(vector)) + line.P1;
 		}
 
-		public Vector3 InersectPlane3(Vector3 planeNormal, Vector3 planeLocation)
+		public Vector3 InersectPlane(Vector3 planeNormal)
+		{
+			return this - (planeNormal * this.Dot(planeNormal));
+		}
+
+		public Vector3 InersectPlane(Vector3 planeNormal, Vector3 planeLocation)
 		{
 			return this - (planeNormal * (this-planeLocation).Dot(planeNormal));
 		}

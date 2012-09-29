@@ -11,22 +11,42 @@ namespace Reign.Core
 		/// <summary>
 		/// Represents the ratio of the circumference of a circle to its diameter, specified by the constant, π.
 		/// </summary>
-		public const float Pi = (float)3.1415926535897932384626433832795;
+		public const float Pi = 3.1415926535897932384626433832795f;
 
 		/// <summary>
 		/// Represents the ratio of the circumference of a circle to its diameter, specified by the constant, π, multiplied by 2.
 		/// </summary>
-		public const float Pi2 = (float)6.283185307179586476925286766559;
+		public const float Pi2 = 6.283185307179586476925286766559f;
+
+		/// <summary>
+		/// Represents the ratio of the circumference of a circle to its diameter, specified by the constant, π, multiplied by 4.
+		/// </summary>
+		public const float Pi4 = 12.566370614359172953850573533118f;
 
 		/// <summary>
 		/// Represents the ratio of the circumference of a circle to its diameter, specified by the constant, π, divided by 2.
 		/// </summary>
-		public const float PiHalf = (float)1.5707963267948966192313216916398;
+		public const float PiHalf = 1.5707963267948966192313216916398f;
+
+		/// <summary>
+		/// Represents the ratio of the circumference of a circle to its diameter, specified by the constant, π, divided by 4.
+		/// </summary>
+		public const float PiQuarter = 0.78539816339744830961566084581988f;
 
 		/// <summary>
 		/// Represents 1 divided by the ratio of the circumference of a circle to its diameter, specified by the constant, π.
 		/// </summary>
-		public const float PiMul = (float)0.31830988618379067153776752674503;
+		public const float PiDelta = 0.31830988618379067153776752674503f;
+
+		/// <summary>
+		/// Represents 1 divided by the ratio of the circumference of a circle to its diameter, specified by the constant, π, divided by 2.
+		/// </summary>
+		public const float PiHalfDelta = 0.63661977236758134307553505349004f;
+
+		/// <summary>
+		/// Represents 1 divided by the ratio of the circumference of a circle to its diameter, specified by the constant, π, divided by 4.
+		/// </summary>
+		public const float PiQuarterDelta = 1.2732395447351626861510701069801f;
 		#endregion
 
 		#region Methods
