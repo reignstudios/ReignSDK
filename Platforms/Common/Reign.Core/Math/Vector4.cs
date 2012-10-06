@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using MathS = System.Math;
+using System;
 
 namespace Reign.Core
 {
@@ -43,84 +43,275 @@ namespace Reign.Core
 			W = w;
 		}
 
-		public static Vector4 FromRotationAxis(Vector3 axis, float angle)
-		{
-			angle *= .5f;
-			var sin = (float)MathS.Sin(angle);
-			return new Vector4
-			(
-				axis.X * sin,
-				axis.Y * sin,
-				axis.Z * sin,
-				(float)MathS.Cos(angle)
-			);
-		}
-
-		public static Vector4 FromRotationAxis(float axisX, float axisY, float axisZ, float angle)
-		{
-			angle *= .5f;
-			var sin = (float)MathS.Sin(angle);
-			return new Vector4
-			(
-				axisX * sin,
-				axisY * sin,
-				axisZ * sin,
-				(float)MathS.Cos(angle)
-			);
-		}
-
-		public static Vector4 FromSphericalRotation(float latitude, float longitude, float angle)
-		{
-			angle *= .5f;
-			float ca = (float)MathS.Cos(angle);
-			float sa = (float)MathS.Sin(angle);
-			float cLat = (float)MathS.Cos(latitude);
-			float sLat = (float)MathS.Sin(latitude);
-			float cLong = (float)MathS.Cos(longitude);
-			float sLong = (float)MathS.Sin(longitude);
-			return new Vector4(sa*cLat*sLong, sa*sLat, sa*sLat*cLong, ca);
-		}
-
-		public static Vector4 FromEuler(float eulerX, float eulerY, float eulerZ)
-		{
-			var qX = Vector4.FromRotationAxis(1, 0, 0, eulerX);
-			var qY = Vector4.FromRotationAxis(0, 1, 0, eulerY);
-			var qZ = Vector4.FromRotationAxis(0, 0, 1, eulerZ);
-			return qX.Multiply(qY).Multiply(qZ);
-		}
-
 		public static readonly Vector4 One = new Vector4(1);
+		public static readonly Vector4 MinusOne = new Vector4(-1);
 		public static readonly Vector4 Zero = new Vector4(0);
 		public static readonly Vector4 Right = new Vector4(1, 0, 0, 0);
+		public static readonly Vector4 Left = new Vector4(-1, 0, 0, 0);
 		public static readonly Vector4 Up = new Vector4(0, 1, 0, 0);
+		public static readonly Vector4 Down = new Vector4(0, -1, 0, 0);
 		public static readonly Vector4 Forward = new Vector4(0, 0, 1, 0);
-		public static readonly Vector4 Spissitude = new Vector4(0, 0, 0, 1);
+		public static readonly Vector4 Backward = new Vector4(0, 0, -1, 0);
+		public static readonly Vector4 High = new Vector4(0, 0, 0, 1);
+		public static readonly Vector4 Low = new Vector4(0, 0, 0, -1);
 		#endregion
 
 		#region Operators
 		// +
-		public static Vector4 operator+(Vector4 p1, Vector4 p2) {return new Vector4(p1.X+p2.X, p1.Y+p2.Y, p1.Z+p2.Z, p1.W+p2.W);}
-		public static Vector4 operator+(Vector4 p1, float p2) {return new Vector4(p1.X+p2, p1.Y+p2, p1.Z+p2, p1.W+p2);}
-		public static Vector4 operator+(float p1, Vector4 p2) {return new Vector4(p1+p2.X, p1+p2.Y, p1+p2.Z, p1+p2.W);}
+		public static void Add(ref Vector4 value1, ref Vector4 value2, out Vector4 result)
+		{
+			result.X = value1.X + value2.X;
+			result.Y = value1.Y + value2.Y;
+			result.Z = value1.Z + value2.Z;
+			result.W = value1.W + value2.W;
+		}
+
+		public static void Add(ref Vector4 value1, float value2, out Vector4 result)
+		{
+			result.X = value1.X + value2;
+			result.Y = value1.Y + value2;
+			result.Z = value1.Z + value2;
+			result.W = value1.W + value2;
+		}
+
+		public static void Add(float value1, ref Vector4 value2, out Vector4 result)
+		{
+			result.X = value1 + value2.X;
+			result.Y = value1 + value2.Y;
+			result.Z = value1 + value2.Z;
+			result.W = value1 + value2.W;
+		}
+
+		public static Vector4 operator+(Vector4 p1, Vector4 p2)
+		{
+			p1.X += p2.X;
+			p1.Y += p2.Y;
+			p1.Z += p2.Z;
+			p1.W += p2.W;
+			return p1;
+		}
+
+		public static Vector4 operator+(Vector4 p1, float p2)
+		{
+			p1.X += p2;
+			p1.Y += p2;
+			p1.Z += p2;
+			p1.W += p2;
+			return p1;
+		}
+
+		public static Vector4 operator+(float p1, Vector4 p2)
+		{
+			p2.X = p1 + p2.X;
+			p2.Y = p1 + p2.Y;
+			p2.Z = p1 + p2.Z;
+			p2.W = p1 + p2.W;
+			return p2;
+		}
+
 		// -
-		public static Vector4 operator-(Vector4 p1, Vector4 p2) {return new Vector4(p1.X-p2.X, p1.Y-p2.Y, p1.Z-p2.Z, p1.W-p2.W);}
-		public static Vector4 operator-(Vector4 p1, float p2) {return new Vector4(p1.X-p2, p1.Y-p2, p1.Z-p2, p1.W-p2);}
-		public static Vector4 operator-(float p1, Vector4 p2) {return new Vector4(p1-p2.X, p1-p2.Y, p1-p2.Z, p1-p2.W);}
-		public static Vector4 operator-(Vector4 p1) {return new Vector4(-p1.X, -p1.Y, -p1.Z, p1.W);}
+		public static void Sub(ref Vector4 value1, ref Vector4 value2, out Vector4 result)
+		{
+			result.X = value1.X - value2.X;
+			result.Y = value1.Y - value2.Y;
+			result.Z = value1.Z - value2.Z;
+			result.W = value1.W - value2.W;
+		}
+
+		public static void Sub(ref Vector4 value1, float value2, out Vector4 result)
+		{
+			result.X = value1.X - value2;
+			result.Y = value1.Y - value2;
+			result.Z = value1.Z - value2;
+			result.W = value1.W - value2;
+		}
+
+		public static void Sub(float value1, ref Vector4 value2, out Vector4 result)
+		{
+			result.X = value1 - value2.X;
+			result.Y = value1 - value2.Y;
+			result.Z = value1 - value2.Z;
+			result.W = value1 - value2.W;
+		}
+
+		public static void Neg(ref Vector4 value, out Vector4 result)
+		{
+			result.X = -value.X;
+			result.Y = -value.Y;
+			result.Z = -value.Z;
+			result.W = -value.W;
+		}
+
+		public static Vector4 operator-(Vector4 p1, Vector4 p2)
+		{
+			p1.X -= p2.X;
+			p1.Y -= p2.Y;
+			p1.Z -= p2.Z;
+			p1.W -= p2.W;
+			return p1;
+		}
+
+		public static Vector4 operator-(Vector4 p1, float p2)
+		{
+			p1.X -= p2;
+			p1.Y -= p2;
+			p1.Z -= p2;
+			p1.W -= p2;
+			return p1;
+		}
+
+		public static Vector4 operator-(float p1, Vector4 p2)
+		{
+			p2.X = p1 - p2.X;
+			p2.Y = p1 - p2.Y;
+			p2.Z = p1 - p2.Z;
+			p2.W = p1 - p2.W;
+			return p2;
+		}
+
+		public static Vector4 operator-(Vector4 p2)
+		{
+			p2.X = -p2.X;
+			p2.Y = -p2.Y;
+			p2.Z = -p2.Z;
+			p2.W = -p2.W;
+			return p2;
+		}
+
 		// *
-		public static Vector4 operator*(Vector4 p1, Vector4 p2) {return new Vector4(p1.X*p2.X, p1.Y*p2.Y, p1.Z*p2.Z, p1.W*p2.W);}
-		public static Vector4 operator*(Vector4 p1, float p2) {return new Vector4(p1.X*p2, p1.Y*p2, p1.Z*p2, p1.W*p2);}
-		public static Vector4 operator*(float p1, Vector4 p2) {return new Vector4(p1*p2.X, p1*p2.Y, p1*p2.Z, p1*p2.W);}
+		public static void Mul(ref Vector4 value1, ref Vector4 value2, out Vector4 result)
+		{
+			result.X = value1.X * value2.X;
+			result.Y = value1.Y * value2.Y;
+			result.Z = value1.Z * value2.Z;
+			result.W = value1.W * value2.W;
+		}
+
+		public static void Mul(ref Vector4 value1, float value2, out Vector4 result)
+		{
+			result.X = value1.X * value2;
+			result.Y = value1.Y * value2;
+			result.Z = value1.Z * value2;
+			result.W = value1.W * value2;
+		}
+
+		public static void Mul(float value1, ref Vector4 value2, out Vector4 result)
+		{
+			result.X = value1 * value2.X;
+			result.Y = value1 * value2.Y;
+			result.Z = value1 * value2.Z;
+			result.W = value1 * value2.W;
+		}
+
+		public static Vector4 operator*(Vector4 p1, Vector4 p2)
+		{
+			p1.X *= p2.X;
+			p1.Y *= p2.Y;
+			p1.Z *= p2.Z;
+			p1.W *= p2.W;
+			return p1;
+		}
+
+		public static Vector4 operator*(Vector4 p1, float p2)
+		{
+			p1.X *= p2;
+			p1.Y *= p2;
+			p1.Z *= p2;
+			p1.W *= p2;
+			return p1;
+		}
+
+		public static Vector4 operator*(float p1, Vector4 p2)
+		{
+			p2.X = p1 * p2.X;
+			p2.Y = p1 * p2.Y;
+			p2.Z = p1 * p2.Z;
+			p2.W = p1 * p2.W;
+			return p2;
+		}
+
 		// /
-		public static Vector4 operator/(Vector4 p1, Vector4 p2) {return new Vector4(p1.X/p2.X, p1.Y/p2.Y, p1.Z/p2.Z, p1.W/p2.W);}
-		public static Vector4 operator/(Vector4 p1, float p2) {return new Vector4(p1.X/p2, p1.Y/p2, p1.Z/p2, p1.W/p2);}
-		public static Vector4 operator/(float p1, Vector4 p2) {return new Vector4(p1/p2.X, p1/p2.Y, p1/p2.Z, p1/p2.W);}
+		public static void Div(ref Vector4 value1, ref Vector4 value2, out Vector4 result)
+		{
+			result.X = value1.X / value2.X;
+			result.Y = value1.Y / value2.Y;
+			result.Z = value1.Z / value2.Z;
+			result.W = value1.W / value2.W;
+		}
+
+		public static void Div(ref Vector4 value1, float value2, out Vector4 result)
+		{
+			result.X = value1.X / value2;
+			result.Y = value1.Y / value2;
+			result.Z = value1.Z / value2;
+			result.W = value1.W / value2;
+		}
+
+		public static void Div(float value1, ref Vector4 value2, out Vector4 result)
+		{
+			result.X = value1 / value2.X;
+			result.Y = value1 / value2.Y;
+			result.Z = value1 / value2.Z;
+			result.W = value1 / value2.W;
+		}
+
+		public static Vector4 operator/(Vector4 p1, Vector4 p2)
+		{
+			p1.X /= p2.X;
+			p1.Y /= p2.Y;
+			p1.Z /= p2.Z;
+			p1.W /= p2.W;
+			return p1;
+		}
+
+		public static Vector4 operator/(Vector4 p1, float p2)
+		{
+			p1.X /= p2;
+			p1.Y /= p2;
+			p1.Z /= p2;
+			p1.W /= p2;
+			return p1;
+		}
+
+		public static Vector4 operator/(float p1, Vector4 p2)
+		{
+			p2.X = p1 / p2.X;
+			p2.Y = p1 / p2.Y;
+			p2.Z = p1 / p2.Z;
+			p2.W = p1 / p2.W;
+			return p2;
+		}
+
 		// ==
 		public static bool operator==(Vector4 p1, Vector4 p2) {return (p1.X==p2.X && p1.Y==p2.Y && p1.Z==p2.Z && p1.W==p2.W);}
 		public static bool operator!=(Vector4 p1, Vector4 p2) {return (p1.X!=p2.X || p1.Y!=p2.Y || p1.Z!=p2.Z || p1.W!=p2.W);}
+
 		// convert
-		public Vector2 ToVector2() {return new Vector2(X, Y);}
-		public Vector3 ToVector3() {return new Vector3(X, Y, Z);}
+		public Vector2 ToVector2()
+		{
+			return new Vector2(X, Y);
+		}
+
+		public static void ToVector2(ref Vector4 vector, out Vector2 result)
+		{
+			result.X = vector.X;
+			result.Y = vector.Y;
+			result.z = 0;
+			result.w = 0;
+		}
+
+		public Vector3 ToVector3()
+		{
+			return new Vector3(X, Y, Z);
+		}
+
+		public static void ToVector3(ref Vector4 vector, out Vector3 result)
+		{
+			result.X = vector.X;
+			result.Y = vector.Y;
+			result.Z = vector.Z;
+			result.w = 0;
+		}
 		#endregion
 
 		#region Methods
@@ -141,27 +332,133 @@ namespace Reign.Core
 
 		public Vector4 Max(float value)
 		{
-			return new Vector4(MathS.Max(X, value), MathS.Max(Y, value), MathS.Max(Z, value), MathS.Max(W, value));
+			return new Vector4(Math.Max(X, value), Math.Max(Y, value), Math.Max(Z, value), Math.Max(W, value));
+		}
+
+		public static void Max(ref Vector4 vector, float value, out Vector4 result)
+		{
+			result.X = Math.Max(vector.X, value);
+			result.Y = Math.Max(vector.Y, value);
+			result.Z = Math.Max(vector.Z, value);
+			result.W = Math.Max(vector.W, value);
+		}
+
+		public Vector4 Max(Vector4 values)
+		{
+			return new Vector4(Math.Max(X, values.X), Math.Max(Y, values.Y), Math.Max(Z, values.Z), Math.Max(W, values.W));
+		}
+
+		public static void Max(ref Vector4 vector, ref Vector4 values, out Vector4 result)
+		{
+			result.X = Math.Max(vector.X, values.X);
+			result.Y = Math.Max(vector.Y, values.Y);
+			result.Z = Math.Max(vector.Z, values.Z);
+			result.W = Math.Max(vector.W, values.W);
 		}
 
 		public Vector4 Min(float value)
 		{
-			return new Vector4(MathS.Min(X, value), MathS.Min(Y, value), MathS.Min(Z, value), MathS.Min(W, value));
+			return new Vector4(Math.Min(X, value), Math.Min(Y, value), Math.Min(Z, value), Math.Min(W, value));
+		}
+
+		public static void Min(ref Vector4 vector, float value, out Vector4 result)
+		{
+			result.X = Math.Min(vector.X, value);
+			result.Y = Math.Min(vector.Y, value);
+			result.Z = Math.Min(vector.Z, value);
+			result.W = Math.Min(vector.W, value);
+		}
+
+		public Vector4 Min(Vector4 values)
+		{
+			return new Vector4(Math.Min(X, values.X), Math.Min(Y, values.Y), Math.Min(Z, values.Z), Math.Min(W, values.W));
+		}
+
+		public static void Min(ref Vector4 vector, ref Vector4 values, out Vector4 result)
+		{
+			result.X = Math.Min(vector.X, values.X);
+			result.Y = Math.Min(vector.Y, values.Y);
+			result.Z = Math.Min(vector.Z, values.Z);
+			result.W = Math.Min(vector.W, values.W);
 		}
 
 		public Vector4 Abs()
 		{
-			return new Vector4(MathS.Abs(X), MathS.Abs(Y), MathS.Abs(Z), MathS.Abs(W));
+			return new Vector4(Math.Abs(X), Math.Abs(Y), Math.Abs(Z), Math.Abs(W));
 		}
 
-		public Vector4 Pow(float value)
+		public static void Abs(ref Vector4 vector, out Vector4 result)
 		{
-			return new Vector4((float)MathS.Pow(X, value), (float)MathS.Pow(Y, value), (float)MathS.Pow(Z, value), (float)MathS.Pow(W, value));
+			result.X = Math.Abs(vector.X);
+			result.Y = Math.Abs(vector.Y);
+			result.Z = Math.Abs(vector.Z);
+			result.W = Math.Abs(vector.W);
+		}
+
+		public Vector4 Pow(float power)
+		{
+			return new Vector4((float)Math.Pow(X, power), (float)Math.Pow(Y, power), (float)Math.Pow(Z, power), (float)Math.Pow(W, power));
+		}
+
+		public static void Pow(ref Vector4 vector, float power, out Vector4 result)
+		{
+			result.X = (float)Math.Pow(vector.X, power);
+			result.Y = (float)Math.Pow(vector.Y, power);
+			result.Z = (float)Math.Pow(vector.Z, power);
+			result.W = (float)Math.Pow(vector.W, power);
 		}
 
 		public Vector4 Floor()
 		{
-			return new Vector4((float)MathS.Floor(X), (float)MathS.Floor(Y), (float)MathS.Floor(Z), (float)MathS.Floor(W));
+			return new Vector4((float)Math.Floor(X), (float)Math.Floor(Y), (float)Math.Floor(Z), (float)Math.Floor(W));
+		}
+
+		public static void Floor(ref Vector4 vector, out Vector4 result)
+		{
+			result.X = (float)Math.Floor(vector.X);
+			result.Y = (float)Math.Floor(vector.Y);
+			result.Z = (float)Math.Floor(vector.Z);
+			result.W = (float)Math.Floor(vector.W);
+		}
+
+		public float Length()
+		{
+			return (float)Math.Sqrt((X*X) + (Y*Y) + (Z*Z) + (W*W));
+		}
+
+		public static void Length(ref Vector4 vector, out float result)
+		{
+			result = (float)Math.Sqrt((vector.X*vector.X) + (vector.Y*vector.Y) + (vector.Z*vector.Z) + (vector.W*vector.W));
+		}
+
+		public float LengthSquared()
+		{
+			return (X*X) + (Y*Y) + (Z*Z) + (W*W);
+		}
+
+		public static void LengthSquared(ref Vector4 vector, out float result)
+		{
+			result = (vector.X*vector.X) + (vector.Y*vector.Y) + (vector.Z*vector.Z) + (vector.W*vector.W);
+		}
+		
+		public float Distance(Vector4 vector)
+		{
+			return (vector - this).Length();
+		}
+
+		public static void Distance(ref Vector4 vector1, ref Vector4 vector2, out float result)
+		{
+			result = (vector2 - vector1).Length();
+		}
+		
+		public float DistanceSquared(Vector4 vector)
+		{
+			return (vector - this).Dot();
+		}
+
+		public static void DistanceSquared(ref Vector4 vector1, ref Vector4 vector2, out float result)
+		{
+			result = (vector2 - vector1).Dot();
 		}
 
 		public float Dot()
@@ -169,235 +466,215 @@ namespace Reign.Core
 			return (X*X) + (Y*Y) + (Z*Z) + (W*W);
 		}
 
+		public static void Dot(ref Vector4 vector, out float result)
+		{
+			result = (vector.X*vector.X) + (vector.Y*vector.Y) + (vector.Z*vector.Z) + (vector.W*vector.W);
+		}
+
 		public float Dot(Vector4 vector)
 		{
 			return (X*vector.X) + (Y*vector.Y) + (Z*vector.Z) + (W*vector.W);
 		}
 
-		public float Length()
+		public static void Dot(ref Vector4 vector1, ref Vector4 vector2, out float result)
 		{
-			#if SIMD
-			var result = input * input;
-			result = result.HorizontalAdd(result);
-			result = result.HorizontalAdd(result);
-			result *= result.InvSqrt();
-			return result.X;
-			#else
-			return (float)MathS.Sqrt((X*X) + (Y*Y) + (Z*Z) + (W*W));
-			#endif
-		}		
+			result = (vector1.X*vector2.X) + (vector1.Y*vector2.Y) + (vector1.Z*vector2.Z) + (vector1.W*vector2.W);
+		}
 
 		public Vector4 Normalize()
 		{
-			#if SIMD
-			var factor = input * input;
-			factor = factor.HorizontalAdd(factor);
-			factor = factor.HorizontalAdd(factor);
-			return input * factor.InvSqrt();
-			#else
-			return this * (1 / (float)MathS.Sqrt((X*X) + (Y*Y) + (Z*Z) + (W*W)));
-			#endif
+			return this * (1 / (float)Math.Sqrt((X*X) + (Y*Y) + (Z*Z) + (W*W)));
+		}
+
+		public static void Normalize(ref Vector4 vector, out Vector4 result)
+		{
+			result = vector * (1 / (float)Math.Sqrt((vector.X*vector.X) + (vector.Y*vector.Y) + (vector.Z*vector.Z) + (vector.W*vector.W)));
 		}
 
 		public Vector4 Normalize(out float length)
 		{
-			#if SIMD
-			var factor = input * input;
-			factor = factor.HorizontalAdd(factor);
-			factor = factor.HorizontalAdd(factor);
-			factor = factor.InvSqrt();
-			length = (factor * factor).X;
-			return input * factor;
-			#else
-			float dis = (float)MathS.Sqrt((X*X) + (Y*Y) + (Z*Z) + (W*W));
+			float dis = (float)Math.Sqrt((X*X) + (Y*Y) + (Z*Z) + (W*W));
 			length = dis;
 			return this * (1/dis);
-			#endif
+		}
+
+		public static void Normalize(ref Vector4 vector, out Vector4 result, out float length)
+		{
+			float dis = (float)Math.Sqrt((vector.X*vector.X) + (vector.Y*vector.Y) + (vector.Z*vector.Z) + (vector.W*vector.W));
+			length = dis;
+			result = vector * (1/dis);
 		}
 
 		public Vector4 NormalizeSafe()
 		{
-			#if SIMD
-			if (input.X == 0 && input.Y == 0 && input.Z == 0 && input.W == 0)
-			{
-				return new Vector4();
-			}
-			
-			var factor = input * input;
-			factor = factor.HorizontalAdd(factor);
-			factor = factor.HorizontalAdd(factor);
-			return vector * factor.InvSqrt();
-			#else
-			float dis = (float)MathS.Sqrt((X*X) + (Y*Y) + (Z*Z) + (W*W));
+			float dis = (float)Math.Sqrt((X*X) + (Y*Y) + (Z*Z) + (W*W));
 			if (dis == 0) return new Vector4();
 			else return this * (1/dis);
-			#endif
+		}
+
+		public static void NormalizeSafe(ref Vector4 vector, out Vector4 result)
+		{
+			float dis = (float)Math.Sqrt((vector.X*vector.X) + (vector.Y*vector.Y) + (vector.Z*vector.Z) + (vector.W*vector.W));
+			if (dis == 0) result = new Vector4();
+			else result = vector * (1/dis);
 		}
 
 		public Vector4 NormalizeSafe(out float length)
 		{
-			#if SIMD
-			if (input.X == 0 && input.Y == 0 && input.Z == 0 && input.W == 0) return new Vector4();
-			var factor = input * input;
-			factor = factor.HorizontalAdd(factor);
-			factor = factor.HorizontalAdd(factor);
-			factor = factor.InvSqrt();
-			length = (factor * factor).X;
-			return input * factor;
-			#else
-			float dis = (float)MathS.Sqrt((X*X) + (Y*Y) + (Z*Z) + (W*W));
+			float dis = (float)Math.Sqrt((X*X) + (Y*Y) + (Z*Z) + (W*W));
 			length = dis;
 			if (dis == 0) return new Vector4();
 			else return this * (1/dis);
-			#endif
+		}
+
+		public static void NormalizeSafe(ref Vector4 vector, out Vector4 result, out float length)
+		{
+			float dis = (float)Math.Sqrt((vector.X*vector.X) + (vector.Y*vector.Y) + (vector.Z*vector.Z) + (vector.W*vector.W));
+			length = dis;
+			if (dis == 0) result = new Vector4();
+			else result = vector * (1/dis);
 		}
 
 		public Vector4 Transform(Matrix4 matrix)
 		{
-			#if SIMD
-			return
-				(matrix.X * input.Shuffle(ShuffleSel.ExpandX)) +
-				(matrix.Y * input.Shuffle(ShuffleSel.ExpandY)) +
-				(matrix.Z * input.Shuffle(ShuffleSel.ExpandZ)) +
-				(matrix.W * input.Shuffle(ShuffleSel.ExpandW));
-			#else
 		    return (matrix.X*X) + (matrix.Y*Y) + (matrix.Z*Z) + (matrix.W*W);
-			#endif
 		}
 
-		public Vector4 Multiply(Vector4 quaternion)
+		public static void Transform(ref Vector4 vector, ref Matrix4 matrix, out Vector4 result)
 		{
-			return new Vector4
-			(
-				W*quaternion.X + X*quaternion.W + Y*quaternion.Z - Z*quaternion.Y,
-				W*quaternion.Y - X*quaternion.Z + Y*quaternion.W + Z*quaternion.X,
-				W*quaternion.Z + X*quaternion.Y - Y*quaternion.X + Z*quaternion.W,
-				W*quaternion.W - X*quaternion.X - Y*quaternion.Y - Z*quaternion.Z
-			);
-		}
-
-		public Vector4 Conjugate()
-		{
-			return new Vector4(-X, -Y, -Z, W);
-		}
-
-		public void RotationAxis(out Vector3 axis, out float angle)
-		{
-			angle = (float)MathS.Acos(W) * Math.Pi2;
-			float sinAngle = (float)MathS.Sqrt(1 - (W*W));
-			if (sinAngle == 0) sinAngle = 1;
-			sinAngle = 1 / sinAngle;
-			axis = new Vector3(X*sinAngle, Y*sinAngle, Z*sinAngle);
-		}
-
-		public void SphericalRotation(out float latitude, out float longitude, out float angle)
-		{
-			angle = (float)MathS.Acos(W) * Math.Pi2;
-			float sinAngle = (float)MathS.Sqrt(1 - (W*W));
-			if (sinAngle == 0) sinAngle = 1;
-			sinAngle = 1 / sinAngle;
-
-			float x = X * sinAngle;
-			float y = Y * sinAngle;
-			float z = Z * sinAngle;
-
-			latitude = -(float)MathS.Asin(y);
-			if ((x*x) + (z*z) == 0) longitude = 0;
-			else longitude = (float)MathS.Atan2(x, z) * Math.Pi;
-			if (longitude < 0) longitude += Math.Pi2;
+		    result = (matrix.X*vector.X) + (matrix.Y*vector.Y) + (matrix.Z*vector.Z) + (matrix.W*vector.W);
 		}
 
 		public bool AproxEqualsBox(Vector4 vector, float tolerance)
 		{
 			return
-				(MathS.Abs(X-vector.X) <= tolerance) &&
-				(MathS.Abs(Y-vector.Y) <= tolerance) &&
-				(MathS.Abs(Z-vector.Z) <= tolerance) &&
-				(MathS.Abs(W-vector.W) <= tolerance);
+				(Math.Abs(X-vector.X) <= tolerance) &&
+				(Math.Abs(Y-vector.Y) <= tolerance) &&
+				(Math.Abs(Z-vector.Z) <= tolerance) &&
+				(Math.Abs(W-vector.W) <= tolerance);
+		}
+
+		public static void AproxEqualsBox(ref Vector4 vector1, ref Vector4 vector2, float tolerance, out bool result)
+		{
+			result =
+				(Math.Abs(vector1.X-vector2.X) <= tolerance) &&
+				(Math.Abs(vector1.Y-vector2.Y) <= tolerance) &&
+				(Math.Abs(vector1.Z-vector2.Z) <= tolerance) &&
+				(Math.Abs(vector1.W-vector2.W) <= tolerance);
 		}
 
 		public bool ApproxEquals(Vector4 vector, float tolerance)
 		{
-		    return (Length(vector) <= tolerance);
+		    return (Distance(vector) <= tolerance);
 		}
 
-		public float Length(Vector4 vector)
+		public static void ApproxEquals(ref Vector4 vector1, ref Vector4 vector2, float tolerance, out bool result)
 		{
-			#if SIMD
-			var result = vector - input;
-			result *= result;
-			result = result.HorizontalAdd(result);
-			result = result.HorizontalAdd(result);
-			result *= result.InvSqrt();
-			return result.X;
-			#else
-			return (vector - this).Length();
-			#endif
-		}
-		
-		public float LengthSquared(Vector4 vector)
-		{
-			#if SIMD
-			var result = vector - input;
-			result *= result;
-			result = result.HorizontalAdd(result);
-			result = result.HorizontalAdd(result);
-			return result.X;
-			#else
-			return (vector - this).Dot();
-			#endif
+		    result = (vector1.Distance(vector2) <= tolerance);
 		}
 
 		public Vector4 Project(Matrix4 projectionMatrix, Matrix4 viewMatrix, int viewX, int viewY, int viewWidth, int viewHeight)
 		{
-			var vec = this;
-			vec = vec.Transform(viewMatrix);
-			vec = vec.Transform(projectionMatrix);
+			var result = this;
+			result = result.Transform(viewMatrix);
+			result = result.Transform(projectionMatrix);
 			
-			vec.X /= vec.W;
-			vec.Y /= vec.W;
-			vec.Z /= vec.W;
+			float wDelta = 1 / result.W;
+			result.X *= wDelta;
+			result.Y *= wDelta;
+			result.Z *= wDelta;
 			
-			vec.X = (vec.X * .5f) + .5f;
-			vec.Y = (vec.Y * .5f) + .5f;
-			vec.Z = (vec.Z * .5f) + .5f;
+			result.X = (result.X * .5f) + .5f;
+			result.Y = (result.Y * .5f) + .5f;
+			result.Z = (result.Z * .5f) + .5f;
 
-			vec.X = (vec.X * viewWidth) + viewX;
-			vec.Y = (vec.Y * viewHeight) + viewY;
+			result.X = (result.X * viewWidth) + viewX;
+			result.Y = (result.Y * viewHeight) + viewY;
 
-			return vec;
+			return result;
+		}
+
+		public static void Project(ref Vector4 vector, ref Matrix4 projectionMatrix, ref Matrix4 viewMatrix, int viewX, int viewY, int viewWidth, int viewHeight, out Vector4 result)
+		{
+			result = vector;
+			result = result.Transform(viewMatrix);
+			result = result.Transform(projectionMatrix);
+			
+			float wDelta = 1 / result.W;
+			result.X *= wDelta;
+			result.Y *= wDelta;
+			result.Z *= wDelta;
+			
+			result.X = (result.X * .5f) + .5f;
+			result.Y = (result.Y * .5f) + .5f;
+			result.Z = (result.Z * .5f) + .5f;
+
+			result.X = (result.X * viewWidth) + viewX;
+			result.Y = (result.Y * viewHeight) + viewY;
 		}
 
 		public Vector4 UnProject(Matrix4 viewProjInverse, int viewX, int viewY, int viewWidth, int viewHeight)
 		{
-			var vec = this;
-			vec.X = (vec.X - viewX) / viewWidth;
-			vec.Y = (vec.Y - viewY) / viewHeight;
-			vec = (vec * 2) - 1;
+			var result = this;
+			result.X = (result.X - viewX) / viewWidth;
+			result.Y = (result.Y - viewY) / viewHeight;
+			result = (result * 2) - 1;
 
-			vec = vec.Transform(viewProjInverse);
-			vec.X /= vec.W;
-			vec.Y /= vec.W;
-			vec.Z /= vec.W;
+			result = result.Transform(viewProjInverse);
+			float wDelta = 1 / result.W;
+			result.X *= wDelta;
+			result.Y *= wDelta;
+			result.Z *= wDelta;
 			
-			return vec;
+			return result;
+		}
+
+		public static void UnProject(ref Vector4 vector, ref Matrix4 viewProjInverse, int viewX, int viewY, int viewWidth, int viewHeight, out Vector4 result)
+		{
+			result = vector;
+			result.X = (result.X - viewX) / viewWidth;
+			result.Y = (result.Y - viewY) / viewHeight;
+			result = (result * 2) - 1;
+
+			result = result.Transform(viewProjInverse);
+			float wDelta = 1 / result.W;
+			result.X *= wDelta;
+			result.Y *= wDelta;
+			result.Z *= wDelta;
 		}
 
 		public Vector4 UnProject(Matrix4 projectionMatrix, Matrix4 viewMatrix, int viewX, int viewY, int viewWidth, int viewHeight)
 		{
 			var viewProjInverse = viewMatrix.Multiply(projectionMatrix).Invert();
 			
-			var vec = this;
-			vec.X = (vec.X - viewX) / viewWidth;
-			vec.Y = (vec.Y - viewY) / viewHeight;
-			vec = (vec * 2) - 1;
+			var result = this;
+			result.X = (result.X - viewX) / viewWidth;
+			result.Y = (result.Y - viewY) / viewHeight;
+			result = (result * 2) - 1;
 
-			vec = vec.Transform(viewProjInverse);
-			vec.X /= vec.W;
-			vec.Y /= vec.W;
-			vec.Z /= vec.W;
+			result = result.Transform(viewProjInverse);
+			float wDelta = 1 / result.W;
+			result.X *= wDelta;
+			result.Y *= wDelta;
+			result.Z *= wDelta;
 			
-			return vec;
+			return result;
+		}
+
+		public static void UnProject(ref Vector4 vector, ref Matrix4 projectionMatrix, ref Matrix4 viewMatrix, int viewX, int viewY, int viewWidth, int viewHeight, out Vector4 result)
+		{
+			var viewProjInverse = viewMatrix.Multiply(projectionMatrix).Invert();
+			
+			result = vector;
+			result.X = (result.X - viewX) / viewWidth;
+			result.Y = (result.Y - viewY) / viewHeight;
+			result = (result * 2) - 1;
+
+			result = result.Transform(viewProjInverse);
+			float wDelta = 1 / result.W;
+			result.X *= wDelta;
+			result.Y *= wDelta;
+			result.Z *= wDelta;
 		}
 		#endregion
 	}

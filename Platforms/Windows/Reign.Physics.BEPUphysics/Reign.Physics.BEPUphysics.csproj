@@ -1,0 +1,1117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{38FF4203-F4B2-4054-9ABD-A52DD7D5AA49}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Reign.Physics.BEPUphysics</RootNamespace>
+    <AssemblyName>Reign.Physics.BEPUphysics</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>TRACE;WINDOWS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\BroadPhaseEntry.cs">
+      <Link>BroadPhaseEntries\BroadPhaseEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\Collidable.cs">
+      <Link>BroadPhaseEntries\Collidable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\CollidableCollection.cs">
+      <Link>BroadPhaseEntries\CollidableCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\CollidablePair.cs">
+      <Link>BroadPhaseEntries\CollidablePair.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\DetectorVolume.cs">
+      <Link>BroadPhaseEntries\DetectorVolume.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\EntityCollidableCollection.cs">
+      <Link>BroadPhaseEntries\EntityCollidableCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\Events\CollisionEventTypes.cs">
+      <Link>BroadPhaseEntries\Events\CollisionEventTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\Events\CompoundEventManager.cs">
+      <Link>BroadPhaseEntries\Events\CompoundEventManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\Events\ContactEventManager.cs">
+      <Link>BroadPhaseEntries\Events\ContactEventManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\Events\EntryEventManager.cs">
+      <Link>BroadPhaseEntries\Events\EntryEventManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\Events\IContactEventTriggerer.cs">
+      <Link>BroadPhaseEntries\Events\IContactEventTriggerer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\Events\IEntryEventTriggerer.cs">
+      <Link>BroadPhaseEntries\Events\IEntryEventTriggerer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\InstancedMesh.cs">
+      <Link>BroadPhaseEntries\InstancedMesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\MobileCollidables\CompoundCollidable.cs">
+      <Link>BroadPhaseEntries\MobileCollidables\CompoundCollidable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\MobileCollidables\CompoundHelper.cs">
+      <Link>BroadPhaseEntries\MobileCollidables\CompoundHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\MobileCollidables\CompoundHierarchy.cs">
+      <Link>BroadPhaseEntries\MobileCollidables\CompoundHierarchy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\MobileCollidables\ConvexCollidable.cs">
+      <Link>BroadPhaseEntries\MobileCollidables\ConvexCollidable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\MobileCollidables\EntityCollidable.cs">
+      <Link>BroadPhaseEntries\MobileCollidables\EntityCollidable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\MobileCollidables\MobileCollidable.cs">
+      <Link>BroadPhaseEntries\MobileCollidables\MobileCollidable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\MobileCollidables\MobileMeshCollidable.cs">
+      <Link>BroadPhaseEntries\MobileCollidables\MobileMeshCollidable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\MobileCollidables\TriangleCollidable.cs">
+      <Link>BroadPhaseEntries\MobileCollidables\TriangleCollidable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\StaticCollidable.cs">
+      <Link>BroadPhaseEntries\StaticCollidable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\StaticGroup.cs">
+      <Link>BroadPhaseEntries\StaticGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\StaticMesh.cs">
+      <Link>BroadPhaseEntries\StaticMesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseEntries\Terrain.cs">
+      <Link>BroadPhaseEntries\Terrain.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\BroadPhase.cs">
+      <Link>BroadPhaseSystems\BroadPhase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\BroadPhaseOverlap.cs">
+      <Link>BroadPhaseSystems\BroadPhaseOverlap.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\BruteForce.cs">
+      <Link>BroadPhaseSystems\BruteForce.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\Hierarchies\DynamicHierarchy.cs">
+      <Link>BroadPhaseSystems\Hierarchies\DynamicHierarchy.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\Hierarchies\DynamicHierarchyNode.cs">
+      <Link>BroadPhaseSystems\Hierarchies\DynamicHierarchyNode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\Hierarchies\DynamicHierarchyQueryAccelerator.cs">
+      <Link>BroadPhaseSystems\Hierarchies\DynamicHierarchyQueryAccelerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\IBoundingBoxOwner.cs">
+      <Link>BroadPhaseSystems\IBoundingBoxOwner.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\IBroadPhaseEntryOwner.cs">
+      <Link>BroadPhaseSystems\IBroadPhaseEntryOwner.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\IQueryAccelerator.cs">
+      <Link>BroadPhaseSystems\IQueryAccelerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\SortAndSweep\Grid2DEntry.cs">
+      <Link>BroadPhaseSystems\SortAndSweep\Grid2DEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\SortAndSweep\Grid2DSortAndSweep.cs">
+      <Link>BroadPhaseSystems\SortAndSweep\Grid2DSortAndSweep.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\SortAndSweep\Grid2DSortAndSweepQueryAccelerator.cs">
+      <Link>BroadPhaseSystems\SortAndSweep\Grid2DSortAndSweepQueryAccelerator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\SortAndSweep\GridCell2D.cs">
+      <Link>BroadPhaseSystems\SortAndSweep\GridCell2D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\SortAndSweep\SortAndSweep1D.cs">
+      <Link>BroadPhaseSystems\SortAndSweep\SortAndSweep1D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\BroadPhaseSystems\SortAndSweep\SortedGrid2DSet.cs">
+      <Link>BroadPhaseSystems\SortAndSweep\SortedGrid2DSet.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionRuleManagement\CollisionGroup.cs">
+      <Link>CollisionRuleManagement\CollisionGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionRuleManagement\CollisionGroupPair.cs">
+      <Link>CollisionRuleManagement\CollisionGroupPair.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionRuleManagement\CollisionRule.cs">
+      <Link>CollisionRuleManagement\CollisionRule.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionRuleManagement\CollisionRules.cs">
+      <Link>CollisionRuleManagement\CollisionRules.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionRuleManagement\ICollisionRulesOwner.cs">
+      <Link>CollisionRuleManagement\ICollisionRulesOwner.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\CollisionShape.cs">
+      <Link>CollisionShapes\CollisionShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\CompoundShape.cs">
+      <Link>CollisionShapes\CompoundShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\ConvexShapes\BoxShape.cs">
+      <Link>CollisionShapes\ConvexShapes\BoxShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\ConvexShapes\CapsuleShape.cs">
+      <Link>CollisionShapes\ConvexShapes\CapsuleShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\ConvexShapes\ConeShape.cs">
+      <Link>CollisionShapes\ConvexShapes\ConeShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\ConvexShapes\ConvexHullShape.cs">
+      <Link>CollisionShapes\ConvexShapes\ConvexHullShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\ConvexShapes\ConvexShape.cs">
+      <Link>CollisionShapes\ConvexShapes\ConvexShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\ConvexShapes\CylinderShape.cs">
+      <Link>CollisionShapes\ConvexShapes\CylinderShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\ConvexShapes\InertiaHelper.cs">
+      <Link>CollisionShapes\ConvexShapes\InertiaHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\ConvexShapes\MinkowskiSumShape.cs">
+      <Link>CollisionShapes\ConvexShapes\MinkowskiSumShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\ConvexShapes\SphereShape.cs">
+      <Link>CollisionShapes\ConvexShapes\SphereShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\ConvexShapes\TransformableShape.cs">
+      <Link>CollisionShapes\ConvexShapes\TransformableShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\ConvexShapes\TriangleShape.cs">
+      <Link>CollisionShapes\ConvexShapes\TriangleShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\ConvexShapes\WrappedShape.cs">
+      <Link>CollisionShapes\ConvexShapes\WrappedShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\EntityShape.cs">
+      <Link>CollisionShapes\EntityShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\InstancedMeshShape.cs">
+      <Link>CollisionShapes\InstancedMeshShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\MobileMeshShape.cs">
+      <Link>CollisionShapes\MobileMeshShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\ShapeDistributionInformation.cs">
+      <Link>CollisionShapes\ShapeDistributionInformation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\StaticGroupShape.cs">
+      <Link>CollisionShapes\StaticGroupShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\StaticMeshShape.cs">
+      <Link>CollisionShapes\StaticMeshShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionShapes\TerrainShape.cs">
+      <Link>CollisionShapes\TerrainShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\CollisionAlgorithms\BoxBoxCollider.cs">
+      <Link>CollisionTests\CollisionAlgorithms\BoxBoxCollider.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\CollisionAlgorithms\BoxSphereTester.cs">
+      <Link>CollisionTests\CollisionAlgorithms\BoxSphereTester.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\CollisionAlgorithms\GeneralConvexPairTester.cs">
+      <Link>CollisionTests\CollisionAlgorithms\GeneralConvexPairTester.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\CollisionAlgorithms\GJK\GJKToolbox.cs">
+      <Link>CollisionTests\CollisionAlgorithms\GJK\GJKToolbox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\CollisionAlgorithms\GJK\PairSimplex.cs">
+      <Link>CollisionTests\CollisionAlgorithms\GJK\PairSimplex.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\CollisionAlgorithms\GJK\RaySimplex.cs">
+      <Link>CollisionTests\CollisionAlgorithms\GJK\RaySimplex.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\CollisionAlgorithms\GJK\SimpleSimplex.cs">
+      <Link>CollisionTests\CollisionAlgorithms\GJK\SimpleSimplex.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\CollisionAlgorithms\MinkowskiToolbox.cs">
+      <Link>CollisionTests\CollisionAlgorithms\MinkowskiToolbox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\CollisionAlgorithms\MPRToolbox.cs">
+      <Link>CollisionTests\CollisionAlgorithms\MPRToolbox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\CollisionAlgorithms\SphereTester.cs">
+      <Link>CollisionTests\CollisionAlgorithms\SphereTester.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\CollisionAlgorithms\TriangleConvexPairTester.cs">
+      <Link>CollisionTests\CollisionAlgorithms\TriangleConvexPairTester.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\CollisionAlgorithms\TrianglePairTester.cs">
+      <Link>CollisionTests\CollisionAlgorithms\TrianglePairTester.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\CollisionAlgorithms\TriangleSpherePairTester.cs">
+      <Link>CollisionTests\CollisionAlgorithms\TriangleSpherePairTester.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\CollisionAlgorithms\TriangleTrianglePairTester.cs">
+      <Link>CollisionTests\CollisionAlgorithms\TriangleTrianglePairTester.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Contact.cs">
+      <Link>CollisionTests\Contact.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\ContactData.cs">
+      <Link>CollisionTests\ContactData.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\ContactReducer.cs">
+      <Link>CollisionTests\ContactReducer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\ContactRefresher.cs">
+      <Link>CollisionTests\ContactRefresher.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\ContactSupplementData.cs">
+      <Link>CollisionTests\ContactSupplementData.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\BoxContactManifold.cs">
+      <Link>CollisionTests\Manifolds\BoxContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\BoxSphereContactManifold.cs">
+      <Link>CollisionTests\Manifolds\BoxSphereContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\ContactManifold.cs">
+      <Link>CollisionTests\Manifolds\ContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\GeneralConvexContactManifold.cs">
+      <Link>CollisionTests\Manifolds\GeneralConvexContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\InstancedMeshContactManifold.cs">
+      <Link>CollisionTests\Manifolds\InstancedMeshContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\InstancedMeshConvexContactManifold.cs">
+      <Link>CollisionTests\Manifolds\InstancedMeshConvexContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\InstancedMeshSphereContactManifold.cs">
+      <Link>CollisionTests\Manifolds\InstancedMeshSphereContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\MobileMeshContactManifold.cs">
+      <Link>CollisionTests\Manifolds\MobileMeshContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\MobileMeshConvexContactManifold.cs">
+      <Link>CollisionTests\Manifolds\MobileMeshConvexContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\MobileMeshSphereContactManifold.cs">
+      <Link>CollisionTests\Manifolds\MobileMeshSphereContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\MobileMeshTriangleContactManifold.cs">
+      <Link>CollisionTests\Manifolds\MobileMeshTriangleContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\SphereContactManifold.cs">
+      <Link>CollisionTests\Manifolds\SphereContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\StaticMeshContactManifold.cs">
+      <Link>CollisionTests\Manifolds\StaticMeshContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\StaticMeshConvexContactManifold.cs">
+      <Link>CollisionTests\Manifolds\StaticMeshConvexContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\StaticMeshSphereContactManifold.cs">
+      <Link>CollisionTests\Manifolds\StaticMeshSphereContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\TerrainContactManifold.cs">
+      <Link>CollisionTests\Manifolds\TerrainContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\TerrainConvexContactManifold.cs">
+      <Link>CollisionTests\Manifolds\TerrainConvexContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\TerrainSphereContactManifold.cs">
+      <Link>CollisionTests\Manifolds\TerrainSphereContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\TriangleConvexContactManifold.cs">
+      <Link>CollisionTests\Manifolds\TriangleConvexContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\Manifolds\TriangleMeshConvexContactManifold.cs">
+      <Link>CollisionTests\Manifolds\TriangleMeshConvexContactManifold.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\CollisionTests\VoronoiRegion.cs">
+      <Link>CollisionTests\VoronoiRegion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\Collision\ContactFrictionConstraint.cs">
+      <Link>Constraints\Collision\ContactFrictionConstraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\Collision\ContactManifoldConstraint.cs">
+      <Link>Constraints\Collision\ContactManifoldConstraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\Collision\ContactManifoldConstraintGroup.cs">
+      <Link>Constraints\Collision\ContactManifoldConstraintGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\Collision\ContactPenetrationConstraint.cs">
+      <Link>Constraints\Collision\ContactPenetrationConstraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\Collision\ConvexContactManifoldConstraint.cs">
+      <Link>Constraints\Collision\ConvexContactManifoldConstraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\Collision\NonConvexContactManifoldConstraint.cs">
+      <Link>Constraints\Collision\NonConvexContactManifoldConstraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\Collision\SlidingFrictionTwoAxis.cs">
+      <Link>Constraints\Collision\SlidingFrictionTwoAxis.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\Collision\TwistFrictionConstraint.cs">
+      <Link>Constraints\Collision\TwistFrictionConstraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\EntitySolverUpdateable.cs">
+      <Link>Constraints\EntitySolverUpdateable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\IJacobians.cs">
+      <Link>Constraints\IJacobians.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\ISolverSettings.cs">
+      <Link>Constraints\ISolverSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\ISpringConstraint.cs">
+      <Link>Constraints\ISpringConstraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\IXDImpulseConstraint.cs">
+      <Link>Constraints\IXDImpulseConstraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\JointTransform.cs">
+      <Link>Constraints\JointTransform.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SingleEntity\MaximumAngularVelocityConstraint.cs">
+      <Link>Constraints\SingleEntity\MaximumAngularVelocityConstraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SingleEntity\MaximumLinearVelocityConstraint.cs">
+      <Link>Constraints\SingleEntity\MaximumLinearVelocityConstraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SingleEntity\SingleEntityAngularMotor.cs">
+      <Link>Constraints\SingleEntity\SingleEntityAngularMotor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SingleEntity\SingleEntityConstraint.cs">
+      <Link>Constraints\SingleEntity\SingleEntityConstraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SingleEntity\SingleEntityLinearMotor.cs">
+      <Link>Constraints\SingleEntity\SingleEntityLinearMotor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SolverGroups\CustomizableSolverGroup.cs">
+      <Link>Constraints\SolverGroups\CustomizableSolverGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SolverGroups\LineSliderJoint.cs">
+      <Link>Constraints\SolverGroups\LineSliderJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SolverGroups\PlaneSliderJoint.cs">
+      <Link>Constraints\SolverGroups\PlaneSliderJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SolverGroups\PrismaticJoint.cs">
+      <Link>Constraints\SolverGroups\PrismaticJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SolverGroups\RevoluteJoint.cs">
+      <Link>Constraints\SolverGroups\RevoluteJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SolverGroups\SolverGroup.cs">
+      <Link>Constraints\SolverGroups\SolverGroup.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SolverGroups\SwivelHingeJoint.cs">
+      <Link>Constraints\SolverGroups\SwivelHingeJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SolverGroups\UniversalJoint.cs">
+      <Link>Constraints\SolverGroups\UniversalJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SolverGroups\WeldJoint.cs">
+      <Link>Constraints\SolverGroups\WeldJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SolverSettings.cs">
+      <Link>Constraints\SolverSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\SpringSettings.cs">
+      <Link>Constraints\SpringSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\JointLimits\DistanceLimit.cs">
+      <Link>Constraints\TwoEntity\JointLimits\DistanceLimit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\JointLimits\EllipseSwingLimit.cs">
+      <Link>Constraints\TwoEntity\JointLimits\EllipseSwingLimit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\JointLimits\JointLimit.cs">
+      <Link>Constraints\TwoEntity\JointLimits\JointLimit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\JointLimits\LinearAxisLimit.cs">
+      <Link>Constraints\TwoEntity\JointLimits\LinearAxisLimit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\JointLimits\RevoluteLimit.cs">
+      <Link>Constraints\TwoEntity\JointLimits\RevoluteLimit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\JointLimits\SwingLimit.cs">
+      <Link>Constraints\TwoEntity\JointLimits\SwingLimit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\JointLimits\TwistLimit.cs">
+      <Link>Constraints\TwoEntity\JointLimits\TwistLimit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Joints\BallSocketJoint.cs">
+      <Link>Constraints\TwoEntity\Joints\BallSocketJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Joints\DistanceJoint.cs">
+      <Link>Constraints\TwoEntity\Joints\DistanceJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Joints\Joint.cs">
+      <Link>Constraints\TwoEntity\Joints\Joint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Joints\NoRotationJoint.cs">
+      <Link>Constraints\TwoEntity\Joints\NoRotationJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Joints\PointOnLineJoint.cs">
+      <Link>Constraints\TwoEntity\Joints\PointOnLineJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Joints\PointOnPlaneJoint.cs">
+      <Link>Constraints\TwoEntity\Joints\PointOnPlaneJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Joints\RevoluteAngularJoint.cs">
+      <Link>Constraints\TwoEntity\Joints\RevoluteAngularJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Joints\SwivelHingeAngularJoint.cs">
+      <Link>Constraints\TwoEntity\Joints\SwivelHingeAngularJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Joints\TwistJoint.cs">
+      <Link>Constraints\TwoEntity\Joints\TwistJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Motors\AngularMotor.cs">
+      <Link>Constraints\TwoEntity\Motors\AngularMotor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Motors\LinearAxisMotor.cs">
+      <Link>Constraints\TwoEntity\Motors\LinearAxisMotor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Motors\Motor.cs">
+      <Link>Constraints\TwoEntity\Motors\Motor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Motors\MotorSettings.cs">
+      <Link>Constraints\TwoEntity\Motors\MotorSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Motors\RevoluteMotor.cs">
+      <Link>Constraints\TwoEntity\Motors\RevoluteMotor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\Motors\TwistMotor.cs">
+      <Link>Constraints\TwoEntity\Motors\TwistMotor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Constraints\TwoEntity\TwoEntityConstraint.cs">
+      <Link>Constraints\TwoEntity\TwoEntityConstraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\ConvexHullHelper.cs">
+      <Link>ConvexHullHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\ConvexHullHelper.Pruning.cs">
+      <Link>ConvexHullHelper.Pruning.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\BoundingBoxTree.cs">
+      <Link>DataStructures\BoundingBoxTree.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\MeshBoundingBoxTree.cs">
+      <Link>DataStructures\MeshBoundingBoxTree.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\MeshBoundingBoxTreeData.cs">
+      <Link>DataStructures\MeshBoundingBoxTreeData.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\ObservableDictionary.cs">
+      <Link>DataStructures\ObservableDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\ObservableList.cs">
+      <Link>DataStructures\ObservableList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\RawList.cs">
+      <Link>DataStructures\RawList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\RawValueList.cs">
+      <Link>DataStructures\RawValueList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\ReadOnlyDictionary.cs">
+      <Link>DataStructures\ReadOnlyDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\ReadOnlyEnumerable.cs">
+      <Link>DataStructures\ReadOnlyEnumerable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\ReadOnlyList.cs">
+      <Link>DataStructures\ReadOnlyList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\StaticMeshData.cs">
+      <Link>DataStructures\StaticMeshData.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\TinyList.cs">
+      <Link>DataStructures\TinyList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\TinyStructList.cs">
+      <Link>DataStructures\TinyStructList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\TransformableMeshData.cs">
+      <Link>DataStructures\TransformableMeshData.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\TreeOverlapPair.cs">
+      <Link>DataStructures\TreeOverlapPair.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DataStructures\TriangleMesh.cs">
+      <Link>DataStructures\TriangleMesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DeactivationManagement\DeactivationManager.cs">
+      <Link>DeactivationManagement\DeactivationManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DeactivationManagement\ISimulationIslandConnection.cs">
+      <Link>DeactivationManagement\ISimulationIslandConnection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DeactivationManagement\ISimulationIslandConnectionOwner.cs">
+      <Link>DeactivationManagement\ISimulationIslandConnectionOwner.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DeactivationManagement\ISimulationIslandMemberOwner.cs">
+      <Link>DeactivationManagement\ISimulationIslandMemberOwner.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DeactivationManagement\SimulationIsland.cs">
+      <Link>DeactivationManagement\SimulationIsland.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DeactivationManagement\SimulationIslandConnection.cs">
+      <Link>DeactivationManagement\SimulationIslandConnection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DeactivationManagement\SimulationIslandMember.cs">
+      <Link>DeactivationManagement\SimulationIslandMember.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\DeactivationManagement\SimulationIslandMemberList.cs">
+      <Link>DeactivationManagement\SimulationIslandMemberList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\Entity.cs">
+      <Link>Entities\Entity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\EntityBase.cs">
+      <Link>Entities\EntityBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\EntityConstraintCollection.cs">
+      <Link>Entities\EntityConstraintCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\EntitySolverUpdateableCollection.cs">
+      <Link>Entities\EntitySolverUpdateableCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\MorphableEntity.cs">
+      <Link>Entities\MorphableEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\Prefabs\Box.cs">
+      <Link>Entities\Prefabs\Box.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\Prefabs\Capsule.cs">
+      <Link>Entities\Prefabs\Capsule.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\Prefabs\CompoundBody.cs">
+      <Link>Entities\Prefabs\CompoundBody.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\Prefabs\Cone.cs">
+      <Link>Entities\Prefabs\Cone.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\Prefabs\ConvexHull.cs">
+      <Link>Entities\Prefabs\ConvexHull.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\Prefabs\Cylinder.cs">
+      <Link>Entities\Prefabs\Cylinder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\Prefabs\MinkowskiSum.cs">
+      <Link>Entities\Prefabs\MinkowskiSum.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\Prefabs\MobileMesh.cs">
+      <Link>Entities\Prefabs\MobileMesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\Prefabs\Sphere.cs">
+      <Link>Entities\Prefabs\Sphere.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\Prefabs\TransformableEntity.cs">
+      <Link>Entities\Prefabs\TransformableEntity.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\Prefabs\Triangle.cs">
+      <Link>Entities\Prefabs\Triangle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Entities\Prefabs\WrappedBody.cs">
+      <Link>Entities\Prefabs\WrappedBody.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\EntityStateManagement\BufferedStatesAccessor.cs">
+      <Link>EntityStateManagement\BufferedStatesAccessor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\EntityStateManagement\BufferedStatesManager.cs">
+      <Link>EntityStateManagement\BufferedStatesManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\EntityStateManagement\EntityBufferedStates.cs">
+      <Link>EntityStateManagement\EntityBufferedStates.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\EntityStateManagement\EntityStateReadBuffers.cs">
+      <Link>EntityStateManagement\EntityStateReadBuffers.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\EntityStateManagement\EntityStateWriteBuffer.cs">
+      <Link>EntityStateManagement\EntityStateWriteBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\EntityStateManagement\InterpolatedStatesAccessor.cs">
+      <Link>EntityStateManagement\InterpolatedStatesAccessor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\EntityStateManagement\InterpolatedStatesManager.cs">
+      <Link>EntityStateManagement\InterpolatedStatesManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\EntityStateManagement\MotionState.cs">
+      <Link>EntityStateManagement\MotionState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\ISpace.cs">
+      <Link>ISpace.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\ISpaceObject.cs">
+      <Link>ISpaceObject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Materials\IMaterialOwner.cs">
+      <Link>Materials\IMaterialOwner.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Materials\InteractionProperties.cs">
+      <Link>Materials\InteractionProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Materials\Material.cs">
+      <Link>Materials\Material.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Materials\MaterialManager.cs">
+      <Link>Materials\MaterialManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Materials\MaterialPair.cs">
+      <Link>Materials\MaterialPair.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\MultithreadedProcessingStage.cs">
+      <Link>MultithreadedProcessingStage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\NarrowPhase.cs">
+      <Link>NarrowPhaseSystems\NarrowPhase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\NarrowPhaseHelper.cs">
+      <Link>NarrowPhaseSystems\NarrowPhaseHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\NarrowPhasePairFactory.cs">
+      <Link>NarrowPhaseSystems\NarrowPhasePairFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\BoxPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\BoxPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\BoxSpherePairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\BoxSpherePairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\CollidablePairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\CollidablePairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\CompoundConvexPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\CompoundConvexPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\CompoundGroupPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\CompoundGroupPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\CompoundInstancedMeshPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\CompoundInstancedMeshPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\CompoundMobileMeshPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\CompoundMobileMeshPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\CompoundPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\CompoundPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\CompoundStaticMeshPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\CompoundStaticMeshPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\CompoundTerrainPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\CompoundTerrainPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\ContactCollection.cs">
+      <Link>NarrowPhaseSystems\Pairs\ContactCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\ContactInformation.cs">
+      <Link>NarrowPhaseSystems\Pairs\ContactInformation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\ConvexConstraintPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\ConvexConstraintPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\ConvexPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\ConvexPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\DetectorVolumeCompoundPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\DetectorVolumeCompoundPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\DetectorVolumeConvexPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\DetectorVolumeConvexPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\DetectorVolumeGroupPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\DetectorVolumeGroupPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\DetectorVolumeMobileMeshPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\DetectorVolumeMobileMeshPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\DetectorVolumePairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\DetectorVolumePairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\GeneralConvexPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\GeneralConvexPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\GroupPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\GroupPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\IDetectorVolumePairHandlerParent.cs">
+      <Link>NarrowPhaseSystems\Pairs\IDetectorVolumePairHandlerParent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\InstancedMeshConvexPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\InstancedMeshConvexPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\InstancedMeshPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\InstancedMeshPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\InstancedMeshSpherePairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\InstancedMeshSpherePairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\IPairHandlerParent.cs">
+      <Link>NarrowPhaseSystems\Pairs\IPairHandlerParent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\MeshGroupPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\MeshGroupPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\MobileMeshConvexPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\MobileMeshConvexPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\MobileMeshInstancedMeshPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\MobileMeshInstancedMeshPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\MobileMeshMeshPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\MobileMeshMeshPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\MobileMeshMobileMeshPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\MobileMeshMobileMeshPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\MobileMeshPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\MobileMeshPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\MobileMeshSpherePairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\MobileMeshSpherePairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\MobileMeshStaticMeshPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\MobileMeshStaticMeshPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\MobileMeshTerrainPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\MobileMeshTerrainPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\MobileMeshTrianglePairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\MobileMeshTrianglePairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\NarrowPhasePair.cs">
+      <Link>NarrowPhaseSystems\Pairs\NarrowPhasePair.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\SpherePairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\SpherePairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\StandardPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\StandardPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\StaticGroupCompoundPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\StaticGroupCompoundPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\StaticGroupConvexPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\StaticGroupConvexPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\StaticGroupMobileMeshPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\StaticGroupMobileMeshPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\StaticGroupPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\StaticGroupPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\StaticMeshConvexPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\StaticMeshConvexPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\StaticMeshPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\StaticMeshPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\StaticMeshSpherePairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\StaticMeshSpherePairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\TerrainConvexPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\TerrainConvexPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\TerrainPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\TerrainPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\TerrainSpherePairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\TerrainSpherePairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\NarrowPhaseSystems\Pairs\TriangleConvexPairHandler.cs">
+      <Link>NarrowPhaseSystems\Pairs\TriangleConvexPairHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\OtherSpaceStages\BoundingBoxUpdater.cs">
+      <Link>OtherSpaceStages\BoundingBoxUpdater.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\OtherSpaceStages\DeferredEventDispatcher.cs">
+      <Link>OtherSpaceStages\DeferredEventDispatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\OtherSpaceStages\ForceUpdater.cs">
+      <Link>OtherSpaceStages\ForceUpdater.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\OtherSpaceStages\IDeferredEventCreator.cs">
+      <Link>OtherSpaceStages\IDeferredEventCreator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\OtherSpaceStages\IDeferredEventCreatorOwner.cs">
+      <Link>OtherSpaceStages\IDeferredEventCreatorOwner.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\OtherSpaceStages\IForceUpdateable.cs">
+      <Link>OtherSpaceStages\IForceUpdateable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\OtherSpaceStages\SpaceObjectBuffer.cs">
+      <Link>OtherSpaceStages\SpaceObjectBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\CardinalSpline3D.cs">
+      <Link>Paths\CardinalSpline3D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\ConstantAngularSpeedCurve.cs">
+      <Link>Paths\ConstantAngularSpeedCurve.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\ConstantLinearSpeedCurve.cs">
+      <Link>Paths\ConstantLinearSpeedCurve.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\ConstantSpeedCurve.cs">
+      <Link>Paths\ConstantSpeedCurve.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\Curve.cs">
+      <Link>Paths\Curve.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\CurveControlPoint.cs">
+      <Link>Paths\CurveControlPoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\CurveControlPointList.cs">
+      <Link>Paths\CurveControlPointList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\CurveEndpointBehavior.cs">
+      <Link>Paths\CurveEndpointBehavior.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\FiniteDifferenceSpline3D.cs">
+      <Link>Paths\FiniteDifferenceSpline3D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\HermiteCurve3D.cs">
+      <Link>Paths\HermiteCurve3D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\LinearInterpolationCurve3D.cs">
+      <Link>Paths\LinearInterpolationCurve3D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\Path.cs">
+      <Link>Paths\Path.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\PathFollowing\EntityMover.cs">
+      <Link>Paths\PathFollowing\EntityMover.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\PathFollowing\EntityRotator.cs">
+      <Link>Paths\PathFollowing\EntityRotator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\QuaternionSlerpCurve.cs">
+      <Link>Paths\QuaternionSlerpCurve.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\SpeedControlledCurve.cs">
+      <Link>Paths\SpeedControlledCurve.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\StepCurve1D.cs">
+      <Link>Paths\StepCurve1D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\VariableAngularSpeedCurve.cs">
+      <Link>Paths\VariableAngularSpeedCurve.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\VariableLinearSpeedCurve.cs">
+      <Link>Paths\VariableLinearSpeedCurve.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Paths\VariableSpeedCurve.cs">
+      <Link>Paths\VariableSpeedCurve.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\PositionUpdating\ContinuousPositionUpdater.cs">
+      <Link>PositionUpdating\ContinuousPositionUpdater.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\PositionUpdating\DiscretePositionUpdater.cs">
+      <Link>PositionUpdating\DiscretePositionUpdater.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\PositionUpdating\ICCDPositionUpdateable.cs">
+      <Link>PositionUpdating\ICCDPositionUpdateable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\PositionUpdating\IPositionUpdateable.cs">
+      <Link>PositionUpdating\IPositionUpdateable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\PositionUpdating\PositionUpdater.cs">
+      <Link>PositionUpdating\PositionUpdater.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\ProcessingStage.cs">
+      <Link>ProcessingStage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\RayCastResult.cs">
+      <Link>RayCastResult.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\RayHit.cs">
+      <Link>RayHit.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\ResourceManagement\LockingResourcePool.cs">
+      <Link>ResourceManagement\LockingResourcePool.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\ResourceManagement\ResourcePool.cs">
+      <Link>ResourceManagement\ResourcePool.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\ResourceManagement\Resources.cs">
+      <Link>ResourceManagement\Resources.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\ResourceManagement\UnsafeResourcePool.cs">
+      <Link>ResourceManagement\UnsafeResourcePool.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Settings\CollisionDetectionSettings.cs">
+      <Link>Settings\CollisionDetectionSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Settings\CollisionResponseSettings.cs">
+      <Link>Settings\CollisionResponseSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Settings\MotionSettings.cs">
+      <Link>Settings\MotionSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\SolverSystems\Solver.cs">
+      <Link>SolverSystems\Solver.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\SolverSystems\SolverUpdateable.cs">
+      <Link>SolverSystems\SolverUpdateable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\SolverSystems\SolverUpdateableChange.cs">
+      <Link>SolverSystems\SolverUpdateableChange.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Space.cs">
+      <Link>Space.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Threading\ConcurrentDeque.cs">
+      <Link>Threading\ConcurrentDeque.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Threading\IThreadManager.cs">
+      <Link>Threading\IThreadManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Threading\ModifiedPool\ParallelLoopManager.cs">
+      <Link>Threading\ModifiedPool\ParallelLoopManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Threading\ModifiedPool\ParallelLoopWorker.cs">
+      <Link>Threading\ModifiedPool\ParallelLoopWorker.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Threading\ModifiedPool\SpecializedThreadManager.cs">
+      <Link>Threading\ModifiedPool\SpecializedThreadManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Threading\ModifiedPool\ThreadTaskManager.cs">
+      <Link>Threading\ModifiedPool\ThreadTaskManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Threading\SimpleThreadManager.cs">
+      <Link>Threading\SimpleThreadManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Threading\SpinLock.cs">
+      <Link>Threading\SpinLock.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Threading\ThreadManagerTPL.cs">
+      <Link>Threading\ThreadManagerTPL.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\TimeStepSettings.cs">
+      <Link>TimeStepSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Toolbox.cs">
+      <Link>Toolbox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\CombinedUpdateable.cs">
+      <Link>UpdateableSystems\CombinedUpdateable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\FluidVolume.cs">
+      <Link>UpdateableSystems\FluidVolume.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\ForceFields\BoundingBoxForceFieldShape.cs">
+      <Link>UpdateableSystems\ForceFields\BoundingBoxForceFieldShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\ForceFields\ForceField.cs">
+      <Link>UpdateableSystems\ForceFields\ForceField.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\ForceFields\ForceFieldShape.cs">
+      <Link>UpdateableSystems\ForceFields\ForceFieldShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\ForceFields\InfiniteForceFieldShape.cs">
+      <Link>UpdateableSystems\ForceFields\InfiniteForceFieldShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\ForceFields\VolumeForceFieldShape.cs">
+      <Link>UpdateableSystems\ForceFields\VolumeForceFieldShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\IBeforeNarrowPhaseUpdateable.cs">
+      <Link>UpdateableSystems\IBeforeNarrowPhaseUpdateable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\IBeforePositionUpdateUpdateable.cs">
+      <Link>UpdateableSystems\IBeforePositionUpdateUpdateable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\IBeforeSolverUpdateable.cs">
+      <Link>UpdateableSystems\IBeforeSolverUpdateable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\IDuringForcesUpdateable.cs">
+      <Link>UpdateableSystems\IDuringForcesUpdateable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\IEndOfFrameUpdateable.cs">
+      <Link>UpdateableSystems\IEndOfFrameUpdateable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\IEndOfTimeStepUpdateable.cs">
+      <Link>UpdateableSystems\IEndOfTimeStepUpdateable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\ISpaceUpdateable.cs">
+      <Link>UpdateableSystems\ISpaceUpdateable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\Updateable.cs">
+      <Link>UpdateableSystems\Updateable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\UpdateableManager.cs">
+      <Link>UpdateableSystems\UpdateableManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\UpdateableSystems\UpdateableManagers.cs">
+      <Link>UpdateableSystems\UpdateableManagers.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Vehicle\RaycastWheelShape.cs">
+      <Link>Vehicle\RaycastWheelShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Vehicle\Vehicle.cs">
+      <Link>Vehicle\Vehicle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Vehicle\Wheel.cs">
+      <Link>Vehicle\Wheel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Vehicle\WheelBrake.cs">
+      <Link>Vehicle\WheelBrake.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Vehicle\WheelDrivingMotor.cs">
+      <Link>Vehicle\WheelDrivingMotor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Vehicle\WheelFrictionBlender.cs">
+      <Link>Vehicle\WheelFrictionBlender.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Vehicle\WheelShape.cs">
+      <Link>Vehicle\WheelShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Vehicle\WheelSlidingFriction.cs">
+      <Link>Vehicle\WheelSlidingFriction.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.BEPUphysics\Vehicle\WheelSuspension.cs">
+      <Link>Vehicle\WheelSuspension.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{4889BC73-F2D9-4F03-B9A9-316B83FD9063}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

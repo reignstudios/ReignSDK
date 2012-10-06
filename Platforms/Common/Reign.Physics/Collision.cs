@@ -9,24 +9,62 @@ namespace Reign.Physics
 			int loop1 = particles.Length-1, loop2 = particles.Length;
 			for (int i = 0; i != loop1; ++i)
 			{
-				var body = particles[i];
-				var transform = body.Transform;
-				var collider = body.Collider;
+				var body1 = particles[i];
+				var transform1 = body1.Transform;
+				var collider1 = body1.Collider;
+				var material1 = body1.Material;
 				for (int i2 = i+1; i2 != loop2; ++i2)
 				{
 					var body2 = particles[i2];
 					var transform2 = body2.Transform;
 					var collider2 = body2.Collider;
+					var material2 = body2.Material;
 
-					var normal = transform2.Location - transform.Location;
+					var normal = transform2.Location - transform1.Location;
 					float dis;
 					normal = normal.Normalize(out dis);
-					float totalRadius = collider.Radius + collider2.Radius;
+					float totalRadius = collider1.Radius + collider2.Radius;
 					if (dis < totalRadius)
 					{
-						var force = normal * (totalRadius - dis) * 8;
-						transform.Force -= force;
+						float bounciness = (material1.Bounciness + material2.Bounciness) * .5f;
+						var force = normal * (totalRadius - dis) * ((bounciness * 7) + 1);
+						transform1.Force -= force;
 						transform2.Force += force;
+					}
+				}
+			}
+		}
+
+		public static void CollideAsParticles(Body[] particles)
+		{
+			int loop1 = particles.Length-1, loop2 = particles.Length;
+			for (int i = 0; i != loop1; ++i)
+			{
+				var body1 = particles[i];
+				var transform1 = body1.Transform;
+				var collider1 = body1.Collider;
+				var material1 = body1.Material;
+				for (int i2 = i+1; i2 != loop2; ++i2)
+				{
+					var body2 = particles[i2];
+					var transform2 = body2.Transform;
+					var collider2 = body2.Collider;
+					var material2 = body2.Material;
+
+					var normal = transform2.Location - transform1.Location;
+					float dis;
+					normal = normal.Normalize(out dis);
+					float totalRadius = collider1.Radius + collider2.Radius;
+					if (dis < totalRadius)
+					{
+						float totalMass = body1.Mass + body2.Mass;
+						float massRatio1 = body1.Mass / totalMass;
+						float massRatio2 = body2.Mass / totalMass;
+
+						float bounciness = (material1.Bounciness + material2.Bounciness) * .5f;
+						var force = normal * (totalRadius - dis) * ((bounciness * 7) + 1);
+						transform1.Force -= force * massRatio2;
+						transform2.Force += force * massRatio1;
 					}
 				}
 			}
@@ -64,11 +102,6 @@ namespace Reign.Physics
 			}
 		}
 
-		/*public static void CollideCylindersWithSpheres(Body[] cylinders, Body[] spheres)
-		{
-			
-		}*/
-
 		public static void CollideSpheresWithPlane(Body[] spheres, Plane plane)
 		{
 			foreach (var sphere in spheres)
@@ -88,6 +121,36 @@ namespace Reign.Physics
 			}
 		}
 
+		public static void CollideCapsulesWithPlane(Body[] capsules, Plane plane)
+		{
+			foreach (var capsule in capsules)
+			{
+				var transform = (RigidTransform)capsule.Transform;
+				var collider = (CapsuleCollider)capsule.Collider;
+
+				var locations = new Vector3[2]
+				{
+					collider.Line.Point1,
+					collider.Line.Point2
+				};
+				for (int i = 0; i != 2; ++i)
+				{
+					var location = locations[i];
+					var collisionPoint = location.InersectPlane(plane.Normal, plane.Location);
+					var normal = location - collisionPoint;
+					float dis;
+					normal = normal.Normalize(out dis);
+					if (dis < collider.Radius)
+					{
+						transform.AddForce(-transform.Velocity, collisionPoint, collider.Diameter);
+						locations[i] = collisionPoint + (plane.Normal * collider.Radius);
+					}
+				}
+				collider.Line.Point1 = locations[0];
+				collider.Line.Point2 = locations[1];
+			}
+		}
+
 		private static void applyFrictionalForces(Body body, Material staticBodyMaterial, Vector3 normal)
 		{
 			var transform = (RigidTransform)body.Transform;
@@ -103,10 +166,10 @@ namespace Reign.Physics
 			// add frictional force and torque
 			float resistance = material.Resistance * staticBodyMaterial.Resistance;
 			var angularResistanceForce = transform.AngularVelocity * resistance;
-			var torque = (normal.Cross(slidingVelocity) * resistance * Math.PiQuarterDelta) / body.Collider.Radius;// calculate torque from sliding objects friction
+			var torque = (normal.Cross(slidingVelocity) * resistance * MathUtilities.PiQuarterDelta) / body.Collider.Radius;// calculate torque from sliding objects friction
 			transform.Torque += torque;// add torque from sliding objects friction
 			transform.Torque -= angularResistanceForce;// damp torque from rotational friction
-			transform.Force -= normal.Cross(angularResistanceForce - torque) * Math.PiDelta * body.Collider.Radius;// transfer rotational friction into directional force
+			transform.Force -= normal.Cross(angularResistanceForce - torque) * MathUtilities.PiDelta * body.Collider.Radius;// transfer rotational friction into directional force
 		}
 
 		private static void applyFrictionalForces(Body body1, Body body2, Vector3 normal)
@@ -129,11 +192,10 @@ namespace Reign.Physics
 
 			// add frictional force and torque
 			float resistance = material1.Resistance * material2.Resistance;
-
 			var angularResistanceForce1 = transform1.AngularVelocity * resistance;
 			var angularResistanceForce2 = transform2.AngularVelocity * resistance;
-			var torque1 = normal.Cross(slidingVelocity1) * resistance * Math.PiQuarterDelta;// calculate torque from sliding objects friction
-			var torque2 = normal.Cross(slidingVelocity2) * resistance * Math.PiQuarterDelta;// calculate torque from sliding objects friction
+			var torque1 = normal.Cross(slidingVelocity1) * resistance * MathUtilities.PiQuarterDelta;// calculate torque from sliding objects friction
+			var torque2 = normal.Cross(slidingVelocity2) * resistance * MathUtilities.PiQuarterDelta;// calculate torque from sliding objects friction
 
 			// reflect velocities
 			if (transform1.Velocity.Dot(normal) >= 0)
@@ -157,10 +219,10 @@ namespace Reign.Physics
 			transform2.Torque += torque * massRatio1;// add torque from sliding objects friction
 			transform2.Torque += angularResistanceForce * massRatio1;// damp torque from rotational friction
 
-			var directionalForce = normal.Cross(angularResistanceForce1 - torque1) * Math.PiDelta * body1.Collider.Radius * massRatio2;
+			var directionalForce = normal.Cross(angularResistanceForce1 - torque1) * MathUtilities.PiDelta * body1.Collider.Radius * massRatio2;
 			transform1.Force -= directionalForce;// transfer rotational friction into directional force
 
-			directionalForce = normal.Cross(angularResistanceForce2 - torque2) * Math.PiDelta * body1.Collider.Radius * massRatio1;
+			directionalForce = normal.Cross(angularResistanceForce2 - torque2) * MathUtilities.PiDelta * body1.Collider.Radius * massRatio1;
 			transform2.Force -= directionalForce;// transfer rotational friction into directional force
 		}
 	}

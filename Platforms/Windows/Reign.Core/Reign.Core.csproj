@@ -58,26 +58,56 @@
     <Compile Include="..\..\Common\Reign.Core\Extensions.cs">
       <Link>Extensions.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\AffineTransform3.cs">
+      <Link>Math\AffineTransform3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingBox3.cs">
+      <Link>Math\BoundingBox3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingFrustum3.cs">
+      <Link>Math\BoundingFrustum3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingSphere3.cs">
+      <Link>Math\BoundingSphere3.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Line2.cs">
       <Link>Math\Line2.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Line3.cs">
       <Link>Math\Line3.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\Math\Math.cs">
-      <Link>Math\Math.cs</Link>
+    <Compile Include="..\..\Common\Reign.Core\Math\MathUtilities.cs">
+      <Link>Math\MathUtilities.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Matrix2.cs">
       <Link>Math\Matrix2.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Matrix2x3.cs">
+      <Link>Math\Matrix2x3.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Matrix3.cs">
       <Link>Math\Matrix3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Matrix3x2.cs">
+      <Link>Math\Matrix3x2.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Matrix4.cs">
       <Link>Math\Matrix4.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Plane3.cs">
+      <Link>Math\Plane3.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Point.cs">
       <Link>Math\Point.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Quaternion.cs">
+      <Link>Math\Quaternion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Ray3.cs">
+      <Link>Math\Ray3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\RigidTransform3.cs">
+      <Link>Math\RigidTransform3.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Size2.cs">
       <Link>Math\Size2.cs</Link>

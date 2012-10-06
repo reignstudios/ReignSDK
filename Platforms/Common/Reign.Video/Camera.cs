@@ -22,7 +22,7 @@ namespace Reign.Video
 			UpLocation = new Vector3(10, 11, 10);
 			Near = 1;
 			Far = 500;
-			Fov = Math.DegToRad(45);
+			Fov = MathUtilities.DegToRad(45);
 			Aspect = float.NaN;
 		}
 
@@ -34,7 +34,7 @@ namespace Reign.Video
 			UpLocation = upLocation;
 			Near = 1;
 			Far = 500;
-			Fov = Math.DegToRad(45);
+			Fov = MathUtilities.DegToRad(45);
 			Aspect = float.NaN;
 		}
 
@@ -79,7 +79,7 @@ namespace Reign.Video
 		public void RotateAroundLocation(float radiansX, float radiansY, float radiansZ) {RotateAroundLocation(new Vector3(radiansX, radiansY, radiansZ));}
 		public void RotateAroundLocation(Vector3 radians)
 		{
-			var matrix = Matrix3.Cross((LookLocation - Location), (UpLocation - Location));
+			var matrix = Matrix3.FromCross((LookLocation - Location), (UpLocation - Location));
 			var matrixTranspose = matrix.Transpose();
 			matrix = matrix.RotateAroundAxisX(radians.X);
 			matrix = matrix.RotateAroundAxisY(radians.Y);
@@ -97,7 +97,7 @@ namespace Reign.Video
 		public void RotateAroundLookLocation(float radiansX, float radiansY, float radiansZ) {RotateAroundLookLocation(new Vector3(radiansX, radiansY, radiansZ));}
 		public void RotateAroundLookLocation(Vector3 radians)
 		{
-			var matrix = Matrix3.Cross((LookLocation - Location), (UpLocation - Location));
+			var matrix = Matrix3.FromCross((LookLocation - Location), (UpLocation - Location));
 			var matrixTranspose = matrix.Transpose();
 			matrix = matrix.RotateAroundAxisX(radians.X);
 			matrix = matrix.RotateAroundAxisY(radians.Y);
@@ -115,7 +115,7 @@ namespace Reign.Video
 		public void RotateAroundUpLocation(float radiansX, float radiansY, float radiansZ) {RotateAroundUpLocation(new Vector3(radiansX, radiansY, radiansZ));}
 		public void RotateAroundUpLocation(Vector3 radians)
 		{
-			var matrix = Matrix3.Cross((LookLocation - Location), (UpLocation - Location));
+			var matrix = Matrix3.FromCross((LookLocation - Location), (UpLocation - Location));
 			var matrixTranspose = matrix.Transpose();
 			matrix = matrix.RotateAroundAxisX(radians.X);
 			matrix = matrix.RotateAroundAxisY(radians.Y);
@@ -177,21 +177,21 @@ namespace Reign.Video
 
 		public void Rotate(Line3 pLine, float radians)
 		{
-			var vector = (pLine.P2 - pLine.P1).NormalizeSafe();
-			Location -= pLine.P1;
-			LookLocation -= pLine.P1;
-			UpLocation -= pLine.P1;
+			var vector = (pLine.Point2 - pLine.Point1).NormalizeSafe();
+			Location -= pLine.Point1;
+			LookLocation -= pLine.Point1;
+			UpLocation -= pLine.Point1;
 			Location = Location.RotateAround(vector, radians);
 			LookLocation = LookLocation.RotateAround(vector, radians);
 			UpLocation = UpLocation.RotateAround(vector, radians);
-			Location += pLine.P1;
-			LookLocation += pLine.P1;
-			UpLocation += pLine.P1;
+			Location += pLine.Point1;
+			LookLocation += pLine.Point1;
+			UpLocation += pLine.Point1;
 		}
 
 		public void ApplyBillBoard()
 		{
-			BillBoardMatrix = Matrix3.Cross((Location - LookLocation), (UpLocation - Location));
+			BillBoardMatrix = Matrix3.FromCross((Location - LookLocation), (UpLocation - Location));
 			BillBoardMatrixTranspose = BillBoardMatrix.Transpose();
 		}
 	

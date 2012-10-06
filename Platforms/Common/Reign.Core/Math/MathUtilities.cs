@@ -1,13 +1,23 @@
-﻿using MathS = System.Math;
+﻿using System;
 
 namespace Reign.Core
 {
 	/// <summary>
 	/// Provides constants and common mathematical functions.
 	/// </summary>
-	public static class Math
+	public static class MathUtilities
 	{
 		#region Properties
+		/// <summary>
+        /// Large tolerance value.
+        /// </summary>
+        public const float BigEpsilon = 1E-5f;
+
+        /// <summary>
+        /// Tolerance value.
+        /// </summary>
+        public const float Epsilon = 1E-7f;
+
 		/// <summary>
 		/// Represents the ratio of the circumference of a circle to its diameter, specified by the constant, π.
 		/// </summary>
@@ -55,14 +65,55 @@ namespace Reign.Core
 		/// </summary>
 		/// <param name="degrees">Degrees</param>
 		/// <returns>Radians</returns>
-		public static float DegToRad(float degrees) {return ((degrees / 180) * Pi);}
+		public static float DegToRad(float degrees)
+		{
+			return ((degrees / 180) * Pi);
+		}
+
+		public static void DegToRad(float degrees, out float result)
+		{
+			result = ((degrees / 180) * Pi);
+		}
 
 		/// <summary>
 		/// Converts Radians to Degrees.
 		/// </summary>
 		/// <param name="radians">Radians</param>
 		/// <returns>Degrees</returns>
-		public static float RadToDeg(float radians) {return ((radians / Pi) * 180);}
+		public static float RadToDeg(float radians)
+		{
+			return ((radians / Pi) * 180);
+		}
+
+		public static void RadToDeg(float radians, out float result)
+		{
+			result = ((radians / Pi) * 180);
+		}
+
+		public static float Clamp(float value, float min, float max)
+        {
+            if (value < min) return min;
+            else if (value > max) return max;
+
+            return value;
+        }
+
+		public static float WrapAngle(float angle)
+        {
+            angle = (float)Math.IEEERemainder(angle, Pi2);
+            if (angle < -Pi)
+            {
+                angle += Pi2;
+                return angle;
+            }
+
+            if (angle >= Pi)
+            {
+                angle -= Pi2;
+            }
+
+            return angle;
+        }
 		#endregion
 	}
 }

@@ -10,18 +10,27 @@ namespace Reign.Physics
 		{
 			Radius = radius;
 		}
+
+		public virtual void ApplyRigidRotation(Matrix3 rotationMatrix) {}
 	}
 
-	public class CylinderCollider : Collider
+	public class CapsuleCollider : Collider
 	{
-		public Line3 Line;
+		public Line3 Line, StaticLine;
 		public float Diameter;
 
-		public CylinderCollider(float radius, Line3 line, float diameter)
-		: base(radius)
+		public CapsuleCollider(Line3 line, float diameter)
+		: base(0)
 		{
 			Line = line;
+			StaticLine = line;
 			Diameter = diameter;
+			Radius = line.Length() * .5f;
+		}
+
+		public override void ApplyRigidRotation(Matrix3 rotationMatrix)
+		{
+			Line = StaticLine.Transform(rotationMatrix);
 		}
 	}
 }

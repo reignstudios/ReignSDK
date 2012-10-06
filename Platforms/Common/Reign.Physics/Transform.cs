@@ -24,15 +24,12 @@ namespace Reign.Physics
 			RotationMatrix = Matrix3.Identity;
 		}
 
-		public void AddForce(Vector3 force, Vector3 location)
+		public void AddForce(Vector3 force, Vector3 location, float radius)
 		{
 			var normal = (Location - location).Normalize();
-			//float dot = normal.Dot(force.Normalize());
-
-			var slidingVelocity = Velocity.InersectPlane(normal);
-			var reflectingVelocity = slidingVelocity - Velocity;
-
-
+			var angularForce = force.InersectPlane(normal);
+			Force += angularForce - force;
+			Torque += (normal.Cross(angularForce) * MathUtilities.PiQuarterDelta) / radius;
 		}
 	}
 }

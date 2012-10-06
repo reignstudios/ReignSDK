@@ -17,22 +17,113 @@
 
 		#region Operators
 		// +
-		public static Size3 operator+(Size3 p1, Size3 p2) {return new Size3(p1.Width+p2.Width, p1.Height+p2.Height, p1.Depth+p2.Depth);}
-		public static Size3 operator+(Size3 p1, int p2) {return new Size3(p1.Width+p2, p1.Height+p2, p1.Depth+p2);}
-		public static Size3 operator+(int p1, Size3 p2) {return new Size3(p1+p2.Width, p1+p2.Height, p1+p2.Depth);}
+		public static Size3 operator+(Size3 p1, Size3 p2)
+		{
+			p1.Width += p2.Width;
+			p1.Height += p2.Height;
+			p1.Depth += p2.Depth;
+			return p1;
+		}
+
+		public static Size3 operator+(Size3 p1, int p2)
+		{
+			p1.Width += p2;
+			p1.Height += p2;
+			p1.Depth += p2;
+			return p1;
+		}
+
+		public static Size3 operator+(int p1, Size3 p2)
+		{
+			p2.Width = p1 + p2.Width;
+			p2.Height = p1 + p2.Height;
+			p2.Depth = p1 + p2.Depth;
+			return p2;
+		}
+
 		// -
-		public static Size3 operator-(Size3 p1, Size3 p2) {return new Size3(p1.Width-p2.Width, p1.Height-p2.Height, p1.Depth-p2.Depth);}
-		public static Size3 operator-(Size3 p1, int p2) {return new Size3(p1.Width-p2, p1.Height-p2, p1.Depth-p2);}
-		public static Size3 operator-(int p1, Size3 p2) {return new Size3(p1-p2.Width, p1-p2.Height, p1-p2.Depth);}
-		public static Size3 operator-(Size3 p1) {return new Size3(-p1.Width, -p1.Height, -p1.Depth);}
+		public static Size3 operator-(Size3 p1, Size3 p2)
+		{
+			p1.Width -= p2.Width;
+			p1.Height -= p2.Height;
+			p1.Depth -= p2.Depth;
+			return p1;
+		}
+
+		public static Size3 operator-(Size3 p1, int p2)
+		{
+			p1.Width -= p2;
+			p1.Height -= p2;
+			p1.Depth -= p2;
+			return p1;
+		}
+
+		public static Size3 operator-(int p1, Size3 p2)
+		{
+			p2.Width = p1 - p2.Width;
+			p2.Height = p1 - p2.Height;
+			p2.Depth = p1 - p2.Depth;
+			return p2;
+		}
+
+		public static Size3 operator-(Size3 p2)
+		{
+			p2.Width = -p2.Width;
+			p2.Height = -p2.Height;
+			p2.Depth = -p2.Depth;
+			return p2;
+		}
+
 		// *
-		public static Size3 operator*(Size3 p1, Size3 p2) {return new Size3(p1.Width*p2.Width, p1.Height*p2.Height, p1.Depth*p2.Depth);}
-		public static Size3 operator*(Size3 p1, int p2) {return new Size3(p1.Width*p2, p1.Height*p2, p1.Depth*p2);}
-		public static Size3 operator*(int p1, Size3 p2) {return new Size3(p1*p2.Width, p1*p2.Height, p1*p2.Depth);}
+		public static Size3 operator*(Size3 p1, Size3 p2)
+		{
+			p1.Width *= p2.Width;
+			p1.Height *= p2.Height;
+			p1.Depth *= p2.Depth;
+			return p1;
+		}
+
+		public static Size3 operator*(Size3 p1, int p2)
+		{
+			p1.Width *= p2;
+			p1.Height *= p2;
+			p1.Depth *= p2;
+			return p1;
+		}
+
+		public static Size3 operator*(int p1, Size3 p2)
+		{
+			p2.Width = p1 * p2.Width;
+			p2.Height = p1 * p2.Height;
+			p2.Depth = p1 * p2.Depth;
+			return p2;
+		}
+
 		// /
-		public static Size3 operator/(Size3 p1, Size3 p2) {return new Size3(p1.Width/p2.Width, p1.Height/p2.Height, p1.Depth/p2.Depth);}
-		public static Size3 operator/(Size3 p1, int p2) {return new Size3(p1.Width/p2, p1.Height/p2, p1.Depth/p2);}
-		public static Size3 operator/(int p1, Size3 p2) {return new Size3(p1/p2.Width, p1/p2.Height, p1/p2.Depth);}
+		public static Size3 operator/(Size3 p1, Size3 p2)
+		{
+			p1.Width /= p2.Width;
+			p1.Height /= p2.Height;
+			p1.Depth /= p2.Depth;
+			return p1;
+		}
+
+		public static Size3 operator/(Size3 p1, int p2)
+		{
+			p1.Width /= p2;
+			p1.Height /= p2;
+			p1.Depth /= p2;
+			return p1;
+		}
+
+		public static Size3 operator/(int p1, Size3 p2)
+		{
+			p2.Width = p1 / p2.Width;
+			p2.Height = p1 / p2.Height;
+			p2.Depth = p1 / p2.Depth;
+			return p2;
+		}
+
 		// ==
 		public static bool operator==(Size3 p1, Size3 p2) {return (p1.Width==p2.Width && p1.Height==p2.Height && p1.Depth==p2.Depth);}
 		public static bool operator!=(Size3 p1, Size3 p2) {return (p1.Width!=p2.Width || p1.Height!=p2.Height || p1.Depth!=p2.Depth);}
