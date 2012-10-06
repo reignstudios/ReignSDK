@@ -23,7 +23,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Input.API", "Reign.In
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Audio.Dumby", "Reign.Audio.Dumby\Reign.Audio.Dumby.csproj", "{B4C0220E-5993-44A3-B287-30A43AC1FFC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Physics.BEPUphysics", "Reign.Physics.BEPUphysics\Reign.Physics.BEPUphysics.csproj", "{DCE9AD4C-E2BD-4421-8615-2D6749554CF0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Physics.Jitter", "Reign.Physics.Jitter\Reign.Physics.Jitter.csproj", "{583D105F-CA7A-49E3-9E4A-E4BF2EA71E4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,10 +75,10 @@ Global
 		{B4C0220E-5993-44A3-B287-30A43AC1FFC0}.Debug|x86.Build.0 = Debug|x86
 		{B4C0220E-5993-44A3-B287-30A43AC1FFC0}.Release|x86.ActiveCfg = Release|x86
 		{B4C0220E-5993-44A3-B287-30A43AC1FFC0}.Release|x86.Build.0 = Release|x86
-		{DCE9AD4C-E2BD-4421-8615-2D6749554CF0}.Debug|x86.ActiveCfg = Debug|x86
-		{DCE9AD4C-E2BD-4421-8615-2D6749554CF0}.Debug|x86.Build.0 = Debug|x86
-		{DCE9AD4C-E2BD-4421-8615-2D6749554CF0}.Release|x86.ActiveCfg = Release|x86
-		{DCE9AD4C-E2BD-4421-8615-2D6749554CF0}.Release|x86.Build.0 = Release|x86
+		{583D105F-CA7A-49E3-9E4A-E4BF2EA71E4B}.Debug|x86.ActiveCfg = Debug|x86
+		{583D105F-CA7A-49E3-9E4A-E4BF2EA71E4B}.Debug|x86.Build.0 = Debug|x86
+		{583D105F-CA7A-49E3-9E4A-E4BF2EA71E4B}.Release|x86.ActiveCfg = Release|x86
+		{583D105F-CA7A-49E3-9E4A-E4BF2EA71E4B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

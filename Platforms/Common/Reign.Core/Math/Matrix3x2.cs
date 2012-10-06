@@ -279,7 +279,7 @@ namespace Reign.Core
 		#endregion
 
 		#region Methods
-		public static void Transpose(ref Matrix3x2 matrix, out Matrix2x3 result)
+		public static void Transpose(Matrix3x2 matrix, out Matrix2x3 result)
         {
             result.X.X = matrix.X.X;
             result.X.Y = matrix.Y.X;

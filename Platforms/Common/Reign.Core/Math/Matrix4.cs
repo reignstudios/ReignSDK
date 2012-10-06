@@ -622,7 +622,7 @@ namespace Reign.Core
 			);
 		}
 
-		public static void Transpose(ref Matrix4 matrix, out Matrix4 result)
+		public static void Transpose(Matrix4 matrix, out Matrix4 result)
 		{
 			result.X.X = matrix.X.X;
 			result.X.Y = matrix.Y.X;
@@ -805,7 +805,7 @@ namespace Reign.Core
 				)
 			);
 				  
-			Transpose(ref mat, out mat);
+			Transpose(mat, out mat);
 			return mat;
 		}
 
@@ -833,7 +833,7 @@ namespace Reign.Core
 			result.W.Z = ((matrix.X.X * matrix.Y.Z * matrix.W.Y) + (matrix.X.Y * matrix.Y.X * matrix.W.Z) + (matrix.X.Z * matrix.Y.Y * matrix.W.X) - (matrix.X.X * matrix.Y.Y * matrix.W.Z) - (matrix.X.Y * matrix.Y.Z * matrix.W.X) - (matrix.X.Z * matrix.Y.X * matrix.W.Y)) * determinant;
 			result.W.W = ((matrix.X.X * matrix.Y.Y * matrix.Z.Z) + (matrix.X.Y * matrix.Y.Z * matrix.Z.X) + (matrix.X.Z * matrix.Y.X * matrix.Z.Y) - (matrix.X.X * matrix.Y.Z * matrix.Z.Y) - (matrix.X.Y * matrix.Y.X * matrix.Z.Z) - (matrix.X.Z * matrix.Y.Y * matrix.Z.X)) * determinant;
 				  
-			Transpose(ref result, out result);
+			Transpose(result, out result);
 		}
 
 		public static Matrix4 LookAt(Vector3 location, Vector3 lookAt, Vector3 upVector)

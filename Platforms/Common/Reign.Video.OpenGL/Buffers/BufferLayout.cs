@@ -12,7 +12,6 @@ namespace Reign.Video.OpenGL
 		private int[] attribLocations, streamBytesSizes;
 		private uint[] enabledStreamIndices;
 		private int enabledStreamIndicesCount;
-		private bool enabled;
 		#endregion
 
 		#region Constructors
@@ -53,14 +52,10 @@ namespace Reign.Video.OpenGL
 
 			video.currentBufferLayout = this;
 			enabledStreamIndicesCount = 0;
-			enabled = false;
 		}
 
 		internal unsafe void enable(uint currentStreamIndex)
 		{
-			if (enabled) return;
-			enabled = true;
-		
 			enabledStreamIndices[enabledStreamIndicesCount] = currentStreamIndex;
 			++enabledStreamIndicesCount;
 			

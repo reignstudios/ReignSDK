@@ -274,7 +274,7 @@ namespace Reign.Core
 			result.w = Vector2.Zero;
         }
 
-		public static void Transpose(ref Matrix2x3 matrix, out Matrix3x2 result)
+		public static void Transpose(Matrix2x3 matrix, out Matrix3x2 result)
         {
             result.X.X = matrix.X.X;
             result.X.Y = matrix.Y.X;

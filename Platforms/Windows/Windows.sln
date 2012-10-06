@@ -37,7 +37,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Audio.XAudio", "Reign
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Physics", "Reign.Physics\Reign.Physics.csproj", "{0E352C1A-C94B-444A-ADD3-AB25289A4ABF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Physics.BEPUphysics", "Reign.Physics.BEPUphysics\Reign.Physics.BEPUphysics.csproj", "{38FF4203-F4B2-4054-9ABD-A52DD7D5AA49}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Physics.Jitter", "Reign.Physics.Jitter\Reign.Physics.Jitter.csproj", "{BECA1F2A-3527-468C-8615-DB6512F2E3AF}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -270,18 +270,18 @@ Global
 		{0E352C1A-C94B-444A-ADD3-AB25289A4ABF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{0E352C1A-C94B-444A-ADD3-AB25289A4ABF}.Release|Win32.ActiveCfg = Release|Any CPU
 		{0E352C1A-C94B-444A-ADD3-AB25289A4ABF}.Release|x86.ActiveCfg = Release|Any CPU
-		{38FF4203-F4B2-4054-9ABD-A52DD7D5AA49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{38FF4203-F4B2-4054-9ABD-A52DD7D5AA49}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{38FF4203-F4B2-4054-9ABD-A52DD7D5AA49}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{38FF4203-F4B2-4054-9ABD-A52DD7D5AA49}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{38FF4203-F4B2-4054-9ABD-A52DD7D5AA49}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{38FF4203-F4B2-4054-9ABD-A52DD7D5AA49}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{38FF4203-F4B2-4054-9ABD-A52DD7D5AA49}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{38FF4203-F4B2-4054-9ABD-A52DD7D5AA49}.Release|Any CPU.Build.0 = Release|Any CPU
-		{38FF4203-F4B2-4054-9ABD-A52DD7D5AA49}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{38FF4203-F4B2-4054-9ABD-A52DD7D5AA49}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{38FF4203-F4B2-4054-9ABD-A52DD7D5AA49}.Release|Win32.ActiveCfg = Release|Any CPU
-		{38FF4203-F4B2-4054-9ABD-A52DD7D5AA49}.Release|x86.ActiveCfg = Release|Any CPU
+		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Release|Win32.ActiveCfg = Release|Any CPU
+		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

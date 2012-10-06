@@ -137,7 +137,7 @@ namespace ModelConverter
 
 		void diffuseTextureInstanceApply(DiffuseTextureMaterial material, MeshI mesh)
 		{
-			material.Transform = new Matrix4(Matrix3.FromEuler(mesh.Rotation), mesh.Scale, mesh.Location);
+			material.Transform = Matrix4.FromAffineTransform(Matrix3.FromEuler(mesh.Rotation), mesh.Scale, mesh.Location);
 		}
 
 		protected override void render(Time time)
