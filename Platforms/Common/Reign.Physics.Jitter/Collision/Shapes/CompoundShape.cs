@@ -240,6 +240,11 @@ namespace Jitter.Collision.Shapes
             JVector.Add(ref result, ref shapes[currentShape].position, out result);
         }
 
+		protected override JVector getScale()
+		{
+			throw new NotImplementedException();
+		}
+
         /// <summary>
         /// Gets the axis aligned bounding box of the orientated shape. (Inlcuding all
         /// 'sub' shapes)

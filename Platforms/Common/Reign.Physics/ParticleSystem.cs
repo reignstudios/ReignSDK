@@ -2,7 +2,7 @@
 
 namespace Reign.Physics
 {
-	public class Particle : Body
+	/*public class Particle : Body
 	{
 		public bool Dead;
 		public float AliveSeconds, AliveTic;
@@ -74,5 +74,5 @@ namespace Reign.Physics
 
 			++activeCount;
 		}
-	}
+	}*/
 }

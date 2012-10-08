@@ -88,5 +88,9 @@ namespace Jitter.Collision.Shapes
             JVector.Subtract(ref temp2, ref shifted, out result);
         }
 
+		protected override JVector getScale()
+		{
+			throw new NotImplementedException();
+		}
     }
 }

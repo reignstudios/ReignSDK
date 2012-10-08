@@ -44,7 +44,6 @@ namespace Jitter.Collision.Shapes
     /// </summary>
     public abstract class Shape : ISupportMappable
     {
-
         // internal values so we can access them fast  without calling properties.
         internal JMatrix inertia = JMatrix.Identity;
         internal float mass = 1.0f;
@@ -62,6 +61,7 @@ namespace Jitter.Collision.Shapes
         /// </summary>
         public Shape()
         {
+			
         }
 
         /// <summary>
@@ -87,6 +87,8 @@ namespace Jitter.Collision.Shapes
         /// The untransformed axis aligned bounding box of the shape.
         /// </summary>
         public JBBox BoundingBox { get { return boundingBox; } }
+
+		public JVector Scale {get; private set;}
 
         /// <summary>
         /// Allows to set a user defined value to the shape.
@@ -272,6 +274,7 @@ namespace Jitter.Collision.Shapes
 
             CalculateMassInertia();
             RaiseShapeUpdated();
+			Scale = getScale();
         }
         
         /// <summary>
@@ -360,6 +363,8 @@ namespace Jitter.Collision.Shapes
         /// <param name="direction">The direction.</param>
         /// <param name="result">The result.</param>
         public abstract void SupportMapping(ref JVector direction, out JVector result);
+
+		protected abstract JVector getScale();
 
         /// <summary>
         /// The center of the SupportMap.

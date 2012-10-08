@@ -46,6 +46,9 @@
     <Reference Include="Reign.Input.WinForms">
       <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Input.WinForms.dll</HintPath>
     </Reference>
+    <Reference Include="Reign.Physics">
+      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Physics.dll</HintPath>
+    </Reference>
     <Reference Include="Reign.Video">
       <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Video.dll</HintPath>
     </Reference>

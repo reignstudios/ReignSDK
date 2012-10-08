@@ -24,6 +24,7 @@ namespace Reign.Video
 	public class SoftwareMesh
 	{
 		#region Properties
+		public SoftwareModel Model;
 		public string Name;
 		public Vector3 Location, Rotation, Scale;
 		public SoftwareMaterial Material;
@@ -39,8 +40,9 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public SoftwareMesh(ColladaModel_Geometry geometry)
+		public SoftwareMesh(SoftwareModel model, ColladaModel_Geometry geometry)
 		{
+			Model = model;
 			Name = geometry.Name;
 
 			Verticies = new List<SoftwareVertex>();

@@ -170,57 +170,57 @@ namespace Reign.Video
 							if (vertex == vertex2) continue;
 
 							// position tolerance
-							bool pass = true;
+							bool canRemoveVertex = true;
 							for (int pi = 0; pi != vertex.Positions.Length; ++pi)
 							{
 								if (!vertex.Positions[pi].AproxEqualsBox(vertex2.Positions[pi], tolerance))
 								{
-									pass = false;
+									canRemoveVertex = false;
 									break;
 								}
 							}
 
 							// color tolerance
-							if (pass && loadColors)
+							if (canRemoveVertex && loadColors)
 							{
 								for (int pi = 0; pi != vertex.Colors.Length; ++pi)
 								{
 									if (!vertex.Colors[pi].AproxEqualsBox(vertex2.Colors[pi], tolerance))
 									{
-										pass = false;
+										canRemoveVertex = false;
 										break;
 									}
 								}
 							}
 
 							// normal tolerance
-							if (pass && loadNormals)
+							if (canRemoveVertex && loadNormals)
 							{
 								for (int pi = 0; pi != vertex.Normals.Length; ++pi)
 								{
 									if (!vertex.Normals[pi].AproxEqualsBox(vertex2.Normals[pi], tolerance))
 									{
-										pass = false;
+										canRemoveVertex = false;
 										break;
 									}
 								}
 							}
 
 							// uv tolerance
-							if (pass && loadUVs)
+							if (canRemoveVertex && loadUVs)
 							{
 								for (int pi = 0; pi != vertex.UVs.Length; ++pi)
 								{
 									if (!vertex.UVs[pi].AproxEqualsBox(vertex2.UVs[pi], tolerance))
 									{
-										pass = false;
+										canRemoveVertex = false;
 										break;
 									}
 								}
 							}
 
 							// remove vertex
-							if (pass)
+							if (canRemoveVertex)
 							{
 								Verticies.Remove(vertex2);
 								Triangles[i2].Verticies[vi2] = vertex;

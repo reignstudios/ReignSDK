@@ -132,6 +132,14 @@ namespace ModelConverter
 			mainWindow.Save(dlg.FileName);
 		}
 
+		private void saveTriangleMesh_Click(object sender, EventArgs e)
+		{
+			var dlg = new SaveFileDialog();
+			if (dlg.ShowDialog() != DialogResult.OK) return;
+
+			mainWindow.SaveTriangleMesh(dlg.FileName);
+		}
+
 		public void LoadSoftwareModelData(SoftwareModel softwareModel, List<Type> materials)
 		{
 			materialListBox.Items.Clear();

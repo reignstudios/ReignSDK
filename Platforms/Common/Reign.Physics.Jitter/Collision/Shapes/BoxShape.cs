@@ -128,5 +128,10 @@ namespace Jitter.Collision.Shapes
             result.Y = (float)Math.Sign(direction.Y) * halfSize.Y;
             result.Z = (float)Math.Sign(direction.Z) * halfSize.Z;
         }
+
+		protected override JVector getScale()
+		{
+			return size * .5f;
+		}
     }
 }

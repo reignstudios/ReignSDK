@@ -199,6 +199,14 @@
       <Project>{4889BC73-F2D9-4F03-B9A9-316B83FD9063}</Project>
       <Name>Reign.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Reign.Physics\Reign.Physics.csproj">
+      <Project>{0E352C1A-C94B-444A-ADD3-AB25289A4ABF}</Project>
+      <Name>Reign.Physics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Video\Reign.Video.csproj">
+      <Project>{2E74C4E8-20F5-4EED-821C-FEA6DBF98532}</Project>
+      <Name>Reign.Video</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -27,14 +27,17 @@ namespace Reign.Video
 	{
 		#region Properties
 		public bool Loaded {get; private set;}
+		public delegate void FinishedLoadingMethod(SoftwareModel model);
+		private FinishedLoadingMethod finishedLoading;
 
 		public List<SoftwareMesh> Meshes;
 		public List<SoftwareMaterial> Materials;
 		#endregion
 
 		#region Constructors
-		public SoftwareModel(string fileName)
+		public SoftwareModel(string fileName, FinishedLoadingMethod finishedLoading)
 		{
+			this.finishedLoading = finishedLoading;
 			Meshes = new List<SoftwareMesh>();
 			Materials = new List<SoftwareMaterial>();
 			new SoftwareModelStreamLoader(this, fileName);
@@ -76,7 +79,7 @@ namespace Reign.Video
 			var meshIDHash = new Dictionary<string, SoftwareMesh>();
 			foreach (var geometry in collada.LibraryGeometry.Geometies)
 			{
-				var mesh = new SoftwareMesh(geometry);
+				var mesh = new SoftwareMesh(this, geometry);
 				Meshes.Add(mesh);
 				meshIDHash.Add(geometry.ID, mesh);
 			}
@@ -118,6 +121,7 @@ namespace Reign.Video
 			}
 
 			Loaded = true;
+			if (finishedLoading != null) finishedLoading(this);
 		}
 		#endregion
 	}

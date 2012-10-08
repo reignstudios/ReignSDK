@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using Reign.Physics;
 #endregion
 
 namespace Jitter.Collision
@@ -115,7 +116,7 @@ namespace Jitter.Collision
             public JBBox box;
         }
 
-        private JVector[] positions;
+        internal JVector[] positions;
         private JBBox[] triBoxes;
         private Node[] nodes;
         //private UInt16[] nodeStack;
@@ -280,6 +281,24 @@ namespace Jitter.Collision
         public Octree(List<JVector> positions, List<TriangleVertexIndices> tris)
         {
             SetTriangles(positions, tris);
+            BuildOctree();
+        }
+
+		public Octree(TriangleMesh triangleMesh)
+        {
+			var verticies = new List<JVector>();
+			foreach (var vertex in triangleMesh.Verticies)
+			{
+				verticies.Add(new JVector(vertex.Position.X, vertex.Position.Y, vertex.Position.Z));
+			}
+
+			var indicies = new List<TriangleVertexIndices>();
+			foreach (var triangle in triangleMesh.Triangles)
+			{
+				indicies.Add(new TriangleVertexIndices(triangle.Index1, triangle.Index2, triangle.Index3));
+			}
+
+            SetTriangles(verticies, indicies);
             BuildOctree();
         }
         #endregion

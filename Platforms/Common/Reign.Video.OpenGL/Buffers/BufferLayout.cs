@@ -10,8 +10,7 @@ namespace Reign.Video.OpenGL
 		private Shader shader;
 		private GLBufferElement[] layout;
 		private int[] attribLocations, streamBytesSizes;
-		private uint[] enabledStreamIndices;
-		private int enabledStreamIndicesCount;
+		private bool[] enabledStreamIndices;
 		#endregion
 
 		#region Constructors
@@ -20,7 +19,7 @@ namespace Reign.Video.OpenGL
 		{
 			video = parent.FindParentOrSelfWithException<Video>();
 			this.shader = (Shader)shader;
-			enabledStreamIndices = new uint[2];
+			enabledStreamIndices = new bool[2];
 
 			streamBytesSizes = bufferLayoutDesc.StreamBytesSizes;
 			layout = ((BufferLayoutDesc)bufferLayoutDesc).Desc;
@@ -40,24 +39,25 @@ namespace Reign.Video.OpenGL
 			{
 				var bufferLayout = video.currentBufferLayout;
 				var attbs = bufferLayout.attribLocations;
-				for (int stream = 0; stream != bufferLayout.enabledStreamIndicesCount; ++stream)
+				for (int stream = 0; stream != bufferLayout.enabledStreamIndices.Length; ++stream)
 				{
+					if (!bufferLayout.enabledStreamIndices[stream]) continue;
+
 					for (int i = 0; i != attbs.Length; ++i)
 					{
-						if (attbs[i] == -1 || bufferLayout.layout[i].StreamIndex != bufferLayout.enabledStreamIndices[stream]) continue;
+						if (attbs[i] == -1 || bufferLayout.layout[i].StreamIndex != stream) continue;
 						GL.DisableVertexAttribArray((uint)attbs[i]);
 					}
 				}
 			}
 
 			video.currentBufferLayout = this;
-			enabledStreamIndicesCount = 0;
+			for (int i = 0; i != enabledStreamIndices.Length; ++i) enabledStreamIndices[i] = false;
 		}
 
 		internal unsafe void enable(uint currentStreamIndex)
 		{
-			enabledStreamIndices[enabledStreamIndicesCount] = currentStreamIndex;
-			++enabledStreamIndicesCount;
+			enabledStreamIndices[currentStreamIndex] = true;
 			
 			for (int i = 0; i != layout.Length; ++i)
 			{
@@ -86,7 +86,6 @@ namespace Reign.Video.OpenGL
 					GL.VertexAttribDivisor(atLoc, (layout[i].Usage == GLBufferElementUsages.Index) ? 1u : 0u);
 				}
 				#endif
-				//GL.BindAttribLocation(shader.Program, atLoc, layout[i].Name);
 			}
 
 			#if DEBUG

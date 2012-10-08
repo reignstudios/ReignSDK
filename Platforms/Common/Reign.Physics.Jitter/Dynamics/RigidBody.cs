@@ -28,13 +28,12 @@ using Jitter.Collision.Shapes;
 using Jitter.Collision;
 using Jitter.Dynamics.Constraints;
 using Jitter.DataStructures;
+
 using Reign.Core;
 #endregion
 
 namespace Jitter.Dynamics
 {
-
-
     public enum RigidBodyIndex
     {
         RigidBody1, RigidBody2
@@ -88,14 +87,7 @@ namespace Jitter.Dynamics
         private ReadOnlyHashset<Constraint> readOnlyConstraints;
 
         internal int marker = 0;
-
-
-        public RigidBody(Shape shape)
-            : this(shape, new Material(), false)
-        {
-        }
-
-        internal bool isParticle = false;
+		internal bool isParticle = false;
 
         /// <summary>
         /// If true, the body as no angular movement.
@@ -127,12 +119,17 @@ namespace Jitter.Dynamics
             }
         }
 
+		public RigidBody(Shape shape)
+        : this(shape, new Material(), false)
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the RigidBody class.
         /// </summary>
         /// <param name="shape">The shape of the body.</param>
         public RigidBody(Shape shape, Material material)
-            :this(shape,material,false)
+        : this(shape, material, false)
         {
         }
 
@@ -503,11 +500,10 @@ namespace Jitter.Dynamics
 				mat.w = Vector3.Zero;
 				Matrix3.Transpose(mat, out mat);
 
-				var box = shape.boundingBox;
 				Vector3 scale;
-				scale.X = (box.Max.X - box.Min.X) * .5f;
-				scale.Y = (box.Max.Y - box.Min.Y) * .5f;
-				scale.Z = (box.Max.Z - box.Min.Z) * .5f;
+				scale.X = shape.Scale.X;
+				scale.Y = shape.Scale.Y;
+				scale.Z = shape.Scale.Z;
 				scale.w = 0;
 
 				Vector3 pos;

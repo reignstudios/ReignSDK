@@ -48,6 +48,7 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.shaderMaterialComboBox = new System.Windows.Forms.ComboBox();
 			this.label3 = new System.Windows.Forms.Label();
+			this.saveTriangleMesh = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -73,7 +74,7 @@
 			// 
 			// saveButton
 			// 
-			this.saveButton.Location = new System.Drawing.Point(456, 12);
+			this.saveButton.Location = new System.Drawing.Point(255, 12);
 			this.saveButton.Name = "saveButton";
 			this.saveButton.Size = new System.Drawing.Size(75, 23);
 			this.saveButton.TabIndex = 2;
@@ -243,11 +244,22 @@
 			this.label3.TabIndex = 9;
 			this.label3.Text = "Shader Material:";
 			// 
+			// saveTriangleMesh
+			// 
+			this.saveTriangleMesh.Location = new System.Drawing.Point(402, 12);
+			this.saveTriangleMesh.Name = "saveTriangleMesh";
+			this.saveTriangleMesh.Size = new System.Drawing.Size(123, 23);
+			this.saveTriangleMesh.TabIndex = 10;
+			this.saveTriangleMesh.Text = "Save TriangleMesh";
+			this.saveTriangleMesh.UseVisualStyleBackColor = true;
+			this.saveTriangleMesh.Click += new System.EventHandler(this.saveTriangleMesh_Click);
+			// 
 			// ToolWindow
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(543, 322);
+			this.Controls.Add(this.saveTriangleMesh);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.loadButton);
 			this.Controls.Add(this.contentTextBox);
@@ -289,5 +301,6 @@
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.Button removeBinderButton;
 		private System.Windows.Forms.Button addBinderButton;
+		private System.Windows.Forms.Button saveTriangleMesh;
 	}
 }

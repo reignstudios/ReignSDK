@@ -6,6 +6,7 @@ using Reign.Input;
 using Reign.Input.API;
 using System.Collections.Generic;
 using ShaderMaterials.Shaders;
+using Reign.Physics;
 
 namespace ModelConverter
 {
@@ -93,7 +94,7 @@ namespace ModelConverter
 		public new void Load(string fileName)
 		{
 			loadingSoftwareModelDone = false;
-			softwareModel = new SoftwareModel(fileName);
+			softwareModel = new SoftwareModel(fileName, null);
 		}
 
 		public void Convert(string contentPath, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> materialFieldTypes)
@@ -106,6 +107,12 @@ namespace ModelConverter
 		{
 			if (softwareModel == null) return;
 			ModelI.Save(fileName, false, softwareModel, MeshVertexSizes.Float3, false, true, true);
+		}
+
+		public void SaveTriangleMesh(string fileName)
+		{
+			if (softwareModel == null) return;
+			TriangleMesh.Save(softwareModel.Meshes[0], fileName);
 		}
 
 		protected override void update(Time time)

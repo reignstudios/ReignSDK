@@ -24,11 +24,13 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+
+using Reign.Physics;
+using Reign.Core;
 #endregion
 
 namespace Jitter.Collision.Shapes
 {
-
     /// <summary>
     /// A <see cref="Shape"/> representing a triangleMesh.
     /// </summary>
@@ -44,9 +46,9 @@ namespace Jitter.Collision.Shapes
         /// This stabilizes collision detection for flat shapes.
         /// </summary>
         public float SphericalExpansion 
-        { 
-            get { return sphericalExpansion; } 
-            set { sphericalExpansion = value; } 
+        {
+            get { return sphericalExpansion; }
+            set { sphericalExpansion = value; }
         }
 
         /// <summary>
@@ -167,6 +169,11 @@ namespace Jitter.Collision.Shapes
 
             result = vecs[minIndex] + exp;
         }
+		
+		protected override JVector getScale()
+		{
+			return new JVector((boundingBox.Max - boundingBox.Min).Length() * .25f);
+		}
 
         /// <summary>
         /// Gets the axis aligned bounding box of the orientated shape. This includes

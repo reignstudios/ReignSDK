@@ -108,5 +108,10 @@ namespace Jitter.Collision.Shapes
                 result.Z = 0.0f;
             }
         }
+
+		protected override JVector getScale()
+		{
+			throw new NotImplementedException();
+		}
     }
 }
