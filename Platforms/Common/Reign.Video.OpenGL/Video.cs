@@ -568,7 +568,7 @@ namespace Reign.Video.OpenGL
 			}
 		}
 
-		public void Clear(float r, float g, float b, float a)
+		public void ClearAll(float r, float g, float b, float a)
 		{
 			GL.ClearColor(r, g, b, a);
 			GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
@@ -578,6 +578,12 @@ namespace Reign.Video.OpenGL
 		{
 			GL.ClearColor(r, g, b, a);
 			GL.Clear(GL.COLOR_BUFFER_BIT);
+		}
+
+		public void ClearColorDepth(float r, float g, float b, float a)
+		{
+			GL.ClearColor(r, g, b, a);
+			GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
 		}
 
 		public void ClearDepthStencil()

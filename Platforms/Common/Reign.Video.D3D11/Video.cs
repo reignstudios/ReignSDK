@@ -167,14 +167,19 @@ namespace Reign.Video.D3D11
 			else com.EnableRenderTarget(null);
 		}
 
-		public void Clear(float r, float g, float b, float a)
+		public void ClearAll(float r, float g, float b, float a)
 		{
-			com.Clear(r, g, b, a);
+			com.ClearAll(r, g, b, a);
 		}
 
 		public void ClearColor(float r, float g, float b, float a)
 		{
 			com.ClearColor(r, g, b, a);
+		}
+
+		public void ClearColorDepth(float r, float g, float b, float a)
+		{
+			com.ClearColorDepth(r, g, b, a);
 		}
 
 		public void ClearDepthStencil()

@@ -416,7 +416,7 @@ namespace Reign
 		device->SetRenderTarget(0, 0);
 	}
 
-	void Video::Clear(float r, float g, float b, float a)
+	void Video::ClearAll(float r, float g, float b, float a)
 	{
 		device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, D3DCOLOR_COLORVALUE(r,g,b,a), 1.0f, MB_ICONSTOP);
 	}
@@ -424,6 +424,11 @@ namespace Reign
 	void Video::ClearColor(float r, float g, float b, float a)
 	{
 		device->Clear(0, 0, D3DCLEAR_TARGET, D3DCOLOR_COLORVALUE(r,g,b,a), 1.0f, MB_ICONSTOP);
+	}
+
+	void Video::ClearColorDepth(float r, float g, float b, float a)
+	{
+		device->Clear(0, 0, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_COLORVALUE(r,g,b,a), 1.0f, MB_ICONSTOP);
 	}
 
 	void Video::ClearDepthStencil()

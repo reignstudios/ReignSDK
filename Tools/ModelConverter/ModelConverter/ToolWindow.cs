@@ -129,7 +129,7 @@ namespace ModelConverter
 			var dlg = new SaveFileDialog();
 			if (dlg.ShowDialog() != DialogResult.OK) return;
 
-			mainWindow.Save(dlg.FileName);
+			mainWindow.Save(dlg.FileName, saveColorsCheckBox.Checked, saveUVsCheckBox.Checked, saveNormalsCheckBox.Checked);
 		}
 
 		private void saveTriangleMesh_Click(object sender, EventArgs e)

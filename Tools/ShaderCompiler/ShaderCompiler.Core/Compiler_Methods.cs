@@ -261,10 +261,14 @@ namespace ShaderCompiler.Core
 			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Cross", "cross");
 			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Sin", "sin");
 			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Cos", "cos");
+			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Max", "max");
+			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Min", "min");
 			
 			if (baseType == BaseCompilerOutputs.HLSL)
 			{
 				methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Clip", "clip");
+				methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.DDX", "ddx");
+				methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.DDY", "ddy");
 			}
 			
 			if (baseType == BaseCompilerOutputs.GLSL)
@@ -277,6 +281,9 @@ namespace ShaderCompiler.Core
 					newVal = Regex.Replace(newVal, @"\)\s*;", "", RegexOptions.Singleline);
 					methodBlock = Regex.Replace(methodBlock, find, string.Format("if ({0} < 0.0) discard;", newVal));
 				}
+
+				methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.DDX", "dFdx");
+				methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.DDY", "dFdy");
 			}
 
 			// Convert matrix multiply types

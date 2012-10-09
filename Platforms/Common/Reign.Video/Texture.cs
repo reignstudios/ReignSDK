@@ -25,7 +25,8 @@ namespace Reign.Video
 
 	public enum DepthStenicFormats
 	{
-		Depth24Stencil8
+		//Depth24Stencil8
+		Depth16
 	}
 
 	public enum RenderTargetUsage

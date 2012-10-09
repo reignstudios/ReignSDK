@@ -280,7 +280,7 @@ namespace Reign_Video_D3D11_Component
 		#endif
 	}
 
-	void VideoCom::Clear(float r, float g, float b, float a)
+	void VideoCom::ClearAll(float r, float g, float b, float a)
 	{
 		const float clearColor[4] = {r, g, b, a};
 		deviceContext->ClearRenderTargetView(currentRenderTarget, clearColor);
@@ -291,6 +291,13 @@ namespace Reign_Video_D3D11_Component
 	{
 		const float clearColor[4] = {r, g, b, a};
 		deviceContext->ClearRenderTargetView(currentRenderTarget, clearColor);
+	}
+
+	void VideoCom::ClearColorDepth(float r, float g, float b, float a)
+	{
+		const float clearColor[4] = {r, g, b, a};
+		deviceContext->ClearRenderTargetView(currentRenderTarget, clearColor);
+		deviceContext->ClearDepthStencilView(currentDepthStencil, D3D11_CLEAR_DEPTH, 1.0f, 0);
 	}
 
 	void VideoCom::ClearDepthStencil()

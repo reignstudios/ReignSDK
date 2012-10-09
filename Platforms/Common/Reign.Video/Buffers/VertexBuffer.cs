@@ -18,8 +18,6 @@ namespace Reign.Video
 		#region Properties
 		protected BufferUsages usage;
 		protected int vertexByteSize, vertexArraySize, vertexCount;
-		protected int indexByteSize, indexCount;
-		protected bool _32BitIndices;
 		#endregion
 
 		#region Constructors
@@ -29,19 +27,6 @@ namespace Reign.Video
 			vertexByteSize = bufferLayoutDesc.ByteSize;
 			vertexArraySize = bufferLayoutDesc.FloatCount;
 			this.usage = usage;
-
-			indexByteSize = 2;
-		}
-
-		protected VertexBufferI(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, bool _32BitIndices)
-		: base(parent)
-		{
-			vertexByteSize = bufferLayoutDesc.ByteSize;
-			vertexArraySize = bufferLayoutDesc.FloatCount;
-			this.usage = usage;
-
-			this._32BitIndices = _32BitIndices;
-			indexByteSize = _32BitIndices ? 4 : 2;
 		}
 		#endregion
 

@@ -10,7 +10,7 @@ namespace Reign.Video
 		#region Properties
 		protected BufferUsages usage;
 		protected int indexByteSize;
-		protected bool _32BitIndices;
+		public bool _32BitIndices {get; protected set;}
 
 		protected int indexCount;
 		public int IndexCount {get{return indexCount;}}

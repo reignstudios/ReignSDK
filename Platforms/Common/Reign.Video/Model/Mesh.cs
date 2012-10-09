@@ -113,21 +113,30 @@ namespace Reign.Video
 				switch (key.Key)
 				{
 					case (TriangleComponentKeyTypes.ColorComponents):
-						elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector4, BufferLayoutElementUsages.Color, 0, colorCount, vertFloatCount));
-						vertFloatCount += 4;
-						++colorCount;
+						if (loadColors)
+						{
+							elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector4, BufferLayoutElementUsages.Color, 0, colorCount, vertFloatCount));
+							vertFloatCount += 4;
+							++colorCount;
+						}
 						break;
 
 					case (TriangleComponentKeyTypes.NormalComponents):
-						elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Normal, 0, normalCount, vertFloatCount));
-						vertFloatCount += 3;
-						++normalCount;
+						if (loadNormals)
+						{
+							elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Normal, 0, normalCount, vertFloatCount));
+							vertFloatCount += 3;
+							++normalCount;
+						}
 						break;
 
 					case (TriangleComponentKeyTypes.UVComponents):
-						elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, uvCount, vertFloatCount));
-						vertFloatCount += 2;
-						++uvCount;
+						if (loadUVs)
+						{
+							elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, uvCount, vertFloatCount));
+							vertFloatCount += 2;
+							++uvCount;
+						}
 						break;
 				}
 			}

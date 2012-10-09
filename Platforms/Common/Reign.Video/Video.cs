@@ -10,8 +10,9 @@ namespace Reign.Video
 		void Update();
 		void EnableRenderTarget();
 		void EnableRenderTarget(DepthStencilI depthStencil);
-		void Clear(float r, float g, float b, float a);
+		void ClearAll(float r, float g, float b, float a);
 		void ClearColor(float r, float g, float b, float a);
+		void ClearColorDepth(float r, float g, float b, float a);
 		void ClearDepthStencil();
 		void Present();
 	}

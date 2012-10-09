@@ -174,7 +174,7 @@ namespace Reign.Video.OpenGL
 		{
 			enable();
 			if (indexBuffer == null) GL.DrawArrays(primitiveTopology, 0, vertexCount);
-			else GL.DrawElements(primitiveTopology, indexBuffer.IndexCount, _32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0));
+			else GL.DrawElements(primitiveTopology, indexBuffer.IndexCount, indexBuffer._32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0));
 
 			#if DEBUG
 			Video.checkForError();
@@ -185,7 +185,7 @@ namespace Reign.Video.OpenGL
 		{
 			enable();
 			if (indexBuffer == null) GL.DrawArrays(primitiveTopology, 0, drawCount);
-			else GL.DrawElements(primitiveTopology, drawCount, _32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0));
+			else GL.DrawElements(primitiveTopology, drawCount, indexBuffer._32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0));
 
 			#if DEBUG
 			Video.checkForError();
@@ -196,7 +196,7 @@ namespace Reign.Video.OpenGL
 		{
 			enable();
 			if (indexBuffer == null) GL.DrawArraysInstanced(primitiveTopology, 0, vertexCount, drawCount);
-			else GL.DrawElementsInstanced(primitiveTopology, indexBuffer.IndexCount, _32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0), drawCount);
+			else GL.DrawElementsInstanced(primitiveTopology, indexBuffer.IndexCount, indexBuffer._32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0), drawCount);
 
 			#if DEBUG
 			Video.checkForError();
@@ -207,7 +207,7 @@ namespace Reign.Video.OpenGL
 		{
 			enable();
 			if (indexBuffer == null) GL.DrawArrays(primitiveTopology, 0, drawCount * meshVertexCount);
-			else GL.DrawElements(primitiveTopology, drawCount * meshIndexCount, _32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0));
+			else GL.DrawElements(primitiveTopology, drawCount * meshIndexCount, indexBuffer._32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0));
 
 			#if DEBUG
 			Video.checkForError();

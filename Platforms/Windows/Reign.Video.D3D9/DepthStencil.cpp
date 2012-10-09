@@ -29,7 +29,7 @@ namespace Reign
 			video = parent->FindParentOrSelfWithException<Video^>();
 
 			IDirect3DSurface9* surfaceTEMP = 0;
-			if (FAILED(video->Device->CreateDepthStencilSurface(width, height, D3DFMT_D24S8, D3DMULTISAMPLE_NONE, 0, false, &surfaceTEMP, 0)))
+			if (FAILED(video->Device->CreateDepthStencilSurface(width, height, D3DFMT_D16, D3DMULTISAMPLE_NONE, 0, false, &surfaceTEMP, 0)))//D3DFMT_D24S8
 			{
 				Debug::ThrowError(L"DepthStencil", L"Failed to create DepthStencilSurface");
 			}

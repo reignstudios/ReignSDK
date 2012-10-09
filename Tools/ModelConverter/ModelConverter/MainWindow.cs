@@ -103,10 +103,10 @@ namespace ModelConverter
 			model = Model.Create(videoType, video, softwareModel, MeshVertexSizes.Float3, false, true, true, contentPath, materialTypes, null, null, null, null, materialFieldTypes, null);
 		}
 
-		public void Save(string fileName)
+		public void Save(string fileName, bool saveColors, bool saveUVs, bool saveNormals)
 		{
 			if (softwareModel == null) return;
-			ModelI.Save(fileName, false, softwareModel, MeshVertexSizes.Float3, false, true, true);
+			ModelI.Save(fileName, false, softwareModel, MeshVertexSizes.Float3, saveColors, saveUVs, saveNormals);
 		}
 
 		public void SaveTriangleMesh(string fileName)
@@ -179,7 +179,7 @@ namespace ModelConverter
 			viewPort.Size = FrameSize;
 			viewPort.Apply();
 			camera.Apply();
-			video.Clear(0, .3f, .3f, 1);
+			video.ClearColorDepth(0, .3f, .3f, 1);
 			rasterizerState.Enable();
 			depthStencilState.Enable();
 			blendState.Enable();

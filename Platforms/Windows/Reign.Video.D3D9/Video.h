@@ -100,8 +100,9 @@ namespace Reign
 		public: virtual void EnableRenderTarget(DepthStencilI^ depthStencil);
 		public: virtual void DisableRenderTarget();
 		public: virtual void Present();
-		public: virtual void Clear(float r, float g, float b, float a);
+		public: virtual void ClearAll(float r, float g, float b, float a);
 		public: virtual void ClearColor(float r, float g, float b, float a);
+		public: virtual void ClearColorDepth(float r, float g, float b, float a);
 		public: virtual void ClearDepthStencil();
 		internal: void removeActiveTexture(Texture2D^ texture);
 		internal: static D3DFORMAT surfaceFormat(SurfaceFormats surfaceFormat);

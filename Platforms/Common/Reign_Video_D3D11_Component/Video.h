@@ -108,8 +108,9 @@ namespace Reign_Video_D3D11_Component
 		public: void Update(int width, int height);
 		public: void EnableRenderTarget();
 		public: void EnableRenderTarget(DepthStencilCom^ depthStencil);
-		public: void Clear(float r, float g, float b, float a);
+		public: void ClearAll(float r, float g, float b, float a);
 		public: void ClearColor(float r, float g, float b, float a);
+		public: void ClearColorDepth(float r, float g, float b, float a);
 		public: void ClearDepthStencil();
 		public: void Present();
 		internal: void removeActiveResource(ID3D11ShaderResourceView* shaderResource);

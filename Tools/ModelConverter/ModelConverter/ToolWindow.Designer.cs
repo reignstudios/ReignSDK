@@ -49,6 +49,9 @@
 			this.shaderMaterialComboBox = new System.Windows.Forms.ComboBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.saveTriangleMesh = new System.Windows.Forms.Button();
+			this.saveUVsCheckBox = new System.Windows.Forms.CheckBox();
+			this.saveNormalsCheckBox = new System.Windows.Forms.CheckBox();
+			this.saveColorsCheckBox = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -84,7 +87,7 @@
 			// 
 			// modelFileTextBox
 			// 
-			this.modelFileTextBox.Location = new System.Drawing.Point(62, 41);
+			this.modelFileTextBox.Location = new System.Drawing.Point(62, 123);
 			this.modelFileTextBox.Name = "modelFileTextBox";
 			this.modelFileTextBox.Size = new System.Drawing.Size(469, 20);
 			this.modelFileTextBox.TabIndex = 3;
@@ -92,7 +95,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(9, 44);
+			this.label1.Location = new System.Drawing.Point(9, 126);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(39, 13);
 			this.label1.TabIndex = 4;
@@ -101,7 +104,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(9, 74);
+			this.label2.Location = new System.Drawing.Point(9, 156);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(47, 13);
 			this.label2.TabIndex = 5;
@@ -109,7 +112,7 @@
 			// 
 			// contentTextBox
 			// 
-			this.contentTextBox.Location = new System.Drawing.Point(62, 67);
+			this.contentTextBox.Location = new System.Drawing.Point(62, 149);
 			this.contentTextBox.Name = "contentTextBox";
 			this.contentTextBox.Size = new System.Drawing.Size(469, 20);
 			this.contentTextBox.TabIndex = 6;
@@ -146,9 +149,9 @@
 			this.groupBox1.Controls.Add(this.shaderMaterialComboBox);
 			this.groupBox1.Controls.Add(this.label3);
 			this.groupBox1.Controls.Add(this.materialListBox);
-			this.groupBox1.Location = new System.Drawing.Point(12, 93);
+			this.groupBox1.Location = new System.Drawing.Point(12, 175);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(519, 220);
+			this.groupBox1.Size = new System.Drawing.Size(519, 223);
 			this.groupBox1.TabIndex = 9;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Materials";
@@ -246,7 +249,7 @@
 			// 
 			// saveTriangleMesh
 			// 
-			this.saveTriangleMesh.Location = new System.Drawing.Point(402, 12);
+			this.saveTriangleMesh.Location = new System.Drawing.Point(408, 12);
 			this.saveTriangleMesh.Name = "saveTriangleMesh";
 			this.saveTriangleMesh.Size = new System.Drawing.Size(123, 23);
 			this.saveTriangleMesh.TabIndex = 10;
@@ -254,11 +257,50 @@
 			this.saveTriangleMesh.UseVisualStyleBackColor = true;
 			this.saveTriangleMesh.Click += new System.EventHandler(this.saveTriangleMesh_Click);
 			// 
+			// saveUVsCheckBox
+			// 
+			this.saveUVsCheckBox.AutoSize = true;
+			this.saveUVsCheckBox.Checked = true;
+			this.saveUVsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.saveUVsCheckBox.Location = new System.Drawing.Point(13, 42);
+			this.saveUVsCheckBox.Name = "saveUVsCheckBox";
+			this.saveUVsCheckBox.Size = new System.Drawing.Size(74, 17);
+			this.saveUVsCheckBox.TabIndex = 11;
+			this.saveUVsCheckBox.Text = "Save UVs";
+			this.saveUVsCheckBox.UseVisualStyleBackColor = true;
+			// 
+			// saveNormalsCheckBox
+			// 
+			this.saveNormalsCheckBox.AutoSize = true;
+			this.saveNormalsCheckBox.Checked = true;
+			this.saveNormalsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.saveNormalsCheckBox.Location = new System.Drawing.Point(12, 66);
+			this.saveNormalsCheckBox.Name = "saveNormalsCheckBox";
+			this.saveNormalsCheckBox.Size = new System.Drawing.Size(92, 17);
+			this.saveNormalsCheckBox.TabIndex = 12;
+			this.saveNormalsCheckBox.Text = "Save Normals";
+			this.saveNormalsCheckBox.UseVisualStyleBackColor = true;
+			// 
+			// saveColorsCheckBox
+			// 
+			this.saveColorsCheckBox.AutoSize = true;
+			this.saveColorsCheckBox.Checked = true;
+			this.saveColorsCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.saveColorsCheckBox.Location = new System.Drawing.Point(12, 90);
+			this.saveColorsCheckBox.Name = "saveColorsCheckBox";
+			this.saveColorsCheckBox.Size = new System.Drawing.Size(83, 17);
+			this.saveColorsCheckBox.TabIndex = 13;
+			this.saveColorsCheckBox.Text = "Save Colors";
+			this.saveColorsCheckBox.UseVisualStyleBackColor = true;
+			// 
 			// ToolWindow
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(543, 322);
+			this.ClientSize = new System.Drawing.Size(543, 407);
+			this.Controls.Add(this.saveColorsCheckBox);
+			this.Controls.Add(this.saveNormalsCheckBox);
+			this.Controls.Add(this.saveUVsCheckBox);
 			this.Controls.Add(this.saveTriangleMesh);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.loadButton);
@@ -302,5 +344,8 @@
 		private System.Windows.Forms.Button removeBinderButton;
 		private System.Windows.Forms.Button addBinderButton;
 		private System.Windows.Forms.Button saveTriangleMesh;
+		private System.Windows.Forms.CheckBox saveUVsCheckBox;
+		private System.Windows.Forms.CheckBox saveNormalsCheckBox;
+		private System.Windows.Forms.CheckBox saveColorsCheckBox;
 	}
 }

@@ -74,8 +74,8 @@ namespace ShaderCompiler.Core
 		public static Vector3 operator/(Vector3 p1, double p2) {return new Vector3(p1.x/p2, p1.y/p2, p1.z/p2);}
 		public static Vector3 operator/(double p1, Vector3 p2) {return new Vector3(p1/p2.x, p1/p2.y, p1/p2.z);}
 		// ==
-		public static bool operator==(Vector3 p1, Vector3 p2) {return (p1.x==p2.x && p1.y==p2.y && p1.z==p2.z);}
-		public static bool operator!=(Vector3 p1, Vector3 p2) {return (p1.x!=p2.x || p1.y!=p2.y || p1.z!=p2.z);}
+		//public static bool operator==(Vector3 p1, Vector3 p2) {return (p1.x==p2.x && p1.y==p2.y && p1.z==p2.z);}
+		//public static bool operator!=(Vector3 p1, Vector3 p2) {return (p1.x!=p2.x || p1.y!=p2.y || p1.z!=p2.z);}
 		#endregion
 
 		internal static string Output(CompilerOutputs output)
