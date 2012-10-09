@@ -11,6 +11,7 @@ namespace Reign.Video.OpenGL
 		private GLBufferElement[] layout;
 		private int[] attribLocations, streamBytesSizes;
 		private bool[] enabledStreamIndices;
+		internal static bool enabled;
 		#endregion
 
 		#region Constructors
@@ -49,6 +50,8 @@ namespace Reign.Video.OpenGL
 						GL.DisableVertexAttribArray((uint)attbs[i]);
 					}
 				}
+
+				enabled = false;
 			}
 
 			video.currentBufferLayout = this;
@@ -57,6 +60,7 @@ namespace Reign.Video.OpenGL
 
 		internal unsafe void enable(uint currentStreamIndex)
 		{
+			enabled = true;
 			enabledStreamIndices[currentStreamIndex] = true;
 			
 			for (int i = 0; i != layout.Length; ++i)
@@ -80,7 +84,7 @@ namespace Reign.Video.OpenGL
 				}
 				
 			    GL.VertexAttribPointer(atLoc, floatCount, format, normalize, streamBytesSizes[streamIndex], layout[i].Offset.ToPointer());
-			    #if !iOS && !ANDROID
+			    #if !iOS && !ANDROID && !NaCl
 				if (video.Caps.HardwareInstancing)
 				{
 					GL.VertexAttribDivisor(atLoc, (layout[i].Usage == GLBufferElementUsages.Index) ? 1u : 0u);

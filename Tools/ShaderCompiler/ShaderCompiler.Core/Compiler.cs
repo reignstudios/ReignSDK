@@ -412,7 +412,8 @@ namespace ShaderMaterials.{0}
 					{
 						var usage = (FieldUsage)a;
 
-						if (field.FieldType == typeof(Vector2) || field.FieldType == typeof(Vector3) || field.FieldType == typeof(Vector4) ||
+						if (field.FieldType == typeof(double) ||
+							field.FieldType == typeof(Vector2) || field.FieldType == typeof(Vector3) || field.FieldType == typeof(Vector4) ||
 							field.FieldType == typeof(Matrix2) || field.FieldType == typeof(Matrix3) || field.FieldType == typeof(Matrix4) ||
 							field.FieldType == typeof(Vector2[]) || field.FieldType == typeof(Vector3[]) || field.FieldType == typeof(Vector4[]) ||
 							field.FieldType == typeof(Matrix2[]) || field.FieldType == typeof(Matrix3[]) || field.FieldType == typeof(Matrix4[]))
@@ -433,6 +434,10 @@ namespace ShaderMaterials.{0}
 						string globalFieldFormat = "[MaterialField(MaterialFieldUsages.{2})] public static {0} {1};";
 						string fieldFormat = "[MaterialField(MaterialFieldUsages.{2})] public {0} {1};";
 						string methodValue = "{0}Constant.Set({0});";
+						if (field.FieldType == typeof(double))
+						{
+							createConstantType(usage, field, methodValue, globalFieldFormat, fieldFormat, "float", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
+						}
 						if (field.FieldType == typeof(Vector2))
 						{
 							createConstantType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Vector2", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
@@ -464,6 +469,10 @@ namespace ShaderMaterials.{0}
 
 						globalFieldFormat = "private static WeakReference {2}; [MaterialField(MaterialFieldUsages.{3})] public static {0} {1} {{ get{{return ({0}){2}.Target;}} set{{{2} = new WeakReference(value);}} }}";
 						fieldFormat = "private WeakReference {2}; [MaterialField(MaterialFieldUsages.{3})] public {0} {1} {{ get{{return ({0}){2}.Target;}} set{{{2} = new WeakReference(value);}} }}";
+						if (field.FieldType == typeof(double[]))
+						{
+							createConstantArrayType(usage, field, methodValue, globalFieldFormat, fieldFormat, "float[]", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);
+						}
 						if (field.FieldType == typeof(Vector2[]))
 						{
 							createConstantArrayType(usage, field, methodValue, globalFieldFormat, fieldFormat, "Vector2[]", ref constantTypeProperties, ref applyGlobalMethodBody, ref applyInstanceMethodBody, ref applyInstancingMethodBody);

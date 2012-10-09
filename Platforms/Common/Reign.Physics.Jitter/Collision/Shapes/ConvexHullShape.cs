@@ -81,10 +81,5 @@ namespace Jitter.Collision.Shapes
 
             result = vertices[maxIndex] - this.shifted;
         }
-
-		protected override JVector getScale()
-		{
-			throw new NotImplementedException();
-		}
     }
 }

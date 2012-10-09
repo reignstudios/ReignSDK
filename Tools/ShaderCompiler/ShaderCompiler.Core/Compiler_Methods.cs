@@ -303,7 +303,7 @@ namespace ShaderCompiler.Core
 				{
 					if (outputType == CompilerOutputs.D3D11)
 					{
-						string find = field.Name + @"\.Sample\s*\(";
+						string find = @"\b" + field.Name + @"\.Sample\s*\(";
 						string replace = string.Format("{0}.Sample(Samplers[{1}], ", field.Name, textureIndex);
 						methodBlock = Regex.Replace(methodBlock, find, replace);
 						++textureIndex;
@@ -313,7 +313,7 @@ namespace ShaderCompiler.Core
 						string samplerName = "tex2D";
 						if (baseType == BaseCompilerOutputs.GLSL) samplerName = "texture2D";
 						
-						string find = field.Name + @"\.Sample\s*\(";
+						string find = @"\b" + field.Name + @"\.Sample\s*\(";
 						string replace = string.Format("{0}({1}, ", samplerName, field.Name + (outputType == CompilerOutputs.XNA ? "_S" : ""));
 						methodBlock = Regex.Replace(methodBlock, find, replace);
 					}

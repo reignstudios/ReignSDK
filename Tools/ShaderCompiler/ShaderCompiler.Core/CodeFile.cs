@@ -39,7 +39,7 @@ namespace ShaderCompiler.Core
 					var classBlock = match.Groups[1].Value;
 					end = getBlockEnd(classBlock);
 					classBlock = classBlock.Remove(end);
-					match = Regex.Match(classBlock, Compiler.convertToBasicType(method.ReturnType, outputType, false) + @"\s*" + method.Name + @".*?\{(.*?\})", RegexOptions.Singleline);
+					match = Regex.Match(classBlock, Compiler.convertToBasicType(method.ReturnType, outputType, false) + @"\s*" + method.Name + @".*?\{(.*\})", RegexOptions.Singleline);
 					if (match.Success && match.Groups.Count == 2)
 					{
 						var methodBlock = match.Groups[1].Value;

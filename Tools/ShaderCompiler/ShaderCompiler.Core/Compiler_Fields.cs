@@ -41,7 +41,8 @@ namespace ShaderCompiler.Core
 					if (t == typeof(ArrayType)) isField = true;
 					if (t == typeof(FieldUsage))
 					{
-						if (!(field.FieldType == typeof(Vector2) || field.FieldType == typeof(Vector3) || field.FieldType == typeof(Vector4) ||
+						if (!(field.FieldType == typeof(double) ||
+							field.FieldType == typeof(Vector2) || field.FieldType == typeof(Vector3) || field.FieldType == typeof(Vector4) ||
 							field.FieldType == typeof(Vector2[]) || field.FieldType == typeof(Vector3[]) || field.FieldType == typeof(Vector4[]) ||
 							field.FieldType == typeof(Matrix4) || field.FieldType == typeof(Matrix4[]) ||
 							field.FieldType == typeof(Texture2D)))

@@ -294,11 +294,6 @@ namespace Jitter.Collision.Shapes
             JVector.Add(ref points[minIndex], ref expandVector, out result);
         }
 
-		protected override JVector getScale()
-		{
-			throw new NotImplementedException();
-		}
-
         /// <summary>
         /// 
         /// </summary>

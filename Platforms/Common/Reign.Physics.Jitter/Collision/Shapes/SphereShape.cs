@@ -66,11 +66,6 @@ namespace Jitter.Collision.Shapes
             JVector.Multiply(ref result, radius, out result);
         }
 
-		protected override JVector getScale()
-		{
-			return new JVector(radius);
-		}
-
         /// <summary>
         /// Calculates the bounding box of the sphere.
         /// </summary>

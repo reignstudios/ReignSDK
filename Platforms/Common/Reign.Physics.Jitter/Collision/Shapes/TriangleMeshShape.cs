@@ -169,11 +169,6 @@ namespace Jitter.Collision.Shapes
 
             result = vecs[minIndex] + exp;
         }
-		
-		protected override JVector getScale()
-		{
-			return new JVector((boundingBox.Max - boundingBox.Min).Length() * .25f);
-		}
 
         /// <summary>
         /// Gets the axis aligned bounding box of the orientated shape. This includes

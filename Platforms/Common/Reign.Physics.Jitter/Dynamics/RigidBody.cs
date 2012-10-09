@@ -500,12 +500,6 @@ namespace Jitter.Dynamics
 				mat.w = Vector3.Zero;
 				Matrix3.Transpose(mat, out mat);
 
-				Vector3 scale;
-				scale.X = shape.Scale.X;
-				scale.Y = shape.Scale.Y;
-				scale.Z = shape.Scale.Z;
-				scale.w = 0;
-
 				Vector3 pos;
 				pos.X = position.X;
 				pos.Y = position.Y;
@@ -513,7 +507,7 @@ namespace Jitter.Dynamics
 				pos.w = 0;
 
 				Matrix4 transform;
-				Matrix4.FromAffineTransform(ref mat, ref scale, ref pos, out transform);
+				Matrix4.FromAffineTransform(ref mat, ref shape.TransformScale, ref pos, out transform);
 				return transform;
 			}
             set

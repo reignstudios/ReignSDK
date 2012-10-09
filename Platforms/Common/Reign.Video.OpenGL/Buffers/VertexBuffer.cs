@@ -149,7 +149,7 @@ namespace Reign.Video.OpenGL
 
 		private void enable()
 		{
-			if (video.currentVertexBuffer == this)
+			if (video.currentVertexBuffer == this || !BufferLayout.enabled)
 			{
 				video.currentVertexBuffer = null;
 				if (indexBuffer != null) indexBuffer.enable();
