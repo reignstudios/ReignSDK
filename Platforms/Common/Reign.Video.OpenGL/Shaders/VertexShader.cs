@@ -8,9 +8,15 @@ namespace Reign.Video.OpenGL
 	{
 		#region Constructors
 		public VertexShader(ShaderI shader, string code, ShaderVersions shaderVersion)
-		: base(shader, code, shaderVersion, ShaderTypes.VS)
+		: base(shader, code, shaderVersion, ShaderTypes.VS, ShaderFloatingPointQuality.High)
 		{
 
+		}
+		
+		public VertexShader(ShaderI shader, string code, ShaderVersions shaderVersion, ShaderFloatingPointQuality quality)
+		: base(shader, code, shaderVersion, ShaderTypes.VS, quality)
+		{
+			
 		}
 		#endregion
 	}

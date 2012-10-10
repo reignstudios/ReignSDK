@@ -12,7 +12,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public unsafe ShaderModel(ShaderI shader, string code, ShaderVersions shaderVersion, ShaderTypes shaderType)
+		public unsafe ShaderModel(ShaderI shader, string code, ShaderVersions shaderVersion, ShaderTypes shaderType, ShaderFloatingPointQuality quality)
 		: base(shader)
 		{
 			try
@@ -21,8 +21,7 @@ namespace Reign.Video.OpenGL
 				if (Shader == 0) Debug.ThrowError("ShaderModel", "Failed to create shader");
 
 				#if iOS || ANDROID || NaCl
-				if (shaderType == ShaderTypes.VS) code = "precision highp float;" + Environment.NewLine + code;
-				else code = "precision lowp float;" + Environment.NewLine + code;
+				code = getQualityText(quality) + Environment.NewLine + code;
 				#endif
 				
 				string shaderLvl = "";
@@ -70,6 +69,28 @@ namespace Reign.Video.OpenGL
 				Dispose();
 				throw ex;
 			}
+		}
+		
+		private string getQualityText(ShaderFloatingPointQuality quality)
+		{
+			switch (quality)
+			{
+				case (ShaderFloatingPointQuality.High): return "precision highp float;";
+				case (ShaderFloatingPointQuality.Med): return "precision mediump float;";
+				case (ShaderFloatingPointQuality.Low): return "precision lowp float;";
+				
+				case (ShaderFloatingPointQuality.Max):
+					return
+@"
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
+precision mediump float;
+#endif
+";
+			}
+			
+			return null;
 		}
 
 		public override void Dispose()

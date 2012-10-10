@@ -39,6 +39,14 @@ namespace Reign.Video
 		GLSL_1_00
 		#endif
 	}
+	
+	public enum ShaderFloatingPointQuality
+	{
+		Max,
+		High,
+		Med,
+		Low
+	}
 
 	public interface ShaderVariableI
 	{

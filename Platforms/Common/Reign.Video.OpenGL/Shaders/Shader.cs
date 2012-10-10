@@ -9,17 +9,20 @@ namespace Reign.Video.OpenGL
 		private Shader shader;
 		private string fileName;
 		private ShaderVersions shaderVersion;
+		private ShaderFloatingPointQuality vsQuality, psQuality;
 
-		public ShaderStreamLoader(Shader shader, string fileName, ShaderVersions shaderVersion)
+		public ShaderStreamLoader(Shader shader, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality)
 		{
 			this.shader = shader;
 			this.fileName = fileName;
 			this.shaderVersion = shaderVersion;
+			this.vsQuality = vsQuality;
+			this.psQuality = psQuality;
 		}
 
 		public override bool Load()
 		{
-			shader.load(fileName, shaderVersion);
+			shader.load(fileName, shaderVersion, vsQuality, psQuality);
 			return true;
 		}
 	}
@@ -56,18 +59,25 @@ namespace Reign.Video.OpenGL
 		: base(parent)
 		{
 			video = parent.FindParentOrSelfWithException<Video>();
-			new ShaderStreamLoader(this, fileName, shaderVersion);
+			new ShaderStreamLoader(this, fileName, shaderVersion, ShaderFloatingPointQuality.High, ShaderFloatingPointQuality.Low);
+		}
+		
+		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality)
+		: base(parent)
+		{
+			video = parent.FindParentOrSelfWithException<Video>();
+			new ShaderStreamLoader(this, fileName, shaderVersion, vsQuality, psQuality);
 		}
 
-		internal void load(string fileName, ShaderVersions shaderVersion)
+		internal void load(string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality)
 		{
 			try
 			{
 				shaderVersion = (shaderVersion == ShaderVersions.Max) ? this.video.Caps.MaxShaderVersion : shaderVersion;
 
 				var code = getShaders(fileName);
-				vertex = new VertexShader(this, code[0], shaderVersion);
-				pixel = new PixelShader(this, code[1], shaderVersion);
+				vertex = new VertexShader(this, code[0], shaderVersion, vsQuality);
+				pixel = new PixelShader(this, code[1], shaderVersion, psQuality);
 
 				Program = GL.CreateProgram();
 				if (Program == 0) Debug.ThrowError("Shader", "Failed to create shader program");
