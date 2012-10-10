@@ -114,6 +114,7 @@ namespace Reign.Core
 			#endif
 
 			Delta = (Delta > 1) ? 1 : Delta;
+			Delta = (Delta < 0) ? 0 : Delta;
 
 			++fpsTic;
 			seconds += Delta;
