@@ -232,7 +232,6 @@ technique MainTechnique
 			var assembly = Assembly.LoadFile(dllFileName);
 			var objects = assembly.GetTypes();
 			string lastShaderOut = null;
-			var initLines = new List<string>();
 			var names = dllFileName.Split('/', '\\', '.');
 			string name = names[names.Length-2];
 			var materialCode = new Dictionary<string,string>();
@@ -260,11 +259,9 @@ technique MainTechnique
 							}
 
 							if (compileMaterial)
-							{	
-								string initLine;
-								var codeFile = compileMaterialFiles(name, obj, out initLine);
+							{
+								var codeFile = compileMaterialFiles(name, obj);
 								materialCode.Add(obj.Name, codeFile);
-								initLines.Add(initLine);
 							}
 									
 							if (writeToMemory)
@@ -331,33 +328,6 @@ technique MainTechnique
 
 			if (compileMaterial)
 			{
-				string compiledShaders =
-@"
-using System;
-using System.Collections.Generic;
-using Reign.Core;
-using Reign.Video;
-using Reign.Video.API;
-
-namespace ShaderMaterials.{0}
-{{
-	public static class Materials
-	{{
-		public static List<Type> Types {{get; private set;}}
-
-		public static void Init(VideoTypes apiType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
-		{{
-			// init shaders
-			Types = new List<Type>();
-			{1}
-		}}
-	}}
-}}
-";
-				string initLineText = "";
-				foreach (var initLine in initLines) initLineText += initLine;
-				materialCode.Add("CompiledMaterials", string.Format(compiledShaders, name, initLineText));
-
 				foreach (var material in materialCode)
 				{
 					using (var codeFile = new FileStream(outDirectory + material.Key + ".cs", FileMode.Create, FileAccess.Write))
@@ -383,7 +353,7 @@ namespace ShaderMaterials.{0}
 			}
 		}
 
-		private string compileMaterialFiles(string shaderLibName, Type shader, out string initLine)
+		private string compileMaterialFiles(string shaderLibName, Type shader)
 		{
 			// get fields
 			var fieldInfoList = new List<FieldInfo[]>();
@@ -675,7 +645,6 @@ namespace ShaderMaterials.{0}
 }}
 ";
 
-			initLine = string.Format("Types.Add(typeof({0}Material)); ", shader.Name) + shader.Name + "Material.Init(apiType, parent, contentPath, tag, shaderVersion);";
 			return string.Format(shaderFile, shaderLibName, shader.Name, constantProperties, constantTypeProperties, applyGlobalMethodBody, applyInstanceMethodBody, applyInstancingMethodBody, elementsBody, constantInitBody);
 		}
 
