@@ -152,23 +152,23 @@
     <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\Scene.cs">
       <Link>Model\ColladaModel\Scene.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\Edge.cs">
-      <Link>Model\SoftwareModel\Edge.cs</Link>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareEdge.cs">
+      <Link>Model\SoftwareModel\SoftwareEdge.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\Material.cs">
-      <Link>Model\SoftwareModel\Material.cs</Link>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareMaterial.cs">
+      <Link>Model\SoftwareModel\SoftwareMaterial.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\Mesh.cs">
-      <Link>Model\SoftwareModel\Mesh.cs</Link>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareMesh.cs">
+      <Link>Model\SoftwareModel\SoftwareMesh.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\Model.cs">
-      <Link>Model\SoftwareModel\Model.cs</Link>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareModel.cs">
+      <Link>Model\SoftwareModel\SoftwareModel.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\Triangle.cs">
-      <Link>Model\SoftwareModel\Triangle.cs</Link>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareTriangle.cs">
+      <Link>Model\SoftwareModel\SoftwareTriangle.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\Vertex.cs">
-      <Link>Model\SoftwareModel\Vertex.cs</Link>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareVertex.cs">
+      <Link>Model\SoftwareModel\SoftwareVertex.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -176,5 +176,6 @@
     <Folder Include="Image\" />
     <Folder Include="States\" />
     <Folder Include="Model\" />
+    <Folder Include="Model\SoftwareModel\" />
   </ItemGroup>
 </Project>

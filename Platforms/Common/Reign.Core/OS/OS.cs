@@ -66,12 +66,6 @@ namespace Reign.Core
 	}
 	#endif
 
-	public enum UpdateAndRenderModes
-	{
-		Stepping,
-		Adaptive
-	}
-
 	public static class OS
 	{
 		#region Properites

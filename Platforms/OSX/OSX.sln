@@ -23,12 +23,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.API", "Reign.Vi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Audio.Dumby", "Reign.Audio.Dumby\Reign.Audio.Dumby.csproj", "{BFADBA6C-840A-42D5-BFCC-D882AFE94F33}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Physics", "Reign.Physics\Reign.Physics.csproj", "{00201699-93C4-4262-B90C-31A1CE1FDD05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Physics.Jitter", "Reign.Physics.Jitter\Reign.Physics.Jitter.csproj", "{5F8ADA57-7B00-43C4-9F1E-EED18C5FD21B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{00201699-93C4-4262-B90C-31A1CE1FDD05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00201699-93C4-4262-B90C-31A1CE1FDD05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00201699-93C4-4262-B90C-31A1CE1FDD05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00201699-93C4-4262-B90C-31A1CE1FDD05}.Release|Any CPU.Build.0 = Release|Any CPU
 		{084832F7-28A7-4182-A987-6AEED346AEE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{084832F7-28A7-4182-A987-6AEED346AEE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{084832F7-28A7-4182-A987-6AEED346AEE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,6 +61,10 @@ Global
 		{586A7B0B-249D-44C8-8C7A-2DA1EF7FC6AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{586A7B0B-249D-44C8-8C7A-2DA1EF7FC6AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{586A7B0B-249D-44C8-8C7A-2DA1EF7FC6AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F8ADA57-7B00-43C4-9F1E-EED18C5FD21B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F8ADA57-7B00-43C4-9F1E-EED18C5FD21B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F8ADA57-7B00-43C4-9F1E-EED18C5FD21B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F8ADA57-7B00-43C4-9F1E-EED18C5FD21B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6FC91DF3-4F4F-4667-A0DC-14D4CDA97F99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6FC91DF3-4F4F-4667-A0DC-14D4CDA97F99}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6FC91DF3-4F4F-4667-A0DC-14D4CDA97F99}.Release|Any CPU.ActiveCfg = Release|Any CPU

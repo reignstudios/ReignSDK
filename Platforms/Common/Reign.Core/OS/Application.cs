@@ -112,7 +112,7 @@ namespace Reign.Core
 		public Application(ApplicationOrientations orientation, bool enableAds)
 		: base(enableAds)
 		#elif ANDROID
-		public Application(ApplicationOrientations orientation, UpdateAndRenderModes updateAndRenderMode, int fps, bool enableAds, string publisherID)
+		public Application(ApplicationOrientations orientation, int fps, bool enableAds, string publisherID)
 		: base(enableAds, publisherID)
 		#elif METRO
 		public Application(ApplicationOrientations orientation)
