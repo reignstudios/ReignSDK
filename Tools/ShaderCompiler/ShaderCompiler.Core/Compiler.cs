@@ -402,7 +402,7 @@ namespace ShaderMaterials.{0}
 
 			// create properties and method property body
 			string constantProperties = null, constantTypeProperties = null, applyGlobalMethodBody = null, applyInstanceMethodBody = null, applyInstancingMethodBody = null, elementsBody = null, constantInitBody = null;
-			int floatOffset = 0, diffuseIndex = 0;
+			int floatOffset = 0;
 			foreach (var field in fields)
 			{
 				var attributes = field.GetCustomAttributes(true);

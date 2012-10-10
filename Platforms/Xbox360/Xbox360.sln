@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Audio.Dumby", "Reign.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Physics.Jitter", "Reign.Physics.Jitter\Reign.Physics.Jitter.csproj", "{834323F3-4FD6-4B10-A88B-D906A908F398}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Physics", "Reign.Physics\Reign.Physics.csproj", "{7BD1A357-BEB1-4DE0-9AF3-5DC719E28D1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Xbox 360 = Debug|Xbox 360
@@ -79,6 +81,10 @@ Global
 		{834323F3-4FD6-4B10-A88B-D906A908F398}.Debug|Xbox 360.Build.0 = Debug|Xbox 360
 		{834323F3-4FD6-4B10-A88B-D906A908F398}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
 		{834323F3-4FD6-4B10-A88B-D906A908F398}.Release|Xbox 360.Build.0 = Release|Xbox 360
+		{7BD1A357-BEB1-4DE0-9AF3-5DC719E28D1A}.Debug|Xbox 360.ActiveCfg = Debug|Xbox 360
+		{7BD1A357-BEB1-4DE0-9AF3-5DC719E28D1A}.Debug|Xbox 360.Build.0 = Debug|Xbox 360
+		{7BD1A357-BEB1-4DE0-9AF3-5DC719E28D1A}.Release|Xbox 360.ActiveCfg = Release|Xbox 360
+		{7BD1A357-BEB1-4DE0-9AF3-5DC719E28D1A}.Release|Xbox 360.Build.0 = Release|Xbox 360
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

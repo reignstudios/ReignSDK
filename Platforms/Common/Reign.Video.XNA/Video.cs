@@ -88,7 +88,7 @@ namespace Reign.Video.XNA
 			}
 		}
 
-		public void Clear(float r, float g, float b, float a)
+		public void ClearAll(float r, float g, float b, float a)
 		{
 			Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer | ClearOptions.Stencil, new Color(r, g, b, a), 1.0f, 0);
 		}
@@ -96,6 +96,11 @@ namespace Reign.Video.XNA
 		public void ClearColor(float r, float g, float b, float a)
 		{
 			Device.Clear(ClearOptions.Target, new Color(r, g, b, a), 1.0f, 0);
+		}
+
+		public void ClearColorDepth(float r, float g, float b, float a)
+		{
+			Device.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, new Color(r, g, b, a), 1.0f, 0);
 		}
 
 		public void ClearDepthStencil()

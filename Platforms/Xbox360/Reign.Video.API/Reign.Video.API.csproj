@@ -99,6 +99,9 @@
     <Compile Include="..\..\Common\Reign.Video.API\Buffers\VertexBuffer.cs">
       <Link>Buffers\VertexBuffer.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\DepthStencil.cs">
+      <Link>DepthStencil.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.Video.API\Font.cs">
       <Link>Font.cs</Link>
     </Compile>

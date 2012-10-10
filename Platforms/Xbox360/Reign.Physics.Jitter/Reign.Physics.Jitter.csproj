@@ -253,6 +253,14 @@
       <Project>{3DE2755C-7C57-44F2-9C52-66B4397C49E1}</Project>
       <Name>Reign.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Reign.Physics\Reign.Physics.csproj">
+      <Project>{7BD1A357-BEB1-4DE0-9AF3-5DC719E28D1A}</Project>
+      <Name>Reign.Physics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Video\Reign.Video.csproj">
+      <Project>{BFAFDA94-D442-4EC9-A37C-1E7DCB5CBE60}</Project>
+      <Name>Reign.Video</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

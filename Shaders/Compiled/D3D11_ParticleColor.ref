@@ -1,0 +1,6 @@
+vsVar Camera 0 64
+vsVar BillboardTransform 64 64
+vsVar ColorPallet 128 64
+vsVar ScalePallet 192 16
+vsVar Transforms 208 16
+psRes Diffuse 0

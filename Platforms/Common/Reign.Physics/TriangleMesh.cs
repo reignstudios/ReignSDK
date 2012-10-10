@@ -82,9 +82,15 @@ namespace Reign.Physics
 			new TriangleMeshStreamLoader(this, mesh, null);
 		}
 
+		#if METRO
+		internal async void load(string fileName)
+		{
+			using (var file = await Streams.OpenFile(fileName))
+		#else
 		internal void load(string fileName)
 		{
 			using (var file = Streams.OpenFile(fileName))
+		#endif
 			using (var reader = new BinaryReader(file))
 			{
 				// meta data

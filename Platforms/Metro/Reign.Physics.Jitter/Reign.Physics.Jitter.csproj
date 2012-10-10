@@ -104,6 +104,14 @@
       <Project>{329d771a-b22d-41ce-adb7-5131c9ac5382}</Project>
       <Name>Reign.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Reign.Physics\Reign.Physics.csproj">
+      <Project>{dfb7f5cf-be44-46bf-8fde-e77ac1bde785}</Project>
+      <Name>Reign.Physics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Video\Reign.Video.csproj">
+      <Project>{3d046c74-b564-4624-9731-e5dbb99cbdd7}</Project>
+      <Name>Reign.Video</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\CollisionIsland.cs">
