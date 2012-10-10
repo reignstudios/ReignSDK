@@ -58,6 +58,15 @@ namespace ShaderMaterials.Shaders
 			BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
 		}
 
+		public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality)
+		{
+			Shader = A.Shader.Create(videoType, parent, contentPath + tag + "QuickDraw3Color.rs", shaderVersion, vsQuality, psQuality);
+			new QuickDraw3ColorMaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
+			var elements = new List<BufferLayoutElement>();
+			elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.RGBAx8, BufferLayoutElementUsages.Color, 0, 0, 3));
+			BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
+		}
+
 		internal static bool load(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
 		{
 			if (!Shader.Loaded)

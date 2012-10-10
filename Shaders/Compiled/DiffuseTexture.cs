@@ -58,6 +58,15 @@ namespace ShaderMaterials.Shaders
 			BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
 		}
 
+		public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality)
+		{
+			Shader = A.Shader.Create(videoType, parent, contentPath + tag + "DiffuseTexture.rs", shaderVersion, vsQuality, psQuality);
+			new DiffuseTextureMaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
+			var elements = new List<BufferLayoutElement>();
+			elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Normal, 0, 0, 3));elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 6));
+			BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
+		}
+
 		internal static bool load(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
 		{
 			if (!Shader.Loaded)

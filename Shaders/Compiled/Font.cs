@@ -58,6 +58,15 @@ namespace ShaderMaterials.Shaders
 			BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
 		}
 
+		public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality)
+		{
+			Shader = A.Shader.Create(videoType, parent, contentPath + tag + "Font.rs", shaderVersion, vsQuality, psQuality);
+			new FontMaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
+			var elements = new List<BufferLayoutElement>();
+			elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.Position, 0, 0, 0));
+			BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
+		}
+
 		internal static bool load(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
 		{
 			if (!Shader.Loaded)

@@ -592,6 +592,15 @@ namespace ShaderMaterials.{0}
 			BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
 		}}
 
+		public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality)
+		{{
+			Shader = A.Shader.Create(videoType, parent, contentPath + tag + ""{1}.rs"", shaderVersion, vsQuality, psQuality);
+			new {1}MaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
+			var elements = new List<BufferLayoutElement>();
+			{7}
+			BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
+		}}
+
 		internal static bool load(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
 		{{
 			if (!Shader.Loaded)
