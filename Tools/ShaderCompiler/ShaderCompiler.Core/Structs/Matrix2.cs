@@ -5,14 +5,22 @@ using System.Text;
 
 namespace ShaderCompiler.Core
 {
-	public struct Matrix2
+	public class Matrix2
 	{
 		public Vector3 x, y;
+
+		public Matrix2() {}
 
 		public Matrix2 (Vector3 x, Vector3 y)
 		{
 			this.x = x;
 			this.y = y;
+		}
+
+		public Vector2 this[int i]
+		{
+			get {return new Vector2();}
+			set {}
 		}
 
 		public Vector3 Multiply(Vector3 vector)

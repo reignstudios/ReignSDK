@@ -76,6 +76,7 @@ namespace Reign
 		private: void setMatrix4();
 		private: void setFloatArray();
 		private: void setVector4Array();
+		private: void setMatrix4Array();
 
 		public: virtual void Set(float value);
 		public: virtual void Set(float x, float y);

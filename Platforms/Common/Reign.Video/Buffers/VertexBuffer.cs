@@ -17,7 +17,11 @@ namespace Reign.Video
 	{
 		#region Properties
 		protected BufferUsages usage;
-		protected int vertexByteSize, vertexArraySize, vertexCount;
+		protected int vertexByteSize, vertexFloatArraySize, vertexCount;
+		public int VertexCount {get{return vertexCount;}}
+		public int VertexByteSize {get{return vertexByteSize;}}
+		public int VertexFloatArraySize {get{return vertexFloatArraySize;}}
+		public abstract VertexBufferTopologys Topology {get; set;}
 		#endregion
 
 		#region Constructors
@@ -25,7 +29,7 @@ namespace Reign.Video
 		: base(parent)
 		{
 			vertexByteSize = bufferLayoutDesc.ByteSize;
-			vertexArraySize = bufferLayoutDesc.FloatCount;
+			vertexFloatArraySize = bufferLayoutDesc.FloatCount;
 			this.usage = usage;
 		}
 		#endregion
@@ -33,16 +37,16 @@ namespace Reign.Video
 		#region Methods
 		public virtual void Init(float[] vertices)
 		{
-			vertexCount = vertices.Length / vertexArraySize;
+			vertexCount = vertices.Length / vertexFloatArraySize;
 		}
 
 		public void Init(List<float[]> vertices)
 		{
-			float[] verts = new float[vertices.Count * vertexArraySize];
+			float[] verts = new float[vertices.Count * vertexFloatArraySize];
 			int vertSeg = 0;
 			foreach (var vert in vertices)
 			{
-				if (vertexArraySize != vert.Length)
+				if (vertexFloatArraySize != vert.Length)
 				{
 					Debug.ThrowError("VertexBufferI", "A Vertex size does not match the buffer layout");
 				}
@@ -60,7 +64,7 @@ namespace Reign.Video
 		public void Init(List<object> vertices)
 		{
 			#if !XNA
-			float[] verts = new float[vertices.Count * vertexArraySize];
+			float[] verts = new float[vertices.Count * vertexFloatArraySize];
 			int vertSeg = 0;
 			foreach (var vertex in vertices)
 			{
@@ -72,7 +76,7 @@ namespace Reign.Video
 				Marshal.Copy(buffer, newVertex, 0, size4);
 				Marshal.FreeHGlobal(buffer);
 
-				if (vertexArraySize != newVertex.Length)
+				if (vertexFloatArraySize != newVertex.Length)
 				{
 					Debug.ThrowError("VertexBufferI", "A Vertex size does not match the buffer layout");
 				}

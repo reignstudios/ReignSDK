@@ -79,7 +79,7 @@ namespace Reign.Input.WinForms
 		{
 			if (scollWheelChanged)
 			{
-				ScrollWheelVelocity = scrollWheelVelocity;
+				ScrollWheelVelocity = scrollWheelVelocity / 120f;
 				scollWheelChanged = false;
 			}
 			else

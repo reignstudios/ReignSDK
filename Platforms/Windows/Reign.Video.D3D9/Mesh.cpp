@@ -6,8 +6,8 @@ namespace Reign
 {namespace D3D9
 {
 	#pragma region Constructors
-	Mesh::Mesh(BinaryReader^ reader, ModelI^ model)
-	: MeshI(reader, model)
+	Mesh::Mesh(BinaryReader^ reader, ModelI^ model, int classicInstanceCount)
+	: MeshI(reader, model, classicInstanceCount)
 	{
 		
 	}

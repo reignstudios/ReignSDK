@@ -16,7 +16,7 @@ namespace Reign.Video.XNA
 		private VertexBuffer instanceBuffer;
 
 		private VertexBufferTopologys topology;
-		public VertexBufferTopologys Topology
+		public override VertexBufferTopologys Topology
 		{
 			get {return topology;}
 			set
@@ -91,7 +91,7 @@ namespace Reign.Video.XNA
 
 		public override void Update(float[] vertices, int updateCount)
 		{
-			vertexBuffer.SetData<float>(vertices, 0, (vertexArraySize * updateCount));
+			vertexBuffer.SetData<float>(vertices, 0, (vertexFloatArraySize * updateCount));
 		}
 
 		private void enable(IndexBufferI indexBuffer, VertexBufferI instanceBuffer)

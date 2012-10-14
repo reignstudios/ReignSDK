@@ -49,6 +49,7 @@ namespace Reign.Core
 				MouseUp += mouseUpEvent;
 				KeyDown += keyDownEvent;
 				KeyUp += keyUpEvent;
+				MouseWheel += scrollEvent;
 			}
 			catch (Exception e)
 			{
@@ -120,6 +121,13 @@ namespace Reign.Core
 		{
 			theEvent.Type = WindowEventTypes.KeyUp;
 			theEvent.KeyCode = (int)e.KeyCode;
+			window.handleEvent(theEvent);
+		}
+
+		private void scrollEvent(object sender, MouseEventArgs e)
+		{
+			theEvent.Type = WindowEventTypes.ScrollWheel;
+			theEvent.ScrollWheelVelocity = e.Delta;
 			window.handleEvent(theEvent);
 		}
 		#endregion

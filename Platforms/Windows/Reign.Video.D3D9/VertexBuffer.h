@@ -18,7 +18,7 @@ namespace Reign
 		private: IndexBuffer^ indexBuffer;
 
 		private: VertexBufferTopologys topology;
-		public: property VertexBufferTopologys Topology {virtual VertexBufferTopologys get(); virtual void set(VertexBufferTopologys value);}
+		public: property VertexBufferTopologys Topology {virtual VertexBufferTopologys get() override; virtual void set(VertexBufferTopologys value) override;}
 		#pragma endregion
 
 		#pragma region Constructors

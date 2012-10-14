@@ -824,14 +824,14 @@ namespace Reign.Core
 			result = (normal * vector.Dot(normal));
 		}
 
-		public Vector3 InersectRay(Vector3 rayLocation, Vector3 rayNormal)
+		public Vector3 InersectRay(Vector3 rayOrigin, Vector3 rayDirection)
 		{
-			return (rayNormal * (this-rayLocation).Dot(rayNormal)) + rayLocation;
+			return (rayDirection * (this-rayOrigin).Dot(rayDirection)) + rayOrigin;
 		}
 
-		public static void InersectRay(ref Vector3 vector, ref Vector3 rayLocation, ref Vector3 rayNormal, out Vector3 result)
+		public static void InersectRay(ref Vector3 vector, ref Vector3 rayOrigin, ref Vector3 rayDirection, out Vector3 result)
 		{
-			result = (rayNormal * (vector-rayLocation).Dot(rayNormal)) + rayLocation;
+			result = (rayDirection * (vector-rayOrigin).Dot(rayDirection)) + rayOrigin;
 		}
 
 		public Vector3 InersectLine(Line3 line)

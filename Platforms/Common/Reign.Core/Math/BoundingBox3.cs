@@ -10,13 +10,41 @@ namespace Reign.Core
 		#region Properties
 		public Vector3 Min, Max;
 
-		public float Left {get{return Min.X;}}
-		public float Bottom {get{return Min.Y;}}
-		public float Back {get{return Min.Z;}}
+		public float Left
+		{
+			get {return Min.X;}
+			set {Min.X = value;}
+		}
 
-		public float Right {get{return Max.X;}}
-		public float Top {get{return Max.Y;}}
-		public float Front {get{return Max.Z;}}
+		public float Bottom
+		{
+			get {return Min.Y;}
+			set {Min.Y = value;}
+		}
+
+		public float Back
+		{
+			get {return Min.Z;}
+			set {Min.Z = value;}
+		}
+
+		public float Right
+		{
+			get {return Max.X;}
+			set {Max.X = value;	}
+		}
+
+		public float Top
+		{
+			get {return Max.Y;}
+			set {Max.Y = value;}
+		}
+
+		public float Front
+		{
+			get {return Max.Z;}
+			set {Max.Z = value;}
+		}
 		#endregion
 
 		#region Constructors

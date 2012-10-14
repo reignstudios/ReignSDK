@@ -99,9 +99,9 @@ namespace Reign.Video.D3D11
 			throw new NotImplementedException();
 		}
 
-		public void Set(Matrix4[] values, int count)
+		public unsafe void Set(Matrix4[] values, int count)
 		{
-			throw new NotImplementedException();
+			fixed (Matrix4* data = values) com.Set((int)data, sizeof(Matrix4) * count);
 		}
 
 		public void Set(float[] values, int offset, int count)

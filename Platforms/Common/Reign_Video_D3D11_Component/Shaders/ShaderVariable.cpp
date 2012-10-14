@@ -21,7 +21,7 @@ namespace Reign_Video_D3D11_Component
 		if (pixelOffset != -1) memcpy(pixelBytes + pixelOffset, ptr, size);
 	}
 
-	void ShaderVariableCom::Set(__int32 data, int size, int objectCount, int dataOffset)
+	void ShaderVariableCom::Set(__int32 data, int size, int objectCount, int bufferStep)
 	{
 		char* ptr = (char*)data;
 		if (vertexOffset != -1)
@@ -30,7 +30,7 @@ namespace Reign_Video_D3D11_Component
 			for (int i = 0; i != objectCount; ++i)
 			{
 				memcpy(vertexPtr, ptr, size);
-				vertexPtr += dataOffset;
+				vertexPtr += bufferStep;
 				ptr += size;
 			}
 		}
@@ -40,7 +40,7 @@ namespace Reign_Video_D3D11_Component
 			for (int i = 0; i != objectCount; ++i)
 			{
 				memcpy(pixelPtr, ptr, size);
-				pixelPtr += dataOffset;
+				pixelPtr += bufferStep;
 				ptr += size;
 			}
 		}

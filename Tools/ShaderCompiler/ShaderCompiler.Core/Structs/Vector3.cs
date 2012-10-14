@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ShaderCompiler.Core
 {
-	public struct Vector3
+	public class Vector3
 	{
 		#region Properties
 		public double x, y, z;
@@ -37,9 +37,17 @@ namespace ShaderCompiler.Core
 				this.y = value.y;
 			}
 		}
+
+		public double this[int i]
+		{
+			get {return 0;}
+			set {}
+		}
 		#endregion
 		
 		#region Constructors
+		public Vector3() {}
+
 		public Vector3(double x, double y, double z)
 		{
 			this.x = x;

@@ -33,12 +33,21 @@ namespace Reign.Video.XNA
 
 		public void Set(Vector3 value)
 		{
-			parameter.SetValue(new X.Vector3(value.X, value.Y, value.Z));
+			X.Vector3 vector;
+			vector.X = value.X;
+			vector.Y = value.Y;
+			vector.Z = value.Z;
+			parameter.SetValue(vector);
 		}
 
 		public void Set(Vector4 value)
 		{
-			parameter.SetValue(new X.Vector4(value.X, value.Y, value.Z, value.W));
+			X.Vector4 vector;
+			vector.X = value.X;
+			vector.Y = value.Y;
+			vector.Z = value.Z;
+			vector.W = value.W;
+			parameter.SetValue(vector);
 		}
 
 		public unsafe void Set(Matrix2 value)

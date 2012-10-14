@@ -57,8 +57,8 @@ namespace Reign.Video.OpenGL
 			this.location = location;
 			this.Name = name;
 
-			valueObject = new ValueObject();
 			Apply = setNothing;
+			valueArrayObject = new WeakReference(null);
 		}
 		#endregion
 
@@ -206,7 +206,7 @@ namespace Reign.Video.OpenGL
 		{
 			valueArrayOffset = 0;
 			valueArrayCount = values.Length;
-			valueArrayObject = new WeakReference(values);
+			valueArrayObject.Target = values;
 			Apply = setFloatArray;
 		}
 
@@ -214,7 +214,7 @@ namespace Reign.Video.OpenGL
 		{
 			valueArrayOffset = 0;
 			valueArrayCount = values.Length;
-			valueArrayObject = new WeakReference(values);
+			valueArrayObject.Target = values;
 			Apply = setVector4Array;
 		}
 
@@ -227,7 +227,7 @@ namespace Reign.Video.OpenGL
 		{
 			valueArrayOffset = 0;
 			valueArrayCount = count;
-			valueArrayObject = new WeakReference(values);
+			valueArrayObject.Target = values;
 			Apply = setFloatArray;
 		}
 
@@ -235,20 +235,23 @@ namespace Reign.Video.OpenGL
 		{
 			valueArrayOffset = 0;
 			valueArrayCount = count;
-			valueArrayObject = new WeakReference(values);
+			valueArrayObject.Target = values;
 			Apply = setVector4Array;
 		}
 
 		public void Set(Matrix4[] values, int count)
 		{
-			throw new NotImplementedException();
+			valueArrayOffset = 0;
+			valueArrayCount = count;
+			valueArrayObject.Target = values;
+			Apply = setMatrix4Array;
 		}
 
 		public void Set(float[] values, int offset, int count)
 		{
 			valueArrayOffset = offset;
 			valueArrayCount = count;
-			valueArrayObject = new WeakReference(values);
+			valueArrayObject.Target = values;
 			Apply = setFloatArray;
 		}
 
@@ -256,7 +259,7 @@ namespace Reign.Video.OpenGL
 		{
 			valueArrayOffset = offset;
 			valueArrayCount = count;
-			valueArrayObject = new WeakReference(values);
+			valueArrayObject.Target = values;
 			Apply = setVector4Array;
 		}
 

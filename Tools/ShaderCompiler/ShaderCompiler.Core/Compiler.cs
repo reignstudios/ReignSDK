@@ -487,7 +487,7 @@ technique MainTechnique
 						
 						string type = null;
 						int offset = 0;
-						if (field.FieldType == typeof(double)) {type = "BufferLayoutElementTypes.Float"; offset = 1;}
+						if (field.FieldType == typeof(double) || field.FieldType == typeof(uint)) {type = "BufferLayoutElementTypes.Float"; offset = 1;}
 						else if (field.FieldType == typeof(Vector4) && input.Type == VSInputTypes.Color) {type = "BufferLayoutElementTypes.RGBAx8"; offset = 1;}
 						else if (field.FieldType == typeof(Vector2)) {type = "BufferLayoutElementTypes.Vector2"; offset = 2;}
 						else if (field.FieldType == typeof(Vector3)) {type = "BufferLayoutElementTypes.Vector3"; offset = 3;}
@@ -694,16 +694,16 @@ namespace ShaderMaterials.{0}
 			}
 		}
 		
-		private string getCompilerIfBlockName()
+		private string[] getCompilerIfBlockNames()
 		{
 			switch (outputType)
 			{
-				case (CompilerOutputs.D3D11): return "D3D11";
-				case (CompilerOutputs.D3D9): return "D3D9";
-				case (CompilerOutputs.XNA): return "XNA";
-				case (CompilerOutputs.GL3): return "GL3";
-				case (CompilerOutputs.GL2): return "GL2";
-				case (CompilerOutputs.GLES2): return "GLES2";
+				case (CompilerOutputs.D3D11): return new string[]{"D3D", "D3D11"};
+				case (CompilerOutputs.D3D9): return new string[]{"D3D", "D3D9"};
+				case (CompilerOutputs.XNA): return new string[]{"D3D", "XNA"};
+				case (CompilerOutputs.GL3): return new string[]{"GL", "GL3"};
+				case (CompilerOutputs.GL2): return new string[]{"GL", "GL2"};
+				case (CompilerOutputs.GLES2): return new string[]{"GL", "GLES2"};
 				default: throw new Exception("Unknown CompilerIfBlockType.");
 			}
 		}

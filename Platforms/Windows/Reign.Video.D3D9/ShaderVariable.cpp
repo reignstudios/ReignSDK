@@ -21,6 +21,7 @@ namespace Reign
 
 		this->name = name;
 		Apply = gcnew ApplyFunc(this, &ShaderVariable::setNothing);
+		valueArrayObject = gcnew WeakReference(nullptr);
 	}
 	#pragma endregion
 
@@ -88,18 +89,27 @@ namespace Reign
 	{
 		array<float>^ value = (array<float>^)valueArrayObject->Target;
 		pin_ptr<void> valuePtr = &value[valueArrayOffset];
-		float* ptr = (float*)(void*)valuePtr;
-		if (vertexHandle) vertexVariables->SetFloatArray(video->Device, vertexHandle, ptr, value->Length);
-		if (pixelHandle) pixelVariables->SetFloatArray(video->Device, pixelHandle, ptr, value->Length);
+		float* ptr = ((float*)(void*)valuePtr) + valueArrayOffset;
+		if (vertexHandle) vertexVariables->SetFloatArray(video->Device, vertexHandle, ptr, valueArrayCount);
+		if (pixelHandle) pixelVariables->SetFloatArray(video->Device, pixelHandle, ptr, valueArrayCount);
 	}
 
 	void ShaderVariable::setVector4Array()
 	{
 		array<Vector4>^ value = (array<Vector4>^)valueArrayObject->Target;
 		pin_ptr<void> valuePtr = &value[valueArrayOffset];
-		D3DXVECTOR4* ptr = (D3DXVECTOR4*)(void*)valuePtr;
-		if (vertexHandle) vertexVariables->SetVectorArray(video->Device, vertexHandle, ptr, value->Length);
-		if (pixelHandle) pixelVariables->SetVectorArray(video->Device, pixelHandle, ptr, value->Length);
+		D3DXVECTOR4* ptr = ((D3DXVECTOR4*)(void*)valuePtr) + valueArrayOffset;
+		if (vertexHandle) vertexVariables->SetVectorArray(video->Device, vertexHandle, ptr, valueArrayCount);
+		if (pixelHandle) pixelVariables->SetVectorArray(video->Device, pixelHandle, ptr, valueArrayCount);
+	}
+
+	void ShaderVariable::setMatrix4Array()
+	{
+		array<Matrix4>^ value = (array<Matrix4>^)valueArrayObject->Target;
+		pin_ptr<void> valuePtr = &value[valueArrayOffset];
+		D3DXMATRIX* ptr = ((D3DXMATRIX*)(void*)valuePtr) + valueArrayOffset;
+		if (vertexHandle) vertexVariables->SetMatrixArray(video->Device, vertexHandle, ptr, valueArrayCount);
+		if (pixelHandle) pixelVariables->SetMatrixArray(video->Device, pixelHandle, ptr, valueArrayCount);
 	}
 
 	void ShaderVariable::Set(float value)
@@ -172,7 +182,7 @@ namespace Reign
 	{
 		valueArrayOffset = 0;
 		valueArrayCount = values->Length;
-		valueArrayObject = gcnew WeakReference(values);
+		valueArrayObject->Target = values;
 		Apply = gcnew ApplyFunc(this, &ShaderVariable::setFloatArray);
 	}
 
@@ -180,7 +190,7 @@ namespace Reign
 	{
 		valueArrayOffset = 0;
 		valueArrayCount = values->Length;
-		valueArrayObject = gcnew WeakReference(values);
+		valueArrayObject->Target = values;
 		Apply = gcnew ApplyFunc(this, &ShaderVariable::setVector4Array);
 	}
 
@@ -193,7 +203,7 @@ namespace Reign
 	{
 		valueArrayOffset = 0;
 		valueArrayCount = count;
-		valueArrayObject = gcnew WeakReference(values);
+		valueArrayObject->Target = values;
 		Apply = gcnew ApplyFunc(this, &ShaderVariable::setFloatArray);
 	}
 
@@ -201,20 +211,23 @@ namespace Reign
 	{
 		valueArrayOffset = 0;
 		valueArrayCount = count;
-		valueArrayObject = gcnew WeakReference(values);
+		valueArrayObject->Target = values;
 		Apply = gcnew ApplyFunc(this, &ShaderVariable::setVector4Array);
 	}
 
 	void ShaderVariable::Set(array<Matrix4>^ values, int count)
 	{
-		throw gcnew NotImplementedException();
+		valueArrayOffset = 0;
+		valueArrayCount = count;
+		valueArrayObject->Target = values;
+		Apply = gcnew ApplyFunc(this, &ShaderVariable::setMatrix4Array);
 	}
 
 	void ShaderVariable::Set(array<float>^ values, int offset, int count)
 	{
 		valueArrayOffset = offset;
 		valueArrayCount = count;
-		valueArrayObject = gcnew WeakReference(values);
+		valueArrayObject->Target = values;
 		Apply = gcnew ApplyFunc(this, &ShaderVariable::setFloatArray);
 	}
 
@@ -222,7 +235,7 @@ namespace Reign
 	{
 		valueArrayOffset = offset;
 		valueArrayCount = count;
-		valueArrayObject = gcnew WeakReference(values);
+		valueArrayObject->Target = values;
 		Apply = gcnew ApplyFunc(this, &ShaderVariable::setVector4Array);
 	}
 

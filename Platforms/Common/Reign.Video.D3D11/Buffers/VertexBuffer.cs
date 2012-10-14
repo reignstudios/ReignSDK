@@ -10,7 +10,7 @@ namespace Reign.Video.D3D11
 		private VertexBufferCom com;
 
 		private VertexBufferTopologys topology;
-		public VertexBufferTopologys Topology
+		public override VertexBufferTopologys Topology
 		{
 			get {return topology;}
 			set

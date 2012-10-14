@@ -13,7 +13,7 @@ namespace Reign.Video.OpenGL
 		private VertexBuffer instanceBuffer;
 
 		private VertexBufferTopologys topology;
-		public VertexBufferTopologys Topology
+		public override VertexBufferTopologys Topology
 		{
 			get {return topology;}
 			set

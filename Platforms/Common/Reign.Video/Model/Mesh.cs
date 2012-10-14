@@ -22,10 +22,15 @@ namespace Reign.Video
 		public VertexBufferI VertexBuffer {get; private set;}
 		public IndexBufferI IndexBuffer {get; private set;}
 		public BufferLayoutDescI LayoutDesc {get; private set;}
+
+		public VertexBufferI InstancingVertexBuffer {get; private set;}
+		public IndexBufferI InstancingIndexBuffer {get; private set;}
+		public BufferLayoutDescI InstancingLayoutDesc {get; private set;}
+		public int ClassicInstanceCount {get; private set;}
 		#endregion
 
 		#region Constructors
-		public MeshI(BinaryReader reader, ModelI model)
+		public MeshI(BinaryReader reader, ModelI model, int classicInstanceCount)
 		: base(model)
 		{
 			try
@@ -52,9 +57,9 @@ namespace Reign.Video
 				LayoutDesc = createBufferLayoutDesc(elements);
 
 				// vertices
-				int vertexCount = reader.ReadInt32();
-				var vertices = new float[vertexCount];
-				for (int i = 0; i != vertexCount; ++i)
+				int vertexFloatCount = reader.ReadInt32();
+				var vertices = new float[vertexFloatCount];
+				for (int i = 0; i != vertexFloatCount; ++i)
 				{
 					vertices[i] = reader.ReadSingle();
 				}
@@ -67,7 +72,54 @@ namespace Reign.Video
 				{
 					indices[i] = reader.ReadInt32();
 				}
-				IndexBuffer = createIndexBuffer(this, BufferUsages.Default, indices, indices.Length > short.MaxValue);
+				IndexBuffer = createIndexBuffer(this, BufferUsages.Default, indices, indices.Length > ushort.MaxValue);
+
+				// create instancing buffers
+				var intancingElements = new List<BufferLayoutElement>();
+				foreach (var element in elements) intancingElements.Add(element);
+				intancingElements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Float, BufferLayoutElementUsages.IndexClassic, 0, 0, LayoutDesc.FloatCount));
+				InstancingLayoutDesc = createBufferLayoutDesc(intancingElements);
+
+				// create vertex buffer
+				ClassicInstanceCount = classicInstanceCount;
+				if (classicInstanceCount > 0)
+				{
+					int instanceVertexFloatCount = (vertexFloatCount * classicInstanceCount) + (VertexBuffer.VertexCount * classicInstanceCount);
+					var instancingVertices = new float[instanceVertexFloatCount];
+					int vi = 0;
+					for (int i = 0; i != classicInstanceCount; ++i)
+					{
+						int vOffset = 0;
+						for (int i2 = 0; i2 != VertexBuffer.VertexCount; ++i2)
+						{
+							for (int i3 = 0; i3 != VertexBuffer.VertexFloatArraySize; ++i3)
+							{
+								instancingVertices[vi] = vertices[vOffset];
+								++vi;
+								++vOffset;
+							}
+
+							instancingVertices[vi] = i;
+							++vi;
+						}
+					}
+					InstancingVertexBuffer = createVertexBuffer(this, InstancingLayoutDesc, BufferUsages.Default, VertexBuffer.Topology, instancingVertices);
+
+					int instanceIndexCount = (indexCount * classicInstanceCount);
+					var instancingIndices = new int[instanceIndexCount];
+					int ii = 0, iOffset = 0;
+					for (int i = 0; i != classicInstanceCount; ++i)
+					{
+						for (int i2 = 0; i2 != indexCount; ++i2)
+						{
+							instancingIndices[ii] = indices[i2] + iOffset;
+							++ii;
+						}
+
+						iOffset += VertexBuffer.VertexCount;
+					}
+					InstancingIndexBuffer = createIndexBuffer(this, BufferUsages.Default, instancingIndices, instancingIndices.Length > ushort.MaxValue);
+				}
 			}
 			catch (Exception e)
 			{

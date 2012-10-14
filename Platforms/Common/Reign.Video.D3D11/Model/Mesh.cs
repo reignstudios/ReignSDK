@@ -8,8 +8,8 @@ namespace Reign.Video.D3D11
 	public class Mesh : MeshI
 	{
 		#region Constructors
-		public Mesh(BinaryReader reader, ModelI model)
-		: base(reader, model)
+		public Mesh(BinaryReader reader, ModelI model, int classicInstanceCount)
+		: base(reader, model, classicInstanceCount)
 		{
 			
 		}

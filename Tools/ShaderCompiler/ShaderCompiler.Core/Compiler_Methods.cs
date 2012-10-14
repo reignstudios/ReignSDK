@@ -183,27 +183,30 @@ namespace ShaderCompiler.Core
 			
 			// Remove compiler #if blocks
 			{
-				string blockName = getCompilerIfBlockName();
-				methodBlock = Regex.Replace(methodBlock, @"#if.*\b"+blockName+@"\b.*", "");
-				
+				var blockNames = getCompilerIfBlockNames();
 				string[] names = new string[]
 				{
-					"D3D10",
+					"D3D",
+					"D3D11",
 					"D3D9",
 					"XNA",
+					"GL",
 					"GL3",
 					"GL2",
 					"GLES2",
 				};
-				foreach (var name in names)
+				foreach (var blockName in blockNames) methodBlock = Regex.Replace(methodBlock, @"#if.*\b"+blockName+@"\b.*", "");
+				foreach (var blockName in blockNames)
 				{
-					if (name != blockName)
+					foreach (var name in names)
 					{
-						methodBlock = Regex.Replace(methodBlock, @"#if.*\b"+name+@"\b"+@".*?#endif", "", RegexOptions.Singleline);
+						if (name != blockName)
+						{
+							methodBlock = Regex.Replace(methodBlock, @"#if.*\b"+name+@"\b.*?#endif", "", RegexOptions.Singleline);
+						}
 					}
 				}
-				
-				methodBlock = Regex.Replace(methodBlock, @"#endif", "");
+				foreach (var blockName in blockNames) methodBlock = Regex.Replace(methodBlock, @"#endif", "");
 			}
 			
 			// Convert basics

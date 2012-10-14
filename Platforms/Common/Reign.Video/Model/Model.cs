@@ -25,8 +25,9 @@ namespace Reign.Video
 		private Dictionary<string,Type> materialTypes;
 		private List<MaterialFieldBinder> value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes;
 		private Dictionary<string,string> fileExtOverrides;
+		private int classicInstanceCount;
 
-		public ModelStreamLoader(ModelI model, string fileName, Stream stream, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides)
+		public ModelStreamLoader(ModelI model, string fileName, Stream stream, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount)
 		{
 			this.model = model;
 			this.fileName = fileName;
@@ -39,13 +40,14 @@ namespace Reign.Video
 			this.value4BinderTypes = value4BinderTypes;
 			this.textureBinderTypes = textureBinderTypes;
 			this.fileExtOverrides = fileExtOverrides;
+			this.classicInstanceCount = classicInstanceCount;
 		}
 
 		public override bool Load()
 		{
 			if (stream != null)
 			{
-				return model.load(fileName, stream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, ref textures);
+				return model.load(fileName, stream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, ref textures, classicInstanceCount);
 			}
 			else
 			{
@@ -60,14 +62,14 @@ namespace Reign.Video
 					else
 					{
 						if (!fileStream.IsCompleted) return false;
-						bool pass = model.load(fileName, fileStream.Result, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, ref textures);
+						bool pass = model.load(fileName, fileStream.Result, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, ref textures, classicInstanceCount);
 						fileName = null;
 						return pass;
 					}
 					#else
 					using (var file = Streams.OpenFile(fileName))
 					{
-						bool pass = model.load(fileName, file, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, ref textures);
+						bool pass = model.load(fileName, file, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, ref textures, classicInstanceCount);
 						fileName = null;
 						return pass;
 					}
@@ -75,7 +77,7 @@ namespace Reign.Video
 				}
 				else
 				{
-					return model.load(null, null, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, ref textures);
+					return model.load(null, null, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, ref textures, classicInstanceCount);
 				}
 			}
 		}
@@ -108,8 +110,9 @@ namespace Reign.Video
 		private Dictionary<string,Type> materialTypes;
 		private List<MaterialFieldBinder> value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes;
 		private Dictionary<string,string> fileExtOverrides;
+		private int classicInstanceCount;
 
-		public ModelSoftwareStreamLoader(ModelI model, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides)
+		public ModelSoftwareStreamLoader(ModelI model, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount)
 		{
 			this.model = model;
 			this.softwareModel = softwareModel;
@@ -125,6 +128,7 @@ namespace Reign.Video
 			this.value4BinderTypes = value4BinderTypes;
 			this.textureBinderTypes = textureBinderTypes;
 			this.fileExtOverrides = fileExtOverrides;
+			this.classicInstanceCount = classicInstanceCount;
 		}
 
 		public override bool Load()
@@ -133,7 +137,7 @@ namespace Reign.Video
 			var stream = new MemoryStream();
 			ModelI.Save(stream, false, softwareModel, positionSize, loadColors, loadUVs, loadNormals);
 			stream.Position = 0;
-			new ModelStreamLoader(model, null, stream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides);
+			new ModelStreamLoader(model, null, stream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, classicInstanceCount);
 			return true;
 		}
 	}
@@ -151,19 +155,19 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public ModelI(DisposableI parent, string fileName, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides)
+		public ModelI(DisposableI parent, string fileName, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount)
 		: base(parent)
 		{
-			new ModelStreamLoader(this, fileName, null, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides);
+			new ModelStreamLoader(this, fileName, null, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, classicInstanceCount);
 		}
 
-		public ModelI(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides)
+		public ModelI(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount)
 		: base(parent)
 		{
-			new ModelSoftwareStreamLoader(this, softwareModel, positionSize, loadColors, loadUVs, loadNormals, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides);
+			new ModelSoftwareStreamLoader(this, softwareModel, positionSize, loadColors, loadUVs, loadNormals, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, classicInstanceCount);
 		}
 
-		internal bool load(string fileName, Stream stream, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, ref Dictionary<string,string>[] textures)
+		internal bool load(string fileName, Stream stream, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, ref Dictionary<string,string>[] textures, int classicInstanceCount)
 		{
 			try
 			{
@@ -273,7 +277,7 @@ namespace Reign.Video
 					Meshes = new MeshI[meshCount];
 					for (int i = 0; i != meshCount; ++i)
 					{
-						Meshes[i] = createMesh(reader, this);
+						Meshes[i] = createMesh(reader, this, classicInstanceCount);
 					}
 
 					return false;
@@ -354,7 +358,7 @@ namespace Reign.Video
 			return field;
 		}
 
-		protected abstract MeshI createMesh(BinaryReader reader, ModelI model);
+		protected abstract MeshI createMesh(BinaryReader reader, ModelI model, int classicInstanceCount);
 		protected abstract Texture2DI createTexture(DisposableI parent, string fileName);
 
 		public override void Dispose()
