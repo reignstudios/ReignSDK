@@ -13,7 +13,7 @@ namespace Reign.Input.Metro
 		public Button Right {get; private set;}
 		public float ScrollWheelVelocity {get; private set;}
 		public Vector2 Velocity {get; private set;}
-		public Vector2 Location {get; private set;}
+		public Vector2 Position {get; private set;}
 		public Vector2 ScreenLocation {get; private set;}
 		
 		private bool leftOn, middleOn, rightOn, scollWheelChanged;
@@ -111,9 +111,9 @@ namespace Reign.Input.Metro
 			Middle.Update(middleOn);
 			Right.Update(rightOn);
 			
-			lastLocation = Location;
-			Location = new Vector2(cursorLocation.X, input.application.FrameSize.Height - cursorLocation.Y);
-			Velocity = Location - lastLocation;
+			lastLocation = Position;
+			Position = new Vector2(cursorLocation.X, input.application.FrameSize.Height - cursorLocation.Y);
+			Velocity = Position - lastLocation;
 			
 			lastScreenLocation = ScreenLocation;
 			ScreenLocation = new Vector2(cursorLocation.X, cursorLocation.Y);
