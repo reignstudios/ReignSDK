@@ -768,7 +768,7 @@ namespace Reign.Core
 			Vector3.Transform(ref result, ref quaternion, out result);
 		}
 
-		public bool WithinTriangle(Triangle triangle)
+		public bool WithinTriangle(Triangle3 triangle)
 		{      
 			var v0 = triangle.Point2 - triangle.Point1;
 			var v1 = triangle.Point3 - triangle.Point1;
@@ -786,7 +786,7 @@ namespace Reign.Core
 			return (u>0) && (v>0) && ((u+v) < 1);
 		}
 
-		public static void WithinTriangle(ref Vector3 vector, ref Triangle triangle, out bool result)
+		public static void WithinTriangle(ref Vector3 vector, ref Triangle3 triangle, out bool result)
 		{      
 			var v0 = triangle.Point2 - triangle.Point1;
 			var v1 = triangle.Point3 - triangle.Point1;

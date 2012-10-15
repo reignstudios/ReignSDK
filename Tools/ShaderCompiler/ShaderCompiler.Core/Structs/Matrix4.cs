@@ -35,6 +35,16 @@ namespace ShaderCompiler.Core
 			return matrix;
 		}
 
+		public Vector4 MultiplyInvert(Vector4 vector)
+		{
+			return vector;
+		}
+
+		public Matrix4 MultiplyInvert(Matrix4 matrix)
+		{
+			return matrix;
+		}
+
 		internal static string Output(CompilerOutputs output)
 		{
 			var baseType = Compiler.getBaseCompilerOutput(output);

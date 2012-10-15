@@ -5,7 +5,7 @@ namespace Reign.Video
 	public class Camera
 	{
 		#region Properties
-		public Vector3 Location, LookLocation, UpLocation;
+		public Vector3 Position, LookAtPosition, UpPosition;
 		public float Near, Far, Fov, Aspect;
 
 		public Matrix3 BillBoardMatrix, BillBoardMatrixTranspose;
@@ -17,33 +17,33 @@ namespace Reign.Video
 		public Camera(ViewPortI viewPort)
 		{
 			ViewPort = (ViewPortI)viewPort;
-			Location = new Vector3(10, 10, 10);
-			LookLocation = new Vector3(0, 0, 0);
-			UpLocation = new Vector3(10, 11, 10);
+			Position = new Vector3(10, 10, 10);
+			LookAtPosition = new Vector3(0, 0, 0);
+			UpPosition = new Vector3(10, 11, 10);
 			Near = 1;
 			Far = 500;
 			Fov = MathUtilities.DegToRad(45);
 			Aspect = float.NaN;
 		}
 
-		public Camera(ViewPortI viewPort, Vector3 location, Vector3 lookLocation, Vector3 upLocation)
+		public Camera(ViewPortI viewPort, Vector3 position, Vector3 lookAtPosition, Vector3 upPosition)
 		{
 			ViewPort = (ViewPortI)viewPort;
-			Location = location;
-			LookLocation = lookLocation;
-			UpLocation = upLocation;
+			Position = position;
+			LookAtPosition = lookAtPosition;
+			UpPosition = upPosition;
 			Near = 1;
 			Far = 500;
 			Fov = MathUtilities.DegToRad(45);
 			Aspect = float.NaN;
 		}
 
-		public Camera(ViewPortI viewPort, Vector3 location, Vector3 lookLocation, Vector3 upLocation, float near, float far, float fov)
+		public Camera(ViewPortI viewPort, Vector3 position, Vector3 lookAtPosition, Vector3 upPosition, float near, float far, float fov)
 		{
 			ViewPort = (ViewPortI)viewPort;
-			Location = location;
-			LookLocation = lookLocation;
-			UpLocation = upLocation;
+			Position = position;
+			LookAtPosition = lookAtPosition;
+			UpPosition = upPosition;
 			Near = near;
 			Far = far;
 			Fov = fov;
@@ -59,75 +59,75 @@ namespace Reign.Video
 
 		public void Offset(Vector3 value)
 		{
-			Location += value;
-			LookLocation += value;
-			UpLocation += value;
+			Position += value;
+			LookAtPosition += value;
+			UpPosition += value;
 		}
 
 		public void Zoom(float value, float stopRadis)
 		{
-			var vec = (LookLocation - Location);
+			var vec = (LookAtPosition - Position);
 			float dis = 0;
 			vec = vec.Normalize(out dis);
 			dis = ((dis-stopRadis) - value);
 			if (dis < 0) value += dis;
 			vec *= value;
-			Location += vec;
-			UpLocation += vec;
+			Position += vec;
+			UpPosition += vec;
 		}
 	
 		public void RotateAroundLocation(float radiansX, float radiansY, float radiansZ) {RotateAroundLocation(new Vector3(radiansX, radiansY, radiansZ));}
 		public void RotateAroundLocation(Vector3 radians)
 		{
-			var matrix = Matrix3.FromCross((LookLocation - Location), (UpLocation - Location));
+			var matrix = Matrix3.FromCross((LookAtPosition - Position), (UpPosition - Position));
 			var matrixTranspose = matrix.Transpose();
 			matrix = matrix.RotateAroundAxisX(radians.X);
 			matrix = matrix.RotateAroundAxisY(radians.Y);
 			matrix = matrix.RotateAroundAxisZ(radians.Z);
-			LookLocation -= Location;
-			LookLocation = LookLocation.Transform(matrixTranspose);
-			LookLocation = LookLocation.Transform(matrix);
-			LookLocation += Location;
-			UpLocation -= Location;
-			UpLocation = UpLocation.Transform(matrixTranspose);
-			UpLocation = UpLocation.Transform(matrix);
-			UpLocation += Location;
+			LookAtPosition -= Position;
+			LookAtPosition = LookAtPosition.Transform(matrixTranspose);
+			LookAtPosition = LookAtPosition.Transform(matrix);
+			LookAtPosition += Position;
+			UpPosition -= Position;
+			UpPosition = UpPosition.Transform(matrixTranspose);
+			UpPosition = UpPosition.Transform(matrix);
+			UpPosition += Position;
 		}
 
 		public void RotateAroundLookLocation(float radiansX, float radiansY, float radiansZ) {RotateAroundLookLocation(new Vector3(radiansX, radiansY, radiansZ));}
 		public void RotateAroundLookLocation(Vector3 radians)
 		{
-			var matrix = Matrix3.FromCross((LookLocation - Location), (UpLocation - Location));
+			var matrix = Matrix3.FromCross((LookAtPosition - Position), (UpPosition - Position));
 			var matrixTranspose = matrix.Transpose();
 			matrix = matrix.RotateAroundAxisX(radians.X);
 			matrix = matrix.RotateAroundAxisY(radians.Y);
 			matrix = matrix.RotateAroundAxisZ(radians.Z);
-			Location -= LookLocation;
-			Location = Location.Transform(matrixTranspose);
-			Location = Location.Transform(matrix);
-			Location += LookLocation;
-			UpLocation -= LookLocation;
-			UpLocation = UpLocation.Transform(matrixTranspose);
-			UpLocation = UpLocation.Transform(matrix);
-			UpLocation += LookLocation;
+			Position -= LookAtPosition;
+			Position = Position.Transform(matrixTranspose);
+			Position = Position.Transform(matrix);
+			Position += LookAtPosition;
+			UpPosition -= LookAtPosition;
+			UpPosition = UpPosition.Transform(matrixTranspose);
+			UpPosition = UpPosition.Transform(matrix);
+			UpPosition += LookAtPosition;
 		}
 
 		public void RotateAroundUpLocation(float radiansX, float radiansY, float radiansZ) {RotateAroundUpLocation(new Vector3(radiansX, radiansY, radiansZ));}
 		public void RotateAroundUpLocation(Vector3 radians)
 		{
-			var matrix = Matrix3.FromCross((LookLocation - Location), (UpLocation - Location));
+			var matrix = Matrix3.FromCross((LookAtPosition - Position), (UpPosition - Position));
 			var matrixTranspose = matrix.Transpose();
 			matrix = matrix.RotateAroundAxisX(radians.X);
 			matrix = matrix.RotateAroundAxisY(radians.Y);
 			matrix = matrix.RotateAroundAxisZ(radians.Z);
-			LookLocation -= UpLocation;
-			LookLocation = LookLocation.Transform(matrixTranspose);
-			LookLocation = LookLocation.Transform(matrix);
-			LookLocation += UpLocation;
-			Location -= UpLocation;
-			Location = Location.Transform(matrixTranspose);
-			Location = Location.Transform(matrix);
-			Location += UpLocation;
+			LookAtPosition -= UpPosition;
+			LookAtPosition = LookAtPosition.Transform(matrixTranspose);
+			LookAtPosition = LookAtPosition.Transform(matrix);
+			LookAtPosition += UpPosition;
+			Position -= UpPosition;
+			Position = Position.Transform(matrixTranspose);
+			Position = Position.Transform(matrix);
+			Position += UpPosition;
 		}
 
 		public void RotateAroundLocationWorld(float radiansX, float radiansY, float radiansZ) {RotateAroundLocationWorld(new Vector3(radiansX, radiansY, radiansZ));}
@@ -137,12 +137,12 @@ namespace Reign.Video
 			matrix = matrix.RotateAroundWorldAxisX(radians.X);
 			matrix = matrix.RotateAroundWorldAxisY(radians.Y);
 			matrix = matrix.RotateAroundWorldAxisZ(radians.Z);
-			LookLocation -= Location;
-			LookLocation = LookLocation.Transform(matrix);
-			LookLocation += Location;
-			UpLocation -= Location;
-			UpLocation = UpLocation.Transform(matrix);
-			UpLocation += Location;
+			LookAtPosition -= Position;
+			LookAtPosition = LookAtPosition.Transform(matrix);
+			LookAtPosition += Position;
+			UpPosition -= Position;
+			UpPosition = UpPosition.Transform(matrix);
+			UpPosition += Position;
 		}
 
 		public void RotateAroundLookLocationWorld(float radiansX, float radiansY, float radiansZ) {RotateAroundLookLocationWorld(new Vector3(radiansX, radiansY, radiansZ));}
@@ -152,12 +152,12 @@ namespace Reign.Video
 			matrix = matrix.RotateAroundWorldAxisX(radians.X);
 			matrix = matrix.RotateAroundWorldAxisY(radians.Y);
 			matrix = matrix.RotateAroundWorldAxisZ(radians.Z);
-			Location -= LookLocation;
-			Location = Location.Transform(matrix);
-			Location += LookLocation;
-			UpLocation -= LookLocation;
-			UpLocation = UpLocation.Transform(matrix);
-			UpLocation += LookLocation;
+			Position -= LookAtPosition;
+			Position = Position.Transform(matrix);
+			Position += LookAtPosition;
+			UpPosition -= LookAtPosition;
+			UpPosition = UpPosition.Transform(matrix);
+			UpPosition += LookAtPosition;
 		}
 
 		public void RotateAroundUpLocationWorld(float radiansX, float radiansY, float radiansZ) {RotateAroundUpLocationWorld(new Vector3(radiansX, radiansY, radiansZ));}
@@ -167,37 +167,37 @@ namespace Reign.Video
 			matrix = matrix.RotateAroundWorldAxisX(radians.X);
 			matrix = matrix.RotateAroundWorldAxisY(radians.Y);
 			matrix = matrix.RotateAroundWorldAxisZ(radians.Z);  
-			LookLocation -= UpLocation;
-			LookLocation = LookLocation.Transform(matrix);
-			LookLocation += UpLocation;
-			Location -= UpLocation;
-			Location = Location.Transform(matrix);
-			Location += UpLocation;
+			LookAtPosition -= UpPosition;
+			LookAtPosition = LookAtPosition.Transform(matrix);
+			LookAtPosition += UpPosition;
+			Position -= UpPosition;
+			Position = Position.Transform(matrix);
+			Position += UpPosition;
 		}
 
 		public void Rotate(Line3 pLine, float radians)
 		{
 			var vector = (pLine.Point2 - pLine.Point1).NormalizeSafe();
-			Location -= pLine.Point1;
-			LookLocation -= pLine.Point1;
-			UpLocation -= pLine.Point1;
-			Location = Location.RotateAround(vector, radians);
-			LookLocation = LookLocation.RotateAround(vector, radians);
-			UpLocation = UpLocation.RotateAround(vector, radians);
-			Location += pLine.Point1;
-			LookLocation += pLine.Point1;
-			UpLocation += pLine.Point1;
+			Position -= pLine.Point1;
+			LookAtPosition -= pLine.Point1;
+			UpPosition -= pLine.Point1;
+			Position = Position.RotateAround(vector, radians);
+			LookAtPosition = LookAtPosition.RotateAround(vector, radians);
+			UpPosition = UpPosition.RotateAround(vector, radians);
+			Position += pLine.Point1;
+			LookAtPosition += pLine.Point1;
+			UpPosition += pLine.Point1;
 		}
 
 		public void ApplyBillBoard()
 		{
-			BillBoardMatrix = Matrix3.FromCross((Location - LookLocation), (UpLocation - Location));
+			BillBoardMatrix = Matrix3.FromCross((Position - LookAtPosition), (UpPosition - Position));
 			BillBoardMatrixTranspose = BillBoardMatrix.Transpose();
 		}
 	
 		public virtual void Apply()
 		{
-			ViewMatrix = Matrix4.LookAt(Location, LookLocation, UpLocation-Location);
+			ViewMatrix = Matrix4.LookAt(Position, LookAtPosition, UpPosition-Position);
 			ProjectionMatrix = Matrix4.Perspective(Fov, float.IsNaN(Aspect) ? ViewPort.AspectRatio : Aspect, Near, Far);
 			TransformMatrix = ViewMatrix.Multiply(ProjectionMatrix);
 			TransformInverseMatrix = TransformMatrix.Invert();
@@ -205,7 +205,7 @@ namespace Reign.Video
 
 		public void ApplyOrthographic()
 		{
-			ViewMatrix = Matrix4.LookAt(Location, LookLocation, UpLocation-Location);
+			ViewMatrix = Matrix4.LookAt(Position, LookAtPosition, UpPosition-Position);
 			ProjectionMatrix = Matrix4.Orthographic(ViewPort.Size.Width, ViewPort.Size.Height, Near, Far);
 			TransformMatrix = ViewMatrix.Multiply(ProjectionMatrix);
 			TransformInverseMatrix = TransformMatrix.Invert();
@@ -213,7 +213,7 @@ namespace Reign.Video
 
 		public void ApplyOrthographicCentered()
 		{
-			ViewMatrix = Matrix4.LookAt(Location, LookLocation, UpLocation-Location);
+			ViewMatrix = Matrix4.LookAt(Position, LookAtPosition, UpPosition-Position);
 			ProjectionMatrix = Matrix4.OrthographicCentered(ViewPort.Size.Width, ViewPort.Size.Height, Near, Far);
 			TransformMatrix = ViewMatrix.Multiply(ProjectionMatrix);
 			TransformInverseMatrix = TransformMatrix.Invert();

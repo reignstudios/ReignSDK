@@ -9,7 +9,7 @@ namespace Reign.Input
 		Button Middle {get;}
 		Button Right {get;}
 		float ScrollWheelVelocity {get;}
-		Vector2 Location {get;}
+		Vector2 Position {get;}
 		Vector2 ScreenLocation {get;}
 	
 		void Update();

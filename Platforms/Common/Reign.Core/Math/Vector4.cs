@@ -8,6 +8,30 @@ namespace Reign.Core
 	{
 		#region Properties
 		public float X, Y, Z, W;
+
+		public float R
+		{
+			get {return X;}
+			set {X = value;}
+		}
+
+		public float G
+		{
+			get {return Y;}
+			set {Y = value;}
+		}
+
+		public float B
+		{
+			get {return Z;}
+			set {Z = value;}
+		}
+
+		public float A
+		{
+			get {return W;}
+			set {W = value;}
+		}
 		#endregion
 
 		#region Constructors
@@ -311,6 +335,19 @@ namespace Reign.Core
 			result.Y = vector.Y;
 			result.Z = vector.Z;
 			result.w = 0;
+		}
+
+		public Color4 ToColor4()
+		{
+			return new Color4((byte)(X*255), (byte)(Y*255), (byte)(Z*255), (byte)(W*255));
+		}
+
+		public static void ToColor4(ref Vector4 vector, out Color4 color)
+		{
+			color.R = (byte)(vector.X * 255);
+			color.G = (byte)(vector.Y * 255);
+			color.B = (byte)(vector.Z * 255);
+			color.A = (byte)(vector.W * 255);
 		}
 		#endregion
 

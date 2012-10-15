@@ -32,7 +32,7 @@ namespace Reign
 
 		#pragma region Methods
 		public: virtual void DrawStart(Camera^ camera) override;
-		public: virtual void Draw(string^ text, Vector2 Location, Vector4 color, float size, bool centeredX, bool centeredY) override;
+		public: virtual void Draw(string^ text, Vector2 location, Vector4 color, float size, bool centeredX, bool centeredY) override;
 		protected: virtual void draw(Vector2 location, Vector2 size, Vector2 locationUV, Vector2 sizeUV, Vector4 color) override;
 		#pragma endregion
 	};

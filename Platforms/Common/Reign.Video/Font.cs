@@ -131,9 +131,9 @@ namespace Reign.Video
 		}
 
 		public abstract void DrawStart(Camera camera);
-		public abstract void Draw(string text, Vector2 Location, Vector4 color, float Size, bool centeredX, bool centeredY);
+		public abstract void Draw(string text, Vector2 location, Vector4 color, float Size, bool centeredX, bool centeredY);
 
-		protected void draw(string text, Vector2 textureSize, Vector2 Location, Vector4 color, float size, bool centeredX, bool centeredY)
+		protected void draw(string text, Vector2 textureSize, Vector2 location, Vector4 color, float size, bool centeredX, bool centeredY)
 		{
 			if (string.IsNullOrEmpty(text)) return;
 
@@ -158,7 +158,7 @@ namespace Reign.Video
 			{
 				var c = FindCharacter(text[i]);
 				var sizeScaled = c.SizeRatio * size;
-				draw(offset + Location - centeredLoc, sizeScaled, c.Offset / textureSize, c.Size / textureSize, color);
+				draw(offset + location - centeredLoc, sizeScaled, c.Offset / textureSize, c.Size / textureSize, color);
 
 				offset.X += sizeScaled.X;
 			}

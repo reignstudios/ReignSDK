@@ -14,7 +14,7 @@ namespace Reign.Input.WinForms
 		public Button Right {get; private set;}
 		public float ScrollWheelVelocity {get; private set;}
 		public Vector2 Velocity {get; private set;}
-		public Vector2 Location {get; private set;}
+		public Vector2 Position {get; private set;}
 		public Vector2 ScreenLocation {get; private set;}
 		
 		private bool leftOn, middleOn, rightOn, scollWheelChanged;
@@ -93,10 +93,10 @@ namespace Reign.Input.WinForms
 			
 			var cursorLoc = Cursor.Position;
 			
-			lastLocation = Location;
+			lastLocation = Position;
 			var loc = new Point(cursorLoc.X, cursorLoc.Y) - new Point(viewLocation.X, viewLocation.Y);
-			Location = new Vector2(loc.X, input.window.FrameSize.Height - loc.Y);
-			Velocity = Location - lastLocation;
+			Position = new Vector2(loc.X, input.window.FrameSize.Height - loc.Y);
+			Velocity = Position - lastLocation;
 			
 			lastScreenLocation = ScreenLocation;
 			ScreenLocation = new Vector2(cursorLoc.X, cursorLoc.Y);

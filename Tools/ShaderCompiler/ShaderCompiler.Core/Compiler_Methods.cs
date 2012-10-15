@@ -293,7 +293,12 @@ namespace ShaderCompiler.Core
 			bool replaceMatrix = true;
 			while (replaceMatrix)
 			{
-				replaceMatrix = replaceMatrixMultiplyTypes(ref methodBlock);
+				replaceMatrix = replaceMatrixMultiplyTypes(ref methodBlock, "MultiplyInvert", true);
+			}
+			replaceMatrix = true;
+			while (replaceMatrix)
+			{
+				replaceMatrix = replaceMatrixMultiplyTypes(ref methodBlock, "Multiply", false);
 			}
 			
 			// Convert field usage types
@@ -410,13 +415,13 @@ namespace ShaderCompiler.Core
 			return methodBlock;
 		}
 
-		private bool replaceMatrixMultiplyTypes(ref string methodBlock)
+		private bool replaceMatrixMultiplyTypes(ref string methodBlock, string multiplyName, bool invert)
 		{
 			var baseType = getBaseCompilerOutput();
 		
 			// Find matrix multiply block
 			string findParameters = @".*?;";
-			var match = Regex.Match(methodBlock, @"([\w\[\]]*)\.Multiply" + findParameters, RegexOptions.Singleline);
+			var match = Regex.Match(methodBlock, @"([\w\[\]]*)\."+multiplyName + findParameters, RegexOptions.Singleline);
 			
 			// If matrix multiply block exists, replace it
 			var matrixGroups = match.Groups;
@@ -432,14 +437,14 @@ namespace ShaderCompiler.Core
 				{
 					string matrixName = matrixGroups[1].Value;
 					string vectorName = vectorGroups[1].Value;
-					string formatString = "mul({0}, {1})";
+					string formatString = invert ? "mul({1}, {0})" : "mul({0}, {1})";
 					if (outputType == CompilerOutputs.D3D9 || outputType == CompilerOutputs.XNA)
 					{
-						formatString = "mul({1}, {0})";
+						formatString = invert ? "mul({0}, {1})" : "mul({1}, {0})";
 					}
 					else if (baseType == BaseCompilerOutputs.GLSL)
 					{
-						formatString = @"({0} * {1})";
+						formatString = invert ? @"({1} * {0})" : @"({0} * {1})";
 					}
 					string replace = string.Format(formatString, vectorName, matrixName);
 					matrixName = matrixName.Replace("[", @"\[");

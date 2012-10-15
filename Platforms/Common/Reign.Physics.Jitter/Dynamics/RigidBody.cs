@@ -478,6 +478,55 @@ namespace Jitter.Dynamics
         }
 
 		/// <summary>
+        /// The current euler rotation of the body.
+        /// </summary>
+        public Vector3 Rotation
+        {
+            get
+			{
+				Matrix3 mat;
+				mat.X.X = orientation.M11;
+				mat.X.Y = orientation.M12;
+				mat.X.Z = orientation.M13;
+				mat.X.w = 0;
+
+				mat.Y.X = orientation.M21;
+				mat.Y.Y = orientation.M22;
+				mat.Y.Z = orientation.M23;
+				mat.Y.w = 0;
+
+				mat.Z.X = orientation.M31;
+				mat.Z.Y = orientation.M32;
+				mat.Z.Z = orientation.M33;
+				mat.Z.w = 0;
+
+				mat.w = Vector3.Zero;
+
+				Vector3 rotation;
+				Matrix3.Euler(ref mat, out rotation);
+				return rotation;
+			}
+            set
+			{
+				Matrix3 orientationMat;
+				Matrix3.FromEuler(ref value, out orientationMat);
+
+				orientation.M11 =  orientationMat.X.X;
+				orientation.M12 =  orientationMat.X.Y;
+				orientation.M13 =  orientationMat.X.Z;
+
+				orientation.M21 =  orientationMat.Y.X;
+				orientation.M22 =  orientationMat.Y.Y;
+				orientation.M23 =  orientationMat.Y.Z;
+
+				orientation.M31 =  orientationMat.Z.X;
+				orientation.M32 =  orientationMat.Z.Y;
+				orientation.M33 =  orientationMat.Z.Z;
+				Update();
+			}
+        }
+
+		/// <summary>
         /// The current transform of the body.
         /// </summary>
         public Matrix4 Transform
@@ -498,7 +547,6 @@ namespace Jitter.Dynamics
 				mat.Z.Z = orientation.M33;
 				mat.Z.w = 0;
 				mat.w = Vector3.Zero;
-				Matrix3.Transpose(mat, out mat);
 
 				Vector3 pos;
 				pos.X = position.X;

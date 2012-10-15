@@ -26,7 +26,7 @@ namespace Reign.Video
 		#region Properties
 		public SoftwareModel Model;
 		public string Name;
-		public Vector3 Location, Rotation, Scale;
+		public Vector3 Position, Rotation, Scale;
 		public SoftwareMaterial Material;
 
 		public List<SoftwareVertex> Verticies;
@@ -245,7 +245,7 @@ namespace Reign.Video
 		public void Rotate(float x, float y, float z)
 		{
 			var mat = Matrix3.FromEuler(x, y, z);
-			Location = Location.Transform(mat);
+			Position = Position.Transform(mat);
 
 			//var rotMat = Matrix3.FromEuler(Rotation.X, Rotation.Y, Rotation.Z);
 			//rotMat = rotMat.Multiply(mat);

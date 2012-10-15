@@ -82,7 +82,7 @@ namespace Reign
 		instancing = false;
 	}
 
-	void Font::Draw(string^ text, Vector2 Location, Vector4 color, float size, bool centeredX, bool centeredY)
+	void Font::Draw(string^ text, Vector2 location, Vector4 color, float size, bool centeredX, bool centeredY)
 	{
 		if (instancing)
 		{
@@ -90,7 +90,7 @@ namespace Reign
 		}
 		else
 		{
-			draw(text, fontTexture->SizeF, Location, color, size, centeredX, centeredY);
+			draw(text, fontTexture->SizeF, location, color, size, centeredX, centeredY);
 		}
 	}
 

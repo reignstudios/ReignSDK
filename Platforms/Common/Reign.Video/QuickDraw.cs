@@ -97,7 +97,7 @@ namespace Reign.Video
 		public abstract void Draw();
 		public void End() {if (vertexNext >= primitiveVertexCount) Draw();}
 
-		public void Pos(Vector3 location) {Pos(location.X, location.Y, location.Z);}
+		public void Pos(Vector3 position) {Pos(position.X, position.Y, position.Z);}
 		public void Pos(float x, float y) {Pos(x, y, 0);}
 		public void Pos(float x, float y, float z)
 		{

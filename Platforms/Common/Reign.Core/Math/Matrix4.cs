@@ -93,10 +93,10 @@ namespace Reign.Core
 		{
 			return new Matrix4
 			(
-				new Vector4(transform.Transform.X, transform.Translation.X),
-				new Vector4(transform.Transform.Y, transform.Translation.Y),
-				new Vector4(transform.Transform.Z, transform.Translation.Z),
-				new Vector4(0, 0, 0, 1)
+				new Vector4(transform.Transform.X, 0),
+				new Vector4(transform.Transform.Y, 0),
+				new Vector4(transform.Transform.Z, 0),
+				new Vector4(transform.Translation.X, transform.Translation.Y, transform.Translation.Z, 1)
 			);
 		}
 
@@ -105,89 +105,89 @@ namespace Reign.Core
 			result.X.X = transform.Transform.X.X;
 			result.X.Y = transform.Transform.X.Y;
 			result.X.Z = transform.Transform.X.Z;
-			result.X.W = transform.Translation.X;
+			result.X.W = 0;
 
 			result.Y.X = transform.Transform.Y.X;
 			result.Y.Y = transform.Transform.Y.Y;
 			result.Y.Z = transform.Transform.Y.Z;
-			result.Y.W = transform.Translation.Y;
+			result.Y.W = 0;
 
 			result.Z.X = transform.Transform.Z.X;
 			result.Z.Y = transform.Transform.Z.Y;
 			result.Z.Z = transform.Transform.Z.Z;
-			result.Z.W = transform.Translation.Z;
+			result.Z.W = 0;
 
-			result.W.X = 0;
-			result.W.Y = 0;
-			result.W.Z = 0;
+			result.W.X = transform.Translation.X;
+			result.W.Y = transform.Translation.Y;
+			result.W.Z = transform.Translation.Z;
 			result.W.W = 1;
 		}
 
-		public static Matrix4 FromAffineTransform(Matrix3 transform, Vector3 location)
+		public static Matrix4 FromAffineTransform(Matrix3 transform, Vector3 position)
 		{
 			return new Matrix4
 			(
-				new Vector4(transform.X, location.X),
-				new Vector4(transform.Y, location.Y),
-				new Vector4(transform.Z, location.Z),
-				new Vector4(0, 0, 0, 1)
+				new Vector4(transform.X, 0),
+				new Vector4(transform.Y, 0),
+				new Vector4(transform.Z, 0),
+				new Vector4(position.X, position.Y, position.Z, 1)
 			);
 		}
 
-		public static void FromAffineTransform(ref Matrix3 transform, ref Vector3 location, out Matrix4 result)
+		public static void FromAffineTransform(ref Matrix3 transform, ref Vector3 position, out Matrix4 result)
 		{
 			result.X.X = transform.X.X;
 			result.X.Y = transform.X.Y;
 			result.X.Z = transform.X.Z;
-			result.X.W = location.X;
+			result.X.W = 0;
 
 			result.Y.X = transform.Y.X;
 			result.Y.Y = transform.Y.Y;
 			result.Y.Z = transform.Y.Z;
-			result.Y.W = location.Y;
+			result.Y.W = 0;
 
 			result.Z.X = transform.Z.X;
 			result.Z.Y = transform.Z.Y;
 			result.Z.Z = transform.Z.Z;
-			result.Z.W = location.Z;
+			result.Z.W = 0;
 
-			result.W.X = 0;
-			result.W.Y = 0;
-			result.W.Z = 0;
+			result.W.X = position.X;
+			result.W.Y = position.Y;
+			result.W.Z = position.Z;
 			result.W.W = 1;
 		}
 
-		public static Matrix4 FromAffineTransform(Matrix3 transform, Vector3 scale, Vector3 location)
+		public static Matrix4 FromAffineTransform(Matrix3 transform, Vector3 scale, Vector3 position)
 		{
 			return new Matrix4
 			(
-				new Vector4(transform.X * scale.X, location.X),
-				new Vector4(transform.Y * scale.Y, location.Y),
-				new Vector4(transform.Z * scale.Z, location.Z),
-				new Vector4(0, 0, 0, 1)
+				new Vector4(transform.X * scale.X, 0),
+				new Vector4(transform.Y * scale.Y, 0),
+				new Vector4(transform.Z * scale.Z, 0),
+				new Vector4(position.X, position.Y, position.Z, 1)
 			);
 		}
 
-		public static void FromAffineTransform(ref Matrix3 transform, ref Vector3 scale, ref Vector3 location, out Matrix4 result)
+		public static void FromAffineTransform(ref Matrix3 transform, ref Vector3 scale, ref Vector3 position, out Matrix4 result)
 		{
 			result.X.X = transform.X.X * scale.X;
-			result.X.Y = transform.X.Y * scale.Y;
-			result.X.Z = transform.X.Z * scale.Z;
-			result.X.W = location.X;
+			result.X.Y = transform.X.Y * scale.X;
+			result.X.Z = transform.X.Z * scale.X;
+			result.X.W = 0;
 
-			result.Y.X = transform.Y.X * scale.X;
+			result.Y.X = transform.Y.X * scale.Y;
 			result.Y.Y = transform.Y.Y * scale.Y;
-			result.Y.Z = transform.Y.Z * scale.Z;
-			result.Y.W = location.Y;
+			result.Y.Z = transform.Y.Z * scale.Y;
+			result.Y.W = 0;
 
-			result.Z.X = transform.Z.X * scale.X;
-			result.Z.Y = transform.Z.Y * scale.Y;
+			result.Z.X = transform.Z.X * scale.Z;
+			result.Z.Y = transform.Z.Y * scale.Z;
 			result.Z.Z = transform.Z.Z * scale.Z;
-			result.Z.W = location.Z;
+			result.Z.W = 0;
 
-			result.W.X = 0;
-			result.W.Y = 0;
-			result.W.Z = 0;
+			result.W.X = position.X;
+			result.W.Y = position.Y;
+			result.W.Z = position.Z;
 			result.W.W = 1;
 		}
 
@@ -836,41 +836,41 @@ namespace Reign.Core
 			Transpose(result, out result);
 		}
 
-		public static Matrix4 LookAt(Vector3 location, Vector3 lookAt, Vector3 upVector)
+		public static Matrix4 LookAt(Vector3 position, Vector3 lookAt, Vector3 upVector)
 		{
-			var forward = (lookAt - location).Normalize();
+			var forward = (lookAt - position).Normalize();
 			var xVec = forward.Cross(upVector).Normalize();
 			upVector = xVec.Cross(forward);
 			
 			return new Matrix4
 			(
-				new Vector4(xVec.X, xVec.Y, xVec.Z, location.Dot(-xVec)),
-				new Vector4(upVector.X, upVector.Y, upVector.Z, location.Dot(-upVector)),
-				new Vector4(-forward.X, -forward.Y, -forward.Z, location.Dot(forward)),
+				new Vector4(xVec.X, xVec.Y, xVec.Z, position.Dot(-xVec)),
+				new Vector4(upVector.X, upVector.Y, upVector.Z, position.Dot(-upVector)),
+				new Vector4(-forward.X, -forward.Y, -forward.Z, position.Dot(forward)),
 				new Vector4(0, 0, 0, 1)
 			);
 		}
 
-		public static void LookAt(ref Vector3 location, ref Vector3 lookAt, ref Vector3 upVector, out Matrix4 result)
+		public static void LookAt(ref Vector3 position, ref Vector3 lookAt, ref Vector3 upVector, out Matrix4 result)
 		{
-			var forward = (lookAt - location).Normalize();
+			var forward = (lookAt - position).Normalize();
 			var xVec = forward.Cross(upVector).Normalize();
 			upVector = xVec.Cross(forward);
 			
 			result.X.X = xVec.X;
 			result.X.Y = xVec.Y;
 			result.X.Z = xVec.Z;
-			result.X.W = location.Dot(-xVec);
+			result.X.W = position.Dot(-xVec);
 
 			result.Y.X = upVector.X;
 			result.Y.Y = upVector.Y;
 			result.Y.Z = upVector.Z;
-			result.Y.W = location.Dot(-upVector);
+			result.Y.W = position.Dot(-upVector);
 
 			result.Z.X = -forward.X;
 			result.Z.Y = -forward.Y;
 			result.Z.Z = -forward.Z;
-			result.Z.W = location.Dot(forward);
+			result.Z.W = position.Dot(forward);
 
 			result.W.X = 0;
 			result.W.Y = 0;

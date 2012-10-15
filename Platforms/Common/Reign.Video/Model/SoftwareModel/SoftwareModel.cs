@@ -105,7 +105,7 @@ namespace Reign.Video
 
 				// translate, rotate and scale
 				var values = node.Translate.Values;
-				mesh.Location = new Vector3(values[0], values[1], values[2]);
+				mesh.Position = new Vector3(values[0], values[1], values[2]);
 
 				values = node.Scale.Values;
 				mesh.Scale = new Vector3(values[0], values[1], values[2]);

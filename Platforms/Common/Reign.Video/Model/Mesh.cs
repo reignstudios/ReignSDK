@@ -15,7 +15,7 @@ namespace Reign.Video
 	{
 		#region Properties
 		public ModelI Model;
-		public Vector3 Location, Rotation, Scale;
+		public Vector3 Position, Rotation, Scale;
 		public Matrix3 RotationMatrix;
 		public MaterialI Material;
 
@@ -42,7 +42,7 @@ namespace Reign.Video
 				if (materialIndex != -1) Material = model.Materials[materialIndex];
 
 				// transform
-				Location = reader.ReadVector3();
+				Position = reader.ReadVector3();
 				Scale = reader.ReadVector3();
 				Rotation = reader.ReadVector3();
 				RotationMatrix = Matrix3.FromEuler(Rotation);
@@ -287,7 +287,7 @@ namespace Reign.Video
 			writer.Write(materialIndex);
 
 			// transform
-			writer.WriteVector(softwareMesh.Location);
+			writer.WriteVector(softwareMesh.Position);
 			writer.WriteVector(softwareMesh.Scale);
 			writer.WriteVector(softwareMesh.Rotation);
 

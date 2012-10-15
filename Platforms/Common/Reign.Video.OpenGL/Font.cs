@@ -92,7 +92,7 @@ namespace Reign.Video.OpenGL
 			instancing = false;
 		}
 
-		public override void Draw(string text, Vector2 Location, Vector4 color, float size, bool centeredX, bool centeredY)
+		public override void Draw(string text, Vector2 location, Vector4 color, float size, bool centeredX, bool centeredY)
 		{
 			if (instancing)
 			{
@@ -100,7 +100,7 @@ namespace Reign.Video.OpenGL
 			}
 			else
 			{
-				draw(text, texture.SizeF, Location, color, size, centeredX, centeredY);
+				draw(text, texture.SizeF, location, color, size, centeredX, centeredY);
 			}
 		}
 

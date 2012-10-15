@@ -70,6 +70,9 @@
     <Compile Include="..\..\Common\Reign.Core\Math\BoundingSphere3.cs">
       <Link>Math\BoundingSphere3.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Color4.cs">
+      <Link>Math\Color4.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Line2.cs">
       <Link>Math\Line2.cs</Link>
     </Compile>
@@ -115,8 +118,8 @@
     <Compile Include="..\..\Common\Reign.Core\Math\Size3.cs">
       <Link>Math\Size3.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\Math\Triangle.cs">
-      <Link>Math\Triangle.cs</Link>
+    <Compile Include="..\..\Common\Reign.Core\Math\Triangle3.cs">
+      <Link>Math\Triangle3.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Vector2.cs">
       <Link>Math\Vector2.cs</Link>
