@@ -112,6 +112,7 @@ namespace Reign.Core
 
 		private void keyDownEvent(object sender, KeyEventArgs e)
 		{
+			e.Handled = true;
 			theEvent.Type = WindowEventTypes.KeyDown;
 			theEvent.KeyCode = (int)e.KeyCode;
 			window.handleEvent(theEvent);
@@ -119,6 +120,7 @@ namespace Reign.Core
 
 		private void keyUpEvent(object sender, KeyEventArgs e)
 		{
+			e.Handled = true;
 			theEvent.Type = WindowEventTypes.KeyUp;
 			theEvent.KeyCode = (int)e.KeyCode;
 			window.handleEvent(theEvent);

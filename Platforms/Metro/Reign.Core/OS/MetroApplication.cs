@@ -127,14 +127,14 @@ namespace Reign.Core
 		private void keyDown(CoreWindow sender, KeyEventArgs e)
 		{
 			theEvent.Type = ApplicationEventTypes.KeyDown;
-			theEvent.KeyCode = (int)e.KeyStatus.ScanCode;
+			theEvent.KeyCode = (int)e.VirtualKey;
 			application.handleEvent(theEvent);
 		}
 
 		private void keyUp(CoreWindow sender, KeyEventArgs e)
 		{
 			theEvent.Type = ApplicationEventTypes.KeyUp;
-			theEvent.KeyCode = (int)e.KeyStatus.ScanCode;
+			theEvent.KeyCode = (int)e.VirtualKey;
 			application.handleEvent(theEvent);
 		}
 
