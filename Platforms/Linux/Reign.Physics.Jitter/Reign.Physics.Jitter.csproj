@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FAC82F1A-4611-4415-99F5-B576C08376D9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Reign.Physics.Jitter</RootNamespace>
+    <AssemblyName>Reign.Physics.Jitter</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <DefineConstants>DEBUG;LINUX</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DefineConstants>LINUX</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\IDebugDraw.cs">
+      <Link>IDebugDraw.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\ResourcePool.cs">
+      <Link>ResourcePool.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\ThreadManager.cs">
+      <Link>ThreadManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\World.cs">
+      <Link>World.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\CollisionIsland.cs">
+      <Link>Collision\CollisionIsland.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\CollisionSystem.cs">
+      <Link>Collision\CollisionSystem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\CollisionSystemBrute.cs">
+      <Link>Collision\CollisionSystemBrute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\CollisionSystemPersistentSAP.cs">
+      <Link>Collision\CollisionSystemPersistentSAP.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\CollisionSystemSAP.cs">
+      <Link>Collision\CollisionSystemSAP.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\DynamicTree.cs">
+      <Link>Collision\DynamicTree.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\GJKCollide.cs">
+      <Link>Collision\GJKCollide.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\IslandManager.cs">
+      <Link>Collision\IslandManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\Octree.cs">
+      <Link>Collision\Octree.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\XenoCollide.cs">
+      <Link>Collision\XenoCollide.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\Shapes\BoxShape.cs">
+      <Link>Collision\Shapes\BoxShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\Shapes\CapsuleShape.cs">
+      <Link>Collision\Shapes\CapsuleShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\Shapes\CompoundShape.cs">
+      <Link>Collision\Shapes\CompoundShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\Shapes\ConeShape.cs">
+      <Link>Collision\Shapes\ConeShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\Shapes\ConvexHullShape.cs">
+      <Link>Collision\Shapes\ConvexHullShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\Shapes\CylinderShape.cs">
+      <Link>Collision\Shapes\CylinderShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\Shapes\MinkowskiSumShape.cs">
+      <Link>Collision\Shapes\MinkowskiSumShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\Shapes\Multishape.cs">
+      <Link>Collision\Shapes\Multishape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\Shapes\Shape.cs">
+      <Link>Collision\Shapes\Shape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\Shapes\SphereShape.cs">
+      <Link>Collision\Shapes\SphereShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\Shapes\TerrainShape.cs">
+      <Link>Collision\Shapes\TerrainShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Collision\Shapes\TriangleMeshShape.cs">
+      <Link>Collision\Shapes\TriangleMeshShape.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\DataStructures\Hashset.cs">
+      <Link>DataStructures\Hashset.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\DataStructures\ReadOnlyHashset.cs">
+      <Link>DataStructures\ReadOnlyHashset.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Arbiter.cs">
+      <Link>Dynamics\Arbiter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\ArbiterMap.cs">
+      <Link>Dynamics\ArbiterMap.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Constraint.cs">
+      <Link>Dynamics\Constraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Contact.cs">
+      <Link>Dynamics\Contact.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\IConstraint.cs">
+      <Link>Dynamics\IConstraint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Material.cs">
+      <Link>Dynamics\Material.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\RigidBody.cs">
+      <Link>Dynamics\RigidBody.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\SoftBody.cs">
+      <Link>Dynamics\SoftBody.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Constraints\FixedAngle.cs">
+      <Link>Dynamics\Constraints\FixedAngle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Constraints\PointOnLine.cs">
+      <Link>Dynamics\Constraints\PointOnLine.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Constraints\PointOnPoint.cs">
+      <Link>Dynamics\Constraints\PointOnPoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Constraints\PointPointDistance.cs">
+      <Link>Dynamics\Constraints\PointPointDistance.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Constraints\SingleBody\FixedAngle.cs">
+      <Link>Dynamics\Constraints\SingleBody\FixedAngle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Constraints\SingleBody\PointOnLine.cs">
+      <Link>Dynamics\Constraints\SingleBody\PointOnLine.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Constraints\SingleBody\PointOnPoint.cs">
+      <Link>Dynamics\Constraints\SingleBody\PointOnPoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Joints\HingeJoint.cs">
+      <Link>Dynamics\Joints\HingeJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Joints\Joint.cs">
+      <Link>Dynamics\Joints\Joint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Joints\PrismaticJoint.cs">
+      <Link>Dynamics\Joints\PrismaticJoint.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\LinearMath\JBBox.cs">
+      <Link>LinearMath\JBBox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\LinearMath\JConvexHull.cs">
+      <Link>LinearMath\JConvexHull.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\LinearMath\JMath.cs">
+      <Link>LinearMath\JMath.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\LinearMath\JMatrix.cs">
+      <Link>LinearMath\JMatrix.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\LinearMath\JQuaternion.cs">
+      <Link>LinearMath\JQuaternion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\LinearMath\JVector.cs">
+      <Link>LinearMath\JVector.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{E48D2170-14A8-4650-9D14-FC28863605D4}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Video\Reign.Video.csproj">
+      <Project>{A413C5B3-9881-413B-976C-4DA355BD2A16}</Project>
+      <Name>Reign.Video</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Physics\Reign.Physics.csproj">
+      <Project>{90B49308-185A-4DC3-B04E-113E68684079}</Project>
+      <Name>Reign.Physics</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Collision\" />
+    <Folder Include="DataStructures\" />
+    <Folder Include="Dynamics\" />
+    <Folder Include="LinearMath\" />
+  </ItemGroup>
+</Project>
