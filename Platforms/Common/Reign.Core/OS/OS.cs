@@ -61,7 +61,7 @@ namespace Reign.Core
 	{
 		public override void FinishedLaunching (NSObject notification)
 		{
-			
+			NSApplication.SharedApplication.ApplicationShouldTerminateAfterLastWindowClosed = delegate {return true;};
 		}
 	}
 	#endif
@@ -254,7 +254,7 @@ namespace Reign.Core
 					if (NSContext != null) NSContext.CGLContext.Unlock();
 				}
 			});
-			NSApplication.SharedApplication.ApplicationShouldTerminateAfterLastWindowClosed = delegate {return true;};
+			//NSApplication.SharedApplication.ApplicationShouldTerminateAfterLastWindowClosed = delegate {return true;};
 			NSApplication.Main(new string[0]);
 			#endif
 			

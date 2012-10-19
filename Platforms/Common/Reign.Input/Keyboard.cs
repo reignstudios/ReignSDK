@@ -7,11 +7,8 @@ namespace Reign.Input
 		Button Key(int keyCode);
 
 		Button Esc {get;}
-		Button Break {get;}
-		Button Insert {get;}
 		Button Delete {get;}
 		Button Tab {get;}
-		Button CapsLock {get;}
 		Button Shift {get;}
 		Button Backspace {get;}
 		Button Control {get;}
@@ -40,23 +37,10 @@ namespace Reign.Input
 		Button NumPad9 {get;}
 		Button NumPadMultiply {get;}
 		Button NumPadAdd {get;}
-		Button NumPadSeparator {get;}
 		Button NumPadSubtract {get;}
 		Button NumPadDecimal {get;}
 		Button NumPadDivide {get;}
-
-		Button F1 {get;}
-		Button F2 {get;}
-		Button F3 {get;}
-		Button F4 {get;}
-		Button F5 {get;}
-		Button F6 {get;}
-		Button F7 {get;}
-		Button F8 {get;}
-		Button F9 {get;}
-		Button F10 {get;}
-		Button F11 {get;}
-		Button F12 {get;}
+		Button NumPadEnter {get;}
 
 		Button A {get;}
 		Button B {get;}

@@ -68,21 +68,32 @@ namespace Reign.Core
 			window.closing();
 		}
 		
-		/*public override void SendEvent(NSEvent theEvent)
+		public override void SendEvent(NSEvent e)
 		{
-			if (theEvent == null ||
-				!(theEvent.Type == NSEventType.KeyDown || theEvent.Type == NSEventType.KeyUp ||
-				theEvent.Type == NSEventType.LeftMouseDown || theEvent.Type == NSEventType.LeftMouseUp ||
-				theEvent.Type == NSEventType.OtherMouseDown || theEvent.Type == NSEventType.OtherMouseUp ||
-				theEvent.Type == NSEventType.RightMouseDown || theEvent.Type == NSEventType.RightMouseUp ||
-				theEvent.Type == NSEventType.ScrollWheel))
+			switch (e.Type)
 			{
-				base.SendEvent(theEvent);
-				return;
+				case (NSEventType.KeyDown):
+					theEvent.Type = WindowEventTypes.KeyDown;
+					theEvent.KeyCode = e.KeyCode;
+					break;
+					
+				case (NSEventType.KeyUp):
+					theEvent.Type = WindowEventTypes.KeyUp;
+					theEvent.KeyCode = e.KeyCode;
+					break;
+					
+				case (NSEventType.FlagsChanged):
+					theEvent.Type = WindowEventTypes.Unkown;
+					theEvent.KeyCode = e.KeyCode;
+					break;
+					
+				default:
+					base.SendEvent(e);
+					return;
 			}
 			
-			if (HandleEvent != null) HandleEvent(theEvent);
-		}*/
+			window.handleEvent(theEvent);
+		}
 		
 		public override void MouseDown(NSEvent e)
 		{
@@ -105,20 +116,6 @@ namespace Reign.Core
 				case (NSEventType.RightMouseUp): theEvent.Type = WindowEventTypes.RightMouseUp; break;
 			}
 
-			window.handleEvent(theEvent);
-		}
-		
-		public override void KeyDown(NSEvent e)
-		{
-			theEvent.Type = WindowEventTypes.KeyDown;
-			theEvent.KeyCode = e.KeyCode;
-			window.handleEvent(theEvent);
-		}
-		
-		public override void KeyUp(NSEvent e)
-		{
-			theEvent.Type = WindowEventTypes.KeyUp;
-			theEvent.KeyCode = e.KeyCode;
 			window.handleEvent(theEvent);
 		}
 		#endregion
