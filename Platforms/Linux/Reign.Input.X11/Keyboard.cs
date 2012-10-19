@@ -13,11 +13,8 @@ namespace Reign.Input.X11
 		public Button Key(int keyCode) {return buttons[keyCode];}
 
 		public Button Esc {get{return buttons[9];}}
-		public Button Break {get{return buttons[127];}}
-		public Button Insert {get{return buttons[118];}}
 		public Button Delete {get{return buttons[119];}}
 		public Button Tab {get{return buttons[23];}}
-		public Button CapsLock {get{return buttons[66];}}
 		public Button Shift {get{return buttons[50];}}
 		public Button Backspace {get{return buttons[22];}}
 		public Button Control {get{return buttons[37];}}
@@ -46,23 +43,10 @@ namespace Reign.Input.X11
 		public Button NumPad9 {get{return buttons[0];}}
 		public Button NumPadMultiply {get{return buttons[0];}}
 		public Button NumPadAdd {get{return buttons[0];}}
-		public Button NumPadSeparator {get{return buttons[0];}}
 		public Button NumPadSubtract {get{return buttons[0];}}
 		public Button NumPadDecimal {get{return buttons[0];}}
 		public Button NumPadDivide {get{return buttons[0];}}
-
-		public Button F1 {get{return buttons[67];}}
-		public Button F2 {get{return buttons[68];}}
-		public Button F3 {get{return buttons[69];}}
-		public Button F4 {get{return buttons[70];}}
-		public Button F5 {get{return buttons[71];}}
-		public Button F6 {get{return buttons[72];}}
-		public Button F7 {get{return buttons[73];}}
-		public Button F8 {get{return buttons[74];}}
-		public Button F9 {get{return buttons[75];}}
-		public Button F10 {get{return buttons[76];}}
-		public Button F11 {get{return buttons[95];}}
-		public Button F12 {get{return buttons[96];}}
+		public Button NumPadEnter {get{return buttons[0];}}
 
 		public Button A {get{return buttons[38];}}
 		public Button B {get{return buttons[56];}}

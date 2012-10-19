@@ -14,11 +14,8 @@ namespace Reign.Input.WinForms
 		public Button Key(int keyCode) {return buttons[keyCode];}
 
 		public Button Esc {get{return buttons[(int)Keys.Escape];}}
-		public Button Break {get{return buttons[(int)Keys.Pause];}}
-		public Button Insert {get{return buttons[(int)Keys.Insert];}}
 		public Button Delete {get{return buttons[(int)Keys.Delete];}}
 		public Button Tab {get{return buttons[(int)Keys.Tab];}}
-		public Button CapsLock {get{return buttons[(int)Keys.CapsLock];}}
 		public Button Shift {get{return buttons[(int)Keys.ShiftKey];}}
 		public Button Backspace {get{return buttons[(int)Keys.Back];}}
 		public Button Control {get{return buttons[(int)Keys.ControlKey];}}
@@ -47,23 +44,10 @@ namespace Reign.Input.WinForms
 		public Button NumPad9 {get{return buttons[(int)Keys.NumPad9];}}
 		public Button NumPadMultiply {get{return buttons[(int)Keys.Multiply];}}
 		public Button NumPadAdd {get{return buttons[(int)Keys.Add];}}
-		public Button NumPadSeparator {get{return buttons[(int)Keys.Separator];}}
 		public Button NumPadSubtract {get{return buttons[(int)Keys.Subtract];}}
 		public Button NumPadDecimal {get{return buttons[(int)Keys.Decimal];}}
 		public Button NumPadDivide {get{return buttons[(int)Keys.Divide];}}
-
-		public Button F1 {get{return buttons[(int)Keys.F1];}}
-		public Button F2 {get{return buttons[(int)Keys.F2];}}
-		public Button F3 {get{return buttons[(int)Keys.F3];}}
-		public Button F4 {get{return buttons[(int)Keys.F4];}}
-		public Button F5 {get{return buttons[(int)Keys.F5];}}
-		public Button F6 {get{return buttons[(int)Keys.F6];}}
-		public Button F7 {get{return buttons[(int)Keys.F7];}}
-		public Button F8 {get{return buttons[(int)Keys.F8];}}
-		public Button F9 {get{return buttons[(int)Keys.F9];}}
-		public Button F10 {get{return buttons[(int)Keys.F10];}}
-		public Button F11 {get{return buttons[(int)Keys.F11];}}
-		public Button F12 {get{return buttons[(int)Keys.F12];}}
+		public Button NumPadEnter {get{return buttons[(int)Keys.Enter];}}
 
 		public Button A {get{return buttons[(int)Keys.A];}}
 		public Button B {get{return buttons[(int)Keys.B];}}

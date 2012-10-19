@@ -14,11 +14,8 @@ namespace Reign.Input.Metro
 		public Button Key(int keyCode) {return buttons[keyCode];}
 
 		public Button Esc {get{return buttons[(int)VirtualKey.Escape];}}
-		public Button Break {get{return buttons[(int)VirtualKey.Pause];}}
-		public Button Insert {get{return buttons[(int)VirtualKey.Insert];}}
 		public Button Delete {get{return buttons[(int)VirtualKey.Delete];}}
 		public Button Tab {get{return buttons[(int)VirtualKey.Tab];}}
-		public Button CapsLock {get{return buttons[(int)VirtualKey.CapitalLock];}}
 		public Button Shift {get{return buttons[(int)VirtualKey.Shift];}}
 		public Button Backspace {get{return buttons[(int)VirtualKey.Back];}}
 		public Button Control {get{return buttons[(int)VirtualKey.Control];}}
@@ -47,23 +44,10 @@ namespace Reign.Input.Metro
 		public Button NumPad9 {get{return buttons[(int)VirtualKey.NumberPad9];}}
 		public Button NumPadMultiply {get{return buttons[(int)VirtualKey.Multiply];}}
 		public Button NumPadAdd {get{return buttons[(int)VirtualKey.Add];}}
-		public Button NumPadSeparator {get{return buttons[(int)VirtualKey.Separator];}}
 		public Button NumPadSubtract {get{return buttons[(int)VirtualKey.Subtract];}}
 		public Button NumPadDecimal {get{return buttons[(int)VirtualKey.Decimal];}}
 		public Button NumPadDivide {get{return buttons[(int)VirtualKey.Divide];}}
-
-		public Button F1 {get{return buttons[(int)VirtualKey.F1];}}
-		public Button F2 {get{return buttons[(int)VirtualKey.F2];}}
-		public Button F3 {get{return buttons[(int)VirtualKey.F3];}}
-		public Button F4 {get{return buttons[(int)VirtualKey.F4];}}
-		public Button F5 {get{return buttons[(int)VirtualKey.F5];}}
-		public Button F6 {get{return buttons[(int)VirtualKey.F6];}}
-		public Button F7 {get{return buttons[(int)VirtualKey.F7];}}
-		public Button F8 {get{return buttons[(int)VirtualKey.F8];}}
-		public Button F9 {get{return buttons[(int)VirtualKey.F9];}}
-		public Button F10 {get{return buttons[(int)VirtualKey.F10];}}
-		public Button F11 {get{return buttons[(int)VirtualKey.F11];}}
-		public Button F12 {get{return buttons[(int)VirtualKey.F12];}}
+		public Button NumPadEnter {get{return buttons[(int)VirtualKey.Enter];}}
 
 		public Button A {get{return buttons[(int)VirtualKey.A];}}
 		public Button B {get{return buttons[(int)VirtualKey.B];}}
