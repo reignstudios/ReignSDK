@@ -43,6 +43,45 @@ namespace Reign.Core
 			W = w;
 		}
 
+		public static Quaternion LookAt(Vector3 forward, Vector3 up)
+		{
+			//Quaternion Quaternion::LookRotation(Vector& lookAt, Vector& upDirection) {
+			//Vector forward = lookAt; Vector up = upDirection;
+			//Vector::OrthoNormalize(&forward, &up);
+			//Vector right = Vector::Cross(up, forward);
+
+			//#define m00 right.x
+			//#define m01 up.x
+			//#define m02 forward.x
+			//#define m10 right.y
+			//#define m11 up.y
+			//#define m12 forward.y
+			//#define m20 right.z
+			//#define m21 up.z
+			//#define m22 forward.z
+
+			//        Quaternion ret;
+			//        ret.w = sqrtf(1.0f + m00 + m11 + m22) * 0.5f;
+			//        float w4_recip = 1.0f / (4.0f * ret.w);
+			//        ret.x = (m21 - m12) * w4_recip;
+			//        ret.y = (m02 - m20) * w4_recip;
+			//        ret.z = (m10 - m01) * w4_recip;
+
+			//#undef m00
+			//#undef m01
+			//#undef m02
+			//#undef m10
+			//#undef m11
+			//#undef m12
+			//#undef m20
+			//#undef m21
+			//#undef m22
+
+			//        return ret;
+			//}
+			throw new NotImplementedException();
+		}
+
 		public static Quaternion FromMatrix3(Matrix3 matrix)
 		{
 			float w = (float)Math.Sqrt(1 + matrix.X.X + matrix.Y.Y + matrix.Z.Z) * .5f;

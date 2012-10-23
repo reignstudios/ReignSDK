@@ -79,7 +79,7 @@ namespace Reign.Video
 		public void RotateAroundLocation(float radiansX, float radiansY, float radiansZ) {RotateAroundLocation(new Vector3(radiansX, radiansY, radiansZ));}
 		public void RotateAroundLocation(Vector3 radians)
 		{
-			var matrix = Matrix3.FromCross((LookAtPosition - Position), (UpPosition - Position));
+			var matrix = Matrix3.LookAt((LookAtPosition - Position), (UpPosition - Position));
 			var matrixTranspose = matrix.Transpose();
 			matrix = matrix.RotateAroundAxisX(radians.X);
 			matrix = matrix.RotateAroundAxisY(radians.Y);
@@ -97,7 +97,7 @@ namespace Reign.Video
 		public void RotateAroundLookLocation(float radiansX, float radiansY, float radiansZ) {RotateAroundLookLocation(new Vector3(radiansX, radiansY, radiansZ));}
 		public void RotateAroundLookLocation(Vector3 radians)
 		{
-			var matrix = Matrix3.FromCross((LookAtPosition - Position), (UpPosition - Position));
+			var matrix = Matrix3.LookAt((LookAtPosition - Position), (UpPosition - Position));
 			var matrixTranspose = matrix.Transpose();
 			matrix = matrix.RotateAroundAxisX(radians.X);
 			matrix = matrix.RotateAroundAxisY(radians.Y);
@@ -115,7 +115,7 @@ namespace Reign.Video
 		public void RotateAroundUpLocation(float radiansX, float radiansY, float radiansZ) {RotateAroundUpLocation(new Vector3(radiansX, radiansY, radiansZ));}
 		public void RotateAroundUpLocation(Vector3 radians)
 		{
-			var matrix = Matrix3.FromCross((LookAtPosition - Position), (UpPosition - Position));
+			var matrix = Matrix3.LookAt((LookAtPosition - Position), (UpPosition - Position));
 			var matrixTranspose = matrix.Transpose();
 			matrix = matrix.RotateAroundAxisX(radians.X);
 			matrix = matrix.RotateAroundAxisY(radians.Y);
@@ -191,7 +191,7 @@ namespace Reign.Video
 
 		public void ApplyBillBoard()
 		{
-			BillBoardMatrix = Matrix3.FromCross((Position - LookAtPosition), (UpPosition - Position));
+			BillBoardMatrix = Matrix3.LookAt((Position - LookAtPosition), (UpPosition - Position));
 			BillBoardMatrixTranspose = BillBoardMatrix.Transpose();
 		}
 	

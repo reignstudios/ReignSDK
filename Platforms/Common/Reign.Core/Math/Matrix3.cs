@@ -257,19 +257,19 @@ namespace Reign.Core
 			Matrix3.FromQuaternion(ref quaternion, out result);
 		}
 
-		public static Matrix3 FromCross(Vector3 zVector, Vector3 yVector)
+		public static Matrix3 LookAt(Vector3 forward, Vector3 up)
 		{
-			var Z = zVector.Normalize();
-			var X = yVector.Cross(Z).Normalize();
+			var Z = forward.Normalize();
+			var X = up.Cross(Z).Normalize();
 			var Y = Z.Cross(X);
 
 			return new Matrix3(X, Y, Z);
 		}
 
-		public static void FromCross(ref Vector3 zVector, ref Vector3 yVector, out Matrix3 result)
+		public static void LookAt(ref Vector3 forward, ref Vector3 up, out Matrix3 result)
 		{
-			var Z = zVector.Normalize();
-			var X = yVector.Cross(Z).Normalize();
+			var Z = forward.Normalize();
+			var X = up.Cross(Z).Normalize();
 			var Y = Z.Cross(X);
 
 			result.X = X;
