@@ -9,7 +9,7 @@ namespace ShaderCompiler.Core
 	class CodeFile
 	{
 		public string Code;
-		private string reletivePath;
+		public string ReletivePath;
 
 		public CodeFile(string code)
 		{
@@ -19,7 +19,24 @@ namespace ShaderCompiler.Core
 		public CodeFile(string code, string reletivePath)
 		{
 			Code = code;
-			this.reletivePath = reletivePath;
+			ReletivePath = reletivePath;
+		}
+
+		public bool IsFileOfShader(Type shader)
+		{
+			// find shaders namespace
+			var match = Regex.Match(Code, shader.Namespace + @"\s*?\{(.*\})", RegexOptions.Singleline);
+			if (match.Success && match.Groups.Count == 2)
+			{
+				// find shader class
+				var namespaceBlock = match.Groups[1].Value;
+				int end = getBlockEnd(namespaceBlock);
+				namespaceBlock = namespaceBlock.Remove(end);
+				match = Regex.Match(namespaceBlock, @"class\s*" + shader.Name + @".*?\{(.*\})", RegexOptions.Singleline);
+				if (match.Success && match.Groups.Count == 2) return true;
+			}
+
+			return false;
 		}
 
 		public string FindMethodBlock(Type shader, MethodInfo method, CompilerOutputs outputType)

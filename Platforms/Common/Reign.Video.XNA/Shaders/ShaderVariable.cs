@@ -33,21 +33,29 @@ namespace Reign.Video.XNA
 
 		public void Set(Vector3 value)
 		{
+			#if XBOX360
+			parameter.SetValue(new X.Vector3(value.X, value.Y, value.Z));
+			#else
 			X.Vector3 vector;
 			vector.X = value.X;
 			vector.Y = value.Y;
 			vector.Z = value.Z;
 			parameter.SetValue(vector);
+			#endif
 		}
 
 		public void Set(Vector4 value)
 		{
+			#if XBOX360
+			parameter.SetValue(new X.Vector3(value.X, value.Y, value.Z));
+			#else
 			X.Vector4 vector;
 			vector.X = value.X;
 			vector.Y = value.Y;
 			vector.Z = value.Z;
 			vector.W = value.W;
 			parameter.SetValue(vector);
+			#endif
 		}
 
 		public unsafe void Set(Matrix2 value)

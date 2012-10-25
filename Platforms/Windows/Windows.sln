@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Physics", "Reign.Phys
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Physics.Jitter", "Reign.Physics.Jitter\Reign.Physics.Jitter.csproj", "{BECA1F2A-3527-468C-8615-DB6512F2E3AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.UI", "Reign.UI\Reign.UI.csproj", "{4154D258-A071-4DD4-816F-BBF3210F3E30}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Windows.vsmdi
@@ -282,6 +284,18 @@ Global
 		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Release|Win32.ActiveCfg = Release|Any CPU
 		{BECA1F2A-3527-468C-8615-DB6512F2E3AF}.Release|x86.ActiveCfg = Release|Any CPU
+		{4154D258-A071-4DD4-816F-BBF3210F3E30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4154D258-A071-4DD4-816F-BBF3210F3E30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4154D258-A071-4DD4-816F-BBF3210F3E30}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4154D258-A071-4DD4-816F-BBF3210F3E30}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4154D258-A071-4DD4-816F-BBF3210F3E30}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{4154D258-A071-4DD4-816F-BBF3210F3E30}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4154D258-A071-4DD4-816F-BBF3210F3E30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4154D258-A071-4DD4-816F-BBF3210F3E30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4154D258-A071-4DD4-816F-BBF3210F3E30}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4154D258-A071-4DD4-816F-BBF3210F3E30}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4154D258-A071-4DD4-816F-BBF3210F3E30}.Release|Win32.ActiveCfg = Release|Any CPU
+		{4154D258-A071-4DD4-816F-BBF3210F3E30}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

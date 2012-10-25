@@ -74,11 +74,17 @@
     <Compile Include="..\..\Common\Reign.Core\Math\AffineTransform3.cs">
       <Link>Math\AffineTransform3.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingBox2.cs">
+      <Link>Math\BoundingBox2.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\BoundingBox3.cs">
       <Link>Math\BoundingBox3.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\BoundingFrustum3.cs">
       <Link>Math\BoundingFrustum3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingSphere2.cs">
+      <Link>Math\BoundingSphere2.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\BoundingSphere3.cs">
       <Link>Math\BoundingSphere3.cs</Link>

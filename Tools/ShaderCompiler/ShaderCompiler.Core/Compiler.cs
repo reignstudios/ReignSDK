@@ -234,7 +234,6 @@ technique MainTechnique
 			string lastShaderOut = null;
 			var names = dllFileName.Split('/', '\\', '.');
 			string name = names[names.Length-2];
-			var materialCode = new Dictionary<string,string>();
 			foreach (var obj in objects)
 			{
 				var iFaces = obj.GetInterfaces();
@@ -245,25 +244,22 @@ technique MainTechnique
 						using (var stream = new MemoryStream())
 						using (var vsStream = new MemoryStream())
 						using (var psStream = new MemoryStream())
+						using (var reflectionStream = new MemoryStream())
 						{
 							if (outputType == CompilerOutputs.D3D11 && compileMetroShaders)
 							{
-								using (var reflectionFile = new FileStream(outDirectory + FileTag + obj.Name + ".ref", FileMode.Create, FileAccess.Write))
-								{
-									compileShader(obj, stream, vsStream, psStream, reflectionFile);
-								}
+								//using (var reflectionFile = new FileStream(outDirectory + FileTag + obj.Name + ".ref", FileMode.Create, FileAccess.Write))
+								//{
+								//    compileShader(obj, stream, vsStream, psStream, reflectionFile);
+								//}
+								compileShader(obj, stream, vsStream, psStream, reflectionStream);
 							}
 							else
 							{
 								compileShader(obj, stream, vsStream, psStream, null);
 							}
-
-							if (compileMaterial)
-							{
-								var codeFile = compileMaterialFiles(name, obj);
-								materialCode.Add(obj.Name, codeFile);
-							}
-									
+							
+							string outDirectoryRelitive = outDirectory;	
 							if (writeToMemory)
 							{
 								if (outputType != CompilerOutputs.XNA) lastShaderOut += "#GLOBAL" + Environment.NewLine;
@@ -287,9 +283,21 @@ technique MainTechnique
 							}
 							else
 							{
+								string relitivePath = "";
+								foreach (var codeFile in codeFiles)
+								{
+									if (codeFile.IsFileOfShader(obj))
+									{
+										relitivePath = Reign.Core.Streams.GetFileDirectory(codeFile.ReletivePath);
+										if (!Directory.Exists(outDirectory + relitivePath)) Directory.CreateDirectory(outDirectory + relitivePath);
+										break;
+									}
+								}
+								outDirectoryRelitive += relitivePath;
+
 								string fileExt = ".rs";
 								if (outputType == CompilerOutputs.XNA) fileExt = ".fx";
-								using (var file = new FileStream(outDirectory + FileTag + obj.Name + fileExt, FileMode.Create, FileAccess.Write))
+								using (var file = new FileStream(outDirectoryRelitive + FileTag + obj.Name + fileExt, FileMode.Create, FileAccess.Write))
 								{
 									using (var writer = new StreamWriter(file))
 									{
@@ -319,21 +327,30 @@ technique MainTechnique
 							// compile metro shader bytecode
 							if (outputType == CompilerOutputs.D3D11 && compileMetroShaders)
 							{
-								new MetroShaderCompiler(outDirectory + FileTag + obj.Name + ".rs");
+								new MetroShaderCompiler(outDirectoryRelitive + FileTag + obj.Name + ".rs");
+							}
+
+							// compile materials
+							if (compileMaterial)
+							{
+								var codeText = compileMaterialFiles(name, obj);
+								using (var codeFile = new FileStream(outDirectoryRelitive + obj.Name + ".cs", FileMode.Create, FileAccess.Write))
+								using (var writer = new StreamWriter(codeFile))
+								{
+									writer.Write(codeText);
+								}
+							}
+
+							// compile metro shaders
+							if (outputType == CompilerOutputs.D3D11 && compileMetroShaders)
+							{
+								using (var reflectionFile = new FileStream(outDirectoryRelitive + FileTag + obj.Name + ".ref", FileMode.Create, FileAccess.Write))
+								{
+									var data = reflectionStream.ToArray();
+									reflectionFile.Write(data, 0, data.Length);
+								}
 							}
 						}
-					}
-				}
-			}
-
-			if (compileMaterial)
-			{
-				foreach (var material in materialCode)
-				{
-					using (var codeFile = new FileStream(outDirectory + material.Key + ".cs", FileMode.Create, FileAccess.Write))
-					using (var writer = new StreamWriter(codeFile))
-					{
-						writer.Write(material.Value);
 					}
 				}
 			}
@@ -348,7 +365,7 @@ technique MainTechnique
 			using (var psWriter = new StreamWriter(psStream))
 			using (var reflectionWriter = new StreamWriter(reflectionStream == null ? new MemoryStream() : reflectionStream))
 			{
-				compileFields(shader, writer, vsWriter, psWriter, reflectionWriter == null ? null : reflectionWriter);
+				compileFields(shader, writer, vsWriter, psWriter, reflectionStream == null ? null : reflectionWriter);
 				compileMethods(shader, writer, vsWriter, psWriter);
 			}
 		}

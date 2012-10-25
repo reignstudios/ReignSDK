@@ -258,24 +258,32 @@ namespace Reign.Core
 		
 		public static string GetFileDirectory(string fileName)
 		{
-			var match = Regex.Match(fileName, @".*/|\\");
+			var match = Regex.Match(fileName, @".*[/\\]");
 			if (!string.IsNullOrEmpty(match.Value))
 			{
 				fileName = match.Value.Substring(0, match.Value.Length-1);
 			}
 
-			return fileName;
+			#if METRO || LINUX
+			return fileName + '\\';
+			#else
+			return fileName + '/';
+			#endif
 		}
 		
 		public static string GetFileNameWithExt(string fileName)
 		{
-			var match = Regex.Match(fileName, @".*/|\\");
+			var match = Regex.Match(fileName, @".*[/\\]");
 			if (!string.IsNullOrEmpty(match.Value))
 			{
 				fileName = fileName.Substring(match.Value.Length, fileName.Length - match.Value.Length);
 			}
 
-			return fileName;
+			#if METRO || LINUX
+			return fileName + '\\';
+			#else
+			return fileName + '/';
+			#endif
 		}
 		
 		public static string GetFileNameWithoutExt(string fileName)
