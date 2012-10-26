@@ -248,7 +248,7 @@ namespace Reign.Core
 		public static string StripFileExt(string fileName)
 		{
 			var match = Regex.Match(fileName, @".*\.");
-			if (!string.IsNullOrEmpty(match.Value))
+			if (match.Success && !string.IsNullOrEmpty(match.Value))
 			{
 				fileName = match.Value.Substring(0, match.Value.Length-1);
 			}
@@ -258,8 +258,19 @@ namespace Reign.Core
 		
 		public static string GetFileDirectory(string fileName)
 		{
+			bool pass = false;
+			foreach (var c in fileName)
+			{
+				if (c == '/' || c == '\\')
+				{
+					pass = true;
+					break;
+				}
+			}
+			if (!pass) return "";
+
 			var match = Regex.Match(fileName, @".*[/\\]");
-			if (!string.IsNullOrEmpty(match.Value))
+			if (match.Success && !string.IsNullOrEmpty(match.Value))
 			{
 				fileName = match.Value.Substring(0, match.Value.Length-1);
 			}
@@ -274,16 +285,12 @@ namespace Reign.Core
 		public static string GetFileNameWithExt(string fileName)
 		{
 			var match = Regex.Match(fileName, @".*[/\\]");
-			if (!string.IsNullOrEmpty(match.Value))
+			if (match.Success && !string.IsNullOrEmpty(match.Value))
 			{
 				fileName = fileName.Substring(match.Value.Length, fileName.Length - match.Value.Length);
 			}
 
-			#if METRO || LINUX
-			return fileName + '\\';
-			#else
-			return fileName + '/';
-			#endif
+			return fileName;
 		}
 		
 		public static string GetFileNameWithoutExt(string fileName)
