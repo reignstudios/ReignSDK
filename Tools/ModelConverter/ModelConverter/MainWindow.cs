@@ -100,7 +100,7 @@ namespace ModelConverter
 		public void Convert(string contentPath, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> materialFieldTypes)
 		{
 			if (model != null) model.Dispose();
-			model = Model.Create(videoType, video, softwareModel, MeshVertexSizes.Float3, false, true, true, contentPath, materialTypes, null, null, null, null, materialFieldTypes, null);
+			model = Model.Create(videoType, video, softwareModel, MeshVertexSizes.Float3, false, true, true, contentPath, materialTypes, null, null, null, null, materialFieldTypes, null, 0);
 		}
 
 		public void Save(string fileName, bool saveColors, bool saveUVs, bool saveNormals)
@@ -138,13 +138,13 @@ namespace ModelConverter
 		void diffuseTextureGlobalApply(DiffuseTextureMaterial material, MeshI mesh)
 		{
 			DiffuseTextureMaterial.Camera = camera.TransformMatrix;
-			DiffuseTextureMaterial.LightDirection = -camera.Location.Normalize();
+			DiffuseTextureMaterial.LightDirection = -camera.Position.Normalize();
 			DiffuseTextureMaterial.LightColor = new Vector4(1);
 		}
 
 		void diffuseTextureInstanceApply(DiffuseTextureMaterial material, MeshI mesh)
 		{
-			material.Transform = Matrix4.FromAffineTransform(Matrix3.FromEuler(mesh.Rotation), mesh.Scale, mesh.Location);
+			material.Transform = Matrix4.FromAffineTransform(Matrix3.FromEuler(mesh.Rotation), mesh.Scale, mesh.Position);
 		}
 
 		protected override void render(Time time)

@@ -23,9 +23,9 @@ namespace Shaders
 		[ShaderMethod(ShaderMethodTypes.VS)]
 		public void MainVS()
 		{
-			Vector4 loc = Transform.Multiply(new Vector4(Position_VS, 1));
+			Vector4 loc = Transform.MultiplyInvert(new Vector4(Position_VS, 1));
 			Position_VSPS = Camera.Multiply(loc);
-			Normal_VSPS = SL.Normalize(Transform.Multiply(new Vector4(Normal_VS, 0)).xyz);
+			Normal_VSPS = SL.Normalize(Transform.MultiplyInvert(new Vector4(Normal_VS, 0)).xyz);
 			UV_VSPS = new Vector2(UV_VS.x, 1.0-UV_VS.y);
 		}
 

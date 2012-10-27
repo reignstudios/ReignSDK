@@ -14,9 +14,9 @@ uniform mat4 Transform;
 
 void main()
 {
-	vec4 loc = ( vec4(Position0, 1) * Transform);
+	vec4 loc = (Transform *  vec4(Position0, 1));
 	gl_Position = Position_VSPS = (loc * Camera);
-	Normal_VSPS = normalize(( vec4(Normal0, 0) * Transform).xyz);
+	Normal_VSPS = normalize((Transform *  vec4(Normal0, 0)).xyz);
 	UV_VSPS = vec2(Texcoord0.x, 1.0-Texcoord0.y);
 }
 #END
