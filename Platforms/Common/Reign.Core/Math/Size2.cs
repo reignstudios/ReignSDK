@@ -124,8 +124,6 @@
 		{
 			result.X = size.Width;
 			result.Y = size.Height;
-			result.z = 0;
-			result.w = 0;
 		}
 		#endregion
 	}

@@ -22,7 +22,6 @@ namespace Reign.Core
 		public bool Intersects(BoundingBox3 boundingBox)
         {
 		   Vector3 clampedLocation;
-		   clampedLocation.w = 0;
             if (Center.X > boundingBox.Max.X)
 			{
                 clampedLocation.X = boundingBox.Max.X;
@@ -68,7 +67,6 @@ namespace Reign.Core
 		public static void Intersects(ref BoundingSphere3 boundingSphere, ref BoundingBox3 boundingBox, out bool result)
         {
 		   Vector3 clampedLocation;
-		   clampedLocation.w = 0;
             if (boundingSphere.Center.X > boundingBox.Max.X)
 			{
                 clampedLocation.X = boundingBox.Max.X;

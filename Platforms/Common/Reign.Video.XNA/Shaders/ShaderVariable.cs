@@ -60,12 +60,14 @@ namespace Reign.Video.XNA
 
 		public unsafe void Set(Matrix2 value)
 		{
-			parameter.SetValue(*(X.Matrix*)&value);
+			// use set float array for this
+			throw new NotImplementedException();
 		}
 
 		public unsafe void Set(Matrix3 value)
 		{
-			parameter.SetValue(*(X.Matrix*)&value);
+			// use set float array for this
+			throw new NotImplementedException();
 		}
 
 		public unsafe void Set(Matrix4 value)

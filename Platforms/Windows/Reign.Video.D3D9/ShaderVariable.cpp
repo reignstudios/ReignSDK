@@ -39,18 +39,24 @@ namespace Reign
 
 	void ShaderVariable::setVector2()
 	{
-		pin_ptr<void> valuePtr = &valueObject.Vector2;
-		D3DXVECTOR4* ptr = (D3DXVECTOR4*)(void*)valuePtr;
-		if (vertexHandle) vertexVariables->SetVector(video->Device, vertexHandle, ptr);
-		if (pixelHandle) pixelVariables->SetVector(video->Device, pixelHandle, ptr);
+		D3DXVECTOR4 vector;
+		vector.x = valueObject.X;
+		vector.y = valueObject.Y;
+		vector.z = 0;
+		vector.w = 0;
+		if (vertexHandle) vertexVariables->SetVector(video->Device, vertexHandle, &vector);
+		if (pixelHandle) pixelVariables->SetVector(video->Device, pixelHandle, &vector);
 	}
 
 	void ShaderVariable::setVector3()
 	{
-		pin_ptr<void> valuePtr = &valueObject.Vector3;
-		D3DXVECTOR4* ptr = (D3DXVECTOR4*)(void*)valuePtr;
-		if (vertexHandle) vertexVariables->SetVector(video->Device, vertexHandle, ptr);
-		if (pixelHandle) pixelVariables->SetVector(video->Device, pixelHandle, ptr);
+		D3DXVECTOR4 vector;
+		vector.x = valueObject.X;
+		vector.y = valueObject.Y;
+		vector.z = valueObject.Z;
+		vector.w = 0;
+		if (vertexHandle) vertexVariables->SetVector(video->Device, vertexHandle, &vector);
+		if (pixelHandle) pixelVariables->SetVector(video->Device, pixelHandle, &vector);
 	}
 
 	void ShaderVariable::setVector4()
@@ -63,18 +69,14 @@ namespace Reign
 
 	void ShaderVariable::setMatrix2()
 	{
-		pin_ptr<void> valuePtr = &valueObject.Matrix2;
-		D3DXMATRIX* ptr = (D3DXMATRIX*)(void*)valuePtr;
-		if (vertexHandle) vertexVariables->SetMatrix(video->Device, vertexHandle, ptr);
-		if (pixelHandle) pixelVariables->SetMatrix(video->Device, pixelHandle, ptr);
+		// use set raw value
+		throw gcnew NotImplementedException();
 	}
 
 	void ShaderVariable::setMatrix3()
 	{
-		pin_ptr<void> valuePtr = &valueObject.Matrix3;
-		D3DXMATRIX* ptr = (D3DXMATRIX*)(void*)valuePtr;
-		if (vertexHandle) vertexVariables->SetMatrix(video->Device, vertexHandle, ptr);
-		if (pixelHandle) pixelVariables->SetMatrix(video->Device, pixelHandle, ptr);
+		// use set raw value
+		throw gcnew NotImplementedException();
 	}
 
 	void ShaderVariable::setMatrix4()

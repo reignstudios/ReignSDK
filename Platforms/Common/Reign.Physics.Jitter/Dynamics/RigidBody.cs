@@ -488,19 +488,14 @@ namespace Jitter.Dynamics
 				mat.X.X = orientation.M11;
 				mat.X.Y = orientation.M12;
 				mat.X.Z = orientation.M13;
-				mat.X.w = 0;
 
 				mat.Y.X = orientation.M21;
 				mat.Y.Y = orientation.M22;
 				mat.Y.Z = orientation.M23;
-				mat.Y.w = 0;
 
 				mat.Z.X = orientation.M31;
 				mat.Z.Y = orientation.M32;
 				mat.Z.Z = orientation.M33;
-				mat.Z.w = 0;
-
-				mat.w = Vector3.Zero;
 
 				Vector3 rotation;
 				Matrix3.Euler(ref mat, out rotation);
@@ -537,22 +532,19 @@ namespace Jitter.Dynamics
 				mat.X.X = orientation.M11;
 				mat.X.Y = orientation.M12;
 				mat.X.Z = orientation.M13;
-				mat.X.w = 0;
+
 				mat.Y.X = orientation.M21;
 				mat.Y.Y = orientation.M22;
 				mat.Y.Z = orientation.M23;
-				mat.Y.w = 0;
+
 				mat.Z.X = orientation.M31;
 				mat.Z.Y = orientation.M32;
 				mat.Z.Z = orientation.M33;
-				mat.Z.w = 0;
-				mat.w = Vector3.Zero;
 
 				Vector3 pos;
 				pos.X = position.X;
 				pos.Y = position.Y;
 				pos.Z = position.Z;
-				pos.w = 0;
 
 				Matrix4 transform;
 				Matrix4.FromAffineTransform(ref mat, ref shape.TransformScale, ref pos, out transform);

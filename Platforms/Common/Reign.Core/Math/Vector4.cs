@@ -320,8 +320,6 @@ namespace Reign.Core
 		{
 			result.X = vector.X;
 			result.Y = vector.Y;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public Vector3 ToVector3()
@@ -334,7 +332,6 @@ namespace Reign.Core
 			result.X = vector.X;
 			result.Y = vector.Y;
 			result.Z = vector.Z;
-			result.w = 0;
 		}
 
 		public Color4 ToColor4()

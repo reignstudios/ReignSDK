@@ -8,7 +8,6 @@ namespace Reign.Core
 	{
 		#region Properties
 		public float X, Y;
-		public float z, w;
 		#endregion
 
 		#region Constructors
@@ -16,16 +15,12 @@ namespace Reign.Core
 		{
 			X = value;
 			Y = value;
-			z = 0;
-			w = 0;
 		}
 
 		public Vector2(float x, float y)
 		{
 			X = x;
 			Y = y;
-			z = 0;
-			w = 0;
 		}
 
 		public static readonly Vector2 One = new Vector2(1);
@@ -43,24 +38,18 @@ namespace Reign.Core
 		{
 			result.X = value1.X + value2.X;
 			result.Y = value1.Y + value2.Y;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public static void Add(ref Vector2 value1, float value2, out Vector2 result)
 		{
 			result.X = value1.X + value2;
 			result.Y = value1.Y + value2;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public static void Add(float value1, ref Vector2 value2, out Vector2 result)
 		{
 			result.X = value1 + value2.X;
 			result.Y = value1 + value2.Y;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public static Vector2 operator+(Vector2 p1, Vector2 p2)
@@ -89,32 +78,24 @@ namespace Reign.Core
 		{
 			result.X = value1.X - value2.X;
 			result.Y = value1.Y - value2.Y;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public static void Sub(ref Vector2 value1, float value2, out Vector2 result)
 		{
 			result.X = value1.X - value2;
 			result.Y = value1.Y - value2;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public static void Sub(float value1, ref Vector2 value2, out Vector2 result)
 		{
 			result.X = value1 - value2.X;
 			result.Y = value1 - value2.Y;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public static void Neg(ref Vector2 value, out Vector2 result)
 		{
 			result.X = -value.X;
 			result.Y = -value.Y;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public static Vector2 operator-(Vector2 p1, Vector2 p2)
@@ -150,24 +131,18 @@ namespace Reign.Core
 		{
 			result.X = value1.X * value2.X;
 			result.Y = value1.Y * value2.Y;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public static void Mul(ref Vector2 value1, float value2, out Vector2 result)
 		{
 			result.X = value1.X * value2;
 			result.Y = value1.Y * value2;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public static void Mul(float value1, ref Vector2 value2, out Vector2 result)
 		{
 			result.X = value1 * value2.X;
 			result.Y = value1 * value2.Y;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public static Vector2 operator*(Vector2 p1, Vector2 p2)
@@ -196,24 +171,18 @@ namespace Reign.Core
 		{
 			result.X = value1.X / value2.X;
 			result.Y = value1.Y / value2.Y;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public static void Div(ref Vector2 value1, float value2, out Vector2 result)
 		{
 			result.X = value1.X / value2;
 			result.Y = value1.Y / value2;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public static void Div(float value1, ref Vector2 value2, out Vector2 result)
 		{
 			result.X = value1 / value2.X;
 			result.Y = value1 / value2.Y;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public static Vector2 operator/(Vector2 p1, Vector2 p2)
@@ -267,8 +236,6 @@ namespace Reign.Core
 		{
 			result.X = MathUtilities.DegToRad(vector.X);
 			result.Y = MathUtilities.DegToRad(vector.Y);
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public Vector2 RadToDeg()
@@ -280,8 +247,6 @@ namespace Reign.Core
 		{
 			result.X = MathUtilities.RadToDeg(vector.X);
 			result.Y = MathUtilities.RadToDeg(vector.Y);
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public Vector2 Max(float value)
@@ -293,8 +258,6 @@ namespace Reign.Core
 		{
 			result.X = Math.Max(vector.X, value);
 			result.Y = Math.Max(vector.Y, value);
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public Vector2 Max(Vector2 values)
@@ -306,8 +269,6 @@ namespace Reign.Core
 		{
 			result.X = Math.Max(vector.X, values.X);
 			result.Y = Math.Max(vector.Y, values.Y);
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public Vector2 Min(float value)
@@ -319,8 +280,6 @@ namespace Reign.Core
 		{
 			result.X = Math.Min(vector.X, value);
 			result.Y = Math.Min(vector.Y, value);
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public Vector2 Min(Vector2 values)
@@ -332,8 +291,6 @@ namespace Reign.Core
 		{
 			result.X = Math.Min(vector.X, values.X);
 			result.Y = Math.Min(vector.Y, values.Y);
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public Vector2 Abs()
@@ -345,8 +302,6 @@ namespace Reign.Core
 		{
 			result.X = Math.Abs(vector.X);
 			result.Y = Math.Abs(vector.Y);
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public Vector2 Pow(float value)
@@ -358,8 +313,6 @@ namespace Reign.Core
 		{
 			result.X = (float)Math.Pow(vector.X, value);
 			result.Y = (float)Math.Pow(vector.Y, value);
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public Vector2 Floor()
@@ -371,8 +324,6 @@ namespace Reign.Core
 		{
 			result.X = (float)Math.Floor(vector.X);
 			result.Y = (float)Math.Floor(vector.Y);
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public float Length()
@@ -498,8 +449,6 @@ namespace Reign.Core
 		{
 			result.X = -vector.Y;
 			result.Y = vector.X;
-			result.z = 0;
-			result.w = 0;
 		}
 
 		public Vector2 Transform(Matrix2 matrix)
@@ -527,7 +476,6 @@ namespace Reign.Core
             result.X = (vector.X * matrix.X.X) + (vector.Y * matrix.Y.X);
             result.Y = (vector.X * matrix.X.Y) + (vector.Y * matrix.Y.Y);
             result.Z = (vector.X * matrix.X.Z) + (vector.Y * matrix.Y.Z);
-			result.w = 0;
         }
 
 		public Vector3 Transform(Matrix3x2 matrix)
@@ -545,7 +493,6 @@ namespace Reign.Core
             result.X = (matrix.X.X * vector.X) + (matrix.X.Y * vector.Y);
             result.Y = (matrix.Y.X * vector.X) + (matrix.Y.Y * vector.Y);
             result.Z = (matrix.Z.X * vector.X) + (matrix.Z.Y * vector.Y);
-			result.w = 0;
         }
 
 		public bool AproxEqualsBox(Vector2 vector, float tolerance)

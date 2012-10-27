@@ -8,7 +8,6 @@ namespace Reign.Core
 	{
 		#region Properties
 		public float X, Y, Z;
-		public float w;
 		#endregion
 
 		#region Constructors
@@ -17,7 +16,6 @@ namespace Reign.Core
 			X = value;
 			Y = value;
 			Z = value;
-			w = 0;
 		}
 
 		public Vector3(float x, float y, float z)
@@ -25,7 +23,6 @@ namespace Reign.Core
 			X = x;
 			Y = y;
 			Z = z;
-			w = 0;
 		}
 
 		public Vector3(Vector2 vector, float z)
@@ -33,7 +30,6 @@ namespace Reign.Core
 			X = vector.X;
 			Y = vector.Y;
 			Z = z;
-			w = 0;
 		}
 
 		public static readonly Vector3 One = new Vector3(1);
@@ -54,7 +50,6 @@ namespace Reign.Core
 			result.X = value1.X + value2.X;
 			result.Y = value1.Y + value2.Y;
 			result.Z = value1.Z + value2.Z;
-			result.w = 0;
 		}
 
 		public static void Add(ref Vector3 value1, float value2, out Vector3 result)
@@ -62,7 +57,6 @@ namespace Reign.Core
 			result.X = value1.X + value2;
 			result.Y = value1.Y + value2;
 			result.Z = value1.Z + value2;
-			result.w = 0;
 		}
 
 		public static void Add(float value1, ref Vector3 value2, out Vector3 result)
@@ -70,7 +64,6 @@ namespace Reign.Core
 			result.X = value1 + value2.X;
 			result.Y = value1 + value2.Y;
 			result.Z = value1 + value2.Z;
-			result.w = 0;
 		}
 
 		public static Vector3 operator+(Vector3 p1, Vector3 p2)
@@ -103,7 +96,6 @@ namespace Reign.Core
 			result.X = value1.X - value2.X;
 			result.Y = value1.Y - value2.Y;
 			result.Z = value1.Z - value2.Z;
-			result.w = 0;
 		}
 
 		public static void Sub(ref Vector3 value1, float value2, out Vector3 result)
@@ -111,7 +103,6 @@ namespace Reign.Core
 			result.X = value1.X - value2;
 			result.Y = value1.Y - value2;
 			result.Z = value1.Z - value2;
-			result.w = 0;
 		}
 
 		public static void Sub(float value1, ref Vector3 value2, out Vector3 result)
@@ -119,7 +110,6 @@ namespace Reign.Core
 			result.X = value1 - value2.X;
 			result.Y = value1 - value2.Y;
 			result.Z = value1 - value2.Z;
-			result.w = 0;
 		}
 
 		public static void Neg(ref Vector3 value, out Vector3 result)
@@ -127,7 +117,6 @@ namespace Reign.Core
 			result.X = -value.X;
 			result.Y = -value.Y;
 			result.Z = -value.Z;
-			result.w = 0;
 		}
 
 		public static Vector3 operator-(Vector3 p1, Vector3 p2)
@@ -168,7 +157,6 @@ namespace Reign.Core
 			result.X = value1.X * value2.X;
 			result.Y = value1.Y * value2.Y;
 			result.Z = value1.Z * value2.Z;
-			result.w = 0;
 		}
 
 		public static void Mul(ref Vector3 value1, float value2, out Vector3 result)
@@ -176,7 +164,6 @@ namespace Reign.Core
 			result.X = value1.X * value2;
 			result.Y = value1.Y * value2;
 			result.Z = value1.Z * value2;
-			result.w = 0;
 		}
 
 		public static void Mul(float value1, ref Vector3 value2, out Vector3 result)
@@ -184,7 +171,6 @@ namespace Reign.Core
 			result.X = value1 * value2.X;
 			result.Y = value1 * value2.Y;
 			result.Z = value1 * value2.Z;
-			result.w = 0;
 		}
 
 		public static Vector3 operator*(Vector3 p1, Vector3 p2)
@@ -217,7 +203,6 @@ namespace Reign.Core
 			result.X = value1.X / value2.X;
 			result.Y = value1.Y / value2.Y;
 			result.Z = value1.Z / value2.Z;
-			result.w = 0;
 		}
 
 		public static void Div(ref Vector3 value1, float value2, out Vector3 result)
@@ -225,7 +210,6 @@ namespace Reign.Core
 			result.X = value1.X / value2;
 			result.Y = value1.Y / value2;
 			result.Z = value1.Z / value2;
-			result.w = 0;
 		}
 
 		public static void Div(float value1, ref Vector3 value2, out Vector3 result)
@@ -233,7 +217,6 @@ namespace Reign.Core
 			result.X = value1 / value2.X;
 			result.Y = value1 / value2.Y;
 			result.Z = value1 / value2.Z;
-			result.w = 0;
 		}
 
 		public static Vector3 operator/(Vector3 p1, Vector3 p2)
@@ -273,8 +256,6 @@ namespace Reign.Core
 		{
 			result.X = vector.X;
 			result.Y = vector.Y;
-			result.z = 0;
-			result.w = 0;
 		}
 		#endregion
 
@@ -304,7 +285,6 @@ namespace Reign.Core
 			result.X = MathUtilities.DegToRad(vector.X);
 			result.Y = MathUtilities.DegToRad(vector.Y);
 			result.Z = MathUtilities.DegToRad(vector.Z);
-			result.w = 0;
 		}
 
 		public Vector3 RadToDeg()
@@ -317,7 +297,6 @@ namespace Reign.Core
 			result.X = MathUtilities.RadToDeg(vector.X);
 			result.Y = MathUtilities.RadToDeg(vector.Y);
 			result.Z = MathUtilities.RadToDeg(vector.Z);
-			result.w = 0;
 		}
 
 		public Vector3 Max(float value)
@@ -330,7 +309,6 @@ namespace Reign.Core
 			result.X = Math.Max(vector.X, value);
 			result.Y = Math.Max(vector.Y, value);
 			result.Z = Math.Max(vector.Z, value);
-			result.w = 0;
 		}
 
 		public Vector3 Max(Vector3 values)
@@ -343,7 +321,6 @@ namespace Reign.Core
 			result.X = Math.Max(vector.X, values.X);
 			result.Y = Math.Max(vector.Y, values.Y);
 			result.Z = Math.Max(vector.Z, values.Z);
-			result.w = 0;
 		}
 
 		public Vector3 Min(float value)
@@ -356,7 +333,6 @@ namespace Reign.Core
 			result.X = Math.Min(vector.X, value);
 			result.Y = Math.Min(vector.Y, value);
 			result.Z = Math.Min(vector.Z, value);
-			result.w = 0;
 		}
 
 		public Vector3 Min(Vector3 values)
@@ -369,7 +345,6 @@ namespace Reign.Core
 			result.X = Math.Min(vector.X, values.X);
 			result.Y = Math.Min(vector.Y, values.Y);
 			result.Z = Math.Min(vector.Z, values.Z);
-			result.w = 0;
 		}
 
 		public Vector3 Abs()
@@ -382,7 +357,6 @@ namespace Reign.Core
 			result.X = Math.Abs(vector.X);
 			result.Y = Math.Abs(vector.Y);
 			result.Z = Math.Abs(vector.Z);
-			result.w = 0;
 		}
 
 		public Vector3 Pow(float value)
@@ -395,7 +369,6 @@ namespace Reign.Core
 			result.X = (float)Math.Pow(vector.X, value);
 			result.Y = (float)Math.Pow(vector.Y, value);
 			result.Z = (float)Math.Pow(vector.Z, value);
-			result.w = 0;
 		}
 
 		public Vector3 Floor()
@@ -408,7 +381,6 @@ namespace Reign.Core
 			result.X = (float)Math.Floor(vector.X);
 			result.Y = (float)Math.Floor(vector.Y);
 			result.Z = (float)Math.Floor(vector.Z);
-			result.w = 0;
 		}
 
 		public float Length()
@@ -535,7 +507,6 @@ namespace Reign.Core
 			result.X = ((vector1.Y*vector2.Z) - (vector1.Z*vector2.Y));
 			result.Y = ((vector1.Z*vector2.X) - (vector1.X*vector2.Z));
 			result.Z = ((vector1.X*vector2.Y) - (vector1.Y*vector2.X));
-			result.w = 0;
 		}
 
 		public Vector3 Transform(Matrix4 matrix)
@@ -553,7 +524,6 @@ namespace Reign.Core
             result.X = (vector.X * matrix.X.X) + (vector.Y * matrix.Y.X) + (vector.Z * matrix.Z.X) + matrix.X.W;
             result.Y = (vector.X * matrix.X.Y) + (vector.Y * matrix.Y.Y) + (vector.Z * matrix.Z.Y) + matrix.Y.W;
             result.Z = (vector.X * matrix.X.Z) + (vector.Y * matrix.Y.Z) + (vector.Z * matrix.Z.Z) + matrix.Z.W;
-			result.w = 0;
 		}
 
 		public Vector3 TransformNormal(Matrix4 matrix)
@@ -571,7 +541,6 @@ namespace Reign.Core
             result.X = (vector.X * matrix.X.X) + (vector.Y * matrix.Y.X) + (vector.Z * matrix.Z.X);
             result.Y = (vector.X * matrix.X.Y) + (vector.Y * matrix.Y.Y) + (vector.Z * matrix.Z.Y);
             result.Z = (vector.X * matrix.X.Z) + (vector.Y * matrix.Y.Z) + (vector.Z * matrix.Z.Z);
-			result.w = 0;
 		}
 
 		public Vector3 Transform(Matrix3 matrix)
@@ -599,7 +568,6 @@ namespace Reign.Core
             result.X = (vector.X * matrix.X.X) + (vector.Y * matrix.X.Y) + (vector.Z * matrix.X.Z);
             result.Y = (vector.X * matrix.Y.X) + (vector.Y * matrix.Y.Y) + (vector.Z * matrix.Y.Z);
             result.Z = (vector.X * matrix.Z.X) + (vector.Y * matrix.Z.Y) + (vector.Z * matrix.Z.Z);
-			result.w = 0;
         }
 
 		public Vector2 Transform(Matrix2x3 matrix)
@@ -615,8 +583,6 @@ namespace Reign.Core
         {
             result.X = (matrix.X.X * vector.X) + (matrix.X.Y * vector.Y) + (matrix.X.Z * vector.Z);
             result.Y = (matrix.Y.X * vector.X) + (matrix.Y.Y * vector.Y) + (matrix.Y.Z * vector.Z);
-			result.z = 0;
-			result.w = 0;
         }
 
 		public Vector2 Transform(Matrix3x2 matrix)
@@ -632,8 +598,6 @@ namespace Reign.Core
         {
             result.X = (vector.X * matrix.X.X) + (vector.Y * matrix.Y.X) + (vector.Z * matrix.Z.X);
             result.Y = (vector.X * matrix.X.Y) + (vector.Y * matrix.Y.Y) + (vector.Z * matrix.Z.Y);
-			result.z = 0;
-			result.w = 0;
         }
 
 		public Vector3 Transform(AffineTransform3 transform)
@@ -714,7 +678,6 @@ namespace Reign.Core
 			result.X = vector.X * ((1f - yy2) - zz2) + vector.Y * (xy2 - wz2) + vector.Z * (xz2 + wy2);
 			result.Y = vector.X * (xy2 + wz2) + vector.Y * ((1f - xx2) - zz2) + vector.Z * (yz2 - wx2);
 			result.Z = vector.X * (xz2 - wy2) + vector.Y * (yz2 + wx2) + vector.Z * ((1f - xx2) - yy2);
-			result.w = 0;
 		}
 
 		public bool AproxEqualsBox(Vector3 vector, float tolerance)
@@ -908,7 +871,6 @@ namespace Reign.Core
             result.X = start.X * startAmount + end.X * interpolationAmount;
             result.Y = start.Y * startAmount + end.Y * interpolationAmount;
             result.Z = start.Z * startAmount + end.Z * interpolationAmount;
-			result.w = 0;
         }
 
 		public static Vector3 Hermite(Vector3 value1, Vector3 tangent1, Vector3 value2, Vector3 tangent2, float interpolationAmount)
@@ -940,7 +902,6 @@ namespace Reign.Core
             result.X = value1.X * value1Blend + value2.X * value2Blend + tangent1.X * tangent1Blend + tangent2.X * tangent2Blend;
             result.Y = value1.Y * value1Blend + value2.Y * value2Blend + tangent1.Y * tangent1Blend + tangent2.Y * tangent2Blend;
             result.Z = value1.Z * value1Blend + value2.Z * value2Blend + tangent1.Z * tangent1Blend + tangent2.Z * tangent2Blend;
-			result.w = 0;
         }
 		#endregion
 	}

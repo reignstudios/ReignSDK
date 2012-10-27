@@ -250,46 +250,31 @@ namespace Reign.Core
             result.X.X = (matrix1.X.X * matrix2.X.X) + (matrix1.X.Y * matrix2.Y.X) + (matrix1.X.Z * matrix2.Z.X);
             result.X.Y = (matrix1.X.X * matrix2.X.Y) + (matrix1.X.Y * matrix2.Y.Y) + (matrix1.X.Z * matrix2.Z.Y);
             result.X.Z = (matrix1.X.X * matrix2.X.Z) + (matrix1.X.Y * matrix2.Y.Z) + (matrix1.X.Z * matrix2.Z.Z);
-			result.X.w = 0;
 
             result.Y.X = (matrix1.Y.X * matrix2.X.X) + (matrix1.Y.Y * matrix2.Y.X) + (matrix1.Y.Z * matrix2.Z.X);
             result.Y.Y = (matrix1.Y.X * matrix2.X.Y) + (matrix1.Y.Y * matrix2.Y.Y) + (matrix1.Y.Z * matrix2.Z.Y);
             result.Y.Z = (matrix1.Y.X * matrix2.X.Z) + (matrix1.Y.Y * matrix2.Y.Z) + (matrix1.Y.Z * matrix2.Z.Z);
-			result.Y.w = 0;
         }
 
 		public static void Multiply(ref Matrix2x3 matrix1, ref Matrix3x2 matrix2, out Matrix2 result)
         {
             result.X.X = (matrix1.X.X * matrix2.X.X) + (matrix1.X.Y * matrix2.Y.X) + (matrix1.X.Z * matrix2.Z.X);
             result.X.Y = (matrix1.X.X * matrix2.X.Y) + (matrix1.X.Y * matrix2.Y.Y) + (matrix1.X.Z * matrix2.Z.Y);
-			result.X.z = 0;
-			result.X.w = 0;
 
             result.Y.X = (matrix1.Y.X * matrix2.X.X) + (matrix1.Y.Y * matrix2.Y.X) + (matrix1.Y.Z * matrix2.Z.X);
             result.Y.Y = (matrix1.Y.X * matrix2.X.Y) + (matrix1.Y.Y * matrix2.Y.Y) + (matrix1.Y.Z * matrix2.Z.Y);
-			result.Y.z = 0;
-			result.Y.w = 0;
-
-			result.z = Vector2.Zero;
-			result.w = Vector2.Zero;
         }
 
 		public static void Transpose(Matrix2x3 matrix, out Matrix3x2 result)
         {
             result.X.X = matrix.X.X;
             result.X.Y = matrix.Y.X;
-			result.X.z = 0;
-			result.X.w = 0;
 
             result.Y.X = matrix.X.Y;
             result.Y.Y = matrix.Y.Y;
-			result.Y.z = 0;
-			result.Y.w = 0;
 
             result.Z.X = matrix.X.Z;
             result.Z.Y = matrix.Y.Z;
-			result.Z.z = 0;
-			result.Z.w = 0;
         }
 		#endregion
 	}

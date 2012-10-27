@@ -34,7 +34,6 @@ namespace Reign.Core
 			result.X = matrix.X.W;
 			result.Y = matrix.Y.W;
 			result.Z = matrix.Z.W;
-			result.w = 0;
 		}
 		#endregion
 

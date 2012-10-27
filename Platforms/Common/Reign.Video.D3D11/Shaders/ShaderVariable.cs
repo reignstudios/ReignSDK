@@ -28,14 +28,19 @@ namespace Reign.Video.D3D11
 
 		public unsafe void Set(float x, float y)
 		{
-			var vector = new Vector2(x, y);
-			com.Set((int)&vector, sizeof(float)*2);
+			Vector2 vector;
+			vector.X = x;
+			vector.Y = y;
+			com.Set((int)&vector, sizeof(Vector2));
 		}
 
 		public unsafe void Set(float x, float y, float z)
 		{
-			var vector = new Vector3(x, y, z);
-			com.Set((int)&vector, sizeof(float)*3);
+			Vector3 vector;
+			vector.X = x;
+			vector.Y = y;
+			vector.Z = z;
+			com.Set((int)&vector, sizeof(Vector3));
 		}
 
 		public unsafe void Set(float x, float y, float z, float w)
@@ -46,12 +51,12 @@ namespace Reign.Video.D3D11
 
 		public unsafe void Set(Vector2 value)
 		{
-			com.Set((int)&value, sizeof(float)*2);
+			com.Set((int)&value, sizeof(Vector2));
 		}
 
 		public unsafe void Set(Vector3 value)
 		{
-			com.Set((int)&value, sizeof(float)*3);
+			com.Set((int)&value, sizeof(Vector3));
 		}
 
 		public unsafe void Set(Vector4 value)
@@ -61,12 +66,12 @@ namespace Reign.Video.D3D11
 
 		public unsafe void Set(Matrix2 value)
 		{
-			com.Set((int)&value, sizeof(Matrix2));
+			throw new NotImplementedException();
 		}
 
 		public unsafe void Set(Matrix3 value)
 		{
-			com.Set((int)&value, sizeof(Matrix3));
+			throw new NotImplementedException();
 		}
 
 		public unsafe void Set(Matrix4 value)

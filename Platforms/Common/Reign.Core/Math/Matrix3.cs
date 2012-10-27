@@ -8,7 +8,6 @@ namespace Reign.Core
 	{
 		#region Properties
 		public Vector3 X, Y, Z;
-		public Vector3 w;
 
 		public Vector3 Right {get{return X;}}
 		public Vector3 Left {get{return -X;}}
@@ -24,7 +23,6 @@ namespace Reign.Core
 			X = new Vector3(value);
 			Y = new Vector3(value);
 			Z = new Vector3(value);
-			w = new Vector3();
 		}
 
 		public Matrix3(Vector3 x, Vector3 y, Vector3 z)
@@ -32,7 +30,6 @@ namespace Reign.Core
 			X = x;
 			Y = y;
 			Z = z;
-			w = new Vector3();
 		}
 
 		public static Matrix3 FromScale(float scale)
@@ -50,7 +47,6 @@ namespace Reign.Core
 			result.X = new Vector3(scale, 0, 0);
 			result.Y = new Vector3(0, scale, 0);
 			result.Z = new Vector3(0, 0, scale);
-			result.w = new Vector3();
 		}
 
 		public static Matrix3 FromScale(Vector3 scale)
@@ -68,7 +64,6 @@ namespace Reign.Core
 			result.X = new Vector3(scale.X, 0, 0);
 			result.Y = new Vector3(0, scale.Y, 0);
 			result.Z = new Vector3(0, 0, scale.Z);
-			result.w = new Vector3();
 		}
 
 		public static Matrix3 FromOuterProduct(ref Vector3 vector1, ref Vector3 vector2)
@@ -86,19 +81,14 @@ namespace Reign.Core
             result.X.X = vector1.X * vector2.X;
             result.X.Y = vector1.X * vector2.Y;
             result.X.Z = vector1.X * vector2.Z;
-			result.X.w = 0;
 
             result.Y.X = vector1.Y * vector2.X;
             result.Y.Y = vector1.Y * vector2.Y;
             result.Y.Z = vector1.Y * vector2.Z;
-			result.Y.w = 0;
 
             result.Z.X = vector1.Z * vector2.X;
             result.Z.Y = vector1.Z * vector2.Y;
             result.Z.Z = vector1.Z * vector2.Z;
-			result.Z.w = 0;
-
-			result.w = Vector3.Zero;
         }
 
 		public static Matrix3 FromEuler(Vector3 euler)
@@ -132,19 +122,14 @@ namespace Reign.Core
 			result.X.X = cy*cz;
 			result.X.Y = cz*sx*sy - cx*sz;
 			result.X.Z = cx*cz*sy + sx*sz;
-			result.X.w = 0;
 
 			result.Y.X = cy*sz;
 			result.Y.Y = cx*cz + sx*sy*sz;
 			result.Y.Z = -cz*sx + cx*sy*sz;
-			result.Y.w = 0;
 
 			result.Z.X = -sy;
 			result.Z.Y = cy*sx;
 			result.Z.Z = cx*cy;
-			result.Z.w = 0;
-
-			result.w = Vector3.Zero;
 		}
 
 		public static Matrix3 FromEuler(float eulerX, float eulerY, float eulerZ)
@@ -178,19 +163,14 @@ namespace Reign.Core
 			result.X.X = cy*cz;
 			result.X.Y = cz*sx*sy - cx*sz;
 			result.X.Z = cx*cz*sy + sx*sz;
-			result.X.w = 0;
 
 			result.Y.X = cy*sz;
 			result.Y.Y = cx*cz + sx*sy*sz;
 			result.Y.Z = -cz*sx + cx*sy*sz;
-			result.Y.w = 0;
 
 			result.Z.X = -sy;
 			result.Z.Y = cy*sx;
 			result.Z.Z = cx*cy;
-			result.Z.w = 0;
-
-			result.w = Vector3.Zero;
 		}
 
 		public static Matrix3 FromQuaternion(Quaternion quaternion)
@@ -228,19 +208,14 @@ namespace Reign.Core
 			result.X.X = (squared.X-squared.Y-squared.Z+squared.W) * invSqLength;
 			result.X.Y = 2*(temp1-temp2) * invSqLength;
 			result.X.Z = 2*(temp3+temp4) * invSqLength;
-			result.X.w = 0;
 
 			result.Y.X = 2*(temp1+temp2) * invSqLength;
 			result.Y.Y = (-squared.X+squared.Y-squared.Z+squared.W) * invSqLength;
 			result.Y.Z = 2*(temp5-temp6) * invSqLength;
-			result.Y.w = 0;
 
 			result.Z.X = 2*(temp3-temp4) * invSqLength;
 			result.Z.Y = 2*(temp5+temp6) * invSqLength;
 			result.Z.Z = (-squared.X-squared.Y+squared.Z+squared.W) * invSqLength;
-			result.Z.w = 0;
-
-			result.w = Vector3.Zero;
 		}
 
 		public Matrix3 FromRotationAxis(Vector3 axis, float angle)
@@ -275,7 +250,6 @@ namespace Reign.Core
 			result.X = X;
 			result.Y = Y;
 			result.Z = Z;
-			result.w = Vector3.Zero;
 		}
 
 		public static void FromCross(ref Vector3 vector, out Matrix3 result)
@@ -283,19 +257,14 @@ namespace Reign.Core
             result.X.X = 0;
             result.X.Y = -vector.Z;
             result.X.Z = vector.Y;
-			result.X.w = 0;
 
             result.Y.X = vector.Z;
             result.Y.Y = 0;
             result.Y.Z = -vector.X;
-			result.Y.w = 0;
 
             result.Z.X = -vector.Y;
             result.Z.Y = vector.X;
-            result.Z.Z = 0;
-			result.Z.w = 0;
-
-			result.w = Vector3.Zero;
+			result.Z.Z = 0;
         }
 
 		public static readonly Matrix3 Identity = new Matrix3
@@ -313,7 +282,6 @@ namespace Reign.Core
 			result.X = value1.X + value2.X;
 			result.Y = value1.Y + value2.Y;
 			result.Z = value1.Z + value2.Z;
-			result.w = Vector3.Zero;
 		}
 
 		public static void Add(ref Matrix3 value1, float value2, out Matrix3 result)
@@ -321,7 +289,6 @@ namespace Reign.Core
 			result.X = value1.X + value2;
 			result.Y = value1.Y + value2;
 			result.Z = value1.Z + value2;
-			result.w = Vector3.Zero;
 		}
 
 		public static void Add(float value1, ref Matrix3 value2, out Matrix3 result)
@@ -329,7 +296,6 @@ namespace Reign.Core
 			result.X = value1 + value2.X;
 			result.Y = value1 + value2.Y;
 			result.Z = value1 + value2.Z;
-			result.w = Vector3.Zero;
 		}
 
 		public static Matrix3 operator+(Matrix3 p1, Matrix3 p2)
@@ -378,7 +344,6 @@ namespace Reign.Core
 			result.X = value1.X - value2.X;
 			result.Y = value1.Y - value2.Y;
 			result.Z = value1.Z - value2.Z;
-			result.w = Vector3.Zero;
 		}
 
 		public static void Sub(ref Matrix3 value1, float value2, out Matrix3 result)
@@ -386,7 +351,6 @@ namespace Reign.Core
 			result.X = value1.X - value2;
 			result.Y = value1.Y - value2;
 			result.Z = value1.Z - value2;
-			result.w = Vector3.Zero;
 		}
 
 		public static void Sub(float value1, ref Matrix3 value2, out Matrix3 result)
@@ -394,7 +358,6 @@ namespace Reign.Core
 			result.X = value1 - value2.X;
 			result.Y = value1 - value2.Y;
 			result.Z = value1 - value2.Z;
-			result.w = Vector3.Zero;
 		}
 
 		public static void Neg(ref Matrix3 value, out Matrix3 result)
@@ -402,7 +365,6 @@ namespace Reign.Core
 			result.X = -value.X;
 			result.Y = -value.Y;
 			result.Z = -value.Z;
-			result.w = Vector3.Zero;
 		}
 
 		public static Matrix3 operator-(Matrix3 p1, Matrix3 p2)
@@ -459,7 +421,6 @@ namespace Reign.Core
 			result.X = value1.X * value2.X;
 			result.Y = value1.Y * value2.Y;
 			result.Z = value1.Z * value2.Z;
-			result.w = Vector3.Zero;
 		}
 
 		public static void Mul(ref Matrix3 value1, float value2, out Matrix3 result)
@@ -467,7 +428,6 @@ namespace Reign.Core
 			result.X = value1.X * value2;
 			result.Y = value1.Y * value2;
 			result.Z = value1.Z * value2;
-			result.w = Vector3.Zero;
 		}
 
 		public static void Mul(float value1, ref Matrix3 value2, out Matrix3 result)
@@ -475,7 +435,6 @@ namespace Reign.Core
 			result.X = value1 * value2.X;
 			result.Y = value1 * value2.Y;
 			result.Z = value1 * value2.Z;
-			result.w = Vector3.Zero;
 		}
 
 		public static Matrix3 operator*(Matrix3 p1, Matrix3 p2)
@@ -524,7 +483,6 @@ namespace Reign.Core
 			result.X = value1.X / value2.X;
 			result.Y = value1.Y / value2.Y;
 			result.Z = value1.Z / value2.Z;
-			result.w = Vector3.Zero;
 		}
 
 		public static void Div(ref Matrix3 value1, float value2, out Matrix3 result)
@@ -532,7 +490,6 @@ namespace Reign.Core
 			result.X = value1.X / value2;
 			result.Y = value1.Y / value2;
 			result.Z = value1.Z / value2;
-			result.w = Vector3.Zero;
 		}
 
 		public static void Div(float value1, ref Matrix3 value2, out Matrix3 result)
@@ -540,7 +497,6 @@ namespace Reign.Core
 			result.X = value1 / value2.X;
 			result.Y = value1 / value2.Y;
 			result.Z = value1 / value2.Z;
-			result.w = Vector3.Zero;
 		}
 
 		public static Matrix3 operator/(Matrix3 p1, Matrix3 p2)
@@ -632,14 +588,12 @@ namespace Reign.Core
 					result.X = (float)Math.Atan2(matrix.Z.Y, matrix.Z.Z);
 					result.Y = (float)Math.Asin(-matrix.Z.X);
 					result.Z = (float)Math.Atan2(matrix.Y.X, matrix.X.X);
-					result.w = 0;
 				}
 				else
 				{
 					result.X = 0;
 					result.Y = MathUtilities.PiHalf;
 					result.Z = -(float)Math.Atan2(matrix.Y.Z, matrix.Y.Y);
-					result.w = 0;
 				}
 			}
 			else
@@ -647,7 +601,6 @@ namespace Reign.Core
 				result.X = 0;
 				result.Y = -MathUtilities.PiHalf;
 				result.Z = (float)Math.Atan2(-matrix.Y.Z, matrix.Y.Y);
-				result.w = 0;
 			}
 		}
 		
@@ -661,7 +614,6 @@ namespace Reign.Core
 			Vector3.Abs(ref matrix.X, out result.X);
 			Vector3.Abs(ref matrix.Y, out result.Y);
 			Vector3.Abs(ref matrix.Z, out result.Z);
-			result.w = Vector3.Zero;
 		}
 
 		public Matrix3 Transpose()
@@ -679,19 +631,14 @@ namespace Reign.Core
 			result.X.X = matrix.X.X;
 			result.X.Y = matrix.Y.X;
 			result.X.Z = matrix.Z.X;
-			result.X.w = 0;
 
 			result.Y.X = matrix.X.Y;
 			result.Y.Y = matrix.Y.Y;
 			result.Y.Z = matrix.Z.Y;
-			result.Y.w = 0;
 
 			result.Z.X = matrix.X.Z;
 			result.Z.Y = matrix.Y.Z;
 			result.Z.Z = matrix.Z.Z;
-			result.Z.w = 0;
-
-			result.w = Vector3.Zero;
 		}
 
 		public Matrix3 Multiply(Matrix3 matrix)
@@ -709,19 +656,14 @@ namespace Reign.Core
 			result.X.X = (matrix1.X.X*matrix2.X.X) + (matrix1.X.Y*matrix2.Y.X) + (matrix1.X.Z*matrix2.Z.X);
 			result.X.Y = (matrix1.X.X*matrix2.X.Y) + (matrix1.X.Y*matrix2.Y.Y) + (matrix1.X.Z*matrix2.Z.Y);
 			result.X.Z = (matrix1.X.X*matrix2.X.Z) + (matrix1.X.Y*matrix2.Y.Z) + (matrix1.X.Z*matrix2.Z.Z);
-			result.X.w = 0;
 
 			result.Y.X = (matrix1.Y.X*matrix2.X.X) + (matrix1.Y.Y*matrix2.Y.X) + (matrix1.Y.Z*matrix2.Z.X);
 			result.Y.Y = (matrix1.Y.X*matrix2.X.Y) + (matrix1.Y.Y*matrix2.Y.Y) + (matrix1.Y.Z*matrix2.Z.Y);
 			result.Y.Z = (matrix1.Y.X*matrix2.X.Z) + (matrix1.Y.Y*matrix2.Y.Z) + (matrix1.Y.Z*matrix2.Z.Z);
-			result.Y.w = 0;
 
 			result.Z.X = (matrix1.Z.X*matrix2.X.X) + (matrix1.Z.Y*matrix2.Y.X) + (matrix1.Z.Z*matrix2.Z.X);
 			result.Z.Y = (matrix1.Z.X*matrix2.X.Y) + (matrix1.Z.Y*matrix2.Y.Y) + (matrix1.Z.Z*matrix2.Z.Y);
 			result.Z.Z = (matrix1.Z.X*matrix2.X.Z) + (matrix1.Z.Y*matrix2.Y.Z) + (matrix1.Z.Z*matrix2.Z.Z);
-			result.Z.w = 0;
-
-			result.w = Vector3.Zero;
 		}
 
 		public Matrix3 MultiplyTransposed(Matrix3 matrix)
@@ -754,19 +696,14 @@ namespace Reign.Core
             result.X.X = transpose.X.X * matrix.X.X + transpose.Y.X * matrix.Y.X + transpose.Z.X * matrix.Z.X;
             result.X.Y = transpose.X.X * matrix.X.Y + transpose.Y.X * matrix.Y.Y + transpose.Z.X * matrix.Z.Y;
             result.X.Z = transpose.X.X * matrix.X.Z + transpose.Y.X * matrix.Y.Z + transpose.Z.X * matrix.Z.Z;
-			result.X.w = 0;
 
             result.Y.X = transpose.X.Y * matrix.X.X + transpose.Y.Y * matrix.Y.X + transpose.Z.Y * matrix.Z.X;
             result.Y.Y = transpose.X.Y * matrix.X.Y + transpose.Y.Y * matrix.Y.Y + transpose.Z.Y * matrix.Z.Y;
             result.Y.Z = transpose.X.Y * matrix.X.Z + transpose.Y.Y * matrix.Y.Z + transpose.Z.Y * matrix.Z.Z;
-			result.Y.w = 0;
 
             result.Z.X = transpose.X.Z * matrix.X.X + transpose.Y.Z * matrix.Y.X + transpose.Z.Z * matrix.Z.X;
             result.Z.Y = transpose.X.Z * matrix.X.Y + transpose.Y.Z * matrix.Y.Y + transpose.Z.Z * matrix.Z.Y;
             result.Z.Z = transpose.X.Z * matrix.X.Z + transpose.Y.Z * matrix.Y.Z + transpose.Z.Z * matrix.Z.Z;
-			result.Z.w = 0;
-
-			result.w = Vector3.Zero;
         }
 
 		public float Determinant()
@@ -816,19 +753,14 @@ namespace Reign.Core
             result.X.X = (matrix.Y.Y * matrix.Z.Z - matrix.Y.Z * matrix.Z.Y) * determinant;
             result.X.Y = (matrix.X.Z * matrix.Z.Y - matrix.Z.Z * matrix.X.Y) * determinant;
             result.X.Z = (matrix.X.Y * matrix.Y.Z - matrix.Y.Y * matrix.X.Z) * determinant;
-			result.X.w = 0;
 
             result.Y.X = (matrix.Y.Z * matrix.Z.X - matrix.Y.X * matrix.Z.Z) * determinant;
             result.Y.Y = (matrix.X.X * matrix.Z.Z - matrix.X.Z * matrix.Z.X) * determinant;
             result.Y.Z = (matrix.X.Z * matrix.Y.X - matrix.X.X * matrix.Y.Z) * determinant;
-			result.Y.w = 0;
 
             result.Z.X = (matrix.Y.X * matrix.Z.Y - matrix.Y.Y * matrix.Z.X) * determinant;
             result.Z.Y = (matrix.X.Y * matrix.Z.X - matrix.X.X * matrix.Z.Y) * determinant;
             result.Z.Z = (matrix.X.X * matrix.Y.Y - matrix.X.Y * matrix.Y.X) * determinant;
-			result.Z.w = 0;
-
-			result.w = Vector3.Zero;
         }
 
 		public Matrix3 RotateAroundAxisX(float angle)
@@ -850,14 +782,10 @@ namespace Reign.Core
 			result.Y.X = (matrix.Y.X*tCos) - (matrix.Z.X*tSin);
 			result.Y.Y = (matrix.Y.Y*tCos) - (matrix.Z.Y*tSin);
 			result.Y.Z = (matrix.Y.Z*tCos) - (matrix.Z.Z*tSin);
-			result.Y.w = 0;
 
 			result.Z.X = (matrix.Y.X*tSin) + (matrix.Z.X*tCos);
 			result.Z.Y = (matrix.Y.Y*tSin) + (matrix.Z.Y*tCos);
 			result.Z.Z = (matrix.Y.Z*tSin) + (matrix.Z.Z*tCos);
-			result.Z.w = 0;
-
-			result.w = Vector3.Zero;
 		}
 
 		public Matrix3 RotateAroundAxisY(float angle)
@@ -877,16 +805,12 @@ namespace Reign.Core
 			result.X.X = (matrix.Z.X*tSin) + (matrix.X.X*tCos);
 			result.X.Y = (matrix.Z.Y*tSin) + (matrix.X.Y*tCos);
 			result.X.Z = (matrix.Z.Z*tSin) + (matrix.X.Z*tCos);
-			result.X.w = 0;
 
 			result.Y = matrix.Y;
 
 			result.Z.X = (matrix.Z.X*tCos) - (matrix.X.X*tSin);
 			result.Z.Y = (matrix.Z.Y*tCos) - (matrix.X.Y*tSin);
 			result.Z.Z = (matrix.Z.Z*tCos) - (matrix.X.Z*tSin);
-			result.Z.w = 0;
-
-			result.w = Vector3.Zero;
 		}
 
 		public Matrix3 RotateAroundAxisZ(float angle)
@@ -906,15 +830,12 @@ namespace Reign.Core
 			result.X.X = (matrix.X.X*tCos) - (matrix.Y.X*tSin);
 			result.X.Y = (matrix.X.Y*tCos) - (matrix.Y.Y*tSin);
 			result.X.Z = (matrix.X.Z*tCos) - (matrix.Y.Z*tSin);
-			result.X.w = 0;
 
 			result.Y.X = (matrix.X.X*tSin) + (matrix.Y.X*tCos);
 			result.Y.Y = (matrix.X.Y*tSin) + (matrix.Y.Y*tCos);
 			result.Y.Z = (matrix.X.Z*tSin) + (matrix.Y.Z*tCos);
-			result.Y.w = 0;
 
 			result.Z = matrix.Z;
-			result.w = Vector3.Zero;
 		}
 
 		public Matrix3 RotateAroundWorldAxisX(float angle)
@@ -936,19 +857,14 @@ namespace Reign.Core
 			result.X.X = matrix.X.X;
 			result.X.Y = (matrix.X.Y*tCos) - (matrix.X.Z*tSin);
 			result.X.Z = (matrix.X.Y*tSin) + (matrix.X.Z*tCos);
-			result.X.w = 0;
 
 			result.Y.X = matrix.Y.X;
 			result.Y.Y = (matrix.Y.Y*tCos) - (matrix.Y.Z*tSin);
 			result.Y.Z = (matrix.Y.Y*tSin) + (matrix.Y.Z*tCos);
-			result.Y.w = 0;
 
 			result.Z.X = matrix.Z.X;
 			result.Z.Y = (matrix.Z.Y*tCos) - (matrix.Z.Z*tSin);
 			result.Z.Z = (matrix.Z.Y*tSin) + (matrix.Z.Z*tCos);
-			result.Z.w = 0;
-
-			result.w = Vector3.Zero;
 		}
 
 		public Matrix3 RotateAroundWorldAxisY(float angle)
@@ -970,19 +886,14 @@ namespace Reign.Core
 			result.X.X = (matrix.X.Z*tSin) + (matrix.X.X*tCos);
 			result.X.Y = matrix.X.Y;
 			result.X.Z = (matrix.X.Z*tCos) - (matrix.X.X*tSin);
-			result.X.w = 0;
 
 			result.Y.X = (matrix.Y.Z*tSin) + (matrix.Y.X*tCos);
 			result.Y.Y = matrix.Y.Y;
 			result.Y.Z = (matrix.Y.Z*tCos) - (matrix.Y.X*tSin);
-			result.Y.w = 0;
 
 			result.Z.X = (matrix.Z.Z*tSin) + (matrix.Z.X*tCos);
 			result.Z.Y = matrix.Z.Y;
 			result.Z.Z = (matrix.Z.Z*tCos) - (matrix.Z.X*tSin);
-			result.Z.w = 0;
-
-			result.w = Vector3.Zero;
 		}
 
 		public Matrix3 RotateAroundWorldAxisZ(float angle)
@@ -1004,19 +915,14 @@ namespace Reign.Core
 			result.X.X = (matrix.X.X*tCos) - (matrix.X.Y*tSin);
 			result.X.Y = (matrix.X.X*tSin) + (matrix.X.Y*tCos);
 			result.X.Z = matrix.X.Z;
-			result.X.w = 0;
 
 			result.Y.X = (matrix.Y.X*tCos) - (matrix.Y.Y*tSin);
 			result.Y.Y = (matrix.Y.X*tSin) + (matrix.Y.Y*tCos);
 			result.Y.Z = matrix.Y.Z;
-			result.Y.w = 0;
 
 			result.Z.X = (matrix.Z.X*tCos) - (matrix.Z.Y*tSin);
 			result.Z.Y = (matrix.Z.X*tSin) + (matrix.Z.Y*tCos);
 			result.Z.Z = matrix.Z.Z;
-			result.Z.w = 0;
-
-			result.w = Vector3.Zero;
 		}
 
 		public Matrix3 RotateAround(ref Vector3 axis, float angle)

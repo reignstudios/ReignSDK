@@ -284,12 +284,10 @@ namespace Reign.Core
             result.X.X = matrix.X.X;
             result.X.Y = matrix.Y.X;
             result.X.Z = matrix.Z.X;
-			result.X.w = 0;
 
             result.Y.X = matrix.X.Y;
             result.Y.Y = matrix.Y.Y;
             result.Y.Z = matrix.Z.Y;
-			result.Y.w = 0;
         }
 		#endregion
 	}
