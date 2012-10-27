@@ -210,12 +210,32 @@ namespace Reign.Video.OpenGL
 			Apply = setFloatArray;
 		}
 
+		public void Set(Vector2[] values)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Vector3[] values)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void Set(Vector4[] values)
 		{
 			valueArrayOffset = 0;
 			valueArrayCount = values.Length;
 			valueArrayObject.Target = values;
 			Apply = setVector4Array;
+		}
+
+		public void Set(Matrix2[] values)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Matrix3[] values)
+		{
+			throw new NotImplementedException();
 		}
 
 		public void Set(Matrix4[] values)
@@ -231,12 +251,32 @@ namespace Reign.Video.OpenGL
 			Apply = setFloatArray;
 		}
 
+		public void Set(Vector2[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Vector3[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void Set(Vector4[] values, int count)
 		{
 			valueArrayOffset = 0;
 			valueArrayCount = count;
 			valueArrayObject.Target = values;
 			Apply = setVector4Array;
+		}
+
+		public void Set(Matrix2[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Matrix3[] values, int count)
+		{
+			throw new NotImplementedException();
 		}
 
 		public void Set(Matrix4[] values, int count)
@@ -255,12 +295,32 @@ namespace Reign.Video.OpenGL
 			Apply = setFloatArray;
 		}
 
+		public void Set(Vector2[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Vector3[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void Set(Vector4[] values, int offset, int count)
 		{
 			valueArrayOffset = offset;
 			valueArrayCount = count;
 			valueArrayObject.Target = values;
 			Apply = setVector4Array;
+		}
+
+		public void Set(Matrix2[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Matrix3[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
 		}
 
 		public void Set(Matrix4[] values, int offset, int count)

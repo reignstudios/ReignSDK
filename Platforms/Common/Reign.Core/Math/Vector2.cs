@@ -642,6 +642,23 @@ namespace Reign.Core
 		    float value = ((float)Math.Atan2((vec.X*vector2.Y)-(vec.Y*vector2.X), (vec.X*vector2.X)+(vec.Y*vector2.Y))) % MathUtilities.Pi2;
 		    result = (value < 0) ? ((MathUtilities.Pi+value)+MathUtilities.Pi) : value;
 		}
+
+		public static Vector2 Lerp(Vector2 start, Vector2 end, float interpolationAmount)
+        {
+            float startAmount = 1 - interpolationAmount;
+			return new Vector2
+			(
+				(start.X * startAmount) + (end.X * interpolationAmount),
+				(start.Y * startAmount) + (end.Y * interpolationAmount)
+			);
+        }
+
+		public static void Lerp(ref Vector2 start, ref Vector2 end, float interpolationAmount, out Vector2 result)
+        {
+            float startAmount = 1 - interpolationAmount;
+            result.X = (start.X * startAmount) + (end.X * interpolationAmount);
+            result.Y = (start.Y * startAmount) + (end.Y * interpolationAmount);
+        }
 		#endregion
 	}
 }

@@ -859,18 +859,18 @@ namespace Reign.Core
             float startAmount = 1 - interpolationAmount;
 			return new Vector3
 			(
-				start.X * startAmount + end.X * interpolationAmount,
-				start.Y * startAmount + end.Y * interpolationAmount,
-				start.Z * startAmount + end.Z * interpolationAmount
+				(start.X * startAmount) + (end.X * interpolationAmount),
+				(start.Y * startAmount) + (end.Y * interpolationAmount),
+				(start.Z * startAmount) + (end.Z * interpolationAmount)
 			);
         }
 
 		public static void Lerp(ref Vector3 start, ref Vector3 end, float interpolationAmount, out Vector3 result)
         {
             float startAmount = 1 - interpolationAmount;
-            result.X = start.X * startAmount + end.X * interpolationAmount;
-            result.Y = start.Y * startAmount + end.Y * interpolationAmount;
-            result.Z = start.Z * startAmount + end.Z * interpolationAmount;
+            result.X = (start.X * startAmount) + (end.X * interpolationAmount);
+            result.Y = (start.Y * startAmount) + (end.Y * interpolationAmount);
+            result.Z = (start.Z * startAmount) + (end.Z * interpolationAmount);
         }
 
 		public static Vector3 Hermite(Vector3 value1, Vector3 tangent1, Vector3 value2, Vector3 tangent2, float interpolationAmount)

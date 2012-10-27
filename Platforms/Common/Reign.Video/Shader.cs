@@ -61,13 +61,25 @@ namespace Reign.Video
 		void Set(Matrix3 value);
 		void Set(Matrix4 value);
 		void Set(float[] values);
+		void Set(Vector2[] values);
+		void Set(Vector3[] values);
 		void Set(Vector4[] values);
+		void Set(Matrix2[] values);
+		void Set(Matrix3[] values);
 		void Set(Matrix4[] values);
 		void Set(float[] values, int count);
+		void Set(Vector2[] values, int count);
+		void Set(Vector3[] values, int count);
 		void Set(Vector4[] values, int count);
+		void Set(Matrix2[] values, int count);
+		void Set(Matrix3[] values, int count);
 		void Set(Matrix4[] values, int count);
 		void Set(float[] values, int offset, int count);
+		void Set(Vector2[] values, int offset, int count);
+		void Set(Vector3[] values, int offset, int count);
 		void Set(Vector4[] values, int offset, int count);
+		void Set(Matrix2[] values, int offset, int count);
+		void Set(Matrix3[] values, int offset, int count);
 		void Set(Matrix4[] values, int offset, int count);
 	}
 

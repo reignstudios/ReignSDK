@@ -15,6 +15,7 @@ namespace Reign.Video
 		Index,
 		Position2,
 		Position2_UV,
+		Position2_IndexClassic,
 		Position3,
 		Position3_UV,
 		Position3_UV2,
@@ -137,6 +138,11 @@ namespace Reign.Video
 				case (BufferLayoutTypes.Position2_UV):
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.Position, 0, 0, 0));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 2));
+					break;
+
+				case (BufferLayoutTypes.Position2_IndexClassic):
+					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.Position, 0, 0, 0));
+					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Float, BufferLayoutElementUsages.IndexClassic, 0, 0, 2));
 					break;
 
 				case (BufferLayoutTypes.Position3):

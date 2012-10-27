@@ -80,6 +80,16 @@ namespace Reign.Video.XNA
 			parameter.SetValue(values);
 		}
 
+		public unsafe void Set(Vector2[] values)
+		{
+			throw new NotImplementedException();
+		}
+
+		public unsafe void Set(Vector3[] values)
+		{
+			throw new NotImplementedException();
+		}
+
 		public unsafe void Set(Vector4[] values)
 		{
 			var data = new X.Vector4[values.Length];
@@ -96,6 +106,16 @@ namespace Reign.Video.XNA
 				}
 			}
 			parameter.SetValue(data);
+		}
+
+		public unsafe void Set(Matrix2[] values)
+		{
+			throw new NotImplementedException();
+		}
+
+		public unsafe void Set(Matrix3[] values)
+		{
+			throw new NotImplementedException();
 		}
 
 		public unsafe void Set(Matrix4[] values)
@@ -123,6 +143,16 @@ namespace Reign.Video.XNA
 			parameter.SetValue(data);
 		}
 
+		public unsafe void Set(Vector2[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public unsafe void Set(Vector3[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
 		public unsafe void Set(Vector4[] values, int count)
 		{
 			var data = new X.Vector4[count];
@@ -139,6 +169,16 @@ namespace Reign.Video.XNA
 				}
 			}
 			parameter.SetValue(data);
+		}
+
+		public unsafe void Set(Matrix2[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public unsafe void Set(Matrix3[] values, int count)
+		{
+			throw new NotImplementedException();
 		}
 
 		public unsafe void Set(Matrix4[] values, int count)
@@ -166,6 +206,16 @@ namespace Reign.Video.XNA
 			parameter.SetValue(data);
 		}
 
+		public unsafe void Set(Vector2[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public unsafe void Set(Vector3[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
 		public unsafe void Set(Vector4[] values, int offset, int count)
 		{
 			var data = new X.Vector4[count];
@@ -182,6 +232,16 @@ namespace Reign.Video.XNA
 				}
 			}
 			parameter.SetValue(data);
+		}
+
+		public unsafe void Set(Matrix2[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public unsafe void Set(Matrix3[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
 		}
 
 		public unsafe void Set(Matrix4[] values, int offset, int count)

@@ -89,13 +89,25 @@ namespace Reign
 		public: virtual void Set(Matrix3 value);
 		public: virtual void Set(Matrix4 value);
 		public: virtual void Set(array<float>^ values);
+		public: virtual void Set(array<Vector2>^ values);
+		public: virtual void Set(array<Vector3>^ values);
 		public: virtual void Set(array<Vector4>^ values);
+		public: virtual void Set(array<Matrix2>^ values);
+		public: virtual void Set(array<Matrix3>^ values);
 		public: virtual void Set(array<Matrix4>^ values);
 		public: virtual void Set(array<float>^ values, int count);
+		public: virtual void Set(array<Vector2>^ values, int count);
+		public: virtual void Set(array<Vector3>^ values, int count);
 		public: virtual void Set(array<Vector4>^ values, int count);
+		public: virtual void Set(array<Matrix2>^ values, int count);
+		public: virtual void Set(array<Matrix3>^ values, int count);
 		public: virtual void Set(array<Matrix4>^ values, int count);
 		public: virtual void Set(array<float>^ values, int offset, int count);
+		public: virtual void Set(array<Vector2>^ values, int offset, int count);
+		public: virtual void Set(array<Vector3>^ values, int offset, int count);
 		public: virtual void Set(array<Vector4>^ values, int offset, int count);
+		public: virtual void Set(array<Matrix2>^ values, int offset, int count);
+		public: virtual void Set(array<Matrix3>^ values, int offset, int count);
 		public: virtual void Set(array<Matrix4>^ values, int offset, int count);
 		#pragma endregion
 	};

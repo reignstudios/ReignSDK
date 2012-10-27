@@ -84,7 +84,27 @@ namespace Reign.Video.D3D11
 			fixed (float* data = values) com.Set((int)data, sizeof(float), values.Length, 16);
 		}
 
+		public unsafe void Set(Vector2[] values)
+		{
+			throw new NotImplementedException();
+		}
+
+		public unsafe void Set(Vector3[] values)
+		{
+			throw new NotImplementedException();
+		}
+
 		public unsafe void Set(Vector4[] values)
+		{
+			fixed (Vector4* data = values) com.Set((int)data, sizeof(Vector4) * values.Length);
+		}
+
+		public unsafe void Set(Matrix2[] values)
+		{
+			throw new NotImplementedException();
+		}
+
+		public unsafe void Set(Matrix3[] values)
 		{
 			throw new NotImplementedException();
 		}
@@ -99,7 +119,27 @@ namespace Reign.Video.D3D11
 			throw new NotImplementedException();
 		}
 
+		public void Set(Vector2[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Vector3[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void Set(Vector4[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public unsafe void Set(Matrix2[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public unsafe void Set(Matrix3[] values, int count)
 		{
 			throw new NotImplementedException();
 		}
@@ -114,7 +154,27 @@ namespace Reign.Video.D3D11
 			throw new NotImplementedException();
 		}
 
+		public void Set(Vector2[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Vector3[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
 		public void Set(Vector4[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Matrix2[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Matrix3[] values, int offset, int count)
 		{
 			throw new NotImplementedException();
 		}

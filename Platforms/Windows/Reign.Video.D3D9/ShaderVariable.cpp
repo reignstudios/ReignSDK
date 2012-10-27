@@ -188,12 +188,32 @@ namespace Reign
 		Apply = gcnew ApplyFunc(this, &ShaderVariable::setFloatArray);
 	}
 
+	void ShaderVariable::Set(array<Vector2>^ values)
+	{
+		throw gcnew NotImplementedException();
+	}
+
+	void ShaderVariable::Set(array<Vector3>^ values)
+	{
+		throw gcnew NotImplementedException();
+	}
+
 	void ShaderVariable::Set(array<Vector4>^ values)
 	{
 		valueArrayOffset = 0;
 		valueArrayCount = values->Length;
 		valueArrayObject->Target = values;
 		Apply = gcnew ApplyFunc(this, &ShaderVariable::setVector4Array);
+	}
+
+	void ShaderVariable::Set(array<Matrix2>^ values)
+	{
+		throw gcnew NotImplementedException();
+	}
+
+	void ShaderVariable::Set(array<Matrix3>^ values)
+	{
+		throw gcnew NotImplementedException();
 	}
 
 	void ShaderVariable::Set(array<Matrix4>^ values)
@@ -209,12 +229,32 @@ namespace Reign
 		Apply = gcnew ApplyFunc(this, &ShaderVariable::setFloatArray);
 	}
 
+	void ShaderVariable::Set(array<Vector2>^ values, int count)
+	{
+		throw gcnew NotImplementedException();
+	}
+
+	void ShaderVariable::Set(array<Vector3>^ values, int count)
+	{
+		throw gcnew NotImplementedException();
+	}
+
 	void ShaderVariable::Set(array<Vector4>^ values, int count)
 	{
 		valueArrayOffset = 0;
 		valueArrayCount = count;
 		valueArrayObject->Target = values;
 		Apply = gcnew ApplyFunc(this, &ShaderVariable::setVector4Array);
+	}
+
+	void ShaderVariable::Set(array<Matrix2>^ values, int count)
+	{
+		throw gcnew NotImplementedException();
+	}
+
+	void ShaderVariable::Set(array<Matrix3>^ values, int count)
+	{
+		throw gcnew NotImplementedException();
 	}
 
 	void ShaderVariable::Set(array<Matrix4>^ values, int count)
@@ -233,12 +273,32 @@ namespace Reign
 		Apply = gcnew ApplyFunc(this, &ShaderVariable::setFloatArray);
 	}
 
+	void ShaderVariable::Set(array<Vector2>^ values, int offset, int count)
+	{
+		throw gcnew NotImplementedException();
+	}
+
+	void ShaderVariable::Set(array<Vector3>^ values, int offset, int count)
+	{
+		throw gcnew NotImplementedException();
+	}
+
 	void ShaderVariable::Set(array<Vector4>^ values, int offset, int count)
 	{
 		valueArrayOffset = offset;
 		valueArrayCount = count;
 		valueArrayObject->Target = values;
 		Apply = gcnew ApplyFunc(this, &ShaderVariable::setVector4Array);
+	}
+
+	void ShaderVariable::Set(array<Matrix2>^ values, int offset, int count)
+	{
+		throw gcnew NotImplementedException();
+	}
+
+	void ShaderVariable::Set(array<Matrix3>^ values, int offset, int count)
+	{
+		throw gcnew NotImplementedException();
 	}
 
 	void ShaderVariable::Set(array<Matrix4>^ values, int offset, int count)
