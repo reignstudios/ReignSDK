@@ -195,24 +195,47 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Methods
+		public void Copy(Texture2DI texture)
+		{
+			com.Copy(((Texture2D)texture).com);
+		}
+
 		public void Update(byte[] data)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void UpdateDynamic(byte[] data)
+		public void WritePixels(byte[] data)
 		{
 			throw new NotImplementedException();
 		}
 
-		public void Copy(Texture2DI texture)
+		public unsafe void ReadPixels(byte[] data)
 		{
-			throw new NotImplementedException();
+			fixed (byte* ptr = data)
+			{
+				com.ReadPixels((int)ptr, data.Length);
+			}
 		}
 
-		public byte[] Copy()
+		public unsafe void ReadPixels(Color4[] colors)
 		{
-			throw new NotImplementedException();
+			fixed (Color4* ptr = colors)
+			{
+				com.ReadPixels((int)ptr, colors.Length * 4);
+			}
+		}
+
+		public bool ReadPixel(Point position, out Color4 color)
+		{
+			if (position.X < 0 || position.X >= Size.Width || position.Y < 0 || position.Y >= Size.Height)
+			{
+				color = new Color4();
+				return false;
+			}
+
+			color = new Color4(com.ReadPixel(position.X, position.Y, Size.Width, Size.Height));
+			return true;
 		}
 		#endregion
 	}

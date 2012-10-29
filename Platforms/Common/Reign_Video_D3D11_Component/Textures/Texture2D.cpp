@@ -24,7 +24,7 @@ namespace Reign_Video_D3D11_Component
 		desc.ArraySize = 1;
 		desc.Format = surfaceFormatD3D;
 		desc.SampleDesc.Count = 1;
-		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+		if (usageType != D3D11_USAGE_STAGING) desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 		if (isRenderTarget) desc.BindFlags |= D3D11_BIND_RENDER_TARGET;
 		desc.Usage = usageType;
 		desc.CPUAccessFlags = cpuAccessFlags;
@@ -51,22 +51,25 @@ namespace Reign_Video_D3D11_Component
 		texture = textureTEMP;
 		
 		// ShaderResource
-		D3D11_TEXTURE2D_DESC textureDesc;
-		ZeroMemory(&textureDesc, sizeof(D3D11_TEXTURE2D_DESC));
-		texture->GetDesc(&textureDesc);
-		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
-		ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-		srvDesc.Format = surfaceFormatD3D;
-		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Texture2D.MipLevels = textureDesc.MipLevels;
-		srvDesc.Texture2D.MostDetailedMip = 0;
-
-		ID3D11ShaderResourceView* shaderResourceTEMP;
-		if (FAILED(video->device->CreateShaderResourceView(texture, &srvDesc, &shaderResourceTEMP)))
+		if (usageType != D3D11_USAGE_STAGING)
 		{
-			return TextureError::ShaderResourceView;
+			D3D11_TEXTURE2D_DESC textureDesc;
+			ZeroMemory(&textureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+			texture->GetDesc(&textureDesc);
+			D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+			ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+			srvDesc.Format = surfaceFormatD3D;
+			srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+			srvDesc.Texture2D.MipLevels = textureDesc.MipLevels;
+			srvDesc.Texture2D.MostDetailedMip = 0;
+
+			ID3D11ShaderResourceView* shaderResourceTEMP;
+			if (FAILED(video->device->CreateShaderResourceView(texture, &srvDesc, &shaderResourceTEMP)))
+			{
+				return TextureError::ShaderResourceView;
+			}
+			shaderResource = shaderResourceTEMP;
 		}
-		shaderResource = shaderResourceTEMP;
 
 		return TextureError::None;
 	}
@@ -91,37 +94,47 @@ namespace Reign_Video_D3D11_Component
 	#pragma endregion
 
 	#pragma region Methods
-	/*void Texture2DCom::Update(array<byte>^ data)
+	void Texture2DCom::Copy(Texture2DCom^ texture)
 	{
-		pin_ptr<byte> dataT = &data[0];
-		video->Device->UpdateSubresource(texture, D3D11CalcSubresource(0, 0, 1), 0, dataT, sizeof(byte)*4*size.X, 0);
+		video->deviceContext->CopySubresourceRegion(texture->texture, D3D11CalcSubresource(0, 0, 1), 0, 0, 0, this->texture, D3D11CalcSubresource(0, 0, 1), 0);
 	}
 
-	void Texture2DCom::UpdateDynamic(array<byte>^ data)
+	void Texture2DCom::Update(array<byte>^ data, int width)
 	{
-		D3D11_MAPPED_TEXTURE2D buff;
-		texture->Map(D3D11CalcSubresource(0, 0, 1), D3D11_MAP_WRITE_DISCARD, 0, &buff);
 		pin_ptr<byte> dataT = &data[0];
-		memcpy(buff.pData, dataT, data->Length);
-		texture->Unmap(D3D11CalcSubresource(0, 0, 1));
+		video->deviceContext->UpdateSubresource(texture, D3D11CalcSubresource(0, 0, 1), 0, dataT, sizeof(byte)*4*width, 0);
 	}
 
-	void Texture2DCom::Copy(Texture2DI^ texture)
+	void Texture2DCom::WritePixels(array<byte>^ data)
 	{
-		ID3D11Texture2D* srcTexture = ((Texture2D^)texture)->texture;
-		video->Device->CopySubresourceRegion(this->texture, D3D11CalcSubresource(0, 0, 1), 0, 0, 0, srcTexture, D3D11CalcSubresource(0, 0, 1), 0);
+		D3D11_MAPPED_SUBRESOURCE source;
+		video->deviceContext->Map(texture, 0, D3D11_MAP_WRITE_DISCARD, NULL, &source);
+		pin_ptr<byte> dataT = &data[0];
+		memcpy(source.pData, dataT, data->Length);
+		video->deviceContext->Unmap(texture, 0);
 	}
 
-	array<System::Byte>^ Texture2DCom::Copy()
+	void Texture2DCom::ReadPixels(int dataPtr, int dataLength)
 	{
-		D3D11_MAPPED_TEXTURE2D buff;
-		texture->Map(D3D11CalcSubresource(0, 0, 1), D3D11_MAP_READ_WRITE, 0, &buff);
-		array<System::Byte>^ data = gcnew array<System::Byte>(size.X * size.Y * 4);
-		pin_ptr<byte> dataT = &data[0];
-		memcpy(dataT, buff.pData, data->Length);
-		texture->Unmap(D3D11CalcSubresource(0, 0, 1));
+		D3D11_MAPPED_SUBRESOURCE source;
+		video->deviceContext->Map(texture, 0, D3D11_MAP_READ, NULL, &source);
+		memcpy((void*)dataPtr, source.pData, dataLength);
+		video->deviceContext->Unmap(texture, 0);
+	}
 
-		return data;
-	}*/
+	int Texture2DCom::ReadPixel(int x, int y, int width, int height)
+	{
+		D3D11_MAPPED_SUBRESOURCE source;
+		video->deviceContext->Map(texture, 0, D3D11_MAP_READ, NULL, &source);
+		byte* colors = (byte*)source.pData;
+		int index = (x * 4) + ((((height-1) * width) - (y * width)) * 4);
+		int color = colors[index];
+		color |= colors[index+1] << 8;
+		color |= colors[index+2] << 16;
+		color |= colors[index+3] << 24;
+		video->deviceContext->Unmap(texture, 0);
+
+		return color;
+	}
 	#pragma endregion
 }

@@ -7,6 +7,25 @@ namespace Reign.Core
 	{
 		#region Properties
 		public byte R, G, B, A;
+
+		public int Value
+		{
+			get
+			{
+				int color = R;
+				color |= G << 8;
+				color |= B << 16;
+				color |= A << 24;
+				return color;
+			}
+			set
+			{
+				R = (byte)(value & 0x000000FF);
+				G = (byte)((value & 0x0000FF00) >> 8);
+				B = (byte)((value & 0x00FF0000) >> 16);
+				A = (byte)((value & 0xFF000000) >> 24);
+			}
+		}
 		#endregion
 
 		#region Operators
@@ -32,6 +51,14 @@ namespace Reign.Core
 			G = g;
 			B = b;
 			A = a;
+		}
+
+		public Color4(int color)
+		{
+			R = (byte)(color & 0x000000FF);
+			G = (byte)((color & 0x0000FF00) >> 8);
+			B = (byte)((color & 0x00FF0000) >> 16);
+			A = (byte)((color & 0xFF000000) >> 24);
 		}
 		#endregion
 

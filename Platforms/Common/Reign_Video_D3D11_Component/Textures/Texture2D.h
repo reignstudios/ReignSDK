@@ -25,10 +25,11 @@ namespace Reign_Video_D3D11_Component
 		#pragma endregion
 
 		#pragma region Methods
-		/*public: virtual void Update(array<byte>^ data);
-		public: virtual void UpdateDynamic(array<byte>^ data);
-		public: virtual void Copy(Texture2DI^ texture);
-		public: virtual array<System::Byte>^ Copy();*/
+		public: void Copy(Texture2DCom^ texture);
+		public: void Update(array<byte>^ data, int width);
+		public: void WritePixels(array<byte>^ data);
+		public: void ReadPixels(int dataPtr, int dataLength);
+		public: int ReadPixel(int x, int y, int width, int height);
 		#pragma endregion
 	};
 }

@@ -56,10 +56,12 @@ namespace Reign
 		#pragma endregion
 
 		#pragma region Methods
-		public: virtual void Update(array<byte>^ data);
-		public: virtual void UpdateDynamic(array<byte>^ data);
 		public: virtual void Copy(Texture2DI^ texture);
-		public: virtual array<System::Byte>^ Copy();
+		public: virtual void Update(array<byte>^ data);
+		public: virtual void WritePixels(array<byte>^ data);
+		public: virtual void ReadPixels(array<System::Byte>^ data);
+		public: virtual void ReadPixels(array<Color4>^ colors);
+		public: virtual bool ReadPixel(Point position, [Out] Color4% color);
 		#pragma endregion
 	};
 }

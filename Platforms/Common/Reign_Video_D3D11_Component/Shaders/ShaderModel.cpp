@@ -58,8 +58,8 @@ namespace Reign_Video_D3D11_Component
 		if (constDesc.Variables != 0)
 		{
 			variableBufferBytesCount = constDesc.Size;
-			variableBufferBytes = new char[constDesc.Size];
-			ZeroMemory(variableBufferBytes, sizeof(char) * constDesc.Size);
+			variableBufferBytes = new byte[constDesc.Size];
+			ZeroMemory(variableBufferBytes, sizeof(byte) * constDesc.Size);
 
 			ID3D11Buffer* variableBufferTEMP = 0;
 			D3D11_BUFFER_DESC cbDesc;
@@ -105,8 +105,8 @@ namespace Reign_Video_D3D11_Component
 		if (variableBufferSize != 0)
 		{
 			variableBufferBytesCount = variableBufferSize;
-			variableBufferBytes = new char[variableBufferSize];
-			ZeroMemory(variableBufferBytes, sizeof(char) * variableBufferSize);
+			variableBufferBytes = new byte[variableBufferSize];
+			ZeroMemory(variableBufferBytes, sizeof(byte) * variableBufferSize);
 
 			ID3D11Buffer* variableBufferTEMP = 0;
 			D3D11_BUFFER_DESC cbDesc;

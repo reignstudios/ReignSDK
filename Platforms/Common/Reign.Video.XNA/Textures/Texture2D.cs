@@ -141,22 +141,32 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Methods
-		public void Update(byte[] data)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void UpdateDynamic(byte[] data)
-		{
-			throw new NotImplementedException();
-		}
-
 		public void Copy(Texture2DI texture)
 		{
 			throw new NotImplementedException();
 		}
 
-		public byte[] Copy()
+		public void Update(byte[] data)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void WritePixels(byte[] data)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ReadPixels(byte[] data)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ReadPixels(Color4[] colors)
+		{
+			throw new NotImplementedException();
+		}
+
+		public bool ReadPixel(Point position, out Color4 color)
 		{
 			throw new NotImplementedException();
 		}

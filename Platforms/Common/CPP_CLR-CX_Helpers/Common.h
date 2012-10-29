@@ -3,8 +3,6 @@
 #define ushort unsigned short
 #define uint unsigned int
 #define ulong unsigned long
-#define byte unsigned char
-#define sbyte char
 #define string String
 #define object Object
 

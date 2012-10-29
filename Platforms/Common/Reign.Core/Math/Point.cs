@@ -113,6 +113,18 @@
 		// ==
 		public static bool operator==(Point p1, Point p2) {return (p1.X==p2.X && p1.Y==p2.Y);}
 		public static bool operator!=(Point p1, Point p2) {return (p1.X!=p2.X || p1.Y!=p2.Y);}
+
+		// convert
+		public Vector2 ToVector2()
+		{
+			return new Vector2(X, Y);
+		}
+
+		public static void ToVector2(ref Point point, out Vector2 result)
+		{
+			result.X = point.X;
+			result.Y = point.Y;
+		}
 		#endregion
 	}
 }

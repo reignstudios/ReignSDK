@@ -8,7 +8,7 @@ namespace Reign_Video_D3D11_Component
 	public ref class ShaderVariableCom sealed
 	{
 		#pragma region Properties
-		private: char* vertexBytes, *pixelBytes;
+		private: byte* vertexBytes, *pixelBytes;
 		private: int vertexOffset, pixelOffset;
 		#pragma endregion
 

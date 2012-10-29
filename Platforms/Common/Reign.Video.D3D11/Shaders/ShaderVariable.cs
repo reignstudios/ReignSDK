@@ -86,7 +86,7 @@ namespace Reign.Video.D3D11
 
 		public unsafe void Set(Vector2[] values)
 		{
-			throw new NotImplementedException();
+			fixed (Vector2* data = values) com.Set((int)data, sizeof(Vector2), values.Length, 16);
 		}
 
 		public unsafe void Set(Vector3[] values)
@@ -129,9 +129,9 @@ namespace Reign.Video.D3D11
 			throw new NotImplementedException();
 		}
 
-		public void Set(Vector4[] values, int count)
+		public unsafe void Set(Vector4[] values, int count)
 		{
-			throw new NotImplementedException();
+			fixed (Vector4* data = values) com.Set((int)data, sizeof(Vector4) * count);
 		}
 
 		public unsafe void Set(Matrix2[] values, int count)

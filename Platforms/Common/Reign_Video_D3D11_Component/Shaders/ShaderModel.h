@@ -29,7 +29,7 @@ namespace Reign_Video_D3D11_Component
 		#endif
 
 		internal: ID3D11Buffer* variableBuffer;
-		internal: char* variableBufferBytes;
+		internal: byte* variableBufferBytes;
 		private: uint variableBufferBytesCount;
 		
 		internal: ID3D11ShaderResourceView** resources;

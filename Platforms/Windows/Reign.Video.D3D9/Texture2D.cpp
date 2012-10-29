@@ -168,7 +168,7 @@ namespace Reign
 				size = image->Size;
 
 				IDirect3DTexture9* systemTexture = 0;
-				if (FAILED(video->Device->CreateTexture(image->Size.Width, image->Size.Height, image->Mipmaps->Length, usage, Video::surfaceFormat(image->SurfaceFormat), D3DPOOL_SYSTEMMEM, &systemTexture, 0)))
+				if (FAILED(video->Device->CreateTexture(image->Size.Width, image->Size.Height, image->Mipmaps->Length, 0, Video::surfaceFormat(image->SurfaceFormat), D3DPOOL_SYSTEMMEM, &systemTexture, 0)))
 				{
 					Debug::ThrowError(L"Texture2D", L"Failed to create system texture");
 				}
@@ -262,24 +262,84 @@ namespace Reign
 	#pragma endregion
 
 	#pragma region Methods
-	void Texture2D::Update(array<byte>^ data)
-	{
-		throw gcnew NotImplementedException();
-	}
-
-	void Texture2D::UpdateDynamic(array<byte>^ data)
-	{
-		throw gcnew NotImplementedException();
-	}
-
 	void Texture2D::Copy(Texture2DI^ texture)
 	{
-		throw gcnew NotImplementedException();
+		Texture2D^ textureTEMP = (Texture2D^)texture;
+		if (isRenderTarget_LostDevice)
+		{
+			video->Device->GetRenderTargetData(surface, textureTEMP->surface);
+		}
+		else
+		{
+			video->Device->StretchRect(surface, NULL, textureTEMP->surface, NULL, D3DTEXF_NONE);
+		}
 	}
 
-	array<System::Byte>^ Texture2D::Copy()
+	void Texture2D::Update(array<byte>^ data)
 	{
-		throw gcnew NotImplementedException();
+		IDirect3DTexture9* systemTexture = 0;
+		if (FAILED(video->Device->CreateTexture(Size.Width, Size.Height, 1, 0, Video::surfaceFormat(surfaceFormat_LostDevice), D3DPOOL_SYSTEMMEM, &systemTexture, 0)))
+		{
+			Debug::ThrowError(L"Texture2D", L"Failed to create system texture");
+		}
+
+		D3DLOCKED_RECT rect;
+		systemTexture->LockRect(0, &rect, NULL, D3DLOCK_DISCARD);
+		pin_ptr<byte> srcData = &data[0];
+		memcpy(rect.pBits, srcData, data->Length);
+		systemTexture->UnlockRect(0);
+
+		video->Device->UpdateTexture(systemTexture, texture);
+		systemTexture->Release();
+	}
+
+	void Texture2D::WritePixels(array<byte>^ data)
+	{
+		D3DLOCKED_RECT rect;
+		texture->LockRect(0, &rect, NULL, D3DLOCK_DISCARD);
+		pin_ptr<byte> srcData = &data[0];
+		memcpy(rect.pBits, srcData, data->Length);
+		texture->UnlockRect(0);
+	}
+
+	void Texture2D::ReadPixels(array<System::Byte>^ data)
+	{
+		D3DLOCKED_RECT rect;
+		texture->LockRect(0, &rect, NULL, D3DLOCK_READONLY);
+		pin_ptr<byte> dstData = &data[0];
+		memcpy(dstData, rect.pBits, data->Length);
+		texture->UnlockRect(0);
+	}
+
+	void Texture2D::ReadPixels(array<Color4>^ colors)
+	{
+		D3DLOCKED_RECT rect;
+		texture->LockRect(0, &rect, NULL, D3DLOCK_READONLY);
+		pin_ptr<Color4> dstData = &colors[0];
+		memcpy(dstData, rect.pBits, colors->Length * 4);
+		texture->UnlockRect(0);
+	}
+
+	bool Texture2D::ReadPixel(Point position, [Out] Color4% color)
+	{
+		if (position.X < 0 || position.X >= Size.Width || position.Y < 0 || position.Y >= Size.Height)
+		{
+			color = Color4();
+			return false;
+		}
+
+		D3DLOCKED_RECT rect;
+		texture->LockRect(0, &rect, NULL, D3DLOCK_READONLY);
+		byte* colors = (byte*)rect.pBits;
+		int index = (position.X * 4) + ((((Size.Height-1) * Size.Width) - (position.Y * Size.Width)) * 4);
+		int colorValue = colors[index] << 16;
+		colorValue |= colors[index+1] << 8;
+		colorValue |= colors[index+2];
+		colorValue |= colors[index+3] << 24;
+		texture->UnlockRect(0);
+
+		color = Color4(colorValue);
+		return true;
 	}
 	#pragma endregion
 }

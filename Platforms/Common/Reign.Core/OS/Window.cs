@@ -156,6 +156,40 @@ namespace Reign.Core
 			}
 		}
 
+		public Size2 MinFrameSize
+		{
+			get
+			{
+				#if WINDOWS
+				var size = MinimumSize;
+				return new Size2(size.Width, size.Height);
+				#endif
+			}
+			set
+			{
+				#if WINDOWS
+				MinimumSize = new System.Drawing.Size(value.Width, value.Height);
+				#endif
+			}
+		}
+
+		public Size2 MaxFrameSize
+		{
+			get
+			{
+				#if WINDOWS
+				var size = MaximumSize;
+				return new Size2(size.Width, size.Height);
+				#endif
+			}
+			set
+			{
+				#if WINDOWS
+				MaximumSize = new System.Drawing.Size(value.Width, value.Height);
+				#endif
+			}
+		}
+
 		public Size2 ScreenSize
 		{
 			get
@@ -185,12 +219,12 @@ namespace Reign.Core
 
 		#region Constructors
 		#if NaCl
-		public Window(string name, int width, int height)
+		public Window(string name, int width, int height, bool hideCursor)
 		#else
 		public Window(string name, int width, int height, WindowStartPositions startPosition, WindowTypes type)
 		#endif
 		#if OSX
-		: base(width, height, type)
+		: base(width, height, type, bool hideCursor)
 		#endif
 		{
 			try
@@ -251,6 +285,20 @@ namespace Reign.Core
 			#endif
 			
 			base.Close ();
+		}
+
+		public void HideCursor()
+		{
+			#if WINDOWS
+			System.Windows.Forms.Cursor.Hide();
+			#endif
+		}
+
+		public void ShowCursor()
+		{
+			#if WINDOWS
+			System.Windows.Forms.Cursor.Show();
+			#endif
 		}
 		#endregion
 	}
