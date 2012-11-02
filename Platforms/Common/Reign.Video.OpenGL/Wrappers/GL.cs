@@ -674,6 +674,14 @@ namespace Reign.Video.OpenGL
 		public const uint ALWAYS = 0x0207;
 
 		[SuppressUnmanagedCodeSecurity]
+		[DllImport(DLL, EntryPoint = "glCopyTexImage2D", ExactSpelling = true)]
+		public static extern void CopyTexImage2D(GLenum target, GLint level, GLenum internalformat, GLint x, GLint y, GLsizei width, GLsizei height, GLint border);
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(DLL, EntryPoint = "glReadPixels", ExactSpelling = true)]
+		public unsafe static extern void ReadPixels(GLint x, GLint y, GLsizei width, GLsizei height, GLenum format, GLenum type, void* data);
+
+		[SuppressUnmanagedCodeSecurity]
 		[DllImport(DLL, EntryPoint = "glDepthMask", ExactSpelling = true)]
 		public static extern void DepthMask(GLboolean flag);
 		

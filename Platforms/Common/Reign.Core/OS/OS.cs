@@ -327,7 +327,7 @@ namespace Reign.Core
 			public IntPtr wParam;
 			public IntPtr lParam;
 			public uint time;
-			public Point p;
+			public Point2 p;
 		}
 		
 		[SuppressUnmanagedCodeSecurity]

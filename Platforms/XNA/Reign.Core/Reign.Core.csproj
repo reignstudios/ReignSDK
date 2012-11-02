@@ -119,14 +119,17 @@
     <Compile Include="..\..\Common\Reign.Core\Math\Plane3.cs">
       <Link>Math\Plane3.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\Math\Point.cs">
-      <Link>Math\Point.cs</Link>
+    <Compile Include="..\..\Common\Reign.Core\Math\Point2.cs">
+      <Link>Math\Point2.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Quaternion.cs">
       <Link>Math\Quaternion.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Ray3.cs">
       <Link>Math\Ray3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Rect2.cs">
+      <Link>Math\Rect2.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\RigidTransform3.cs">
       <Link>Math\RigidTransform3.cs</Link>

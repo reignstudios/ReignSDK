@@ -20,7 +20,7 @@ namespace Reign.Video.XNA
 			this.video = (Video)video;
 		}
 
-		public ViewPort(VideoI video, Point location, Size2 size)
+		public ViewPort(VideoI video, Point2 location, Size2 size)
 		: base(location, size)
 		{
 			this.video = (Video)video;

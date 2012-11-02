@@ -5,7 +5,6 @@ namespace Reign.Core
 	public enum WindowEventTypes
 	{
 		Unkown,
-		Move,
 		Scaled,
 		Closed,
 		KeyDown,
@@ -25,7 +24,7 @@ namespace Reign.Core
 		public WindowEventTypes Type;
 		public int KeyCode;
 		public float ScrollWheelVelocity;
-		public Point CursorLocation;
+		public Point2 CursorPosition;
 	}
 	
 	#if !NaCl
@@ -75,13 +74,13 @@ namespace Reign.Core
 			}
 		}
 
-		public new Point Location
+		public new Point2 Location
 		{
 			get
 			{
 				#if WINDOWS
 				var loc = base.Location;
-				return new Point(loc.X, loc.Y);
+				return new Point2(loc.X, loc.Y);
 				#endif
 				
 				#if LINUX
@@ -101,13 +100,13 @@ namespace Reign.Core
 		}
 		
 		
-		public Point ViewLocation
+		public Point2 ViewLocation
 		{
 			get
 			{
 				#if WINDOWS
 				var point = PointToScreen(new System.Drawing.Point(0, 0));
-				return new Point(point.X, point.Y);
+				return new Point2(point.X, point.Y);
 				#endif
 				
 				#if LINUX

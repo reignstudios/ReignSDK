@@ -89,6 +89,12 @@ namespace Reign
 		gcnew Texture2DStreamLoader(this, parent, fileName, 0, 0, false, MultiSampleTypes::None, SurfaceFormats::RGBAx8, RenderTargetUsage::PlatformDefault, BufferUsages::Default, false, false);
 	}
 
+	Texture2D::Texture2D(DisposableI^ parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage)
+	: Disposable(parent)
+	{
+		init(parent, nullptr, width, height, false, MultiSampleTypes::None, surfaceFormat, RenderTargetUsage::PlatformDefault, usage, false, false);
+	}
+
 	Texture2D::Texture2D(DisposableI^ parent, string^ fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, bool lockable)
 	: Disposable(parent)
 	{
@@ -150,17 +156,20 @@ namespace Reign
 			video = parent->FindParentOrSelfWithException<Video^>();
 
 			pool = D3DPOOL_DEFAULT;
-			DWORD usage = 0;//D3DUSAGE_DYNAMIC - Need for locking textures:: Cannot be used with D3DPOOL_MANAGED
+			DWORD d3dUsage = 0;
 			if (isRenderTarget)
 			{
 				pool = D3DPOOL_DEFAULT;
-				usage = D3DUSAGE_RENDERTARGET;
+				d3dUsage = D3DUSAGE_RENDERTARGET;
 			}
 			
 			if (image)
 			{
+				if (video->IsExDevice) d3dUsage |= (usage == BufferUsages::Write || usage == BufferUsages::Read) ? D3DUSAGE_DYNAMIC : 0;
+				else pool = D3DPOOL_MANAGED;
+
 				IDirect3DTexture9* textureTEMP = 0;
-				if (FAILED(video->Device->CreateTexture(image->Size.Width, image->Size.Height, image->Mipmaps->Length, usage, Video::surfaceFormat(image->SurfaceFormat), pool, &textureTEMP, 0)))
+				if (FAILED(video->Device->CreateTexture(image->Size.Width, image->Size.Height, image->Mipmaps->Length, d3dUsage, Video::surfaceFormat(image->SurfaceFormat), pool, &textureTEMP, 0)))
 				{
 					Debug::ThrowError(L"Texture2D", L"Failed to create texture");
 				}
@@ -192,9 +201,11 @@ namespace Reign
 			}
 			else
 			{
+				d3dUsage |= (usage == BufferUsages::Write || usage == BufferUsages::Read) ? D3DUSAGE_DYNAMIC : 0;
+
 				uint mipLvls = generateMipmaps ? 0 : 1;
 				IDirect3DTexture9* textureTEMP = 0;
-				if (FAILED(video->Device->CreateTexture(width, height, mipLvls, usage, Video::surfaceFormat(surfaceFormat), pool, &textureTEMP, 0)))
+				if (FAILED(video->Device->CreateTexture(width, height, mipLvls, d3dUsage, Video::surfaceFormat(surfaceFormat), pool, &textureTEMP, 0)))
 				{
 					Debug::ThrowError(L"Texture2D", L"Failed to create Texture2D");
 				}
@@ -265,14 +276,7 @@ namespace Reign
 	void Texture2D::Copy(Texture2DI^ texture)
 	{
 		Texture2D^ textureTEMP = (Texture2D^)texture;
-		if (isRenderTarget_LostDevice)
-		{
-			video->Device->GetRenderTargetData(surface, textureTEMP->surface);
-		}
-		else
-		{
-			video->Device->StretchRect(surface, NULL, textureTEMP->surface, NULL, D3DTEXF_NONE);
-		}
+		video->Device->StretchRect(surface, NULL, textureTEMP->surface, NULL, D3DTEXF_NONE);
 	}
 
 	void Texture2D::Update(array<byte>^ data)
@@ -320,7 +324,7 @@ namespace Reign
 		texture->UnlockRect(0);
 	}
 
-	bool Texture2D::ReadPixel(Point position, [Out] Color4% color)
+	bool Texture2D::ReadPixel(Point2 position, [Out] Color4% color)
 	{
 		if (position.X < 0 || position.X >= Size.Width || position.Y < 0 || position.Y >= Size.Height)
 		{
@@ -330,12 +334,12 @@ namespace Reign
 
 		D3DLOCKED_RECT rect;
 		texture->LockRect(0, &rect, NULL, D3DLOCK_READONLY);
-		byte* colors = (byte*)rect.pBits;
-		int index = (position.X * 4) + ((((Size.Height-1) * Size.Width) - (position.Y * Size.Width)) * 4);
-		int colorValue = colors[index] << 16;
-		colorValue |= colors[index+1] << 8;
-		colorValue |= colors[index+2];
-		colorValue |= colors[index+3] << 24;
+			const byte* colors = (byte*)rect.pBits;
+			int index = (position.X * 4) + ((Size.Height-1-position.Y) * rect.Pitch);
+			int colorValue = colors[index] << 16;
+			colorValue |= colors[index+1] << 8;
+			colorValue |= colors[index+2];
+			colorValue |= colors[index+3] << 24;
 		texture->UnlockRect(0);
 
 		color = Color4(colorValue);

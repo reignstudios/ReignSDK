@@ -22,7 +22,7 @@ namespace Reign.Video.D3D11
 			init(video);
 		}
 
-		public ViewPort(VideoI video, Point location, Size2 size)
+		public ViewPort(VideoI video, Point2 location, Size2 size)
 		: base(location, size)
 		{
 			init(video);

@@ -43,8 +43,9 @@ namespace Reign.Core
 	
 				FormClosing += winFormClosing;
 				Shown += winFormShown;
-				Move += winFormMove;
+				//Move += winFormMove;
 
+				MouseMove += mouseMoveEvent;
 				MouseDown += mouseDownEvent;
 				MouseUp += mouseUpEvent;
 				KeyDown += keyDownEvent;
@@ -80,9 +81,11 @@ namespace Reign.Core
 			if (window != null) window.shown();
 		}
 
-		private void winFormMove(object sender, EventArgs e)
+		private void mouseMoveEvent(object sender, MouseEventArgs e)
 		{
-			theEvent.Type = WindowEventTypes.Move;
+			theEvent.Type = WindowEventTypes.MouseMove;
+			theEvent.CursorPosition.X = e.X;
+			theEvent.CursorPosition.Y = e.Y;
 			if (window != null) window.handleEvent(theEvent);
 		}
 
@@ -95,6 +98,8 @@ namespace Reign.Core
 				case (MouseButtons.Right): theEvent.Type = WindowEventTypes.RightMouseDown; break;
 			}
 
+			theEvent.CursorPosition.X = e.X;
+			theEvent.CursorPosition.Y = e.Y;
 			window.handleEvent(theEvent);
 		}
 
@@ -107,6 +112,8 @@ namespace Reign.Core
 				case (MouseButtons.Right): theEvent.Type = WindowEventTypes.RightMouseUp; break;
 			}
 
+			theEvent.CursorPosition.X = e.X;
+			theEvent.CursorPosition.Y = e.Y;
 			window.handleEvent(theEvent);
 		}
 
@@ -130,6 +137,8 @@ namespace Reign.Core
 		{
 			theEvent.Type = WindowEventTypes.ScrollWheel;
 			theEvent.ScrollWheelVelocity = e.Delta;
+			theEvent.CursorPosition.X = e.X;
+			theEvent.CursorPosition.Y = e.Y;
 			window.handleEvent(theEvent);
 		}
 		#endregion

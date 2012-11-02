@@ -51,7 +51,7 @@ namespace Reign.Video
 		Vector2 SizeF {get;}
 		Vector2 TexelOffset {get;}
 		void Copy(Texture2DI texture);
-		bool ReadPixel(Point position, out Color4 color);
+		bool ReadPixel(Point2 position, out Color4 color);
 	}
 
 	public interface Texture3DI : TextureI

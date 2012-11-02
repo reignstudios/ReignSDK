@@ -122,16 +122,16 @@ namespace Reign_Video_D3D11_Component
 		video->deviceContext->Unmap(texture, 0);
 	}
 
-	int Texture2DCom::ReadPixel(int x, int y, int width, int height)
+	int Texture2DCom::ReadPixel(int x, int y, int height)
 	{
 		D3D11_MAPPED_SUBRESOURCE source;
 		video->deviceContext->Map(texture, 0, D3D11_MAP_READ, NULL, &source);
-		byte* colors = (byte*)source.pData;
-		int index = (x * 4) + ((((height-1) * width) - (y * width)) * 4);
-		int color = colors[index];
-		color |= colors[index+1] << 8;
-		color |= colors[index+2] << 16;
-		color |= colors[index+3] << 24;
+			byte* colors = (byte*)source.pData;
+			int index = (x * 4) + ((height-1-y) * source.RowPitch);
+			int color = colors[index];
+			color |= colors[index+1] << 8;
+			color |= colors[index+2] << 16;
+			color |= colors[index+3] << 24;
 		video->deviceContext->Unmap(texture, 0);
 
 		return color;

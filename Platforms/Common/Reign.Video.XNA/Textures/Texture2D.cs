@@ -166,7 +166,7 @@ namespace Reign.Video.XNA
 			throw new NotImplementedException();
 		}
 
-		public bool ReadPixel(Point position, out Color4 color)
+		public bool ReadPixel(Point2 position, out Color4 color)
 		{
 			throw new NotImplementedException();
 		}

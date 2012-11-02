@@ -1,5 +1,8 @@
-﻿namespace Reign.Core
+﻿using System.Runtime.InteropServices;
+
+namespace Reign.Core
 {
+	[StructLayout(LayoutKind.Sequential)]
 	public struct Size3
 	{
 		#region Properties

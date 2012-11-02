@@ -226,7 +226,7 @@ namespace Reign.Video.D3D11
 			}
 		}
 
-		public bool ReadPixel(Point position, out Color4 color)
+		public bool ReadPixel(Point2 position, out Color4 color)
 		{
 			if (position.X < 0 || position.X >= Size.Width || position.Y < 0 || position.Y >= Size.Height)
 			{
@@ -234,7 +234,7 @@ namespace Reign.Video.D3D11
 				return false;
 			}
 
-			color = new Color4(com.ReadPixel(position.X, position.Y, Size.Width, Size.Height));
+			color = new Color4(com.ReadPixel(position.X, position.Y, Size.Height));
 			return true;
 		}
 		#endregion

@@ -15,12 +15,11 @@ namespace Reign.Input.NaCl
 		public float ScrollWheelVelocity {get; private set;}
 		public Vector2 Velocity {get; private set;}
 		public Vector2 Location {get; private set;}
-		public Vector2 ScreenLocation {get; private set;}
 		
 		private bool leftOn, middleOn, rightOn, scollWheelChanged;
 		private float scrollWheelVelocity;
 		private Vector2 lastLocation;
-		private Point cursorLocation;
+		private Point2 currentPosition;
 		#endregion
 	
 		#region Constructors
@@ -68,7 +67,7 @@ namespace Reign.Input.NaCl
 					break;
 			}
 			
-			cursorLocation = theEvent.CursorLocation;
+			currentPosition = theEvent.CursorPosition;
 		}
 		
 		public void Update()
@@ -88,10 +87,10 @@ namespace Reign.Input.NaCl
 			Right.Update(rightOn);
 			
 			lastLocation = Location;
-			Location = new Vector2(cursorLocation.X, input.window.FrameSize.Height - cursorLocation.Y);
+			Location = new Vector2(currentPosition.X, input.window.FrameSize.Height - currentPosition.Y);
 			Velecity = Location - lastLocation;
 			
-			//ScreenLocation = new Vector2(cursorLocation.X, cursorLocation.Y);
+			//ScreenLocation = new Vector2(currentPosition.X, currentPosition.Y);
 		}
 		#endregion
 	}

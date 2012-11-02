@@ -15,11 +15,10 @@ namespace Reign.Input.X11
 		public float ScrollWheelVelocity {get; private set;}
 		public Vector2 Position {get; private set;}
 		public Vector2 Velocity {get; private set;}
-		public Vector2 ScreenLocation {get; private set;}
 		
 		private bool leftOn, middleOn, rightOn, scollWheelChanged;
 		private float scrollWheelVelocity;
-		private Vector2 lastLocation, lastScreenLocation;
+		private Vector2 lastLocation;
 		#endregion
 	
 		#region Constructors
@@ -93,9 +92,6 @@ namespace Reign.Input.X11
 			lastLocation = Position;
 			Position = new Vector2(x2, input.window.FrameSize.Height - y2);
 			Velecity = Position - lastLocation;
-			
-			lastScreenLocation = ScreenLocation;
-			ScreenLocation = new Vector2(x, y);
 		}
 		#endregion
 	}

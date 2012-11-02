@@ -83,6 +83,12 @@ namespace Reign.Video.OpenGL
 			new Texture2DStreamLoader(this, parent, fileName, 0, 0, false, MultiSampleTypes.None, SurfaceFormats.RGBAx8, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false);
 		}
 
+		public Texture2D(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage)
+		: base(parent)
+		{
+			init(parent, null, width, height, false, MultiSampleTypes.None, surfaceFormat, RenderTargetUsage.PlatformDefault, usage, false);
+		}
+
 		public Texture2D(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat)
 		: base(parent)
 		{
@@ -251,7 +257,8 @@ namespace Reign.Video.OpenGL
 		#region Methods
 		public void Copy(Texture2DI texture)
 		{
-			throw new NotImplementedException();
+			var textureTEMP = (Texture2D)texture;
+			GL.CopyTexImage2D(textureTEMP.Texture, 0, (uint)Video.surfaceFormat(SurfaceFormats.RGBAx8), 0, 0, Size.Width, Size.Height, 0);
 		}
 
 		public void Update(byte[] data)
@@ -261,7 +268,7 @@ namespace Reign.Video.OpenGL
 
 		public void WritePixels(byte[] data)
 		{
-			throw new NotImplementedException();
+			throw new NotImplementedException(); 
 		}
 
 		public void ReadPixels(byte[] data)
@@ -274,9 +281,22 @@ namespace Reign.Video.OpenGL
 			throw new NotImplementedException();
 		}
 
-		public bool ReadPixel(Point position, out Color4 color)
+		public unsafe bool ReadPixel(Point2 position, out Color4 color)
 		{
-			throw new NotImplementedException();
+			// make sure position is within the texture bounds
+			if (position.X < 0 || position.X >= Size.Width || position.Y < 0 || position.Y >= Size.Height)
+			{
+				color = new Color4();
+				return false;
+			}
+
+			// TODO: make sure i'm the active render target
+
+			// read data
+			int data;
+			GL.ReadPixels(position.X, position.Y, 1, 1, GL.RGBA, GL.UNSIGNED_BYTE, &data);
+			color = new Color4(data);
+			return true;
 		}
 		#endregion
 	}

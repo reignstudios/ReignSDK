@@ -15,7 +15,7 @@ namespace Reign
 		#pragma region Constructors
 		public: ViewPort(VideoI^ video);
 		public: ViewPort(VideoI^ video, int x, int y, int width, int height);
-		public: ViewPort(VideoI^ video, Point location, Size2 size);
+		public: ViewPort(VideoI^ video, Point2 location, Size2 size);
 		#pragma endregion
 
 		#pragma region Methods

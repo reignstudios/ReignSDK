@@ -17,7 +17,7 @@ namespace Reign
 		this->video = (Video^)video;
 	}
 
-	ViewPort::ViewPort(VideoI^ video, Point location, Size2 size)
+	ViewPort::ViewPort(VideoI^ video, Point2 location, Size2 size)
 	: ViewPortI(location, size)
 	{
 		this->video = (Video^)video;

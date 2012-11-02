@@ -16,7 +16,6 @@ namespace Reign.Input.Cocoa
 		public float ScrollWheelVelocity {get; private set;}
 		public Vector2 Velocity {get; private set;}
 		public Vector2 Position {get; private set;}
-		public Vector2 ScreenLocation {get; private set;}
 		
 		private bool leftOn, middleOn, rightOn, scollWheelChanged;
 		private float scrollWheelVelocity;
@@ -91,8 +90,6 @@ namespace Reign.Input.Cocoa
 			lastLocation = Position;
 			Position = new Vector2(loc.X, loc.Y) - new Vector2(viewLoc.X, viewLoc.Y);
 			Velecity = Position - lastLocation;
-			
-			ScreenLocation = new Vector2(loc.X, loc.Y);
 		}
 		#endregion
 	}

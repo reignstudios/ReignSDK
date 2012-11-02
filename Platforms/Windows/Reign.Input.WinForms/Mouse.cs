@@ -15,12 +15,11 @@ namespace Reign.Input.WinForms
 		public float ScrollWheelVelocity {get; private set;}
 		public Vector2 Velocity {get; private set;}
 		public Vector2 Position {get; private set;}
-		public Vector2 ScreenLocation {get; private set;}
 		
 		private bool leftOn, middleOn, rightOn, scollWheelChanged;
 		private float scrollWheelVelocity;
-		private Vector2 lastLocation, lastScreenLocation;
-		private Point viewLocation;
+		private Point2 currentPosition;
+		private Vector2 lastLocation;
 		#endregion
 	
 		#region Constructors
@@ -30,7 +29,6 @@ namespace Reign.Input.WinForms
 			input = parent.FindParentOrSelfWithException<Input>();
 			input.UpdateEventCallback += UpdateEvent;
 			input.UpdateCallback += Update;
-			viewLocation = this.input.window.ViewLocation;
 			
 			Left = new Button();
 			Middle = new Button();
@@ -68,11 +66,9 @@ namespace Reign.Input.WinForms
 					scrollWheelVelocity = theEvent.ScrollWheelVelocity;
 					scollWheelChanged = true;
 					break;
-
-				case (WindowEventTypes.Move):
-					viewLocation = input.window.ViewLocation;
-					break;
 			}
+
+			currentPosition = theEvent.CursorPosition;
 		}
 		
 		public void Update()
@@ -91,15 +87,9 @@ namespace Reign.Input.WinForms
 			Middle.Update(middleOn);
 			Right.Update(rightOn);
 			
-			var cursorLoc = Cursor.Position;
-			
 			lastLocation = Position;
-			var loc = new Point(cursorLoc.X, cursorLoc.Y) - new Point(viewLocation.X, viewLocation.Y);
-			Position = new Vector2(loc.X, input.window.FrameSize.Height - loc.Y);
+			Position = new Vector2(currentPosition.X, input.window.FrameSize.Height - currentPosition.Y);
 			Velocity = Position - lastLocation;
-			
-			lastScreenLocation = ScreenLocation;
-			ScreenLocation = new Vector2(cursorLoc.X, cursorLoc.Y);
 		}
 		#endregion
 	}

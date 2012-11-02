@@ -211,12 +211,12 @@ namespace Reign.Core
 		public static bool operator!=(Vector2 p1, Vector2 p2) {return (p1.X!=p2.X || p1.Y!=p2.Y);}
 
 		// convert
-		public Point ToPoint()
+		public Point2 ToPoint()
 		{
-			return new Point((int)X, (int)Y);
+			return new Point2((int)X, (int)Y);
 		}
 
-		public static void ToPoint(ref Vector2 vector, out Point result)
+		public static void ToPoint(ref Vector2 vector, out Point2 result)
 		{
 			result.X = (int)vector.X;
 			result.Y = (int)vector.Y;
