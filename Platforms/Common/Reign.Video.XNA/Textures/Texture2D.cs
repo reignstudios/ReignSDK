@@ -95,6 +95,8 @@ namespace Reign.Video.XNA
 		{
 			try
 			{
+				if (usage == BufferUsages.Read && !isRenderTarget) Debug.ThrowError("Texture2D", "Only RenderTargets may be readable");
+
 				video = parent.FindParentOrSelfWithException<Video>();
 
 				if (!isRenderTarget)
@@ -152,21 +154,6 @@ namespace Reign.Video.XNA
 		}
 
 		public void WritePixels(byte[] data)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void ReadPixels(byte[] data)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void ReadPixels(Color4[] colors)
-		{
-			throw new NotImplementedException();
-		}
-
-		public bool ReadPixel(Point2 position, out Color4 color)
 		{
 			throw new NotImplementedException();
 		}

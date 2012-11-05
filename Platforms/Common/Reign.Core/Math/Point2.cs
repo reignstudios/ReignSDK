@@ -15,6 +15,20 @@ namespace Reign.Core
 			X = x;
 			Y = y;
 		}
+
+		public Point2(int value)
+		{
+			X = value;
+			Y = value;
+		}
+
+		public static readonly Point2 One = new Point2(1);
+		public static readonly Point2 MinusOne = new Point2(-1);
+		public static readonly Point2 Zero = new Point2(0);
+		public static readonly Point2 Right = new Point2(1, 0);
+		public static readonly Point2 Left = new Point2(-1, 0);
+		public static readonly Point2 Up = new Point2(0, 1);
+		public static readonly Point2 Down = new Point2(0, -1);
 		#endregion
 
 		#region Operators

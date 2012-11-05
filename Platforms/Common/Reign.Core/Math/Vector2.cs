@@ -221,6 +221,17 @@ namespace Reign.Core
 			result.X = (int)vector.X;
 			result.Y = (int)vector.Y;
 		}
+
+		public Size2 ToSize()
+		{
+			return new Size2((int)X, (int)Y);
+		}
+
+		public static void ToSize(ref Vector2 vector, out Size2 result)
+		{
+			result.Width = (int)vector.X;
+			result.Height = (int)vector.Y;
+		}
 		#endregion
 
 		#region Methods

@@ -9,14 +9,13 @@ namespace Reign
 	public ref class RenderTarget : Texture2D, RenderTargetI
 	{
 		#pragma region Properties
-		private: IDirect3DSurface9* renderTarget;
+		private: IDirect3DSurface9* renderTarget, *stagingSurface;
 		#pragma endregion
 
 		#pragma region Constructors
 		public: RenderTarget(DisposableI^ parent, string^ fileName);
-		public: RenderTarget(DisposableI^ parent, string^ fileName, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool lockable);
-		public: RenderTarget(DisposableI^ parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool lockable);
 		public: RenderTarget(DisposableI^ parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage);
+		public: RenderTarget(DisposableI^ parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage);
 		protected: virtual void init(DisposableI^ parent, Image^ image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, bool lockable) override;
 		public: ~RenderTarget();
 		protected: virtual void dispose() override;
@@ -27,7 +26,9 @@ namespace Reign
 		public: virtual void Enable();
 		public: virtual void Enable(DepthStencilI^ depthStencil);
 		public: void ResolveMultisampled();
-		public: void CopyToSystemTexture(Texture2D^ texture2D);
+		public: virtual void ReadPixels(array<System::Byte>^ data);
+		public: virtual void ReadPixels(array<Color4>^ colors);
+		public: virtual bool ReadPixel(Point2 position, [Out] Color4% color);
 		#pragma endregion
 	};
 }

@@ -32,10 +32,23 @@ namespace Reign.Video.D3D11
 
 			try
 			{
-				renderTargetCom = new RenderTargetCom();
-				var error = renderTargetCom.Init(video.com, com, 0, video.surfaceFormat(surfaceFormat));
+				if (usage == BufferUsages.Write) Debug.ThrowError("RenderTarget", "Only Textures may be writable");
 
-				if (error == RenderTargetError.RenderTargetView) Debug.ThrowError("RenderTarget", "Failed to create RenderTargetView");
+				if (image != null)
+				{
+					width = image.Size.Width;
+					height = image.Size.Height;
+					surfaceFormat = image.SurfaceFormat;
+				}
+
+				renderTargetCom = new RenderTargetCom();
+				var error = renderTargetCom.Init(video.com, width, height, com, 0, video.surfaceFormat(surfaceFormat), usage == BufferUsages.Read);
+
+				switch (error)
+				{
+					case (RenderTargetError.RenderTargetView): Debug.ThrowError("RenderTarget", "Failed to create RenderTargetView"); break;
+					case (RenderTargetError.StagingTexture): Debug.ThrowError("RenderTarget", "Failed to create Staging Texture"); break;
+				}
 			}
 			catch (Exception e)
 			{
@@ -65,6 +78,34 @@ namespace Reign.Video.D3D11
 		public void Enable(DepthStencilI depthStencil)
 		{
 			renderTargetCom.Enable(((DepthStencil)depthStencil).com);
+		}
+
+		public unsafe void ReadPixels(byte[] data)
+		{
+			fixed (byte* ptr = data)
+			{
+				renderTargetCom.ReadPixels((int)ptr, data.Length);
+			}
+		}
+
+		public unsafe void ReadPixels(Color4[] colors)
+		{
+			fixed (Color4* ptr = colors)
+			{
+				renderTargetCom.ReadPixels((int)ptr, colors.Length * 4);
+			}
+		}
+
+		public bool ReadPixel(Point2 position, out Color4 color)
+		{
+			if (position.X < 0 || position.X >= Size.Width || position.Y < 0 || position.Y >= Size.Height)
+			{
+				color = new Color4();
+				return false;
+			}
+
+			color = new Color4(renderTargetCom.ReadPixel(position.X, position.Y, Size.Height));
+			return true;
 		}
 		#endregion
 	}

@@ -40,13 +40,10 @@ namespace Reign
 		#pragma region Constructors
 		public: static Texture2DI^ New(DisposableI^ parent, string^ fileName);
 		public: Texture2D(DisposableI^ parent, string^ fileName);
-		public: Texture2D(DisposableI^ parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage);
-		public: Texture2D(DisposableI^ parent, string^ fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, bool lockable);
-		public: Texture2D(DisposableI^ parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, bool lockable);
+		public: Texture2D(DisposableI^ parent, int width, int height, SurfaceFormats surfaceFormat);
+		public: Texture2D(DisposableI^ parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat);
+		public: Texture2D(DisposableI^ parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage);
 		public: Texture2D(DisposableI^ parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat);
-		protected: Texture2D(DisposableI^ parent, string^ fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool lockable);
-		protected: Texture2D(DisposableI^ parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool lockable);
-		protected: Texture2D(DisposableI^ parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage);
 		internal: void load(DisposableI^ parent, Image^ image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, bool lockable);
 		protected: virtual void init(DisposableI^ parent, Image^ image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, bool lockable);
 		public: ~Texture2D();
@@ -60,9 +57,6 @@ namespace Reign
 		public: virtual void Copy(Texture2DI^ texture);
 		public: virtual void Update(array<byte>^ data);
 		public: virtual void WritePixels(array<byte>^ data);
-		public: virtual void ReadPixels(array<System::Byte>^ data);
-		public: virtual void ReadPixels(array<Color4>^ colors);
-		public: virtual bool ReadPixel(Point2 position, [Out] Color4% color);
 		#pragma endregion
 	};
 }

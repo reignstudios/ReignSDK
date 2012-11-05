@@ -113,6 +113,12 @@ namespace Reign.Video.OpenGL
 			init(parent, null, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, BufferUsages.Default, false);
 		}
 
+		protected Texture2D(DisposableI parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage)
+		: base(parent)
+		{
+			init(parent, null, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, false);
+		}
+
 		internal void load(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
 		{
 			init(parent, image, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, isRenderTarget);
@@ -122,6 +128,8 @@ namespace Reign.Video.OpenGL
 		{
 			try
 			{
+				if (usage == BufferUsages.Read && !isRenderTarget) Debug.ThrowError("Texture2D", "Only RenderTargets may be readable");
+
 				video = parent.FindParentOrSelfWithException<Video>();
 				if (isRenderTarget) generateMipmaps = false;
 
@@ -269,34 +277,6 @@ namespace Reign.Video.OpenGL
 		public void WritePixels(byte[] data)
 		{
 			throw new NotImplementedException(); 
-		}
-
-		public void ReadPixels(byte[] data)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void ReadPixels(Color4[] colors)
-		{
-			throw new NotImplementedException();
-		}
-
-		public unsafe bool ReadPixel(Point2 position, out Color4 color)
-		{
-			// make sure position is within the texture bounds
-			if (position.X < 0 || position.X >= Size.Width || position.Y < 0 || position.Y >= Size.Height)
-			{
-				color = new Color4();
-				return false;
-			}
-
-			// TODO: make sure i'm the active render target
-
-			// read data
-			int data;
-			GL.ReadPixels(position.X, position.Y, 1, 1, GL.RGBA, GL.UNSIGNED_BYTE, &data);
-			color = new Color4(data);
-			return true;
 		}
 		#endregion
 	}

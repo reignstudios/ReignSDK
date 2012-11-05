@@ -28,8 +28,6 @@ namespace Reign_Video_D3D11_Component
 		public: void Copy(Texture2DCom^ texture);
 		public: void Update(array<byte>^ data, int width);
 		public: void WritePixels(array<byte>^ data);
-		public: void ReadPixels(int dataPtr, int dataLength);
-		public: int ReadPixel(int x, int y, int height);
 		#pragma endregion
 	};
 }

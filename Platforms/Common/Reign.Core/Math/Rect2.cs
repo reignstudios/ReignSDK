@@ -18,7 +18,19 @@ namespace Reign.Core
 		#endregion
 
 		#region Constructors
-		
+		public Rect2(int x, int y, int width, int height)
+		{
+			Location.X = x;
+			Location.Y = y;
+			Size.Width = width;
+			Size.Height = height;
+		}
+
+		public Rect2(Point2 location, Size2 size)
+		{
+			Location = location;
+			Size = size;
+		}
 		#endregion
 
 		#region Methods

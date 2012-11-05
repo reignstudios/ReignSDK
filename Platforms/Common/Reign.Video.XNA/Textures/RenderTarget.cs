@@ -29,6 +29,8 @@ namespace Reign.Video.XNA
 
 			try
 			{
+				if (usage == BufferUsages.Write) Debug.ThrowError("RenderTarget", "Only Textures may be writable");
+
 				if (fileName == null)
 				{
 					// TODO: handle multiSampleType types
@@ -77,6 +79,21 @@ namespace Reign.Video.XNA
 				};
 				video.Device.SetRenderTargets(bindings);
 			}
+		}
+
+		public void ReadPixels(byte[] data)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ReadPixels(Color4[] colors)
+		{
+			throw new NotImplementedException();
+		}
+
+		public bool ReadPixel(Point2 position, out Color4 color)
+		{
+			throw new NotImplementedException();
 		}
 		#endregion
 	}

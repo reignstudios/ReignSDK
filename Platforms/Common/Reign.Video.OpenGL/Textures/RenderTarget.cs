@@ -22,12 +22,18 @@ namespace Reign.Video.OpenGL
 		: base(parent, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage)
 		{}
 
+		public RenderTarget(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage)
+		: base(parent, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, usage)
+		{}
+
 		protected unsafe override void init(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
 		{
 			base.init(parent, image, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, usage, true);
 			
 			try
 			{
+				if (usage == BufferUsages.Write) Debug.ThrowError("RenderTarget", "Only Textures may be writable");
+
 				uint frameBufferTEMP = 0;
 				GL.GenFramebuffers(1, &frameBufferTEMP);
 				frameBuffer = frameBufferTEMP;
@@ -96,6 +102,34 @@ namespace Reign.Video.OpenGL
 			#if DEBUG
 			Video.checkForError();
 			#endif
+		}
+
+		public void ReadPixels(byte[] data)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ReadPixels(Color4[] colors)
+		{
+			throw new NotImplementedException();
+		}
+
+		public unsafe bool ReadPixel(Point2 position, out Color4 color)
+		{
+			// make sure position is within the texture bounds
+			if (position.X < 0 || position.X >= Size.Width || position.Y < 0 || position.Y >= Size.Height)
+			{
+				color = new Color4();
+				return false;
+			}
+
+			// TODO: make sure i'm the active render target
+
+			// read data
+			int data;
+			GL.ReadPixels(position.X, position.Y, 1, 1, GL.RGBA, GL.UNSIGNED_BYTE, &data);
+			color = new Color4(data);
+			return true;
 		}
 		#endregion
 	}

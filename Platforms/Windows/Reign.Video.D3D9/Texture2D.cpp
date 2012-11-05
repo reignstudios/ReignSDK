@@ -89,46 +89,28 @@ namespace Reign
 		gcnew Texture2DStreamLoader(this, parent, fileName, 0, 0, false, MultiSampleTypes::None, SurfaceFormats::RGBAx8, RenderTargetUsage::PlatformDefault, BufferUsages::Default, false, false);
 	}
 
-	Texture2D::Texture2D(DisposableI^ parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage)
+	Texture2D::Texture2D(DisposableI^ parent, int width, int height, SurfaceFormats surfaceFormat)
 	: Disposable(parent)
 	{
-		init(parent, nullptr, width, height, false, MultiSampleTypes::None, surfaceFormat, RenderTargetUsage::PlatformDefault, usage, false, false);
+		init(parent, nullptr, width, height, false, MultiSampleTypes::None, surfaceFormat, RenderTargetUsage::PlatformDefault, BufferUsages::Default, false, false);
 	}
 
-	Texture2D::Texture2D(DisposableI^ parent, string^ fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, bool lockable)
+	Texture2D::Texture2D(DisposableI^ parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat)
 	: Disposable(parent)
 	{
-		gcnew Texture2DStreamLoader(this, parent, fileName, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage::PlatformDefault, BufferUsages::Default, false, lockable);
+		init(parent, nullptr, width, height, false, multiSampleType, surfaceFormat, RenderTargetUsage::PlatformDefault, BufferUsages::Default, false, false);
 	}
 
-	Texture2D::Texture2D(DisposableI^ parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, bool lockable)
+	Texture2D::Texture2D(DisposableI^ parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage)
 	: Disposable(parent)
 	{
-		init(parent, nullptr, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage::PlatformDefault, BufferUsages::Default, false, lockable);
+		init(parent, nullptr, width, height, false, multiSampleType, surfaceFormat, RenderTargetUsage::PlatformDefault, usage, false, false);
 	}
 
 	Texture2D::Texture2D(DisposableI^ parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat)
 	: Disposable(parent)
 	{
 		init(parent, nullptr, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage::PlatformDefault, BufferUsages::Default, false, false);
-	}
-
-	Texture2D::Texture2D(DisposableI^ parent, string^ fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool lockable)
-	: Disposable(parent)
-	{
-		gcnew Texture2DStreamLoader(this, parent, fileName, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, BufferUsages::Default, false, lockable);
-	}
-
-	Texture2D::Texture2D(DisposableI^ parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool lockable)
-	: Disposable(parent)
-	{
-		init(parent, nullptr, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, BufferUsages::Default, false, lockable);
-	}
-
-	Texture2D::Texture2D(DisposableI^ parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage)
-	: Disposable(parent)
-	{
-		init(parent, nullptr, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, BufferUsages::Default, false, false);
 	}
 
 	void Texture2D::load(DisposableI^ parent, Image^ image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, bool lockable)
@@ -155,6 +137,8 @@ namespace Reign
 		{
 			video = parent->FindParentOrSelfWithException<Video^>();
 
+			if (usage == BufferUsages::Read && !isRenderTarget) Debug::ThrowError(L"Texture2D", L"Only RenderTargets may be readable");
+
 			pool = D3DPOOL_DEFAULT;
 			DWORD d3dUsage = 0;
 			if (isRenderTarget)
@@ -165,7 +149,7 @@ namespace Reign
 			
 			if (image)
 			{
-				if (video->IsExDevice) d3dUsage |= (usage == BufferUsages::Write || usage == BufferUsages::Read) ? D3DUSAGE_DYNAMIC : 0;
+				if (video->IsExDevice) d3dUsage |= (usage == BufferUsages::Write) ? D3DUSAGE_DYNAMIC : 0;
 				else pool = D3DPOOL_MANAGED;
 
 				IDirect3DTexture9* textureTEMP = 0;
@@ -201,7 +185,7 @@ namespace Reign
 			}
 			else
 			{
-				d3dUsage |= (usage == BufferUsages::Write || usage == BufferUsages::Read) ? D3DUSAGE_DYNAMIC : 0;
+				d3dUsage |= (usage == BufferUsages::Write) ? D3DUSAGE_DYNAMIC : 0;
 
 				uint mipLvls = generateMipmaps ? 0 : 1;
 				IDirect3DTexture9* textureTEMP = 0;
@@ -304,46 +288,6 @@ namespace Reign
 		pin_ptr<byte> srcData = &data[0];
 		memcpy(rect.pBits, srcData, data->Length);
 		texture->UnlockRect(0);
-	}
-
-	void Texture2D::ReadPixels(array<System::Byte>^ data)
-	{
-		D3DLOCKED_RECT rect;
-		texture->LockRect(0, &rect, NULL, D3DLOCK_READONLY);
-		pin_ptr<byte> dstData = &data[0];
-		memcpy(dstData, rect.pBits, data->Length);
-		texture->UnlockRect(0);
-	}
-
-	void Texture2D::ReadPixels(array<Color4>^ colors)
-	{
-		D3DLOCKED_RECT rect;
-		texture->LockRect(0, &rect, NULL, D3DLOCK_READONLY);
-		pin_ptr<Color4> dstData = &colors[0];
-		memcpy(dstData, rect.pBits, colors->Length * 4);
-		texture->UnlockRect(0);
-	}
-
-	bool Texture2D::ReadPixel(Point2 position, [Out] Color4% color)
-	{
-		if (position.X < 0 || position.X >= Size.Width || position.Y < 0 || position.Y >= Size.Height)
-		{
-			color = Color4();
-			return false;
-		}
-
-		D3DLOCKED_RECT rect;
-		texture->LockRect(0, &rect, NULL, D3DLOCK_READONLY);
-			const byte* colors = (byte*)rect.pBits;
-			int index = (position.X * 4) + ((Size.Height-1-position.Y) * rect.Pitch);
-			int colorValue = colors[index] << 16;
-			colorValue |= colors[index+1] << 8;
-			colorValue |= colors[index+2];
-			colorValue |= colors[index+3] << 24;
-		texture->UnlockRect(0);
-
-		color = Color4(colorValue);
-		return true;
 	}
 	#pragma endregion
 }

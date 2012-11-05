@@ -146,8 +146,10 @@ namespace Reign.Video.D3D11
 				REIGN_D3D11_CPU_ACCESS_FLAG cpuAccessFlags = (REIGN_D3D11_CPU_ACCESS_FLAG)0;
 				if (usage == BufferUsages.Read)
 				{
-					usageType = REIGN_D3D11_USAGE.STAGING;
-					cpuAccessFlags = REIGN_D3D11_CPU_ACCESS_FLAG.READ;
+					if (!isRenderTarget) Debug.ThrowError("Texture2D", "Only RenderTargets may be readable");
+					// NOTE: Staging texture will be created in the RenderTarget
+					//usageType = REIGN_D3D11_USAGE.STAGING;
+					//cpuAccessFlags = REIGN_D3D11_CPU_ACCESS_FLAG.READ;
 				}
 				if (usage == BufferUsages.Write)
 				{
@@ -208,34 +210,6 @@ namespace Reign.Video.D3D11
 		public void WritePixels(byte[] data)
 		{
 			throw new NotImplementedException();
-		}
-
-		public unsafe void ReadPixels(byte[] data)
-		{
-			fixed (byte* ptr = data)
-			{
-				com.ReadPixels((int)ptr, data.Length);
-			}
-		}
-
-		public unsafe void ReadPixels(Color4[] colors)
-		{
-			fixed (Color4* ptr = colors)
-			{
-				com.ReadPixels((int)ptr, colors.Length * 4);
-			}
-		}
-
-		public bool ReadPixel(Point2 position, out Color4 color)
-		{
-			if (position.X < 0 || position.X >= Size.Width || position.Y < 0 || position.Y >= Size.Height)
-			{
-				color = new Color4();
-				return false;
-			}
-
-			color = new Color4(com.ReadPixel(position.X, position.Y, Size.Height));
-			return true;
 		}
 		#endregion
 	}

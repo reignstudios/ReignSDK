@@ -10,16 +10,12 @@ namespace Reign
 	: Texture2D(parent, fileName)
 	{}
 
-	RenderTarget::RenderTarget(DisposableI^ parent, string^ fileName, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool lockable)
-	: Texture2D(parent, fileName, width, height, false, multiSampleType, surfaceFormat, lockable)
-	{}
-
-	RenderTarget::RenderTarget(DisposableI^ parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, bool lockable)
-	: Texture2D(parent, width, height, false, multiSampleType, surfaceFormat, lockable)
-	{}
-
 	RenderTarget::RenderTarget(DisposableI^ parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage)
-	: Texture2D(parent, width, height, false, multiSampleType, surfaceFormat)
+	: Texture2D(parent, width, height, multiSampleType, surfaceFormat)
+	{}
+
+	RenderTarget::RenderTarget(DisposableI^ parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage)
+	: Texture2D(parent, width, height, multiSampleType, surfaceFormat, usage)
 	{}
 
 	void RenderTarget::init(DisposableI^ parent, Image^ image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, bool lockable)
@@ -29,11 +25,13 @@ namespace Reign
 
 		try
 		{
+			if (usage == BufferUsages::Write) Debug::ThrowError(L"RenderTarget", L"Only Textures may be writable");
+
 			if (image == nullptr)
 			{
 				if (multiSampleType != MultiSampleTypes::None)
 				{
-					// TODO: Handle multisampling types
+					// RenderTarget
 					IDirect3DSurface9* renderTargetTEMP = 0;
 					if (FAILED(video->Device->CreateRenderTarget(width, height, Video::surfaceFormat(surfaceFormat), D3DMULTISAMPLE_NONE, 0, lockable, &renderTargetTEMP, 0)))
 					{
@@ -48,7 +46,21 @@ namespace Reign
 			}
 			else
 			{
+				width = image->Size.Width;
+				height = image->Size.Height;
+				surfaceFormat = image->SurfaceFormat;
 				renderTarget = surface;
+			}
+
+			// Staging Texture
+			if (usage == BufferUsages::Read)
+			{
+				IDirect3DSurface9* stagingSurfaceTEMP = 0;
+				if (FAILED(video->Device->CreateOffscreenPlainSurface(width, height, Video::surfaceFormat(surfaceFormat), D3DPOOL_SYSTEMMEM, &stagingSurfaceTEMP, 0)))
+				{
+					Debug::ThrowError(L"RenderTarget", L"Failed to create Staging Texture");
+				}
+				stagingSurface = stagingSurfaceTEMP;
 			}
 		}
 		catch (Exception^ ex)
@@ -67,6 +79,7 @@ namespace Reign
 	void RenderTarget::dispose()
 	{
 		if (renderTarget && renderTarget != surface) renderTarget->Release();
+		if (stagingSurface) stagingSurface->Release();
 		null();
 		Texture2D::dispose();
 	}
@@ -74,6 +87,7 @@ namespace Reign
 	void RenderTarget::null()
 	{
 		renderTarget = 0;
+		stagingSurface = 0;
 	}
 	#pragma endregion
 
@@ -105,9 +119,50 @@ namespace Reign
 		video->Device->StretchRect(renderTarget, 0, surface, 0, D3DTEXF_NONE);
 	}
 
-	void RenderTarget::CopyToSystemTexture(Texture2D^ texture2D)
+	void RenderTarget::ReadPixels(array<System::Byte>^ data)
 	{
-		video->Device->GetRenderTargetData(renderTarget, texture2D->Surface);
+		video->Device->GetRenderTargetData(renderTarget, stagingSurface);
+
+		D3DLOCKED_RECT rect;
+		stagingSurface->LockRect(&rect, NULL, D3DLOCK_READONLY);
+		pin_ptr<byte> dstData = &data[0];
+		memcpy(dstData, rect.pBits, data->Length);
+		stagingSurface->UnlockRect();
+	}
+
+	void RenderTarget::ReadPixels(array<Color4>^ colors)
+	{
+		video->Device->GetRenderTargetData(renderTarget, stagingSurface);
+
+		D3DLOCKED_RECT rect;
+		stagingSurface->LockRect(&rect, NULL, D3DLOCK_READONLY);
+		pin_ptr<Color4> dstData = &colors[0];
+		memcpy(dstData, rect.pBits, colors->Length * 4);
+		stagingSurface->UnlockRect();
+	}
+
+	bool RenderTarget::ReadPixel(Point2 position, [Out] Color4% color)
+	{
+		if (position.X < 0 || position.X >= Size.Width || position.Y < 0 || position.Y >= Size.Height)
+		{
+			color = Color4();
+			return false;
+		}
+
+		video->Device->GetRenderTargetData(renderTarget, stagingSurface);
+
+		D3DLOCKED_RECT rect;
+		stagingSurface->LockRect(&rect, NULL, D3DLOCK_READONLY);
+			const byte* colors = (byte*)rect.pBits;
+			int index = (position.X * 4) + ((Size.Height-1-position.Y) * rect.Pitch);
+			int colorValue = colors[index] << 16;
+			colorValue |= colors[index+1] << 8;
+			colorValue |= colors[index+2];
+			colorValue |= colors[index+3] << 24;
+		stagingSurface->UnlockRect();
+
+		color = Color4(colorValue);
+		return true;
 	}
 	#pragma endregion
 }
