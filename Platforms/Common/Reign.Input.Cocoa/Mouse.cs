@@ -9,17 +9,18 @@ namespace Reign.Input.Cocoa
 		#region Properties
 		private Input input;
 		
-		public Vector2 Velecity {get; private set;}
 		public Button Left {get; private set;}
 		public Button Middle {get; private set;}
 		public Button Right {get; private set;}
 		public float ScrollWheelVelocity {get; private set;}
-		public Vector2 Velocity {get; private set;}
-		public Vector2 Position {get; private set;}
+		public Point2 Velocity {get; private set;}
+		public Vector2 VelocityVector {get; private set;}
+		public Point2 Position {get; private set;}
+		public Vector2 PositionVector {get; private set;}
 		
 		private bool leftOn, middleOn, rightOn, scollWheelChanged;
 		private float scrollWheelVelocity;
-		private Vector2 lastLocation;
+		private Point2 lastLocation;
 		#endregion
 	
 		#region Constructors
@@ -88,8 +89,11 @@ namespace Reign.Input.Cocoa
 			var viewLoc = input.window.ViewLocation;
 			
 			lastLocation = Position;
-			Position = new Vector2(loc.X, loc.Y) - new Vector2(viewLoc.X, viewLoc.Y);
-			Velecity = Position - lastLocation;
+			Position = new Point2((int)loc.X, (int)loc.Y) - viewLoc;
+			PositionVector = Position.ToVector2();
+			
+			Velocity = Position - lastLocation;
+			VelocityVector = Velocity.ToVector2();
 		}
 		#endregion
 	}

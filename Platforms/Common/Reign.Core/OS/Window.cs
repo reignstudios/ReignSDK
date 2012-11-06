@@ -85,16 +85,16 @@ namespace Reign.Core
 				
 				#if LINUX
 				throw new NotImplementedException();
-				return new Point();
+				return new Point2();
 				#endif
 				
 				#if OSX
 				var frame = Frame;
-				return new Point((int)frame.X, (int)frame.Y);
+				return new Point2((int)frame.X, (int)frame.Y);
 				#endif
 				
 				#if NaCl
-				return new Point();
+				return new Point2();
 				#endif
 			}
 		}
@@ -163,6 +163,10 @@ namespace Reign.Core
 				var size = MinimumSize;
 				return new Size2(size.Width, size.Height);
 				#endif
+				
+				#if OSX
+				return new Size2();
+				#endif
 			}
 			set
 			{
@@ -179,6 +183,10 @@ namespace Reign.Core
 				#if WINDOWS
 				var size = MaximumSize;
 				return new Size2(size.Width, size.Height);
+				#endif
+				
+				#if OSX
+				return new Size2();
 				#endif
 			}
 			set
@@ -218,12 +226,12 @@ namespace Reign.Core
 
 		#region Constructors
 		#if NaCl
-		public Window(string name, int width, int height, bool hideCursor)
+		public Window(string name, int width, int height)
 		#else
 		public Window(string name, int width, int height, WindowStartPositions startPosition, WindowTypes type)
 		#endif
 		#if OSX
-		: base(width, height, type, bool hideCursor)
+		: base(width, height, type)
 		#endif
 		{
 			try

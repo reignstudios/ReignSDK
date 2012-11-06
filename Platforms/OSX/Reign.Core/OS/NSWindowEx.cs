@@ -95,6 +95,11 @@ namespace Reign.Core
 			window.handleEvent(theEvent);
 		}
 		
+		/*public override void MouseMoved (NSEvent theEvent)
+		{
+			base.MouseMoved (theEvent);
+		}*/
+		
 		public override void MouseDown(NSEvent e)
 		{
 			switch (e.Type)
