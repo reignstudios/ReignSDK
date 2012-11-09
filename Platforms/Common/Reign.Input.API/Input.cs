@@ -8,29 +8,12 @@ namespace Reign.Input.API
 	public enum InputTypes
 	{
 		None,
-		#if WINDOWS
 		WinForms,
-		#endif
-
-		#if METRO
 		Metro,
-		#endif
-		
-		#if XNA
 		XNA,
-		#endif
-		
-		#if OSX || iOS
 		Cocoa,
-		#endif
-		
-		#if LINUX
-		X11
-		#endif
-		
-		#if ANDROID
-		Android,
-		#endif
+		X11,
+		Android
 	}
 
 	public static class Input

@@ -21,10 +21,18 @@ namespace Reign.Video
 
 		public ImageBMPC(Stream stream, bool flip)
 		{
+			#if METRO
+			init(stream, flip).Wait();
+			#else
 			init(stream, flip);
+			#endif
 		}
 
+		#if METRO
+		protected override async System.Threading.Tasks.Task init(Stream stream, bool flip)
+		#else
 		protected override void init(Stream stream, bool flip)
+		#endif
 		{
 			SurfaceFormat = SurfaceFormats.RGBAx8;
 

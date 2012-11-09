@@ -86,12 +86,10 @@ namespace Reign.Audio
 		}
 
 		#if METRO
-		protected virtual async Task<bool> init(DisposableI parent, string fileName, int instanceCount, bool looped)
-		{
+		protected virtual async Task init(DisposableI parent, string fileName, int instanceCount, bool looped) {
 			using (var stream = await Streams.OpenFile(fileName))
 		#else
-		protected virtual void init(DisposableI parent, string fileName, int instanceCount, bool looped)
-		{
+		protected virtual void init(DisposableI parent, string fileName, int instanceCount, bool looped) {
 			using (var stream = Streams.OpenFile(fileName))
 		#endif
 			using (var reader = new BinaryReader(stream))
@@ -101,10 +99,6 @@ namespace Reign.Audio
 			}
 
 			Loaded = true;
-
-			#if METRO
-			return true;
-			#endif
 		}
 		#endregion
 	}

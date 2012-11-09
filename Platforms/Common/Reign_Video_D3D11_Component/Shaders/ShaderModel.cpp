@@ -59,14 +59,15 @@ namespace Reign_Video_D3D11_Component
 		{
 			variableBufferBytesCount = constDesc.Size;
 			variableBufferBytes = new byte[constDesc.Size];
-			ZeroMemory(variableBufferBytes, sizeof(byte) * constDesc.Size);
+			ZeroMemory(variableBufferBytes, constDesc.Size);
 
 			ID3D11Buffer* variableBufferTEMP = 0;
 			D3D11_BUFFER_DESC cbDesc;
+			ZeroMemory(&cbDesc, sizeof(D3D11_BUFFER_DESC));
 			cbDesc.ByteWidth = constDesc.Size;
-			cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+			cbDesc.Usage = D3D11_USAGE_DEFAULT;
 			cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			cbDesc.CPUAccessFlags = 0;
 			cbDesc.MiscFlags = 0;
 			video->device->CreateBuffer(&cbDesc, 0, &variableBufferTEMP);
 			if (variableBufferTEMP == 0)
@@ -106,14 +107,15 @@ namespace Reign_Video_D3D11_Component
 		{
 			variableBufferBytesCount = variableBufferSize;
 			variableBufferBytes = new byte[variableBufferSize];
-			ZeroMemory(variableBufferBytes, sizeof(byte) * variableBufferSize);
+			ZeroMemory(variableBufferBytes, variableBufferSize);
 
 			ID3D11Buffer* variableBufferTEMP = 0;
 			D3D11_BUFFER_DESC cbDesc;
+			ZeroMemory(&cbDesc, sizeof(D3D11_BUFFER_DESC));
 			cbDesc.ByteWidth = variableBufferSize;
-			cbDesc.Usage = D3D11_USAGE_DYNAMIC;
+			cbDesc.Usage = D3D11_USAGE_DEFAULT;
 			cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+			cbDesc.CPUAccessFlags = 0;
 			cbDesc.MiscFlags = 0;
 			video->device->CreateBuffer(&cbDesc, 0, &variableBufferTEMP);
 			if (variableBufferTEMP == 0)
@@ -168,10 +170,12 @@ namespace Reign_Video_D3D11_Component
 	{
 		if (variableBuffer)
 		{
-			D3D11_MAPPED_SUBRESOURCE source;
+			/*D3D11_MAPPED_SUBRESOURCE source;
 			video->deviceContext->Map(variableBuffer, 0, D3D11_MAP_WRITE_DISCARD, NULL, &source);
 			memcpy(source.pData, variableBufferBytes, variableBufferBytesCount);
-			video->deviceContext->Unmap(variableBuffer, 0);
+			video->deviceContext->Unmap(variableBuffer, 0);*/
+
+			video->deviceContext->UpdateSubresource(variableBuffer, 0, NULL, variableBufferBytes, 0, 0);
 		}
 	}
 

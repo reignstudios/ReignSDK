@@ -8,17 +8,18 @@ namespace Reign.Input.X11
 		#region Properties
 		private Input input;
 		
-		public Vector2 Velecity {get; private set;}
 		public Button Left {get; private set;}
 		public Button Middle {get; private set;}
 		public Button Right {get; private set;}
 		public float ScrollWheelVelocity {get; private set;}
-		public Vector2 Position {get; private set;}
-		public Vector2 Velocity {get; private set;}
+		public Point2 Velocity {get; private set;}
+		public Vector2 VelocityVector {get; private set;}
+		public Point2 Position {get; private set;}
+		public Vector2 PositionVector {get; private set;}
 		
 		private bool leftOn, middleOn, rightOn, scollWheelChanged;
 		private float scrollWheelVelocity;
-		private Vector2 lastLocation;
+		private Point2 lastPosition;
 		#endregion
 	
 		#region Constructors
@@ -89,9 +90,12 @@ namespace Reign.Input.X11
 			uint mask;
 			Reign.Core.X11.XQueryPointer(input.window.DC, input.window.Handle, out w2, out w3, out x, out y, out x2, out y2, out mask);
 			
-			lastLocation = Position;
-			Position = new Vector2(x2, input.window.FrameSize.Height - y2);
-			Velecity = Position - lastLocation;
+			lastPosition = Position;
+			Position = new Point2(x2, input.window.FrameSize.Height - y2);
+			PositionVector = Position.ToVector2();
+
+			Velecity = Position - lastPosition;
+			VelocityVector = Velocity.ToVector2();
 		}
 		#endregion
 	}

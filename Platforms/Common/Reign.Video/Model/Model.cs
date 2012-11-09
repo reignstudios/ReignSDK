@@ -6,7 +6,7 @@ using System.Collections;
 using System.Reflection;
 
 #if METRO
-using System.Reflection;
+using System.Threading.Tasks;
 #endif
 
 namespace Reign.Video
@@ -43,8 +43,11 @@ namespace Reign.Video
 			this.classicInstanceCount = classicInstanceCount;
 		}
 
-		public override bool Load()
-		{
+		#if METRO
+		public override async Task<bool> Load() {
+		#else
+		public override bool Load() {
+		#endif
 			if (stream != null)
 			{
 				return model.load(fileName, stream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, ref textures, classicInstanceCount);
@@ -131,8 +134,11 @@ namespace Reign.Video
 			this.classicInstanceCount = classicInstanceCount;
 		}
 
-		public override bool Load()
-		{
+		#if METRO
+		public override async Task<bool> Load() {
+		#else
+		public override bool Load() {
+		#endif
 			if (!softwareModel.Loaded) return false;
 			var stream = new MemoryStream();
 			ModelI.Save(stream, false, softwareModel, positionSize, loadColors, loadUVs, loadNormals);

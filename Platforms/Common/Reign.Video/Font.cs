@@ -94,12 +94,10 @@ namespace Reign.Video
 		}
 
 		#if METRO
-		protected virtual async void init(ShaderI shader, Texture2DI texture, string metricsFileName)
-		{
+		protected virtual async System.Threading.Tasks.Task init(ShaderI shader, Texture2DI texture, string metricsFileName) {
 			using (var stream = await Streams.OpenFile(metricsFileName))
 		#else
-		protected virtual void init(ShaderI shader, Texture2DI texture, string metricsFileName)
-		{
+		protected virtual void init(ShaderI shader, Texture2DI texture, string metricsFileName) {
 			using (var stream = Streams.OpenFile(metricsFileName))
 		#endif
 			{

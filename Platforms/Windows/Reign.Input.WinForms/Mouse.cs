@@ -54,22 +54,46 @@ namespace Reign.Input.WinForms
 		{
 			switch (theEvent.Type)
 			{
-				case (WindowEventTypes.LeftMouseDown): leftOn = true; break;
-				case (WindowEventTypes.LeftMouseUp): leftOn = false; break;
+				case (WindowEventTypes.LeftMouseDown):
+					leftOn = true;
+					currentPosition = theEvent.CursorPosition;
+					break;
+
+				case (WindowEventTypes.LeftMouseUp):
+					leftOn = false;
+					currentPosition = theEvent.CursorPosition;
+					break;
 				
-				case (WindowEventTypes.MiddleMouseDown): middleOn = true; break;
-				case (WindowEventTypes.MiddleMouseUp): middleOn = false; break;
+				case (WindowEventTypes.MiddleMouseDown):
+					 middleOn = true;
+					 currentPosition = theEvent.CursorPosition;
+					 break;
+
+				case (WindowEventTypes.MiddleMouseUp):
+					middleOn = false;
+					currentPosition = theEvent.CursorPosition;
+					break;
 				
-				case (WindowEventTypes.RightMouseDown): rightOn = true; break;
-				case (WindowEventTypes.RightMouseUp): rightOn = false; break;
+				case (WindowEventTypes.RightMouseDown):
+					rightOn = true;
+					currentPosition = theEvent.CursorPosition;
+					break;
+
+				case (WindowEventTypes.RightMouseUp):
+					rightOn = false;
+					currentPosition = theEvent.CursorPosition;
+					break;
+
+				case (WindowEventTypes.MouseMove):
+					currentPosition = theEvent.CursorPosition;
+					break;
 				
 				case (WindowEventTypes.ScrollWheel):
 					scrollWheelVelocity = theEvent.ScrollWheelVelocity;
 					scollWheelChanged = true;
+					currentPosition = theEvent.CursorPosition;
 					break;
 			}
-
-			currentPosition = theEvent.CursorPosition;
 		}
 		
 		public void Update()

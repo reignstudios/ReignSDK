@@ -75,7 +75,7 @@ namespace Reign.Core
 		{
 			theEvent.Type = ApplicationEventTypes.MouseMove;
 			var loc = e.CurrentPoint.RawPosition;
-			theEvent.CursorLocation = new Point((int)loc.X, (int)loc.Y);
+			theEvent.CursorLocation = new Point2((int)loc.X, (int)loc.Y);
 			application.handleEvent(theEvent);
 		}
 
@@ -98,7 +98,7 @@ namespace Reign.Core
 			}
 			
 			var loc = e.CurrentPoint.RawPosition;
-			theEvent.CursorLocation = new Point((int)loc.X, (int)loc.Y);
+			theEvent.CursorLocation = new Point2((int)loc.X, (int)loc.Y);
 			application.handleEvent(theEvent);
 		}
 
@@ -112,7 +112,7 @@ namespace Reign.Core
 			rightPointerOn = false;
 
 			var loc = e.CurrentPoint.RawPosition;
-			theEvent.CursorLocation = new Point((int)loc.X, (int)loc.Y);
+			theEvent.CursorLocation = new Point2((int)loc.X, (int)loc.Y);
 			application.handleEvent(theEvent);
 		}
 
@@ -120,7 +120,7 @@ namespace Reign.Core
 		{
 			theEvent.Type = ApplicationEventTypes.ScrollWheel;
 			var loc = e.CurrentPoint.RawPosition;
-			theEvent.CursorLocation = new Point((int)loc.X, (int)loc.Y);
+			theEvent.CursorLocation = new Point2((int)loc.X, (int)loc.Y);
 			application.handleEvent(theEvent);
 		}
 

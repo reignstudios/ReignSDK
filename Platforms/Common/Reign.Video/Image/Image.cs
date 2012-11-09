@@ -2,6 +2,10 @@
 using System;
 using Reign.Core;
 
+#if METRO
+using System.Threading.Tasks;
+#endif
+
 namespace Reign.Video
 {
 	class ImageStreamLoader : StreamLoaderI
@@ -17,11 +21,19 @@ namespace Reign.Video
 			this.flip = flip;
 		}
 
+		#if METRO
+		public override async Task<bool> Load()
+		{
+			await image.load(fileName, flip);
+			return true;
+		}
+		#else
 		public override bool Load()
 		{
 			image.load(fileName, flip);
 			return true;
 		}
+		#endif
 	}
 
 	public abstract class Image
@@ -102,14 +114,18 @@ namespace Reign.Video
 		}
 
 		#if METRO
-		internal async void load(string fileName, bool flip)
+		protected abstract Task init(Stream stream, bool flip);
+
+		internal async Task load(string fileName, bool flip)
 		{
 			using (var stream = await Streams.OpenFile(fileName))
 			{
-				init(stream, flip);
+				await init(stream, flip);
 			}
 		}
 		#else
+		protected abstract void init(Stream stream, bool flip);
+
 		internal void load(string fileName, bool flip)
 		{
 			using (var stream = Streams.OpenFile(fileName))
@@ -118,8 +134,6 @@ namespace Reign.Video
 			}
 		}
 		#endif
-
-		protected abstract void init(Stream stream, bool flip);
 
 		public static Image Load(string fileName, bool flip)
 		{

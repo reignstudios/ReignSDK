@@ -20,7 +20,7 @@ namespace Reign.Input.Cocoa
 		
 		private bool leftOn, middleOn, rightOn, scollWheelChanged;
 		private float scrollWheelVelocity;
-		private Point2 lastLocation;
+		private Point2 currentPosition, lastPosition;
 		#endregion
 	
 		#region Constructors
@@ -53,18 +53,44 @@ namespace Reign.Input.Cocoa
 		{
 			switch (theEvent.Type)
 			{
-				case (WindowEventTypes.LeftMouseDown): leftOn = true; break;
-				case (WindowEventTypes.LeftMouseUp): leftOn = false; break;
+				case (WindowEventTypes.LeftMouseDown):
+					leftOn = true;
+					currentPosition = theEvent.CursorPosition;
+					break;
+
+				case (WindowEventTypes.LeftMouseUp):
+					leftOn = false;
+					currentPosition = theEvent.CursorPosition;
+					break;
 				
-				case (WindowEventTypes.MiddleMouseDown): middleOn = true; break;
-				case (WindowEventTypes.MiddleMouseUp): middleOn = false; break;
+				case (WindowEventTypes.MiddleMouseDown):
+					 middleOn = true;
+					 currentPosition = theEvent.CursorPosition;
+					 break;
+
+				case (WindowEventTypes.MiddleMouseUp):
+					middleOn = false;
+					currentPosition = theEvent.CursorPosition;
+					break;
 				
-				case (WindowEventTypes.RightMouseDown): rightOn = true; break;
-				case (WindowEventTypes.RightMouseUp): rightOn = false; break;
+				case (WindowEventTypes.RightMouseDown):
+					rightOn = true;
+					currentPosition = theEvent.CursorPosition;
+					break;
+
+				case (WindowEventTypes.RightMouseUp):
+					rightOn = false;
+					currentPosition = theEvent.CursorPosition;
+					break;
+
+				case (WindowEventTypes.MouseMove):
+					currentPosition = theEvent.CursorPosition;
+					break;
 				
 				case (WindowEventTypes.ScrollWheel):
 					scrollWheelVelocity = theEvent.ScrollWheelVelocity;
 					scollWheelChanged = true;
+					currentPosition = theEvent.CursorPosition;
 					break;
 			}
 		}
@@ -88,11 +114,11 @@ namespace Reign.Input.Cocoa
 			var loc = NSEvent.CurrentMouseLocation;
 			var viewLoc = input.window.ViewLocation;
 			
-			lastLocation = Position;
+			lastPosition = Position;
 			Position = new Point2((int)loc.X, (int)loc.Y) - viewLoc;
 			PositionVector = Position.ToVector2();
 			
-			Velocity = Position - lastLocation;
+			Velocity = Position - lastPosition;
 			VelocityVector = Velocity.ToVector2();
 		}
 		#endregion

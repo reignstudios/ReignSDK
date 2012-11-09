@@ -38,7 +38,11 @@ namespace Reign.Core
 			Streams.loaders.Add(this);
 		}
 
+		#if METRO
+		public abstract Task<bool> Load();
+		#else
 		public abstract bool Load();
+		#endif
 		public virtual void Dispose() {}
 	}
 	
@@ -46,6 +50,8 @@ namespace Reign.Core
 	{
 		public static int ItemsRemainingToLoad {get{return loaders.Count;}}
 		internal static List<StreamLoaderI> loaders;
+		private static bool asyncDone = true;
+		private static Exception asyncException;
 
 		static Streams()
 		{
@@ -53,6 +59,23 @@ namespace Reign.Core
 		}
 
 		public static Exception TryLoad()
+		{
+			if (asyncDone)
+			{
+				if (asyncException != null) return asyncException;
+				asyncException = null;
+				asyncDone = false;
+				tryLoad();
+			}
+
+			return null;
+		}
+
+		#if METRO
+		public static async void tryLoad()
+		#else
+		public static void tryLoad()
+		#endif
 		{
 			if (loaders.Count != 0)
 			{
@@ -62,7 +85,11 @@ namespace Reign.Core
 				{
 					try
 					{
+						#if METRO
+						if (await loader.Load())
+						#else
 						if (loader.Load())
+						#endif
 						{
 							loader.Dispose();
 							loaders.Remove(loader);
@@ -72,12 +99,14 @@ namespace Reign.Core
 					{
 						loader.Dispose();
 						loaders.Remove(loader);
-						return e;
+						asyncException = e;
+						asyncDone = true;
+						return;
 					}
 				}
 			}
 
-			return null;
+			asyncDone = true;
 		}
 
 		#if NaCl
@@ -166,7 +195,7 @@ namespace Reign.Core
 		#endif
 
 		#if METRO
-		public async static Task<Stream> OpenFile(string fileName)
+		public static async Task<Stream> OpenFile(string fileName)
 		#else
 		public static Stream OpenFile(string fileName)
 		#endif

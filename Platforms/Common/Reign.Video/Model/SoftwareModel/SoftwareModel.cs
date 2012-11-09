@@ -3,6 +3,10 @@ using Reign.Core;
 using System.Xml.Serialization;
 using System.IO;
 
+#if METRO
+using System.Threading.Tasks;
+#endif
+
 namespace Reign.Video
 {
 	class SoftwareModelStreamLoader : StreamLoaderI
@@ -16,11 +20,17 @@ namespace Reign.Video
 			this.fileName = fileName;
 		}
 
+		#if METRO
+		public override async Task<bool> Load()
+		{
+			return await softwareModel.load(fileName);
+		}
+		#else
 		public override bool Load()
 		{
-			softwareModel.load(fileName);
-			return true;
+			return softwareModel.load(fileName);
 		}
+		#endif
 	}
 
 	public class SoftwareModel
@@ -44,24 +54,30 @@ namespace Reign.Video
 		}
 
 		#if METRO
-		internal async void load(string fileName)
+		internal async Task<bool> load(string fileName)
 		{
 			using (var file = await Streams.OpenFile(fileName))
 			{
-				init(file);
+				await init(file);
+				return true;
 			}
 		}
 		#else
-		internal void load(string fileName)
+		internal bool load(string fileName)
 		{
 			using (var file = Streams.OpenFile(fileName))
 			{
 				init(file);
+				return true;
 			}
 		}
 		#endif
 
+		#if METRO
+		private async Task init(Stream stream)
+		#else
 		private void init(Stream stream)
+		#endif
 		{
 			var xml = new XmlSerializer(typeof(ColladaModel), "http://www.collada.org/2005/11/COLLADASchema");
 			var collada = (ColladaModel)xml.Deserialize(stream);

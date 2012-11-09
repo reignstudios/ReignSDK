@@ -1,5 +1,9 @@
 ﻿using Reign.Core;
 
+#if METRO
+using System.Threading.Tasks;
+#endif
+
 namespace Reign.Video.D3D11
 {
 	class FonttreamLoader : StreamLoaderI
@@ -17,12 +21,21 @@ namespace Reign.Video.D3D11
 			this.metricsFileName = metricsFileName;
 		}
 
+		#if METRO
+		public override async Task<bool> Load()
+		{
+			if (!shader.Loaded || !texture.Loaded) return false;
+			await font.load(shader, texture, metricsFileName);
+			return true;
+		}
+		#else
 		public override bool Load()
 		{
 			if (!shader.Loaded || !texture.Loaded) return false;
 			font.load(shader, texture, metricsFileName);
 			return true;
 		}
+		#endif
 	}
 
 	public class Font : FontI
@@ -52,14 +65,32 @@ namespace Reign.Video.D3D11
 			new FonttreamLoader(this, shader, texture, metricsFileName);
 		}
 
+		#if METRO
+		internal async Task load(ShaderI shader, Texture2DI texture, string metricsFileName)
+		{
+			await init(shader, texture, metricsFileName);
+		}
+		#else
 		internal void load(ShaderI shader, Texture2DI texture, string metricsFileName)
 		{
 			init(shader, texture, metricsFileName);
 		}
+		#endif
 
+		#if METRO
+		protected override async Task init(ShaderI shader, Texture2DI texture, string metricsFileName)
+		#else
 		protected override void init(ShaderI shader, Texture2DI texture, string metricsFileName)
+		#endif
 		{
-			if (metricsFileName != null) base.init(shader, texture, metricsFileName);
+			if (metricsFileName != null)
+			{
+				#if METRO
+				await base.init(shader, texture, metricsFileName);
+				#else
+				base.init(shader, texture, metricsFileName);
+				#endif
+			}
 
 			this.texture = texture;
 			this.shader = shader;

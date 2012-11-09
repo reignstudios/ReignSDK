@@ -2,6 +2,10 @@
 using Reign_Audio_XAudio_Component;
 using System;
 
+#if METRO
+using System.Threading.Tasks;
+#endif
+
 namespace Reign.Audio.XAudio
 {
 	public class SoundWAVInstance : Disposable, SoundInstanceI
@@ -116,11 +120,19 @@ namespace Reign.Audio.XAudio
 			this.looped = looped;
 		}
 
+		#if METRO
+		public override async Task<bool> Load()
+		{
+			await sound.load(parent, fileName, instanceCount, looped);
+			return true;
+		}
+		#else
 		public override bool Load()
 		{
 			sound.load(parent, fileName, instanceCount, looped);
 			return true;
 		}
+		#endif
 	}
 
 	public class SoundWAV : SoundWAVI
@@ -137,23 +149,23 @@ namespace Reign.Audio.XAudio
 			new SoundWAVStreamLoader(this, parent, fileName, instanceCount, looped);
 		}
 
-		internal void load(DisposableI parent, string fileName, int instanceCount, bool looped)
-		{
+		#if METRO
+		internal async Task load(DisposableI parent, string fileName, int instanceCount, bool looped) {
+		#else
+		internal void load(DisposableI parent, string fileName, int instanceCount, bool looped) {
+		#endif
 			#if METRO
-			var task = init(parent, fileName, instanceCount, looped);
-			task.Wait();
+			await init(parent, fileName, instanceCount, looped);
 			#else
 			init(parent, fileName, instanceCount, looped);
 			#endif
 		}
 
 		#if METRO
-		protected override async System.Threading.Tasks.Task<bool> init(DisposableI parent, string fileName, int instanceCount, bool looped)
-		{
-			if (await base.init(parent, fileName, instanceCount, looped) == false) return false;
+		protected override async Task init(DisposableI parent, string fileName, int instanceCount, bool looped) {
+			await base.init(parent, fileName, instanceCount, looped);
 		#else
-		protected override void init(DisposableI parent, string fileName, int instanceCount, bool looped)
-		{
+		protected override void init(DisposableI parent, string fileName, int instanceCount, bool looped) {
 			base.init(parent, fileName, instanceCount, looped);
 		#endif
 			try
@@ -175,10 +187,6 @@ namespace Reign.Audio.XAudio
 				Dispose();
 				throw e;
 			}
-
-			#if METRO
-			return true;
-			#endif
 		}
 
 		public override void Dispose()

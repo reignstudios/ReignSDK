@@ -19,15 +19,15 @@ namespace Reign_Video_D3D11_Component
 		#pragma endregion
 	
 		#pragma region Constructors
-		public: TextureError Init(VideoCom^ video, int width, int height, bool generateMipmaps, const array<__int64>^ mipmaps, const array<int>^ mipmapSizes, const array<int>^ mipmapPitches, int multiSampleMultiple, REIGN_DXGI_FORMAT surfaceFormat, REIGN_D3D11_USAGE usage, REIGN_D3D11_CPU_ACCESS_FLAG cpuUsage, bool isRenderTarget);
+		public: TextureError Init(VideoCom^ video, int width, int height, bool generateMipmaps, bool hasMipmaps, const array<__int64>^ mipmaps, const array<int>^ mipmapSizes, const array<int>^ mipmapPitches, int multiSampleMultiple, REIGN_DXGI_FORMAT surfaceFormat, REIGN_D3D11_USAGE usage, REIGN_D3D11_CPU_ACCESS_FLAG cpuUsage, bool isRenderTarget);
 		public: virtual ~Texture2DCom();
 		private: void null();
 		#pragma endregion
 
 		#pragma region Methods
 		public: void Copy(Texture2DCom^ texture);
-		public: void Update(array<byte>^ data, int width);
-		public: void WritePixels(array<byte>^ data);
+		public: void Update(const array<byte>^ data, int width);
+		public: void WritePixels(const array<byte>^ data);
 		#pragma endregion
 	};
 }

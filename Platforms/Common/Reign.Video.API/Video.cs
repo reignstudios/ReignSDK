@@ -8,22 +8,10 @@ namespace Reign.Video.API
 	public enum VideoTypes
 	{
 		None = 0,
-		#if WINDOWS
 		D3D11 = 1,
 		D3D9 = 2,
-		#endif
-
-		#if METRO
-		D3D11 = 1,
-		#endif
-		
-		#if XNA
 		XNA = 4,
-		#endif
-		
-		#if WINDOWS || OSX || LINUX || iOS || ANDROID
 		OpenGL = 8
-		#endif
 	}
 
 	public static class Video

@@ -9,25 +9,11 @@ namespace Reign.Audio.API
 	{
 		None,
 		Dumby,
-		#if WINDOWS || METRO
 		XAudio,
-		#endif
-		
-		#if XNA
 		XNA,
-		#endif
-		
-		#if OSX || iOS
 		Cocoa,
-		#endif
-		
-		#if LINUX
-		OpenAL
-		#endif
-		
-		#if ANDROID
+		OpenAL,
 		Android
-		#endif
 	}
 
 	public static class Audio

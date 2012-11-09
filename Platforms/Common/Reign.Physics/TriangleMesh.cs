@@ -3,6 +3,10 @@ using Reign.Video;
 using System.Collections.Generic;
 using System.IO;
 
+#if METRO
+using System.Threading.Tasks;
+#endif
+
 namespace Reign.Physics
 {
 	public class MeshTrianlge
@@ -45,8 +49,11 @@ namespace Reign.Physics
 			this.fileName = fileName;
 		}
 
-		public override bool Load()
-		{
+		#if METRO
+		public override async Task<bool> Load() {
+		#else
+		public override bool Load() {
+		#endif
 			if (mesh != null)
 			{
 				if (!mesh.Model.Loaded) return false;
@@ -55,7 +62,11 @@ namespace Reign.Physics
 			}
 			else
 			{
+				#if METRO
+				await triangleMesh.load(fileName);
+				#else
 				triangleMesh.load(fileName);
+				#endif
 				return true;
 			}
 		}
@@ -83,12 +94,10 @@ namespace Reign.Physics
 		}
 
 		#if METRO
-		internal async void load(string fileName)
-		{
+		internal async Task load(string fileName) {
 			using (var file = await Streams.OpenFile(fileName))
 		#else
-		internal void load(string fileName)
-		{
+		internal void load(string fileName) {
 			using (var file = Streams.OpenFile(fileName))
 		#endif
 			using (var reader = new BinaryReader(file))

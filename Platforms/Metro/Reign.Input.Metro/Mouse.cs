@@ -12,14 +12,14 @@ namespace Reign.Input.Metro
 		public Button Middle {get; private set;}
 		public Button Right {get; private set;}
 		public float ScrollWheelVelocity {get; private set;}
-		public Vector2 Velocity {get; private set;}
-		public Vector2 Position {get; private set;}
-		public Vector2 ScreenLocation {get; private set;}
+		public Point2 Velocity {get; private set;}
+		public Vector2 VelocityVector {get; private set;}
+		public Point2 Position {get; private set;}
+		public Vector2 PositionVector {get; private set;}
 		
 		private bool leftOn, middleOn, rightOn, scollWheelChanged;
 		private float scrollWheelVelocity;
-		private Vector2 lastLocation, lastScreenLocation;
-		private Point cursorLocation;
+		private Point2 lastLocation, currentPosition;
 		#endregion
 	
 		#region Constructors
@@ -55,42 +55,42 @@ namespace Reign.Input.Metro
 			{
 				case (ApplicationEventTypes.LeftMouseDown):
 					leftOn = true;
-					cursorLocation = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorLocation;
 					break;
 
 				case (ApplicationEventTypes.LeftMouseUp):
 					leftOn = false;
-					cursorLocation = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorLocation;
 					break;
 
 				case (ApplicationEventTypes.MiddleMouseDown):
 					middleOn = true;
-					cursorLocation = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorLocation;
 					break;
 
 				case (ApplicationEventTypes.MiddleMouseUp):
 					middleOn = false;
-					cursorLocation = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorLocation;
 					break;
 
 				case (ApplicationEventTypes.RightMouseDown):
 					rightOn = true;
-					cursorLocation = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorLocation;
 					break;
 
 				case (ApplicationEventTypes.RightMouseUp):
 					rightOn = false;
-					cursorLocation = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorLocation;
 					break;
 
 				case (ApplicationEventTypes.MouseMove):
-					cursorLocation = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorLocation;
 					break;
 				
 				case (ApplicationEventTypes.ScrollWheel):
 					scrollWheelVelocity = theEvent.ScrollWheelVelocity;
 					scollWheelChanged = true;
-					cursorLocation = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorLocation;
 					break;
 			}
 		}
@@ -112,11 +112,11 @@ namespace Reign.Input.Metro
 			Right.Update(rightOn);
 			
 			lastLocation = Position;
-			Position = new Vector2(cursorLocation.X, input.application.FrameSize.Height - cursorLocation.Y);
+			Position = new Point2(currentPosition.X, input.application.FrameSize.Height - currentPosition.Y);
+			PositionVector = Position.ToVector2();
+
 			Velocity = Position - lastLocation;
-			
-			lastScreenLocation = ScreenLocation;
-			ScreenLocation = new Vector2(cursorLocation.X, cursorLocation.Y);
+			VelocityVector = Velocity.ToVector2();
 		}
 		#endregion
 	}

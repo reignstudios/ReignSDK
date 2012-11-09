@@ -545,10 +545,12 @@ namespace ShaderMaterials.{0}
 			this.shaderVersion = shaderVersion;
 		}}
 
-		public override bool Load()
-		{{
-			if (!{1}Material.load(videoType, parent, contentPath, tag, shaderVersion)) return false;
-			return true;
+		#if METRO
+		public override async System.Threading.Tasks.Task<bool> Load() {{
+		#else
+		public override bool Load() {{
+		#endif
+			return {1}Material.load(videoType, parent, contentPath, tag, shaderVersion);
 		}}
 	}}
 

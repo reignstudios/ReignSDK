@@ -3,6 +3,10 @@ using Reign_Video_D3D11_Component;
 using System;
 using System.Runtime.InteropServices;
 
+#if METRO
+using System.Threading.Tasks;
+#endif
+
 namespace Reign.Video.D3D11
 {
 	class Texture2DStreamLoader : StreamLoaderI
@@ -35,8 +39,11 @@ namespace Reign.Video.D3D11
 			this.isRenderTarget = isRenderTarget;
 		}
 
-		public override bool Load()
-		{
+		#if METRO
+		public override async Task<bool> Load() {
+		#else
+		public override bool Load() {
+		#endif
 			if (image == null)
 			{
 				image = Image.Load(fileName, false);
@@ -157,7 +164,7 @@ namespace Reign.Video.D3D11
 					cpuAccessFlags = REIGN_D3D11_CPU_ACCESS_FLAG.WRITE;
 				}
 				com = new Texture2DCom();
-				var error = com.Init(video.com, Size.Width, Size.Height, generateMipmaps, mipmaps, mipmapSizes, mipmapPitches, 0, video.surfaceFormat(surfaceFormat), usageType, cpuAccessFlags, isRenderTarget);
+				var error = com.Init(video.com, Size.Width, Size.Height, generateMipmaps, mipmaps != null, mipmaps, mipmapSizes, mipmapPitches, 0, video.surfaceFormat(surfaceFormat), usageType, cpuAccessFlags, isRenderTarget);
 
 				switch (error)
 				{

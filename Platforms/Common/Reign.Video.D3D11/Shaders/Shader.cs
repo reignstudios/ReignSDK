@@ -2,6 +2,10 @@
 using Reign.Core;
 using System.Collections.Generic;
 
+#if METRO
+using System.Threading.Tasks;
+#endif
+
 namespace Reign.Video.D3D11
 {
 	class ShaderStreamLoader : StreamLoaderI
@@ -17,11 +21,19 @@ namespace Reign.Video.D3D11
 			this.shaderVersion = shaderVersion;
 		}
 
+		#if METRO
+		public override async Task<bool> Load()
+		{
+			await shader.load(fileName, shaderVersion);
+			return true;
+		}
+		#else
 		public override bool Load()
 		{
 			shader.load(fileName, shaderVersion);
 			return true;
 		}
+		#endif
 	}
 
 	public class Shader : ShaderI
@@ -49,7 +61,7 @@ namespace Reign.Video.D3D11
 		}
 
 		#if METRO
-		internal async void load(string fileName, ShaderVersions shaderVersion)
+		internal async Task load(string fileName, ShaderVersions shaderVersion)
 		#else
 		internal void load(string fileName, ShaderVersions shaderVersion)
 		#endif
@@ -62,7 +74,7 @@ namespace Reign.Video.D3D11
 				vertex = new VertexShader(this, code[0], shaderVersion);
 				pixel = new PixelShader(this, code[1], shaderVersion);
 				#else
-				getReflections(fileName);
+				await getReflections(fileName);
 				var code = await getShaders(fileName);
 				vertex = new VertexShader(this, code[0]);
 				pixel = new PixelShader(this, code[1]);
@@ -81,7 +93,7 @@ namespace Reign.Video.D3D11
 		}
 
 		#if METRO
-		private async void getReflections(string fileName)
+		private async Task getReflections(string fileName)
 		{
 			vsVariableNames = new List<string>();
 			vsVariableByteOffsets = new List<int>();
@@ -158,6 +170,12 @@ namespace Reign.Video.D3D11
 					value = reader.ReadLine();
 				}
 			}
+
+			// make sure padding is a multiple of 16
+			int percent = vsVariableBufferSize % 16;
+			if (percent != 0) vsVariableBufferSize += 16 - percent;
+			percent = psVariableBufferSize % 16;
+			if (percent != 0) psVariableBufferSize += 16 - percent;
 		}
 		#endif
 		#endregion

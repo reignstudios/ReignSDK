@@ -208,10 +208,18 @@ namespace Reign.Video
 
 		public ImageDDS(Stream stream, bool flip)
 		{
+			#if METRO
+			init(stream, flip).Wait();
+			#else
 			init(stream, flip);
+			#endif
 		}
 
+		#if METRO
+		protected override async System.Threading.Tasks.Task init(Stream stream, bool flip)
+		#else
 		protected override void init(Stream stream, bool flip)
+		#endif
 		{
 			// Load Desc
 			DDSURFACEDESC2 desc = new DDSURFACEDESC2();

@@ -30,7 +30,7 @@ namespace Reign.Core
 		#if METRO
 		public int KeyCode;
 		public float ScrollWheelVelocity;
-		public Point CursorLocation;
+		public Point2 CursorLocation;
 		#endif
 		
 		public ApplicationEvent()

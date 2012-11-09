@@ -4,7 +4,7 @@
 namespace Reign_Video_D3D11_Component
 {
 	#pragma region Constructors
-	TextureError Texture2DCom::Init(VideoCom^ video, int width, int height, bool generateMipmaps, const array<__int64>^ mipmaps, const array<int>^ mipmapSizes, const array<int>^ mipmapPitches, int multiSampleMultiple, REIGN_DXGI_FORMAT surfaceFormat, REIGN_D3D11_USAGE usage, REIGN_D3D11_CPU_ACCESS_FLAG cpuUsage, bool isRenderTarget)
+	TextureError Texture2DCom::Init(VideoCom^ video, int width, int height, bool generateMipmaps, bool hasMipmaps, const array<__int64>^ mipmaps, const array<int>^ mipmapSizes, const array<int>^ mipmapPitches, int multiSampleMultiple, REIGN_DXGI_FORMAT surfaceFormat, REIGN_D3D11_USAGE usage, REIGN_D3D11_CPU_ACCESS_FLAG cpuUsage, bool isRenderTarget)
 	{
 		null();
 		this->video = video;
@@ -30,7 +30,7 @@ namespace Reign_Video_D3D11_Component
 		desc.CPUAccessFlags = cpuAccessFlags;
 
 		D3D11_SUBRESOURCE_DATA* subData = 0;
-		if (mipmaps)
+		if (hasMipmaps && mipmaps)
 		{
 			subData = new D3D11_SUBRESOURCE_DATA[mipmaps->Length];
 			for (int i = 0; i != mipmaps->Length; ++i)
@@ -96,17 +96,17 @@ namespace Reign_Video_D3D11_Component
 		video->deviceContext->CopySubresourceRegion(texture->texture, D3D11CalcSubresource(0, 0, 1), 0, 0, 0, this->texture, D3D11CalcSubresource(0, 0, 1), 0);
 	}
 
-	void Texture2DCom::Update(array<byte>^ data, int width)
+	void Texture2DCom::Update(const array<byte>^ data, int width)
 	{
-		pin_ptr<byte> dataT = &data[0];
+		PinPtr(byte) dataT = &data[0];
 		video->deviceContext->UpdateSubresource(texture, D3D11CalcSubresource(0, 0, 1), 0, dataT, sizeof(byte)*4*width, 0);
 	}
 
-	void Texture2DCom::WritePixels(array<byte>^ data)
+	void Texture2DCom::WritePixels(const array<byte>^ data)
 	{
 		D3D11_MAPPED_SUBRESOURCE source;
 		video->deviceContext->Map(texture, 0, D3D11_MAP_WRITE_DISCARD, NULL, &source);
-		pin_ptr<byte> dataT = &data[0];
+		PinPtr(byte) dataT = &data[0];
 		memcpy(source.pData, dataT, data->Length);
 		video->deviceContext->Unmap(texture, 0);
 	}
