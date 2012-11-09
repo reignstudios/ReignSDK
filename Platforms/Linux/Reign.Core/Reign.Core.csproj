@@ -69,9 +69,6 @@
     <Compile Include="..\..\Common\Reign.Core\Math\Matrix4.cs">
       <Link>Math\Matrix4.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\Math\Point.cs">
-      <Link>Math\Point.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Size2.cs">
       <Link>Math\Size2.cs</Link>
     </Compile>
@@ -139,6 +136,12 @@
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Triangle3.cs">
       <Link>Math\Triangle3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Point2.cs">
+      <Link>Math\Point2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Rect2.cs">
+      <Link>Math\Rect2.cs</Link>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

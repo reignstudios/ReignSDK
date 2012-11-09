@@ -94,7 +94,7 @@ namespace Reign.Input.X11
 			Position = new Point2(x2, input.window.FrameSize.Height - y2);
 			PositionVector = Position.ToVector2();
 
-			Velecity = Position - lastPosition;
+			Velocity = Position - lastPosition;
 			VelocityVector = Velocity.ToVector2();
 		}
 		#endregion

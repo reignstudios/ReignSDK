@@ -111,7 +111,7 @@ namespace Reign.Core
 				
 				#if LINUX
 				throw new NotImplementedException();
-				return new Point();
+				return new Point2();
 				#endif
 			
 				#if OSX || NaCl
@@ -164,7 +164,7 @@ namespace Reign.Core
 				return new Size2(size.Width, size.Height);
 				#endif
 				
-				#if OSX
+				#if OSX || LINUX
 				return new Size2();
 				#endif
 			}
@@ -185,7 +185,7 @@ namespace Reign.Core
 				return new Size2(size.Width, size.Height);
 				#endif
 				
-				#if OSX
+				#if OSX || LINUX
 				return new Size2();
 				#endif
 			}
