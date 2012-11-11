@@ -6,12 +6,14 @@ namespace Reign.Core
 {
 	class CoreMetroWindow
 	{
+		private CoreWindow window;
 		private ApplicationI application;
 		private ApplicationEvent theEvent;
 		private bool leftPointerOn, middlePointerOn, rightPointerOn;
 
 		public CoreMetroWindow(ApplicationI application, CoreWindow window, ApplicationEvent theEvent)
 		{
+			this.window = window;
 			this.application = application;
 			this.theEvent = theEvent;
 
@@ -24,6 +26,19 @@ namespace Reign.Core
 			window.PointerWheelChanged += pointerWheelChanged;
 			window.KeyDown += keyDown;
 			window.KeyUp += keyUp;
+		}
+
+		public void Dispose()
+		{
+			window.SizeChanged -= sizeChanged;
+			
+			window.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
+			window.PointerMoved -= pointerMoved;
+			window.PointerPressed -= pointerPressed;
+			window.PointerReleased -= pointerReleased;
+			window.PointerWheelChanged -= pointerWheelChanged;
+			window.KeyDown -= keyDown;
+			window.KeyUp -= keyUp;
 		}
 
 		private void pointerMoved(CoreWindow sender, PointerEventArgs e)

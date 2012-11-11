@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -120,6 +121,7 @@ namespace Reign.Core
 
 		#region Base
 		private CoreMetroWindow coreMetroWindow;
+		private bool running, visible;
 
 		private XAMLApplication()
         {
@@ -129,10 +131,13 @@ namespace Reign.Core
 
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
-			var coreWindow = Window.Current.CoreWindow;
-			OS.CoreWindow = coreWindow;
-			if (coreMetroWindow == null) coreMetroWindow = new CoreMetroWindow(this, Window.Current.CoreWindow, theEvent);
-			frameSize = new Size2(coreMetroWindow.ConvertDipsToPixels(coreWindow.Bounds.Width), coreMetroWindow.ConvertDipsToPixels(coreWindow.Bounds.Height));
+			var window = Window.Current.CoreWindow;
+			if (OS.CoreWindow != window) window.VisibilityChanged += visibilityChanged;
+			OS.CoreWindow = window;
+
+			if (coreMetroWindow != null) coreMetroWindow.Dispose();
+			coreMetroWindow = new CoreMetroWindow(this, Window.Current.CoreWindow, theEvent);
+			frameSize = new Size2(coreMetroWindow.ConvertDipsToPixels(window.Bounds.Width), coreMetroWindow.ConvertDipsToPixels(window.Bounds.Height));
 
 			if (Window.Current.Content as ApplicationPage == null)
             {
@@ -143,10 +148,10 @@ namespace Reign.Core
 				
 				Window.Current.Content = new ApplicationPage();
 				shown();
-				CompositionTarget.Rendering += rendering;
             }
 			
             Window.Current.Activate();
+			running = true;
         }
 
 		private void rendering(object sender, object e)
@@ -154,16 +159,35 @@ namespace Reign.Core
 			OS.UpdateAndRender();
 		}
 
+		private void visibilityChanged(CoreWindow sender, VisibilityChangedEventArgs args)
+		{
+			visible = args.Visible;
+
+			if (running)
+			{
+				if (visible)
+				{
+					resume();
+					CompositionTarget.Rendering += rendering;
+				}
+				else
+				{
+					CompositionTarget.Rendering -= rendering;
+					pause();
+				}
+			}
+		}
+
         private void onSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            // Insert suspend code here !!!
+			closing();
             deferral.Complete();
         }
 
 		private void onResuming(object sender, object e)
 		{
-			
+			shown();
 		}
 		#endregion
 	}

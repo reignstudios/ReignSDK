@@ -58,10 +58,11 @@ namespace Reign.Core
 		#region Methods
 		public void SetWindow(CoreWindow window)
 		{
-			OS.CoreWindow = window;
-			coreMetroWindow = new CoreMetroWindow((ApplicationI)this, window, theEvent);
+			if (OS.CoreWindow != window) window.VisibilityChanged += visibilityChanged;
 
-			window.VisibilityChanged += visibilityChanged;
+			OS.CoreWindow = window;
+			if (coreMetroWindow != null) coreMetroWindow.Dispose();
+			coreMetroWindow = new CoreMetroWindow((ApplicationI)this, window, theEvent);
 		}
 
 		public void Load(string entryPoint)
@@ -111,14 +112,14 @@ namespace Reign.Core
 			var deferral = e.SuspendingOperation.GetDeferral();
 			var task = new Task(new Action(delegate
 			{
-				// Insert suspend code here !!!
+				application.closing();
 				deferral.Complete();
 			}));
 		}
 
 		private void resuming(object sender, object e)
 		{
-			
+			application.shown();
 		}
 		#endregion
     }

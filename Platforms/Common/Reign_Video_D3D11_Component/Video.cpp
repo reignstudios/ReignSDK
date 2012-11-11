@@ -420,9 +420,14 @@ namespace Reign_Video_D3D11_Component
 		parameters.pScrollRect = nullptr;
 		parameters.pScrollOffset = nullptr;
 
-		swapChain->Present1(vSync, 0, &parameters);
+		HRESULT error = swapChain->Present1(vSync, 0, &parameters);
 		deviceContext->DiscardView(renderTarget);
 		deviceContext->DiscardView(depthStencil);
+
+		if (error == DXGI_ERROR_DEVICE_REMOVED)
+		{
+			
+		}
 		#endif
 	}
 
