@@ -32,7 +32,7 @@ namespace Reign.Video.D3D11
 		#if WINDOWS
 		private Window window;
 		#else
-		private Application application;
+		private ApplicationI application;
 		#endif
 
 		internal VideoCom com;
@@ -43,9 +43,27 @@ namespace Reign.Video.D3D11
 		#if WINDOWS
 		public Video(DisposableI parent, Window window, bool vSync)
 		: base(parent)
+		{
+			init(parent, window, vSync);
+		}
 		#else
 		public Video(DisposableI parent, Application application, bool vSync)
 		: base(parent)
+		{
+			init(parent, application, vSync, null);
+		}
+
+		public Video(DisposableI parent, XAMLApplication application, bool vSync)
+		: base(parent)
+		{
+			init(parent, application, vSync, application.SwapChainPanel);
+		}
+		#endif
+
+		#if WINDOWS
+		private void init(DisposableI parent, Window window, bool vSync)
+		#else
+		private void init(DisposableI parent, ApplicationI application, bool vSync, Windows.UI.Xaml.Controls.SwapChainBackgroundPanel swapChainBackgroundPanel)
 		#endif
 		{
 			#if WINDOWS
@@ -65,8 +83,8 @@ namespace Reign.Video.D3D11
 				var frame = window.FrameSize;
 				var error = com.Init(window.Handle, vSync, frame.Width, frame.Height, false, out featureLevel);
 				#else
-				var frame = application.FrameSize;
-				var error = com.Init(OS.CurrentApplication.CoreWindow, vSync, frame.Width, frame.Height, out featureLevel);
+				var frame = application.Metro_FrameSize;
+				var error = com.Init(OS.CoreWindow, vSync, frame.Width, frame.Height, out featureLevel, swapChainBackgroundPanel);
 				#endif
 				BackBufferSize = frame;
 
@@ -81,6 +99,13 @@ namespace Reign.Video.D3D11
 					#else
 					case (VideoError.DeviceFailed): Debug.ThrowError("Video", "Failed to create Device"); break;
 					case (VideoError.SwapChainFailed): Debug.ThrowError("Video", "Failed to create SwapChain"); break;
+					case (VideoError.D2DFactoryFailed): Debug.ThrowError("Video", "Failed to create D2D Factory"); break;
+					case (VideoError.D2DDeviceFailed): Debug.ThrowError("Video", "Failed to create D2D Device"); break;
+					case (VideoError.D2DDeviceContextFailed): Debug.ThrowError("Video", "Failed to D2D DeviceContext"); break;
+					case (VideoError.NativeSwapChainPanelFailed): Debug.ThrowError("Video", "Failed to get native SwapChainPanel"); break;
+					case (VideoError.GetDXGIBackBufferFailed): Debug.ThrowError("Video", "Failed to create DXGI BackBuffer"); break;
+					case (VideoError.DXGISurfaceFailed): Debug.ThrowError("Video", "Failed to create DXGI Surface"); break;
+					case (VideoError.D2DBitmapFailed): Debug.ThrowError("Video", "Failed to create D2D Bitmap"); break;
 					#endif
 				}
 
@@ -149,7 +174,7 @@ namespace Reign.Video.D3D11
 			#if WINDOWS
 			var frame = window.FrameSize;
 			#else
-			var frame = application.FrameSize;
+			var frame = application.Metro_FrameSize;
 			#endif
 
 			if (frame.Width != 0 && frame.Height != 0) BackBufferSize = frame;

@@ -112,7 +112,7 @@ namespace Reign.Input.Metro
 			Right.Update(rightOn);
 			
 			lastLocation = Position;
-			Position = new Point2(currentPosition.X, input.application.FrameSize.Height - currentPosition.Y);
+			Position = new Point2(currentPosition.X, input.applicationI.Metro_FrameSize.Height - currentPosition.Y);
 			PositionVector = Position.ToVector2();
 
 			Velocity = Position - lastLocation;

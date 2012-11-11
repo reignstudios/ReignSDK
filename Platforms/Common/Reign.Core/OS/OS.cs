@@ -122,7 +122,11 @@ namespace Reign.Core
 
 		public static Window CurrentWindow;
 		#else
+		public static Windows.UI.Core.CoreWindow CoreWindow;
 		public static Application CurrentApplication;
+		#if METRO
+		public static XAMLApplication CurrentPageApplication;
+		#endif
 		#endif
 		
 		#if OSX
@@ -318,6 +322,15 @@ namespace Reign.Core
 		}
 		#endif
 
+		#if METRO
+		internal static void Init(XAMLApplication application)
+		{
+			CurrentPageApplication = application;
+			time = new Time(0);
+			time.Start();
+		}
+		#endif
+
 		#if WINDOWS
 		[StructLayout(LayoutKind.Sequential)]
 		private struct Message
@@ -361,8 +374,16 @@ namespace Reign.Core
 			if (time.FPSGoal != 0) time.Sleep();
 			#endif
 			time.Update();
-			CurrentApplication.update(time);
-			CurrentApplication.render(time);
+			if (CurrentApplication != null)
+			{
+				CurrentApplication.update(time);
+				CurrentApplication.render(time);
+			}
+			else
+			{
+				CurrentPageApplication.update(time);
+				CurrentPageApplication.render(time);
+			}
 		}
 		#endif
 		#endregion

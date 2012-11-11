@@ -1,6 +1,8 @@
 ﻿#pragma once
 #if METRO
 #include <d3d11_1.h>
+#include <d2d1_1.h>
+#include <windows.ui.xaml.media.dxinterop.h>
 #else
 #include <d3d11.h>
 #endif
@@ -17,6 +19,13 @@ namespace Reign_Video_D3D11_Component
 		#else
 		DeviceFailed,
 		SwapChainFailed,
+		D2DFactoryFailed,
+		D2DDeviceFailed,
+		D2DDeviceContextFailed,
+		NativeSwapChainPanelFailed,
+		GetDXGIBackBufferFailed,
+		DXGISurfaceFailed,
+		D2DBitmapFailed,
 		#endif
 		GetSwapChainFailed,
 		RenderTargetViewFailed,
@@ -71,6 +80,7 @@ namespace Reign_Video_D3D11_Component
 	public ref class VideoCom sealed
 	{
 		#pragma region Properties
+		private: DXGI_FORMAT swapChainFromat;
 		#if WINDOWS
 		private: IDXGISwapChain* swapChain;
 		internal: ID3D11Device* device;
@@ -79,6 +89,13 @@ namespace Reign_Video_D3D11_Component
 		private: IDXGISwapChain1* swapChain;
 		internal: ID3D11Device1* device;
 		internal: ID3D11DeviceContext1* deviceContext;
+		private: bool compositionMode;
+		private: float dpi;
+		private: ID2D1Factory1* d2dFactory;
+		private: ID2D1Device* d2dDevice;
+		private: ID2D1DeviceContext* d2dDeviceContext;
+		private: ID2D1Bitmap1* d2dRenderTarget;
+		private: ISwapChainBackgroundPanelNative* swapChainBackgroundPanelNative;
 		#endif
 		private: ID3D11RenderTargetView* renderTarget;
 		private: ID3D11DepthStencilView* depthStencil;
@@ -97,7 +114,7 @@ namespace Reign_Video_D3D11_Component
 		#if WINDOWS
 		public: VideoError Init(IntPtr handle, bool vSync, int width, int height, bool fullscreen, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel);
 		#else
-		public: VideoError Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel);
+		public: VideoError Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ swapChainBackgroundPanel);
 		#endif
 		private: VideoError createViews(int width, int height);
 		public: virtual ~VideoCom();

@@ -13,10 +13,14 @@ namespace Reign_Video_D3D11_Component
 	#if WINDOWS
 	VideoError VideoCom::Init(IntPtr handle, bool vSync, int width, int height, bool fullscreen, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel)
 	#else
-	VideoError VideoCom::Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel)
+	VideoError VideoCom::Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ swapChainBackgroundPanel)
 	#endif
 	{
 		null();
+
+		#if METRO
+		compositionMode = swapChainBackgroundPanel != nullptr;
+		#endif
 
 		#if WINDOWS
 		if (width == 0 || height == 0)
@@ -48,6 +52,7 @@ namespace Reign_Video_D3D11_Component
 		swapChainDesc.BufferDesc.Width = width;
 		swapChainDesc.BufferDesc.Height = height;
 		swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		swapChainFromat = DXGI_FORMAT_R8G8B8A8_UNORM;
 		swapChainDesc.Windowed = !fullscreen;
 		swapChainDesc.OutputWindow = (HWND)handle.ToInt32();
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
@@ -56,9 +61,10 @@ namespace Reign_Video_D3D11_Component
 		ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC1));
 		swapChainDesc.Width = width;
 		swapChainDesc.Height = height;
-		swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		swapChainDesc.Format = compositionMode ? DXGI_FORMAT_B8G8R8A8_UNORM : DXGI_FORMAT_R8G8B8A8_UNORM;
+		swapChainFromat = compositionMode ? DXGI_FORMAT_B8G8R8A8_UNORM : DXGI_FORMAT_R8G8B8A8_UNORM;
 		swapChainDesc.Stereo = false;
-		swapChainDesc.Scaling = DXGI_SCALING_NONE;
+		swapChainDesc.Scaling = compositionMode ? DXGI_SCALING_STRETCH : DXGI_SCALING_NONE;
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 		#endif
 		swapChainDesc.BufferCount = 2;
@@ -86,6 +92,7 @@ namespace Reign_Video_D3D11_Component
 		D3D_FEATURE_LEVEL featureLevelType = D3D_FEATURE_LEVEL_9_1;
 
 		#if WINDOWS
+		// create device and swapchain
 		ID3D11Device* deviceTEMP;
 		ID3D11DeviceContext* deviceContextTEMP;
 		IDXGISwapChain* swapChainTEMP;
@@ -98,17 +105,20 @@ namespace Reign_Video_D3D11_Component
 		deviceContext = deviceContextTEMP;
 		swapChain = swapChainTEMP;
 		#else
+		// create device
 		ID3D11Device* deviceTEMP;
 		ID3D11DeviceContext* deviceContextTEMP;
 		IDXGISwapChain1* swapChainTEMP;
+		uint creationFlags = compositionMode ? D3D11_CREATE_DEVICE_BGRA_SUPPORT : 0;
 
-		if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0, featureLevelTypes, featureCount, D3D11_SDK_VERSION, &deviceTEMP, &featureLevelType, &deviceContextTEMP)))
+		if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, creationFlags, featureLevelTypes, featureCount, D3D11_SDK_VERSION, &deviceTEMP, &featureLevelType, &deviceContextTEMP)))
 		{
 			return VideoError::DeviceFailed;
 		}
 		deviceTEMP->QueryInterface(__uuidof(ID3D11Device1), (void**)&device);
 		deviceContextTEMP->QueryInterface(__uuidof(ID3D11DeviceContext1), (void**)&deviceContext);
 
+		// create swapchain
 		IDXGIDevice1* dxgiDevice;
 		deviceTEMP->QueryInterface(__uuidof(IDXGIDevice1), (void**)&dxgiDevice);
 		dxgiDevice->SetMaximumFrameLatency(vSync ? 1 : 0);
@@ -116,11 +126,48 @@ namespace Reign_Video_D3D11_Component
 		dxgiDevice->GetAdapter(&dxgiAdapter);
 		IDXGIFactory2* dxgiFactory;
 		dxgiAdapter->GetParent(IID_PPV_ARGS(&dxgiFactory));
-		if (FAILED(dxgiFactory->CreateSwapChainForCoreWindow(deviceTEMP, reinterpret_cast<IUnknown*>(coreWindow), &swapChainDesc, 0, &swapChainTEMP)))
+		if (compositionMode)
 		{
-			return VideoError::SwapChainFailed;
+			if (FAILED(dxgiFactory->CreateSwapChainForComposition(deviceTEMP, &swapChainDesc, nullptr, &swapChainTEMP)))
+			{
+				return VideoError::SwapChainFailed;
+			}
+		}
+		else
+		{
+			if (FAILED(dxgiFactory->CreateSwapChainForCoreWindow(deviceTEMP, reinterpret_cast<IUnknown*>(coreWindow), &swapChainDesc, 0, &swapChainTEMP)))
+			{
+				return VideoError::SwapChainFailed;
+			}
 		}
 		swapChain = swapChainTEMP;
+
+		// create D2D device
+		if (compositionMode)
+		{
+			D2D1_FACTORY_OPTIONS options;
+			ZeroMemory(&options, sizeof(D2D1_FACTORY_OPTIONS));
+			ComPtr<ID2D1Factory1> factory;
+			if (FAILED(D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof(ID2D1Factory1), &options, &factory)))
+			{
+				return VideoError::D2DFactoryFailed;
+			}
+			d2dFactory = factory.Get();
+
+			ID2D1Device* d2dDeviceTEMP = 0;
+			if (FAILED(d2dFactory->CreateDevice(dxgiDevice, &d2dDeviceTEMP)))
+			{
+				return VideoError::D2DDeviceFailed;
+			}
+			d2dDevice = d2dDeviceTEMP;
+
+			ID2D1DeviceContext* d2dDeviceContextTEMP = 0;
+			if (FAILED(d2dDevice->CreateDeviceContext(D2D1_DEVICE_CONTEXT_OPTIONS_NONE, &d2dDeviceContextTEMP)))
+			{
+				return VideoError::D2DDeviceContextFailed;
+			}
+			d2dDeviceContext = d2dDeviceContextTEMP;
+		}
 		#endif
 
 		this->vSync = vSync ? 1 : 0;
@@ -137,6 +184,20 @@ namespace Reign_Video_D3D11_Component
 		// Apply Defaults
 		EnableRenderTarget();
 
+		#if METRO
+		// get native swap chain panel
+		if (compositionMode)
+		{
+			ComPtr<ISwapChainBackgroundPanelNative>	m_swapChainNative;
+			reinterpret_cast<IInspectable*>(swapChainBackgroundPanel)->QueryInterface(__uuidof(ISwapChainBackgroundPanelNative), (void**)&m_swapChainNative);
+			swapChainBackgroundPanelNative = m_swapChainNative.Get();
+			if (FAILED(swapChainBackgroundPanelNative->SetSwapChain(swapChain)))
+			{
+				return VideoError::NativeSwapChainPanelFailed;
+			}
+		}
+		#endif
+
 		return VideoError::None;
 	}
 
@@ -149,11 +210,27 @@ namespace Reign_Video_D3D11_Component
 			return VideoError::GetSwapChainFailed;
 		}
 
-		ID3D11RenderTargetView* renderTargetTEMP;
-		if (FAILED(device->CreateRenderTargetView(backBuffer, 0, &renderTargetTEMP)))
+		ID3D11RenderTargetView* renderTargetTEMP = 0;
+		bool createNormalRenderView = true;
+		#if METRO
+		if (compositionMode)
 		{
-			backBuffer->Release();
-			return VideoError::RenderTargetViewFailed;
+			CD3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc(D3D11_RTV_DIMENSION_TEXTURE2DARRAY, DXGI_FORMAT_B8G8R8A8_UNORM, 0, 0, 1);
+			if (FAILED(device->CreateRenderTargetView(backBuffer, &renderTargetViewDesc, &renderTargetTEMP)))
+			{
+				backBuffer->Release();
+				return VideoError::RenderTargetViewFailed;
+			}
+			createNormalRenderView = false;
+		}
+		#endif
+		if (createNormalRenderView)
+		{
+			if (FAILED(device->CreateRenderTargetView(backBuffer, NULL, &renderTargetTEMP)))
+			{
+				backBuffer->Release();
+				return VideoError::RenderTargetViewFailed;
+			}
 		}
 		renderTarget = renderTargetTEMP;
 		backBuffer->Release();
@@ -193,6 +270,43 @@ namespace Reign_Video_D3D11_Component
 		}
 		depthStencil = depthStencilTEMP;
 
+		#if METRO
+		// D2D renderTarget
+		if (compositionMode)
+		{
+			dpi = Windows::Graphics::Display::DisplayProperties::LogicalDpi;
+
+			D2D1_BITMAP_PROPERTIES1 bitmapProperties;
+			ZeroMemory(&bitmapProperties, sizeof(D2D1_BITMAP_PROPERTIES1));
+			bitmapProperties.bitmapOptions = D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW;
+			bitmapProperties.pixelFormat.format = DXGI_FORMAT_B8G8R8A8_UNORM;
+			bitmapProperties.pixelFormat.alphaMode = D2D1_ALPHA_MODE_PREMULTIPLIED;
+			bitmapProperties.dpiX = dpi;
+			bitmapProperties.dpiY = dpi;
+
+			ComPtr<IDXGIResource1> dxgiBackBuffer;
+			if (FAILED(swapChain->GetBuffer(0, IID_PPV_ARGS(&dxgiBackBuffer))))
+			{
+				return VideoError::GetDXGIBackBufferFailed;
+			}
+
+			ComPtr<IDXGISurface2> dxgiSurface;
+			if (FAILED(dxgiBackBuffer->CreateSubresourceSurface(0, &dxgiSurface)))
+			{
+				return VideoError::DXGISurfaceFailed;
+			}
+
+			if (FAILED(d2dDeviceContext->CreateBitmapFromDxgiSurface(dxgiSurface.Get(), &bitmapProperties, &d2dRenderTarget)))
+			{
+				return VideoError::D2DBitmapFailed;
+			}
+
+			d2dDeviceContext->SetDpi(dpi, dpi);
+			d2dDeviceContext->SetTarget(d2dRenderTarget);
+			d2dDeviceContext->SetTextAntialiasMode(D2D1_TEXT_ANTIALIAS_MODE_GRAYSCALE);
+		}
+		#endif
+
 		return VideoError::None;
 	}
 
@@ -200,6 +314,14 @@ namespace Reign_Video_D3D11_Component
 	{
 		if (deviceContext) deviceContext->ClearState();
 		if (deviceContext) deviceContext->Release();
+
+		#if METRO
+		if (swapChainBackgroundPanelNative) swapChainBackgroundPanelNative->Release();
+		//if (d2dDeviceContext) d2dDeviceContext->Release();
+		if (d2dFactory) d2dFactory->Release();
+		if (d2dRenderTarget) d2dRenderTarget->Release();
+		if (d2dDevice) d2dDevice->Release();
+		#endif
 
 		if (currentVertexResources) delete currentVertexResources;
 		if (currentPixelResources) delete currentPixelResources;
@@ -221,18 +343,34 @@ namespace Reign_Video_D3D11_Component
 		swapChain = 0;
 		device = 0;
 		deviceContext = 0;
+
+		#if METRO
+		d2dFactory = 0;
+		d2dDevice = 0;
+		d2dDeviceContext = 0;
+		d2dRenderTarget = 0;
+		swapChainBackgroundPanelNative = 0;
+		#endif
 	}
 	#pragma endregion
 
 	#pragma region Methods
 	void VideoCom::Update(int width, int height)
 	{
+		#if METRO
+		if (compositionMode && dpi != Windows::Graphics::Display::DisplayProperties::LogicalDpi)
+		{
+			dpi = Windows::Graphics::Display::DisplayProperties::LogicalDpi;
+			d2dDeviceContext->SetDpi(dpi, dpi);
+		}
+		#endif
+
 		if ((lastWidth != width || lastHeight != height) && width != 0 && height != 0)
 		{
 			renderTarget->Release();
 			depthStencil->Release();
 			depthTexture->Release();
-			swapChain->ResizeBuffers(2, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+			swapChain->ResizeBuffers(2, width, height, swapChainFromat, 0);
 			createViews(width, height);
 			lastWidth = width;
 			lastHeight = height;
@@ -245,6 +383,10 @@ namespace Reign_Video_D3D11_Component
 		deviceContext->OMSetRenderTargets(1, &renderTargetTEMP, depthStencil);
 		currentRenderTarget = renderTarget;
 		currentDepthStencil = depthStencil;
+
+		#if METRO
+		if (compositionMode) d2dDeviceContext->SetTarget(d2dRenderTarget);
+		#endif
 	}
 
 	void VideoCom::EnableRenderTarget(DepthStencilCom^ depthStencil)
@@ -261,6 +403,10 @@ namespace Reign_Video_D3D11_Component
 		{
 			deviceContext->OMSetRenderTargets(1, &renderTargetTEMP, 0);
 		}
+
+		#if METRO
+		if (compositionMode) d2dDeviceContext->SetTarget(d2dRenderTarget);
+		#endif
 	}
 
 	void VideoCom::Present()

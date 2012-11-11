@@ -75,6 +75,14 @@ namespace Reign.Core
 		#endif
 	}
 
+	#if METRO
+	public interface ApplicationI
+	{
+		Size2 Metro_FrameSize {get; set;}
+		void Metro_HandleEvent(ApplicationEvent theEvent);
+	}
+	#endif
+
 	public class Application
 	#if iOS
 	: GLController
@@ -83,13 +91,10 @@ namespace Reign.Core
 	#elif XNA
 	: XNAGame
 	#elif METRO
-	: MetroApplication
+	: MetroApplication, ApplicationI
 	#endif
 	{
 		#region Properties
-		public delegate void StateMethod();
-		public static StateMethod PauseCallback, ResumeCallback;
-
 		#if !XNA
 		internal ApplicationOrientations orientation;
 		#endif
@@ -100,11 +105,22 @@ namespace Reign.Core
 			get {return frameSize;}
 		}
 
+		#if METRO
+		public Size2 Metro_FrameSize
+		{
+			get {return frameSize;}
+			set {frameSize = value;}
+		}
+		#endif
+
 		public delegate void ApplicationEventMethod();
 		public ApplicationEventMethod Closing;
 
 		public delegate void HandleEventMethod(ApplicationEvent theEvent);
 		public HandleEventMethod HandleEvent;
+
+		public delegate void StateMethod();
+		public static StateMethod PauseCallback, ResumeCallback;
 		#endregion
 
 		#region Constructors
@@ -153,16 +169,18 @@ namespace Reign.Core
 		{
 			
 		}
-
-		public void Close()
-		{
-			closing();
-		}
 		
 		protected internal virtual void handleEvent(ApplicationEvent theEvent)
 		{
 			if (HandleEvent != null) HandleEvent(theEvent);
 		}
+
+		#if METRO
+		public void Metro_HandleEvent(ApplicationEvent theEvent)
+		{
+			handleEvent(theEvent);
+		}
+		#endif
 		
 		protected internal virtual void update(Time time)
 		{
