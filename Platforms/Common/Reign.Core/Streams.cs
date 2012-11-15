@@ -21,10 +21,20 @@ using System.Collections.Generic;
 using Windows.Storage;
 using Windows.ApplicationModel;
 using System.Threading.Tasks;
+using Windows.Storage.Pickers;
 #endif
 
 namespace Reign.Core
 {
+	public enum FolderLocations
+	{
+		Default,
+		Pictures,
+		Documents,
+		Music,
+		Video
+	}
+
 	public enum SourceTypes
 	{
 		File,
@@ -48,6 +58,56 @@ namespace Reign.Core
 	
 	public static class Streams
 	{
+		// System paths
+		public static string DocumentsLibrary
+		{
+			get
+			{
+				#if METRO
+				return KnownFolders.DocumentsLibrary.Path;
+				#else
+				return null;
+				#endif
+			}
+		}
+
+		public static string MusicLibrary
+		{
+			get
+			{
+				#if METRO
+				return KnownFolders.MusicLibrary.Path;
+				#else
+				return null;
+				#endif
+			}
+		}
+
+		public static string VideoLibrary
+		{
+			get
+			{
+				#if METRO
+				return KnownFolders.VideosLibrary.Path;
+				#else
+				return null;
+				#endif
+			}
+		}
+
+		public static string PictureLibrary
+		{
+			get
+			{
+				#if METRO
+				return KnownFolders.PicturesLibrary.Path;
+				#else
+				return null;
+				#endif
+			}
+		}
+
+		// file loading
 		public static int ItemsRemainingToLoad {get{return loaders.Count;}}
 		internal static List<StreamLoaderI> loaders;
 		private static bool asyncDone = true;
@@ -107,6 +167,88 @@ namespace Reign.Core
 			}
 
 			asyncDone = true;
+		}
+
+		#if METRO
+		private static PickerLocationId getFolderType(FolderLocations folderLocation)
+		{
+			PickerLocationId folder = PickerLocationId.Desktop;
+			switch (folderLocation)
+			{
+				case (FolderLocations.Default): folder = PickerLocationId.PicturesLibrary; break;
+				case (FolderLocations.Documents): folder = PickerLocationId.DocumentsLibrary; break;
+				case (FolderLocations.Pictures): folder = PickerLocationId.PicturesLibrary; break;
+				case (FolderLocations.Music): folder = PickerLocationId.MusicLibrary; break;
+				case (FolderLocations.Video): folder = PickerLocationId.VideosLibrary; break;
+				default: Debug.ThrowError("Streams", "Unsuported folder location"); break;
+			}
+
+			return folder;
+		}
+		#endif
+
+		#if METRO
+		public static async Task<string> OpenFileDialog(FolderLocations folderLocation, string[] fileTypes)
+		#else
+		public static string OpenFileDialog(FolderLocations folderLocation, string[] fileTypes)
+		#endif
+		{
+			#if METRO
+			var picker = new FileOpenPicker();
+			foreach (var fileType in fileTypes) picker.FileTypeFilter.Add(fileType);
+			picker.SuggestedStartLocation = getFolderType(folderLocation);
+			var file = await picker.PickSingleFileAsync();
+			if (file != null) return file.Path;
+			else return null;
+			#else
+			throw new NotImplementedException();
+			#endif
+		}
+
+		#if METRO
+		public static async Task<string> SaveFileDialog(FolderLocations folderLocation, string[] fileTypes)
+		#else
+		public static string SaveFileDialog(FolderLocations folderLocation, string[] fileTypes)
+		#endif
+		{
+			#if METRO
+			var picker = new FileSavePicker();
+			picker.FileTypeChoices.Add(new KeyValuePair<string,IList<string>>("Supported File Types", fileTypes));
+			picker.SuggestedStartLocation = getFolderType(folderLocation);
+			var file = await picker.PickSaveFileAsync();
+			if (file != null) return file.Path;
+			else return null;
+			#else
+			throw new NotImplementedException();
+			#endif
+		}
+
+		#if METRO
+		public static async Task<Stream> OpenStorageFile(string fileName)
+		#else
+		public static Stream OpenStorageFile(string fileName)
+		#endif
+		{
+			#if METRO
+			var file = await StorageFile.GetFileFromPathAsync(fileName);
+			return await file.OpenStreamForReadAsync();
+			#else
+			throw new NotImplementedException();
+			#endif
+		}
+
+		#if METRO
+		public static async Task<Stream> SaveStorageFile(string fileName)
+		#else
+		public static Stream SaveStorageFile(string fileName)
+		#endif
+		{
+			#if METRO
+			var file = await StorageFile.GetFileFromPathAsync(fileName);
+			return await file.OpenStreamForWriteAsync();
+			#else
+			throw new NotImplementedException();
+			#endif
 		}
 
 		#if NaCl
