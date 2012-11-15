@@ -22,15 +22,19 @@ using Windows.Storage;
 using Windows.ApplicationModel;
 using System.Threading.Tasks;
 using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
+using Windows.Foundation;
 #endif
 
 namespace Reign.Core
 {
 	public enum FolderLocations
 	{
-		Default,
-		Pictures,
+		Unknown,
+		Application,
+		Storage,
 		Documents,
+		Pictures,
 		Music,
 		Video
 	}
@@ -58,55 +62,6 @@ namespace Reign.Core
 	
 	public static class Streams
 	{
-		// System paths
-		public static string DocumentsLibrary
-		{
-			get
-			{
-				#if METRO
-				return KnownFolders.DocumentsLibrary.Path;
-				#else
-				return null;
-				#endif
-			}
-		}
-
-		public static string MusicLibrary
-		{
-			get
-			{
-				#if METRO
-				return KnownFolders.MusicLibrary.Path;
-				#else
-				return null;
-				#endif
-			}
-		}
-
-		public static string VideoLibrary
-		{
-			get
-			{
-				#if METRO
-				return KnownFolders.VideosLibrary.Path;
-				#else
-				return null;
-				#endif
-			}
-		}
-
-		public static string PictureLibrary
-		{
-			get
-			{
-				#if METRO
-				return KnownFolders.PicturesLibrary.Path;
-				#else
-				return null;
-				#endif
-			}
-		}
-
 		// file loading
 		public static int ItemsRemainingToLoad {get{return loaders.Count;}}
 		internal static List<StreamLoaderI> loaders;
@@ -175,7 +130,6 @@ namespace Reign.Core
 			PickerLocationId folder = PickerLocationId.Desktop;
 			switch (folderLocation)
 			{
-				case (FolderLocations.Default): folder = PickerLocationId.PicturesLibrary; break;
 				case (FolderLocations.Documents): folder = PickerLocationId.DocumentsLibrary; break;
 				case (FolderLocations.Pictures): folder = PickerLocationId.PicturesLibrary; break;
 				case (FolderLocations.Music): folder = PickerLocationId.MusicLibrary; break;
@@ -188,7 +142,7 @@ namespace Reign.Core
 		#endif
 
 		#if METRO
-		public static async Task<string> OpenFileDialog(FolderLocations folderLocation, string[] fileTypes)
+		public static async Task<Stream> OpenFileDialog(FolderLocations folderLocation, string[] fileTypes)
 		#else
 		public static string OpenFileDialog(FolderLocations folderLocation, string[] fileTypes)
 		#endif
@@ -198,7 +152,7 @@ namespace Reign.Core
 			foreach (var fileType in fileTypes) picker.FileTypeFilter.Add(fileType);
 			picker.SuggestedStartLocation = getFolderType(folderLocation);
 			var file = await picker.PickSingleFileAsync();
-			if (file != null) return file.Path;
+			if (file != null) return await file.OpenStreamForReadAsync();
 			else return null;
 			#else
 			throw new NotImplementedException();
@@ -206,7 +160,7 @@ namespace Reign.Core
 		}
 
 		#if METRO
-		public static async Task<string> SaveFileDialog(FolderLocations folderLocation, string[] fileTypes)
+		public static async Task<Stream> SaveFileDialog(FolderLocations folderLocation, string[] fileTypes)
 		#else
 		public static string SaveFileDialog(FolderLocations folderLocation, string[] fileTypes)
 		#endif
@@ -216,36 +170,8 @@ namespace Reign.Core
 			picker.FileTypeChoices.Add(new KeyValuePair<string,IList<string>>("Supported File Types", fileTypes));
 			picker.SuggestedStartLocation = getFolderType(folderLocation);
 			var file = await picker.PickSaveFileAsync();
-			if (file != null) return file.Path;
+			if (file != null) return await file.OpenStreamForWriteAsync();
 			else return null;
-			#else
-			throw new NotImplementedException();
-			#endif
-		}
-
-		#if METRO
-		public static async Task<Stream> OpenStorageFile(string fileName)
-		#else
-		public static Stream OpenStorageFile(string fileName)
-		#endif
-		{
-			#if METRO
-			var file = await StorageFile.GetFileFromPathAsync(fileName);
-			return await file.OpenStreamForReadAsync();
-			#else
-			throw new NotImplementedException();
-			#endif
-		}
-
-		#if METRO
-		public static async Task<Stream> SaveStorageFile(string fileName)
-		#else
-		public static Stream SaveStorageFile(string fileName)
-		#endif
-		{
-			#if METRO
-			var file = await StorageFile.GetFileFromPathAsync(fileName);
-			return await file.OpenStreamForWriteAsync();
 			#else
 			throw new NotImplementedException();
 			#endif
@@ -338,10 +264,24 @@ namespace Reign.Core
 
 		#if METRO
 		public static async Task<Stream> OpenFile(string fileName)
+		{
+			return await OpenFile(fileName, FolderLocations.Application);
+		}
 		#else
 		public static Stream OpenFile(string fileName)
+		{
+			return OpenFile(fileName, FolderLocations.Application);
+		}
+		#endif
+
+		#if METRO
+		public static async Task<Stream> OpenFile(string fileName, FolderLocations folderLocation)
+		#else
+		public static Stream OpenFile(string fileName, FolderLocations folderLocation)
 		#endif
 		{
+			if (folderLocation == FolderLocations.Unknown) Debug.ThrowError("Streams", "Unsuported folder type: " + folderLocation.ToString());
+
 			#if OSX || iOS
 			fileName = fileName.Replace('\\', '/');
 			string directory = GetFileDirectory(fileName);
@@ -379,9 +319,33 @@ namespace Reign.Core
 			return new MemoryStream();
 			#elif METRO
 			fileName = fileName.Replace('/', '\\');
-			var storageFolder = Package.Current.InstalledLocation;
-			var stream = await storageFolder.OpenStreamForReadAsync(fileName);
-			return stream;
+			switch (folderLocation)
+			{
+				case (FolderLocations.Application):
+					var appFolder = Package.Current.InstalledLocation;
+					return await appFolder.OpenStreamForReadAsync(fileName);
+
+				case (FolderLocations.Storage):
+					var storageFile = await StorageFile.GetFileFromPathAsync(fileName);
+					return await storageFile.OpenStreamForReadAsync();
+
+				case (FolderLocations.Documents):
+					var docFile = await KnownFolders.DocumentsLibrary.GetFileAsync(fileName);
+					return await docFile.OpenStreamForReadAsync();
+
+				case (FolderLocations.Pictures):
+					var picFile = await KnownFolders.PicturesLibrary.GetFileAsync(fileName);
+					return await picFile.OpenStreamForReadAsync();
+
+				case (FolderLocations.Music):
+					var musicFile = await KnownFolders.MusicLibrary.GetFileAsync(fileName);
+					return await musicFile.OpenStreamForReadAsync();
+
+				case (FolderLocations.Video):
+					var videoFile = await KnownFolders.VideosLibrary.GetFileAsync(fileName);
+					return await videoFile.OpenStreamForReadAsync();
+			}
+			return null;
 			#else
 			#if LINUX
 			fileName = fileName.Replace('\\', '/');
@@ -392,12 +356,70 @@ namespace Reign.Core
 			#endif
 		}
 
+		#if METRO
+		public static async Task<Stream> SaveFile(string fileName)
+		{
+			return await SaveFile(fileName, FolderLocations.Storage);
+		}
+		#else
 		public static Stream SaveFile(string fileName)
 		{
-			#if WINDOWS
-			return new FileStream(fileName, FileMode.Create, FileAccess.Write);
-			#else
+			return SaveFile(fileName, FolderLocations.Storage);
+		}
+		#endif
+
+		#if METRO
+		public static async Task<Stream> SaveFile(string fileName, FolderLocations folderLocation)
+		#else
+		public static Stream SaveFile(string fileName, FolderLocations folderLocation)
+		#endif
+		{
+			#if OSX || iOS
 			throw new NotImplementedException();
+			#elif ANDROID
+			throw new NotImplementedException();
+			#elif NaCl
+			throw new NotImplementedException();
+			#elif METRO
+			fileName = fileName.Replace('/', '\\');
+			switch (folderLocation)
+			{
+				case (FolderLocations.Unknown):
+					var storageFolder = await StorageFile.GetFileFromPathAsync(fileName);
+					return await storageFolder.OpenStreamForWriteAsync();
+
+				case (FolderLocations.Application):
+					var appFolder = Package.Current.InstalledLocation;
+					return await appFolder.OpenStreamForWriteAsync(fileName, CreationCollisionOption.ReplaceExisting);
+
+				case (FolderLocations.Storage):
+					var storageFile = await StorageFile.GetFileFromPathAsync(fileName);
+					return await storageFile.OpenStreamForWriteAsync();
+
+				case (FolderLocations.Documents):
+					var docFile = await KnownFolders.DocumentsLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+					return await docFile.OpenStreamForWriteAsync();
+
+				case (FolderLocations.Pictures):
+					var picFile = await KnownFolders.PicturesLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+					return await picFile.OpenStreamForWriteAsync();
+
+				case (FolderLocations.Music):
+					var musicFile = await KnownFolders.MusicLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+					return await musicFile.OpenStreamForWriteAsync();
+
+				case (FolderLocations.Video):
+					var videoFile = await KnownFolders.VideosLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+					return await videoFile.OpenStreamForWriteAsync();
+			}
+			return null;
+			#else
+			#if LINUX
+			fileName = fileName.Replace('\\', '/');
+			#else
+			fileName = fileName.Replace('/', '\\');
+			#endif
+			return new FileStream(fileName, FileMode.Create, FileAccess.Write);
 			#endif
 		}
 		

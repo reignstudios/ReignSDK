@@ -1,5 +1,9 @@
 ﻿using System.IO;
 
+#if METRO
+using System.Threading.Tasks;
+#endif
+
 namespace Reign.Video
 {
 	#if iOS
@@ -26,6 +30,15 @@ namespace Reign.Video
 		{
 			
 		}
+		#endregion
+
+		#region Methods
+		#if METRO
+		public static async Task Save(byte[] data, int width, int height, Stream outStream)
+		{
+			await ImageMetro.save(data, width, height, outStream, ImageTypes.png);
+		}
+		#endif
 		#endregion
 	}
 }

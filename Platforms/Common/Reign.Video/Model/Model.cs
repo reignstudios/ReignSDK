@@ -381,9 +381,15 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
+		#if METRO
+		public static async void Save(string fileName, bool compress, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals)
+		{
+			using (var file = await Streams.SaveFile(fileName, FolderLocations.Unknown))
+		#else
 		public static void Save(string fileName, bool compress, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals)
 		{
-			using (var file = Streams.SaveFile(fileName))
+			using (var file = Streams.SaveFile(fileName, FolderLocations.Unknown))
+		#endif
 			{
 				Save(file, compress, softwareModel, positionSize, loadColors, loadUVs, loadNormals);
 			}

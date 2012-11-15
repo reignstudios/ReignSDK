@@ -157,9 +157,15 @@ namespace Reign.Physics
 			}
 		}
 
+		#if METRO
+		public static async void Save(SoftwareMesh mesh, string fileName)
+		{
+			using (var file = await Streams.SaveFile(fileName, FolderLocations.Unknown))
+		#else
 		public static void Save(SoftwareMesh mesh, string fileName)
 		{
 			using (var file = Streams.SaveFile(fileName))
+		#endif
 			{
 				Save(mesh, file);
 			}

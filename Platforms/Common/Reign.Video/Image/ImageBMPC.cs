@@ -9,6 +9,10 @@ using ICSharpCode.SharpZipLib.GZip;
 using System.IO.Compression;
 #endif
 
+#if METRO
+using System.Threading.Tasks;
+#endif
+
 namespace Reign.Video
 {
 	public class ImageBMPC : Image
@@ -103,22 +107,15 @@ namespace Reign.Video
 
 		#region Methods
 		#if !NaCl
-		public static Stream Save(byte[] data, int width, int height)
+		#if METRO
+		public static async Task Save(byte[] data, int width, int height, Stream outStream)
+		#else
+		public static void Save(byte[] data, int width, int height, Stream outStream)
+		#endif
 		{
 			using (var dataStream = new MemoryStream(data))
+			using (var writer = new BinaryWriter(outStream))
 			{
-				dataStream.Position = 0;
-				return Save(dataStream, width, height);
-			}
-		}
-
-		public static Stream Save(Stream dataStream, int width, int height)
-		{
-			var stream = new MemoryStream();
-			try
-			{
-				var writer = new BinaryWriter(stream);
-
 				// File Type
 				int type = Streams.MakeFourCC('b', 'm', 'p', 'c');
 				writer.Write(type);
@@ -141,19 +138,11 @@ namespace Reign.Video
 					compressedStream.Close();
 					#endif
 
-					var data = compressedDataStream.ToArray();
-					writer.Write(data.Length);
-					writer.Write(data);
+					var compressedData = compressedDataStream.ToArray();
+					writer.Write(compressedData.Length);
+					writer.Write(compressedData);
 				}
 			}
-			catch (Exception e)
-			{
-				stream.Dispose();
-				throw e;
-			}
-
-			stream.Position = 0;
-			return stream;
 		}
 		#endif
 		#endregion

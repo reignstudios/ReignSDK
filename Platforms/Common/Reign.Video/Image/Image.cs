@@ -36,14 +36,28 @@ namespace Reign.Video
 		#endif
 	}
 
+	public enum ImageTypes
+	{
+		dxt,
+		atc,
+		pvt,
+		png,
+		jpg,
+		bmp,
+		bmpc
+	}
+
 	public abstract class Image
 	{
 		public class Mipmap
 		{
+			#region Properties
 			public byte[] Data {get; private set;}
 			public Size2 Size {get; private set;}
 			public int Pitch {get; private set;}
+			#endregion
 
+			#region Constructors
 			public Mipmap(int dataSize, int width, int height, int blockDev, int channels)
 			{
 				Data = new byte[dataSize];
@@ -57,7 +71,9 @@ namespace Reign.Video
 				Size = new Size2(width, height);
 				Pitch = calculatePitch(width, blockDev, channels);
 			}
+			#endregion
 
+			#region Methods
 			private int calculatePitch(int width, int blockDev, int channels)
 			{
 				return (width / blockDev) * channels;
@@ -100,14 +116,18 @@ namespace Reign.Video
 			{
 				return (int)System.Math.Log(width > height ? width : height, 2) + 1;
 			}
+			#endregion
 		}
 
+		#region Properties
 		public bool Loaded {get; protected set;}
 		public Mipmap[] Mipmaps;
 		public Size2 Size {get; protected set;}
 		public bool Compressed {get; protected set;}
 		public SurfaceFormats SurfaceFormat {get; protected set;}
+		#endregion
 
+		#region Constructors
 		public Image()
 		{
 			SurfaceFormat = SurfaceFormats.Unknown;
@@ -160,5 +180,58 @@ namespace Reign.Video
 					return null;
 			}
 		}
+		#endregion
+
+		#region Methods
+		#if METRO
+		public static async void Save(string fileName, byte[] data, int width, int height, FolderLocations folderLocation)
+		{
+			using (var file = await Streams.SaveFile(fileName, folderLocation))
+			{
+				string ext = Streams.GetFileExt(fileName);
+				switch (ext.ToLower())
+				{
+					#if !XNA && NaCl
+					case (".bmpc"): return new ImageBMPC(fileName, flip);
+					#endif
+					#if !XNA && !NaCl
+					case (".bmpc"): await ImageBMPC.Save(data, width, height, file); break;
+					case (".png"): await ImagePNG.Save(data, width, height, file); break;
+					//case (".jpg"): return new ImageJPG(fileName, flip);
+					//case (".jpeg"): return new ImageJPG(fileName, flip);
+					#if !iOS && !ANDROID
+					//case (".bmp"): return new ImageBMP(fileName, flip);
+					#endif
+					#endif
+					default: Debug.ThrowError("Image", string.Format("File 'ext' {0} not supported.", ext)); break;
+				}
+			}
+		}
+		#else
+		public static void Save(string fileName, byte[] data, int width, int height, FolderLocations folderLocation)
+		{
+			using (var file = Streams.SaveFile(fileName, folderLocation))
+			{
+				string ext = Streams.GetFileExt(fileName);
+				switch (ext.ToLower())
+				{
+					#if !XNA && NaCl
+					case (".bmpc"): return new ImageBMPC(fileName, flip);
+					#endif
+					#if !XNA && !NaCl
+					case (".bmpc"): ImageBMPC.Save(data, width, height, file); break;
+					//case (".png"): ImagePNG.Save(data, width, height, file); break;
+					//case (".jpg"): return new ImageJPG(fileName, flip);
+					//case (".jpeg"): return new ImageJPG(fileName, flip);
+					#if !iOS && !ANDROID
+					//case (".bmp"): return new ImageBMP(fileName, flip);
+					#endif
+					#endif
+					default: Debug.ThrowError("Image", string.Format("File 'ext' {0} not supported.", ext)); break;
+				}
+			}
+		}
+		#endif
+		#endregion
 	}
 }
