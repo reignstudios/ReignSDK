@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stetic-interface>
+  <configuration>
+    <images-root-path>..</images-root-path>
+    <target-gtk-version>2.12</target-gtk-version>
+  </configuration>
+  <import>
+    <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <widget-library name="../bin/Debug/ShaderCompiler_Linux.exe" internal="true" />
+  </import>
+  <widget class="Gtk.Window" id="MainWindow" design-size="660 300">
+    <property name="MemberName" />
+    <property name="Title" translatable="yes">Shader Compiler</property>
+    <property name="TypeHint">Dialog</property>
+    <property name="WindowPosition">CenterOnParent</property>
+    <signal name="DeleteEvent" handler="OnDeleteEvent" />
+    <child>
+      <widget class="Gtk.Fixed" id="fixed1">
+        <property name="MemberName" />
+        <property name="HasWindow">False</property>
+        <child>
+          <widget class="Gtk.Label" id="label1">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">CS Proj:</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">48</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Entry" id="csProjTextBox">
+            <property name="MemberName" />
+            <property name="WidthRequest">500</property>
+            <property name="CanFocus">True</property>
+            <property name="Text" translatable="yes">Enter CS Proj file name here...</property>
+            <property name="IsEditable">True</property>
+            <property name="InvisibleChar">●</property>
+          </widget>
+          <packing>
+            <property name="X">60</property>
+            <property name="Y">44</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="compileButton">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">Compile</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">575</property>
+            <property name="Y">226</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.ComboBox" id="recentCSProjs">
+            <property name="MemberName" />
+            <property name="IsTextCombo">True</property>
+            <property name="Items" translatable="yes" />
+          </widget>
+          <packing>
+            <property name="X">529</property>
+            <property name="Y">16</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label3">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">Compile Types:</property>
+          </widget>
+          <packing>
+            <property name="X">20</property>
+            <property name="Y">225</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.ComboBox" id="compileTypesComboBox">
+            <property name="MemberName" />
+            <property name="IsTextCombo">True</property>
+            <property name="Items" translatable="yes">All
+D3D11
+D3D9
+XNA
+GL2
+GL3
+GLES2</property>
+            <property name="Active">0</property>
+          </widget>
+          <packing>
+            <property name="X">114</property>
+            <property name="Y">223</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.CheckButton" id="compileMetroShadersCheckBox">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Label" translatable="yes">Compile Metro Shaders</property>
+            <property name="Active">True</property>
+            <property name="DrawIndicator">True</property>
+            <property name="HasLabel">True</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">223</property>
+            <property name="Y">223</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.ComboBox" id="recentShaderOutputs">
+            <property name="MemberName" />
+            <property name="IsTextCombo">True</property>
+            <property name="Items" translatable="yes" />
+          </widget>
+          <packing>
+            <property name="X">535</property>
+            <property name="Y">93</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Entry" id="shaderDirTextBox">
+            <property name="MemberName" />
+            <property name="WidthRequest">500</property>
+            <property name="CanFocus">True</property>
+            <property name="Text" translatable="yes">Enter Shader Compiled output dir here...</property>
+            <property name="IsEditable">True</property>
+            <property name="InvisibleChar">●</property>
+          </widget>
+          <packing>
+            <property name="X">74</property>
+            <property name="Y">124</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label2">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">Shader Dir:</property>
+          </widget>
+          <packing>
+            <property name="X">10</property>
+            <property name="Y">126</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+</stetic-interface>

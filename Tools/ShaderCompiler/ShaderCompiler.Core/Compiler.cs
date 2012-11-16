@@ -49,8 +49,13 @@ namespace ShaderCompiler.Core
 					{
 						string fileReletivePath = reader.GetAttribute("Include");
 						if (string.IsNullOrEmpty(fileReletivePath)) throw new Exception("Invalide Project cs file path.");
-						
-						using (var stream = new FileStream(inDirectory + fileReletivePath, FileMode.Open))
+
+						#if LINUX
+						string dllPath = (inDirectory + fileReletivePath).Replace('\\', '/');
+						#else
+						string dllPath = (inDirectory + fileReletivePath).Replace('/', '\\');
+						#endif
+						using (var stream = new FileStream(dllPath, FileMode.Open))
 						{
 							var streamReader = new StreamReader(stream);
 							var codeBlock = new CodeFile(streamReader.ReadToEnd(), fileReletivePath);
@@ -89,6 +94,7 @@ namespace ShaderCompiler.Core
 			compileLibrary(inDirectory + "bin/Debug/" + inFile.Split('.')[0] + ".dll", false, compileMaterial, compileMetroShaders);
 		}
 
+		#if WINDOWS
 		class MetroShaderCompiler : Reign.Video.ShaderI
 		{
 			public MetroShaderCompiler(string fileName)
@@ -133,6 +139,7 @@ namespace ShaderCompiler.Core
 				throw new NotImplementedException();
 			}
 		}
+		#endif
 		
 		private string compileLibrary(string dllFileName, bool writeToMemory, bool compileMaterial, bool compileMetroShaders)
 		{
@@ -234,11 +241,13 @@ technique MainTechnique
 								}
 							}
 
+							#if WINDOWS
 							// compile metro shader bytecode
 							if (outputType == CompilerOutputs.D3D11 && compileMetroShaders)
 							{
 								new MetroShaderCompiler(outDirectoryRelitive + FileTag + obj.Name + ".rs");
 							}
+							#endif
 
 							// compile materials
 							if (compileMaterial)

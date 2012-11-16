@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A12FADD2-6249-43E0-810F-D38D957A7F36}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ShaderCompiler.Core</RootNamespace>
+    <AssemblyName>ShaderCompiler.Core</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;LINUX</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DefineConstants>LINUX</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Reign.Core">
+      <HintPath>..\..\..\..\Platforms\Linux\Lib\Reign.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Reign.Video">
+      <HintPath>..\..\..\..\Platforms\Linux\Lib\Reign.Video.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="..\..\ShaderCompiler.Core\CodeFile.cs">
+      <Link>CodeFile.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Compiler.cs">
+      <Link>Compiler.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Compiler_Fields.cs">
+      <Link>Compiler_Fields.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Compiler_Methods.cs">
+      <Link>Compiler_Methods.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\ShaderI.cs">
+      <Link>ShaderI.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\SL.cs">
+      <Link>SL.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Utility.cs">
+      <Link>Utility.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Attributes\ArrayType.cs">
+      <Link>Attributes\ArrayType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Attributes\FieldUsage.cs">
+      <Link>Attributes\FieldUsage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Attributes\PSOutput.cs">
+      <Link>Attributes\PSOutput.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Attributes\ShaderMethod.cs">
+      <Link>Attributes\ShaderMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Attributes\VSInput.cs">
+      <Link>Attributes\VSInput.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Attributes\VSOutputPSInput.cs">
+      <Link>Attributes\VSOutputPSInput.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Structs\Matrix2.cs">
+      <Link>Structs\Matrix2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Structs\Matrix3.cs">
+      <Link>Structs\Matrix3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Structs\Matrix4.cs">
+      <Link>Structs\Matrix4.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Structs\Texture2D.cs">
+      <Link>Structs\Texture2D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Structs\Vector2.cs">
+      <Link>Structs\Vector2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Structs\Vector3.cs">
+      <Link>Structs\Vector3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\ShaderCompiler.Core\Structs\Vector4.cs">
+      <Link>Structs\Vector4.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Attributes\" />
+    <Folder Include="Structs\" />
+  </ItemGroup>
+</Project>
