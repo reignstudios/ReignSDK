@@ -1,70 +1,62 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
+    <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{DA0C4118-A166-403B-B012-8855DA324DA2}</ProjectGuid>
+    <ProjectGuid>{70DF33A0-0689-462C-B529-A42B14B79DC6}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ShaderCompiler.Core</RootNamespace>
     <AssemblyName>ShaderCompiler.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;WINDOWS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <DefineConstants>WINDOWS</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
     <Reference Include="Reign.Core">
       <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Core.dll</HintPath>
     </Reference>
     <Reference Include="Reign.Video">
       <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Video.dll</HintPath>
     </Reference>
-    <Reference Include="Reign.Video.API">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Video.API.dll</HintPath>
-    </Reference>
     <Reference Include="Reign_Video_D3D11_Component">
       <HintPath>..\..\..\Platforms\Windows\Lib\Reign_Video_D3D11_Component.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="CodeFile.cs" />
+    <Compile Include="Compiler.cs" />
+    <Compile Include="Compiler_Fields.cs" />
+    <Compile Include="Compiler_Methods.cs" />
+    <Compile Include="ShaderI.cs" />
+    <Compile Include="SL.cs" />
+    <Compile Include="Utility.cs" />
     <Compile Include="Attributes\ArrayType.cs" />
     <Compile Include="Attributes\FieldUsage.cs" />
     <Compile Include="Attributes\PSOutput.cs" />
     <Compile Include="Attributes\ShaderMethod.cs" />
     <Compile Include="Attributes\VSInput.cs" />
     <Compile Include="Attributes\VSOutputPSInput.cs" />
-    <Compile Include="CodeFile.cs" />
-    <Compile Include="Compiler.cs" />
-    <Compile Include="Compiler_Fields.cs" />
-    <Compile Include="Compiler_Methods.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ShaderI.cs" />
-    <Compile Include="SL.cs" />
     <Compile Include="Structs\Matrix2.cs" />
     <Compile Include="Structs\Matrix3.cs" />
     <Compile Include="Structs\Matrix4.cs" />
@@ -72,14 +64,10 @@
     <Compile Include="Structs\Vector2.cs" />
     <Compile Include="Structs\Vector3.cs" />
     <Compile Include="Structs\Vector4.cs" />
-    <Compile Include="Utility.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="Attributes\" />
+    <Folder Include="Structs\" />
+  </ItemGroup>
 </Project>

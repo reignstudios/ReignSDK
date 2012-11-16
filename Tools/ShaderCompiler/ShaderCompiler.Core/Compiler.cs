@@ -8,13 +8,6 @@ using System.CodeDom.Compiler;
 
 namespace ShaderCompiler.Core
 {
-	public enum CompilerCodeSources
-	{
-		Memory,
-		File,
-		Project
-	}
-
 	public enum CompilerOutputs
 	{
 		D3D11,
@@ -38,37 +31,17 @@ namespace ShaderCompiler.Core
 		private string inDirectory, inFile, outDirectory;
 		private CompilerOutputs outputType;
 		public string FileTag;
-		private CompilerCodeSources codeSource;
 		#endregion
 		
 		#region Constuctors
-		public Compiler(string sourceCode, CompilerCodeSources codeSource)
+		public Compiler(string projFileName)
 		{
-			this.codeSource = codeSource;
 			codeFiles = new List<CodeFile>();
-			
-			if (codeSource == CompilerCodeSources.Memory)
-			{
-				codeFiles.Add(new CodeFile(sourceCode));
-			}
-			
-			if (codeSource == CompilerCodeSources.File)
-			{
-				throw new NotImplementedException();
-			}
-			
-			if (codeSource == CompilerCodeSources.Project)
-			{
-				var fileInfo = new FileInfo(sourceCode);
-				inDirectory = fileInfo.Directory.FullName + '/';
-				inFile = fileInfo.Name;
-				initProject(sourceCode);
-			}
-		}
-		
-		private void initProject(string fileName)
-		{
-			using (var reader = XmlReader.Create(fileName))
+	
+			var fileInfo = new FileInfo(projFileName);
+			inDirectory = fileInfo.Directory.FullName + '/';
+			inFile = fileInfo.Name;
+			using (var reader = XmlReader.Create(projFileName))
 			{
 				while (reader.Read())
 				{
@@ -76,7 +49,7 @@ namespace ShaderCompiler.Core
 					{
 						string fileReletivePath = reader.GetAttribute("Include");
 						if (string.IsNullOrEmpty(fileReletivePath)) throw new Exception("Invalide Project cs file path.");
-
+						
 						using (var stream = new FileStream(inDirectory + fileReletivePath, FileMode.Open))
 						{
 							var streamReader = new StreamReader(stream);
@@ -90,12 +63,6 @@ namespace ShaderCompiler.Core
 		#endregion
 		
 		#region Methods
-		public string CompileFromMemory(string code, CompilerOutputs outputType)
-		{
-			this.outputType = outputType;
-			return compileFromMemory(code);
-		}
-		
 		public void Compile(string outDirectory, CompilerOutputs outputType, bool compileMaterial, bool compileMetroShaders)
 		{
 			this.outDirectory = outDirectory;
@@ -120,53 +87,6 @@ namespace ShaderCompiler.Core
 			}
 			
 			compileLibrary(inDirectory + "bin/Debug/" + inFile.Split('.')[0] + ".dll", false, compileMaterial, compileMetroShaders);
-		}
-		
-		private string compileFromMemory(string code)
-		{
-			var codeProvider = new CSharpCodeProvider();
-			var options = new CompilerParameters(new string[] {"System.dll", "ShaderCompiler.Core.dll"});
-			options.GenerateExecutable = false;
-			options.TreatWarningsAsErrors = false;
-			//options.CompilerOptions = "/optimize";
-
-			try
-			{
-				codeFiles[0].Code = code;
-				var compilerResults = codeProvider.CompileAssemblyFromSource(options, new string[] {code});
-
-				// Compiler Output
-				foreach (var line in compilerResults.Output)
-				{
-				    Console.WriteLine(line);
-				}
-
-				// Compiler Errors
-				string errors = null;
-				foreach (var line in compilerResults.Errors)
-				{
-				    errors += line + Environment.NewLine;
-				}
-				if (compilerResults.Errors.Count != 0) throw new Exception(errors + Environment.NewLine + "CSharp Compiler Errors.");
-
-				// Convert Reign Code
-				code = compileLibrary(compilerResults.CompiledAssembly.Location, true, false, false);
-
-				Console.WriteLine("Compile Success!");
-			}
-			catch(Exception e)
-			{
-				string message = "Compile Failer:" + Environment.NewLine + e.Message;
-				Console.WriteLine(message);
-				throw new Exception(message);
-			}
-			finally
-			{
-				codeProvider.Dispose();
-				options.TempFiles.Delete();
-			}
-			
-			return code;
 		}
 
 		class MetroShaderCompiler : Reign.Video.ShaderI
@@ -246,18 +166,8 @@ technique MainTechnique
 						using (var psStream = new MemoryStream())
 						using (var reflectionStream = new MemoryStream())
 						{
-							if (outputType == CompilerOutputs.D3D11 && compileMetroShaders)
-							{
-								//using (var reflectionFile = new FileStream(outDirectory + FileTag + obj.Name + ".ref", FileMode.Create, FileAccess.Write))
-								//{
-								//    compileShader(obj, stream, vsStream, psStream, reflectionFile);
-								//}
-								compileShader(obj, stream, vsStream, psStream, reflectionStream);
-							}
-							else
-							{
-								compileShader(obj, stream, vsStream, psStream, null);
-							}
+							if (outputType == CompilerOutputs.D3D11 && compileMetroShaders) compileShader(obj, stream, vsStream, psStream, reflectionStream);
+							else compileShader(obj, stream, vsStream, psStream, null);
 							
 							string outDirectoryRelitive = outDirectory;	
 							if (writeToMemory)
@@ -803,11 +713,7 @@ namespace ShaderMaterials.{0}
 				char c = (char)code[i];
 				if (c != '\t')
 				{
-					if (c == '\n' && lastChar != '\r')
-					{
-						if (codeSource != CompilerCodeSources.Memory) formatedCode += "\r\n";
-						else formatedCode += "\r";
-					}
+					if (c == '\n' && lastChar != '\r') formatedCode += "\r\n";
 					else formatedCode += c;
 				}
 				
