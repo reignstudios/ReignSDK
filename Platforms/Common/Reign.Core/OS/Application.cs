@@ -169,6 +169,13 @@ namespace Reign.Core
 		{
 			
 		}
+
+		#if XNA
+		public void Close()
+		{
+			Exit();
+		}
+		#endif
 		
 		protected internal virtual void handleEvent(ApplicationEvent theEvent)
 		{

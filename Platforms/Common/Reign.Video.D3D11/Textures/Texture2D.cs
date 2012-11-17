@@ -11,11 +11,10 @@ namespace Reign.Video.D3D11
 {
 	class Texture2DStreamLoader : StreamLoaderI
 	{
-		private Image image;
-
 		private Texture2D texture;
 		private DisposableI parent;
 		private string fileName;
+		private Image image;
 		private int width, height;
 		private bool generateMipmaps;
 		private MultiSampleTypes multiSampleType;
@@ -24,11 +23,12 @@ namespace Reign.Video.D3D11
 		private BufferUsages usage;
 		private bool isRenderTarget;
 
-		public Texture2DStreamLoader(Texture2D texture, DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
+		public Texture2DStreamLoader(Texture2D texture, DisposableI parent, string fileName, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
 		{
 			this.texture = texture;
 			this.parent = parent;
 			this.fileName = fileName;
+			this.image = image;
 			this.width = width;
 			this.height = height;
 			this.generateMipmaps = generateMipmaps;
@@ -69,6 +69,7 @@ namespace Reign.Video.D3D11
 		public Size2 Size {get; private set;}
 		public Vector2 SizeF {get; private set;}
 		public Vector2 TexelOffset {get; private set;}
+		public int PixelByteSize {get; private set;}
 		#endregion
 
 		#region Constructors
@@ -88,7 +89,13 @@ namespace Reign.Video.D3D11
 		public Texture2D(DisposableI parent, string fileName)
 		: base(parent)
 		{
-			new Texture2DStreamLoader(this, parent, fileName, 0, 0, false, MultiSampleTypes.None, SurfaceFormats.RGBAx8, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false);
+			new Texture2DStreamLoader(this, parent, fileName, null, 0, 0, false, MultiSampleTypes.None, SurfaceFormats.RGBAx8, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false);
+		}
+
+		public Texture2D(DisposableI parent, Image image)
+		: base(parent)
+		{
+			new Texture2DStreamLoader(this, parent, null, image, 0, 0, false, MultiSampleTypes.None, SurfaceFormats.RGBAx8, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false);
 		}
 
 		public Texture2D(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat)
@@ -106,7 +113,7 @@ namespace Reign.Video.D3D11
 		public Texture2D(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, SurfaceFormats surfaceFormat, BufferUsages usage)
 		: base(parent)
 		{
-			new Texture2DStreamLoader(this, parent, fileName, width, height, generateMipmaps, MultiSampleTypes.None, surfaceFormat, RenderTargetUsage.PlatformDefault, usage, false);
+			new Texture2DStreamLoader(this, parent, fileName, null, width, height, generateMipmaps, MultiSampleTypes.None, surfaceFormat, RenderTargetUsage.PlatformDefault, usage, false);
 		}
 
 		internal void load(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
@@ -140,11 +147,13 @@ namespace Reign.Video.D3D11
 
 					Size = image.Size;
 					surfaceFormat = image.SurfaceFormat;
+					PixelByteSize = image.CalculatePixelByteSize();
 				}
 				else
 				{
 					if (width == 0 || height == 0) Debug.ThrowError("Texture2D", "Width or Height cannot be 0");
 					Size = new Size2(width, height);
+					PixelByteSize = Image.CalculatePixelByteSize(surfaceFormat, width, height);
 				}
 				SizeF = Size.ToVector2();
 

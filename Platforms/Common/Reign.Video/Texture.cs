@@ -17,6 +17,13 @@ namespace Reign.Video
 		DXT1,
 		DXT3,
 		DXT5,
+		ATC_RGB,
+		ATC_RGBA_Explicit,
+		ATC_RGBA_Interpolated,
+		PVR_RGB_2,
+		PVR_RGBA_2,
+		PVR_RGB_4,
+		PVR_RGBA_4,
 		RGBAx8,
 		RGBx10_Ax2,
 		RGBAx16f,
@@ -38,6 +45,7 @@ namespace Reign.Video
 
 	public interface TextureI : DisposableI
 	{
+		int PixelByteSize {get;}
 		void Update(byte[] data);
 		void WritePixels(byte[] data);
 	}

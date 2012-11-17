@@ -5,11 +5,19 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Graphics.Imaging;
 using System.Threading.Tasks;
+using Windows.System.Threading;
+using System.Threading;
+using Windows.Foundation;
 
 namespace Reign.Video
 {
 	public class ImageMetro : Image
 	{
+		#region Properties
+		private Stream loadingStream;
+		private bool loadingFlip, doneLoading;
+		#endregion
+
 		#region Constructors
 		public ImageMetro(string fileName, bool flip)
 		{
@@ -18,10 +26,25 @@ namespace Reign.Video
 
 		public ImageMetro(Stream stream, bool flip)
 		{
-			init(stream, flip).Wait();
+			init(stream, flip);
 		}
 
-		protected override async Task init(Stream stream, bool flip)
+		protected override void init(Stream stream, bool flip)
+		{
+			loadingStream = stream;
+			loadingFlip = flip;
+			var task = ThreadPool.RunAsync(new WorkItemHandler(loadStream), WorkItemPriority.Normal);
+			while (!doneLoading) new ManualResetEvent(false).WaitOne(1);
+			loadingStream = null;
+		}
+
+		private async void loadStream(Windows.Foundation.IAsyncAction op)
+		{
+			await initThread(loadingStream, loadingFlip);
+			doneLoading = true;
+		}
+
+		private async Task initThread(Stream stream, bool flip)
 		{
 			SurfaceFormat = SurfaceFormats.RGBAx8;
 
@@ -52,21 +75,17 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
-		#if METRO
-		protected static async Task save(byte[] data, int width, int height, Stream outStream, ImageTypes imageType)
-		#else
-		protected static void save(byte[] data, int width, int height, Stream outStream, ImageTypes imageType)
-		#endif
+		protected static async Task save(byte[] data, int width, int height, Stream outStream, ImageFormats imageFormat)
 		{
 			using (var memoryStream = new InMemoryRandomAccessStream())
 			{
 				Guid encodeID = new Guid();
-				switch (imageType)
+				switch (imageFormat)
 				{
-					case (ImageTypes.png): encodeID = BitmapEncoder.PngEncoderId; break;
-					case (ImageTypes.jpg): encodeID = BitmapEncoder.PngEncoderId; break;
-					case (ImageTypes.bmp): encodeID = BitmapEncoder.PngEncoderId; break;
-					default: Debug.ThrowError("ImageMetro", "Unsuported image type: " + imageType.ToString()); break;
+					case (ImageFormats.PNG): encodeID = BitmapEncoder.PngEncoderId; break;
+					case (ImageFormats.JPG): encodeID = BitmapEncoder.PngEncoderId; break;
+					case (ImageFormats.BMP): encodeID = BitmapEncoder.PngEncoderId; break;
+					default: Debug.ThrowError("ImageMetro", "Unsuported image format: " + imageFormat.ToString()); break;
 				}
 
 				BitmapEncoder encoder = await BitmapEncoder.CreateAsync(encodeID, memoryStream);

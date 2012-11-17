@@ -35,6 +35,9 @@ namespace Reign
 
 		private: Vector2 texelOffset;
 		public: property Vector2 TexelOffset {virtual Vector2 get();}
+
+		private: int pixelByteSize;
+		public: property int PixelByteSize {virtual int get();}
 		#pragma endregion
 
 		#pragma region Constructors

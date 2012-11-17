@@ -22,13 +22,17 @@ namespace Reign.Video
 		public ImagePNG(string fileName, bool flip)
 		: base(fileName, flip)
 		{
-			
+			ImageType = ImageTypes.PNG;
+			ImageFormat = ImageFormats.PNG;
+			SurfaceFormat = SurfaceFormats.RGBAx8;
 		}
 
 		public ImagePNG(Stream stream, bool flip)
 		: base(stream, flip)
 		{
-			
+			ImageType = ImageTypes.PNG;
+			ImageFormat = ImageFormats.PNG;
+			SurfaceFormat = SurfaceFormats.RGBAx8;
 		}
 		#endregion
 
@@ -36,7 +40,7 @@ namespace Reign.Video
 		#if METRO
 		public static async Task Save(byte[] data, int width, int height, Stream outStream)
 		{
-			await ImageMetro.save(data, width, height, outStream, ImageTypes.png);
+			await ImageMetro.save(data, width, height, outStream, ImageFormats.PNG);
 		}
 		#endif
 		#endregion

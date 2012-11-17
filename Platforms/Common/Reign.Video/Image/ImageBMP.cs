@@ -18,13 +18,17 @@ namespace Reign.Video
 		public ImageBMP(string fileName, bool flip)
 		: base(fileName, flip)
 		{
-			
+			ImageType = ImageTypes.BMP;
+			ImageFormat = ImageFormats.BMP;
+			SurfaceFormat = SurfaceFormats.RGBAx8;
 		}
 
 		public ImageBMP(Stream stream, bool flip)
 		: base(stream, flip)
 		{
-			
+			ImageType = ImageTypes.BMP;
+			ImageFormat = ImageFormats.BMP;
+			SurfaceFormat = SurfaceFormats.RGBAx8;
 		}
 		#endregion
 	}

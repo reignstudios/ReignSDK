@@ -38,13 +38,30 @@ namespace Reign.Video
 
 	public enum ImageTypes
 	{
-		dxt,
-		atc,
-		pvt,
-		png,
-		jpg,
-		bmp,
-		bmpc
+		DDS,
+		PVR,
+		PNG,
+		JPG,
+		BMP,
+		BMPC
+	}
+
+	public enum ImageFormats
+	{
+		DXT1,
+		DXT3,
+		DXT5,
+		ATC_RGB,
+		ATC_RGBA_Explicit,
+		ATC_RGBA_Interpolated,
+		PVR_RGB_2,
+		PVR_RGBA_2,
+		PVR_RGB_4,
+		PVR_RGBA_4,
+		PNG,
+		JPG,
+		BMP,
+		BMPC
 	}
 
 	public abstract class Image
@@ -125,6 +142,8 @@ namespace Reign.Video
 		public Size2 Size {get; protected set;}
 		public bool Compressed {get; protected set;}
 		public SurfaceFormats SurfaceFormat {get; protected set;}
+		public ImageTypes ImageType {get; protected set;}
+		public ImageFormats ImageFormat {get; protected set;}
 		#endregion
 
 		#region Constructors
@@ -133,19 +152,17 @@ namespace Reign.Video
 			SurfaceFormat = SurfaceFormats.Unknown;
 		}
 
-		#if METRO
-		protected abstract Task init(Stream stream, bool flip);
+		protected abstract void init(Stream stream, bool flip);
 
+		#if METRO
 		internal async Task load(string fileName, bool flip)
 		{
 			using (var stream = await Streams.OpenFile(fileName))
 			{
-				await init(stream, flip);
+				init(stream, flip);
 			}
 		}
 		#else
-		protected abstract void init(Stream stream, bool flip);
-
 		internal void load(string fileName, bool flip)
 		{
 			using (var stream = Streams.OpenFile(fileName))
@@ -183,52 +200,41 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
-		#if METRO
-		public static async void Save(string fileName, byte[] data, int width, int height, FolderLocations folderLocation)
+		public int CalculatePixelByteSize()
 		{
-			using (var file = await Streams.SaveFile(fileName, folderLocation))
+			return CalculatePixelByteSize(SurfaceFormat, Size.Width, Size.Height);
+		}
+
+		public static int CalculatePixelByteSize(SurfaceFormats surfaceFormat, int width, int height)
+		{
+			switch (surfaceFormat)
 			{
-				string ext = Streams.GetFileExt(fileName);
-				switch (ext.ToLower())
-				{
-					#if !XNA && NaCl
-					case (".bmpc"): return new ImageBMPC(fileName, flip);
-					#endif
-					#if !XNA && !NaCl
-					case (".bmpc"): await ImageBMPC.Save(data, width, height, file); break;
-					case (".png"): await ImagePNG.Save(data, width, height, file); break;
-					//case (".jpg"): return new ImageJPG(fileName, flip);
-					//case (".jpeg"): return new ImageJPG(fileName, flip);
-					#if !iOS && !ANDROID
-					//case (".bmp"): return new ImageBMP(fileName, flip);
-					#endif
-					#endif
-					default: Debug.ThrowError("Image", string.Format("File 'ext' {0} not supported.", ext)); break;
-				}
+				case (SurfaceFormats.RGBAx8): return width * height * 4;
+				default: Debug.ThrowError("Image", string.Format("Unsuported surface format: ", surfaceFormat)); break;
+			}
+
+			return -1;
+		}
+
+		#if METRO
+		public static async Task Save(Stream stream, byte[] data, int width, int height, ImageFormats imageFormat)
+		{
+			switch (imageFormat)
+			{
+				case (ImageFormats.BMPC): ImageBMPC.Save(data, width, height, stream); break;
+				case (ImageFormats.PNG): await ImagePNG.Save(data, width, height, stream); break;
+				default: Debug.ThrowError("Image", string.Format("Unsuported format: ", imageFormat)); break;
 			}
 		}
 		#else
-		public static void Save(string fileName, byte[] data, int width, int height, FolderLocations folderLocation)
+		public static void Save(Stream stream, byte[] data, int width, int height, ImageFormats imageFormat)
 		{
-			using (var file = Streams.SaveFile(fileName, folderLocation))
+			switch (imageFormat)
 			{
-				string ext = Streams.GetFileExt(fileName);
-				switch (ext.ToLower())
-				{
-					#if !XNA && NaCl
-					case (".bmpc"): return new ImageBMPC(fileName, flip);
-					#endif
-					#if !XNA && !NaCl
-					case (".bmpc"): ImageBMPC.Save(data, width, height, file); break;
-					//case (".png"): ImagePNG.Save(data, width, height, file); break;
-					//case (".jpg"): return new ImageJPG(fileName, flip);
-					//case (".jpeg"): return new ImageJPG(fileName, flip);
-					#if !iOS && !ANDROID
-					//case (".bmp"): return new ImageBMP(fileName, flip);
-					#endif
-					#endif
-					default: Debug.ThrowError("Image", string.Format("File 'ext' {0} not supported.", ext)); break;
-				}
+				#if !XNA && NaCl
+				case (ImageFormats.BMPC): ImageBMPC.Save(data, width, height, stream); break;
+				#endif
+				default: Debug.ThrowError("Image", string.Format("Unsuported format: ", imageFormat)); break;
 			}
 		}
 		#endif

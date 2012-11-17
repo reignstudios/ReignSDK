@@ -60,6 +60,7 @@ namespace Reign.Video.OpenGL
 		public Size2 Size {get; private set;}
 		public Vector2 SizeF {get; private set;}
 		public Vector2 TexelOffset {get; private set;}
+		public int PixelByteSize {get; private set;}
 		internal bool hasMipmaps;
 		#endregion
 
@@ -211,6 +212,7 @@ namespace Reign.Video.OpenGL
 					}
 
 					Size = image.Size;
+					PixelByteSize = image.CalculatePixelByteSize();
 				}
 				else
 				{
@@ -221,6 +223,7 @@ namespace Reign.Video.OpenGL
 						GL.GenerateMipmap(GL.TEXTURE_2D);
 					}
 					Size = new Size2(width, height);
+					PixelByteSize = Image.CalculatePixelByteSize(surfaceFormat, width, height);
 				}
 
 				SizeF = Size.ToVector2();

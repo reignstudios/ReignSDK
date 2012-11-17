@@ -203,23 +203,17 @@ namespace Reign.Video
 		#region Constructors
 		public ImageDDS(string fileName, bool flip)
 		{
+			ImageType = ImageTypes.DDS;
 			new ImageStreamLoader(this, fileName, flip);
 		}
 
 		public ImageDDS(Stream stream, bool flip)
 		{
-			#if METRO
-			init(stream, flip).Wait();
-			#else
+			ImageType = ImageTypes.DDS;
 			init(stream, flip);
-			#endif
 		}
 
-		#if METRO
-		protected override async System.Threading.Tasks.Task init(Stream stream, bool flip)
-		#else
 		protected override void init(Stream stream, bool flip)
-		#endif
 		{
 			// Load Desc
 			DDSURFACEDESC2 desc = new DDSURFACEDESC2();
@@ -317,34 +311,43 @@ namespace Reign.Video
 						blockSize = 8;
 						blockDev = 2;
 						SurfaceFormat = SurfaceFormats.DXT1;
+						ImageFormat = ImageFormats.DXT1;
 						break;
 
 					case FOURCC_DXT3:
 						FormatGL = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
 						blockSize = 16;
 						SurfaceFormat = SurfaceFormats.DXT3;
+						ImageFormat = ImageFormats.DXT3;
 						break;
 
 					case FOURCC_DXT5:
 						FormatGL = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
 						blockSize = 16;
 						SurfaceFormat = SurfaceFormats.DXT5;
+						ImageFormat = ImageFormats.DXT5;
 						break;
 
 					case FOURCC_ATC_RGB:
 						FormatGL = ATC_RGB_AMD;
 						blockSize = 8;
 						blockDev = 2;
+						SurfaceFormat = SurfaceFormats.ATC_RGB;
+						ImageFormat = ImageFormats.ATC_RGB;
 						break;
 
 					case FOURCC_ATC_RGBA_EXPLICIT:
 						FormatGL = ATC_RGBA_EXPLICIT_ALPHA_AMD;
 						blockSize = 16;
+						SurfaceFormat = SurfaceFormats.ATC_RGBA_Explicit;
+						ImageFormat = ImageFormats.ATC_RGBA_Explicit;
 						break;
 
 					case FOURCC_ATC_RGBA_INTERPOLATED:
 						FormatGL = ATC_RGBA_INTERPOLATED_ALPHA_AMD;
 						blockSize = 16;
+						SurfaceFormat = SurfaceFormats.ATC_RGBA_Interpolated;
+						ImageFormat = ImageFormats.ATC_RGBA_Interpolated;
 						break;
 
 					default:

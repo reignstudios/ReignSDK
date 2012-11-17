@@ -18,13 +18,17 @@ namespace Reign.Video
 		public ImageJPG(string fileName, bool flip)
 		: base(fileName, flip)
 		{
-			
+			ImageType = ImageTypes.JPG;
+			ImageFormat = ImageFormats.JPG;
+			SurfaceFormat = SurfaceFormats.RGBAx8;
 		}
 
 		public ImageJPG(Stream stream, bool flip)
 		: base(stream, flip)
 		{
-			
+			ImageType = ImageTypes.JPG;
+			ImageFormat = ImageFormats.JPG;
+			SurfaceFormat = SurfaceFormats.RGBAx8;
 		}
 		#endregion
 	}

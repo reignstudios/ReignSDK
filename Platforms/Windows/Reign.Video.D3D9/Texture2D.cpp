@@ -67,6 +67,7 @@ namespace Reign
 	Size2 Texture2D::Size::get() {return size;}
 	Vector2 Texture2D::SizeF::get() {return sizeF;}
 	Vector2 Texture2D::TexelOffset::get() {return texelOffset;}
+	int Texture2D::PixelByteSize::get() {return pixelByteSize;}
 	#pragma endregion
 
 	#pragma region Constructors
@@ -159,6 +160,7 @@ namespace Reign
 				}
 				texture = textureTEMP;
 				size = image->Size;
+				pixelByteSize = image->CalculatePixelByteSize();
 
 				IDirect3DTexture9* systemTexture = 0;
 				if (FAILED(video->Device->CreateTexture(image->Size.Width, image->Size.Height, image->Mipmaps->Length, 0, Video::surfaceFormat(image->SurfaceFormat), D3DPOOL_SYSTEMMEM, &systemTexture, 0)))
@@ -195,6 +197,7 @@ namespace Reign
 				}
 				texture = textureTEMP;
 				size = Size2(width, height);
+				pixelByteSize = Image::CalculatePixelByteSize(surfaceFormat, width, height);
 			}
 
 			IDirect3DSurface9* surfaceTEMP;

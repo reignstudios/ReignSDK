@@ -67,23 +67,17 @@ namespace Reign.Video
 		#region Constructors
 		public ImagePVR(string fileName, bool flip)
 		{
+			ImageType = ImageTypes.PVR;
 			new ImageStreamLoader(this, fileName, flip);
 		}
 
 		public ImagePVR(Stream stream, bool flip)
 		{
-			#if METRO
-			init(stream, flip).Wait();
-			#else
+			ImageType = ImageTypes.PVR;
 			init(stream, flip);
-			#endif
 		}
 
-		#if METRO
-		protected override async System.Threading.Tasks.Task init(Stream stream, bool flip)
-		#else
 		protected override void init(Stream stream, bool flip)
-		#endif
 		{
 			// Load Header
 			var header = new PVRHeader();
@@ -143,6 +137,8 @@ namespace Reign.Video
 					blockHeight = 4;
 					bpp = 2;
 					blockDev = 2;
+					ImageFormat = ImageFormats.PVR_RGB_2;
+					SurfaceFormat = SurfaceFormats.PVR_RGB_2;
 					break;
 
 				case FOURCC_2BPP_RGBA:
@@ -152,6 +148,8 @@ namespace Reign.Video
 					blockHeight = 4;
 					bpp = 2;
 					blockDev = 2;
+					ImageFormat = ImageFormats.PVR_RGBA_2;
+					SurfaceFormat = SurfaceFormats.PVR_RGBA_2;
 					break;
 
 				case FOURCC_4BPP_RGB:
@@ -160,6 +158,8 @@ namespace Reign.Video
 					blockWidth = 4;
 					blockHeight = 4;
 					bpp = 4;
+					ImageFormat = ImageFormats.PVR_RGB_4;
+					SurfaceFormat = SurfaceFormats.PVR_RGB_4;
 					break;
 					
 				case FOURCC_4BPP_RGBA:
@@ -168,6 +168,8 @@ namespace Reign.Video
 					blockWidth = 4;
 					blockHeight = 4;
 					bpp = 4;
+					ImageFormat = ImageFormats.PVR_RGBA_4;
+					SurfaceFormat = SurfaceFormats.PVR_RGBA_4;
 					break;
 
 				default:

@@ -20,23 +20,21 @@ namespace Reign.Video
 		#region Construtors
 		public ImageBMPC(string fileName, bool flip)
 		{
+			ImageType = ImageTypes.BMPC;
+			ImageFormat = ImageFormats.BMPC;
+			SurfaceFormat = SurfaceFormats.RGBAx8;
 			new ImageStreamLoader(this, fileName, flip);
 		}
 
 		public ImageBMPC(Stream stream, bool flip)
 		{
-			#if METRO
-			init(stream, flip).Wait();
-			#else
+			ImageType = ImageTypes.BMPC;
+			ImageFormat = ImageFormats.BMPC;
+			SurfaceFormat = SurfaceFormats.RGBAx8;
 			init(stream, flip);
-			#endif
 		}
 
-		#if METRO
-		protected override async System.Threading.Tasks.Task init(Stream stream, bool flip)
-		#else
 		protected override void init(Stream stream, bool flip)
-		#endif
 		{
 			SurfaceFormat = SurfaceFormats.RGBAx8;
 
@@ -107,11 +105,7 @@ namespace Reign.Video
 
 		#region Methods
 		#if !NaCl
-		#if METRO
-		public static async Task Save(byte[] data, int width, int height, Stream outStream)
-		#else
 		public static void Save(byte[] data, int width, int height, Stream outStream)
-		#endif
 		{
 			using (var dataStream = new MemoryStream(data))
 			using (var writer = new BinaryWriter(outStream))

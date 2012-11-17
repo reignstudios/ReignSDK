@@ -77,7 +77,12 @@ namespace Reign.Core
 		{
 			if (asyncDone)
 			{
-				if (asyncException != null) return asyncException;
+				if (asyncException != null)
+				{
+					var e = asyncException;
+					asyncException = null;
+					return e;
+				}
 				asyncException = null;
 				asyncDone = false;
 				tryLoad();
@@ -144,7 +149,7 @@ namespace Reign.Core
 		#if METRO
 		public static async Task<Stream> OpenFileDialog(FolderLocations folderLocation, string[] fileTypes)
 		#else
-		public static string OpenFileDialog(FolderLocations folderLocation, string[] fileTypes)
+		public static Stream OpenFileDialog(FolderLocations folderLocation, string[] fileTypes)
 		#endif
 		{
 			#if METRO
@@ -162,7 +167,7 @@ namespace Reign.Core
 		#if METRO
 		public static async Task<Stream> SaveFileDialog(FolderLocations folderLocation, string[] fileTypes)
 		#else
-		public static string SaveFileDialog(FolderLocations folderLocation, string[] fileTypes)
+		public static Stream SaveFileDialog(FolderLocations folderLocation, string[] fileTypes)
 		#endif
 		{
 			#if METRO

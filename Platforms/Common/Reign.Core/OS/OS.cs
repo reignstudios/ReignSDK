@@ -122,9 +122,9 @@ namespace Reign.Core
 
 		public static Window CurrentWindow;
 		#else
-		public static Windows.UI.Core.CoreWindow CoreWindow;
 		public static Application CurrentApplication;
 		#if METRO
+		public static Windows.UI.Core.CoreWindow CoreWindow;
 		public static XAMLApplication CurrentPageApplication;
 		#endif
 		#endif
@@ -381,8 +381,10 @@ namespace Reign.Core
 			}
 			else
 			{
+				#if METRO
 				CurrentPageApplication.update(time);
 				CurrentPageApplication.render(time);
+				#endif
 			}
 		}
 		#endif

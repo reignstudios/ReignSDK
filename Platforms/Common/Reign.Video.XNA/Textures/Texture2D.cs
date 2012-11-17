@@ -51,6 +51,7 @@ namespace Reign.Video.XNA
 		public Size2 Size {get; private set;}
 		public Vector2 SizeF {get; private set;}
 		public Vector2 TexelOffset {get; private set;}
+		public int PixelByteSize {get; private set;}
 		private bool loadedFromContentManager;
 		#endregion
 
@@ -105,6 +106,13 @@ namespace Reign.Video.XNA
 					{
 						texture = parent.FindParentOrSelfWithException<RootDisposable>().Content.Load<X.Texture2D>(Streams.StripFileExt(fileName));
 						loadedFromContentManager = true;
+						switch (texture.Format)
+						{
+							case (X.SurfaceFormat.Color): surfaceFormat = SurfaceFormats.RGBAx8; break;
+							case (X.SurfaceFormat.Dxt1): surfaceFormat = SurfaceFormats.DXT1; break;
+							case (X.SurfaceFormat.Dxt3): surfaceFormat = SurfaceFormats.DXT3; break;
+							case (X.SurfaceFormat.Dxt5): surfaceFormat = SurfaceFormats.DXT5; break;
+						}
 					}
 					else
 					{
@@ -112,10 +120,12 @@ namespace Reign.Video.XNA
 					}
 
 					Size = new Size2(texture.Width, texture.Height);
+					PixelByteSize = Image.CalculatePixelByteSize(surfaceFormat, texture.Width, texture.Height);
 				}
 				else
 				{
 					Size = new Size2(width, height);
+					PixelByteSize = Image.CalculatePixelByteSize(surfaceFormat, width, height);
 				}
 
 				TexelOffset = (1 / Size.ToVector2()) * .5f;
