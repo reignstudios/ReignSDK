@@ -91,13 +91,18 @@ namespace Reign_Video_D3D11_Component
 		};
 		D3D_FEATURE_LEVEL featureLevelType = D3D_FEATURE_LEVEL_9_1;
 
+		uint flags = 0;
+		#if DEBUG
+		flags = D3D11_CREATE_DEVICE_DEBUG;
+		#endif
+
 		#if WINDOWS
 		// create device and swapchain
 		ID3D11Device* deviceTEMP;
 		ID3D11DeviceContext* deviceContextTEMP;
 		IDXGISwapChain* swapChainTEMP;
 
-		if (FAILED(D3D11CreateDeviceAndSwapChain(0, D3D_DRIVER_TYPE_HARDWARE, 0, 0, featureLevelTypes, featureCount, D3D11_SDK_VERSION, &swapChainDesc, &swapChainTEMP, &deviceTEMP, &featureLevelType, &deviceContextTEMP)))
+		if (FAILED(D3D11CreateDeviceAndSwapChain(0, D3D_DRIVER_TYPE_HARDWARE, 0, flags, featureLevelTypes, featureCount, D3D11_SDK_VERSION, &swapChainDesc, &swapChainTEMP, &deviceTEMP, &featureLevelType, &deviceContextTEMP)))
 		{
 			return VideoError::DeviceAndSwapChainFailed;
 		}
@@ -109,9 +114,9 @@ namespace Reign_Video_D3D11_Component
 		ID3D11Device* deviceTEMP;
 		ID3D11DeviceContext* deviceContextTEMP;
 		IDXGISwapChain1* swapChainTEMP;
-		uint creationFlags = compositionMode ? D3D11_CREATE_DEVICE_BGRA_SUPPORT : 0;
+		flags |= compositionMode ? D3D11_CREATE_DEVICE_BGRA_SUPPORT : 0;
 
-		if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, creationFlags, featureLevelTypes, featureCount, D3D11_SDK_VERSION, &deviceTEMP, &featureLevelType, &deviceContextTEMP)))
+		if (FAILED(D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, featureLevelTypes, featureCount, D3D11_SDK_VERSION, &deviceTEMP, &featureLevelType, &deviceContextTEMP)))
 		{
 			return VideoError::DeviceFailed;
 		}
@@ -312,15 +317,16 @@ namespace Reign_Video_D3D11_Component
 
 	VideoCom::~VideoCom()
 	{
-		if (deviceContext) deviceContext->ClearState();
-		if (deviceContext) deviceContext->Release();
-
 		#if METRO
 		if (swapChainBackgroundPanelNative) swapChainBackgroundPanelNative->Release();
-		//if (d2dDeviceContext) d2dDeviceContext->Release();
 		if (d2dFactory) d2dFactory->Release();
 		if (d2dRenderTarget) d2dRenderTarget->Release();
 		if (d2dDevice) d2dDevice->Release();
+		/*if (d2dDeviceContext)
+		{
+			d2dDeviceContext->Flush();
+			d2dDeviceContext->Release();
+		}*/
 		#endif
 
 		if (currentVertexResources) delete currentVertexResources;
@@ -330,6 +336,14 @@ namespace Reign_Video_D3D11_Component
 		if (depthTexture) depthTexture->Release();
 		if (swapChain) swapChain->Release();
 		if (device) device->Release();
+
+		if (deviceContext)
+		{
+			deviceContext->ClearState();
+			deviceContext->Flush();
+			deviceContext->Release();
+		}
+
 		null();
 	}
 

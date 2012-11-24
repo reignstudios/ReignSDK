@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
@@ -29,6 +30,7 @@ namespace Reign.Core
 		private Application application;
 		protected ApplicationEvent theEvent;
 		private bool running, visible;
+		protected SuspendingDeferral deferral;
 		#endregion
 
 		#region Constructors
@@ -109,17 +111,15 @@ namespace Reign.Core
 
 		private void suspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
 		{
-			var deferral = e.SuspendingOperation.GetDeferral();
-			var task = new Task(new Action(delegate
-			{
-				application.closing();
-				deferral.Complete();
-			}));
+			running = false;
+			deferral = e.SuspendingOperation.GetDeferral();
+			application.closing();
 		}
 
 		private void resuming(object sender, object e)
 		{
 			application.shown();
+			running = true;
 		}
 		#endregion
     }

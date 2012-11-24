@@ -167,7 +167,9 @@ namespace Reign.Core
 		
 		protected internal virtual void closing()
 		{
-			
+			#if METRO
+			deferral.Complete();
+			#endif
 		}
 
 		#if XNA

@@ -84,7 +84,7 @@ namespace Reign.Core
 		
 		protected internal virtual void closing()
 		{
-			
+			deferral.Complete();
 		}
 		
 		protected internal virtual void handleEvent(ApplicationEvent theEvent)
@@ -122,6 +122,7 @@ namespace Reign.Core
 		#region Base
 		private CoreMetroWindow coreMetroWindow;
 		private bool running, visible;
+		private SuspendingDeferral deferral;
 
 		private XAMLApplication()
         {
@@ -180,14 +181,15 @@ namespace Reign.Core
 
         private void onSuspending(object sender, SuspendingEventArgs e)
         {
-            var deferral = e.SuspendingOperation.GetDeferral();
+			running = false;
+            deferral = e.SuspendingOperation.GetDeferral();
 			closing();
-            deferral.Complete();
         }
 
 		private void onResuming(object sender, object e)
 		{
 			shown();
+			running = true;
 		}
 		#endregion
 	}

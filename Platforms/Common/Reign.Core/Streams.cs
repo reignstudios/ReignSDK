@@ -39,12 +39,6 @@ namespace Reign.Core
 		Video
 	}
 
-	public enum SourceTypes
-	{
-		File,
-		Memory
-	}
-
 	public abstract class StreamLoaderI
 	{
 		public StreamLoaderI()
@@ -331,8 +325,8 @@ namespace Reign.Core
 					return await appFolder.OpenStreamForReadAsync(fileName);
 
 				case (FolderLocations.Storage):
-					var storageFile = await StorageFile.GetFileFromPathAsync(fileName);
-					return await storageFile.OpenStreamForReadAsync();
+					var storageFolder = ApplicationData.Current.LocalFolder;
+					return await storageFolder.OpenStreamForReadAsync(fileName);
 
 				case (FolderLocations.Documents):
 					var docFile = await KnownFolders.DocumentsLibrary.GetFileAsync(fileName);
@@ -389,17 +383,13 @@ namespace Reign.Core
 			fileName = fileName.Replace('/', '\\');
 			switch (folderLocation)
 			{
-				case (FolderLocations.Unknown):
-					var storageFolder = await StorageFile.GetFileFromPathAsync(fileName);
-					return await storageFolder.OpenStreamForWriteAsync();
-
 				case (FolderLocations.Application):
 					var appFolder = Package.Current.InstalledLocation;
 					return await appFolder.OpenStreamForWriteAsync(fileName, CreationCollisionOption.ReplaceExisting);
 
 				case (FolderLocations.Storage):
-					var storageFile = await StorageFile.GetFileFromPathAsync(fileName);
-					return await storageFile.OpenStreamForWriteAsync();
+					var storageFolder = ApplicationData.Current.LocalFolder;
+					return await storageFolder.OpenStreamForWriteAsync(fileName, CreationCollisionOption.ReplaceExisting);
 
 				case (FolderLocations.Documents):
 					var docFile = await KnownFolders.DocumentsLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
@@ -416,6 +406,10 @@ namespace Reign.Core
 				case (FolderLocations.Video):
 					var videoFile = await KnownFolders.VideosLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 					return await videoFile.OpenStreamForWriteAsync();
+
+				default:
+					Debug.ThrowError("Streams", "Unsuported folder location: " + folderLocation.ToString());
+					break;
 			}
 			return null;
 			#else
@@ -425,6 +419,76 @@ namespace Reign.Core
 			fileName = fileName.Replace('/', '\\');
 			#endif
 			return new FileStream(fileName, FileMode.Create, FileAccess.Write);
+			#endif
+		}
+
+		#if METRO
+		public static async Task<bool> FileExists(string fileName)
+		{
+			return await FileExists(fileName, FolderLocations.Storage);
+		}
+		#else
+		public static bool FileExists(string fileName)
+		{
+			return FileExists(fileName, FolderLocations.Storage);
+		}
+		#endif
+
+		#if METRO
+		public static async Task<bool> FileExists(string fileName, FolderLocations folderLocation)
+		#else
+		public static bool FileExists(string fileName, FolderLocations folderLocation)
+		#endif
+		{
+			#if OSX || iOS
+			throw new NotImplementedException();
+			#elif ANDROID
+			throw new NotImplementedException();
+			#elif NaCl
+			throw new NotImplementedException();
+			#elif METRO
+			fileName = fileName.Replace('/', '\\');
+			try
+			{
+				switch (folderLocation)
+				{
+					case (FolderLocations.Application):
+						var appFolder = Package.Current.InstalledLocation;
+						return (await appFolder.GetFileAsync(fileName)) != null;
+
+					case (FolderLocations.Storage):
+						var storageFolder = ApplicationData.Current.LocalFolder;
+						return (await storageFolder.GetFileAsync(fileName)) != null;
+
+					case (FolderLocations.Documents):
+						return (await KnownFolders.DocumentsLibrary.GetFileAsync(fileName)) != null;
+
+					case (FolderLocations.Pictures):
+						return (await KnownFolders.PicturesLibrary.CreateFileAsync(fileName)) != null;
+
+					case (FolderLocations.Music):
+						return (await KnownFolders.MusicLibrary.CreateFileAsync(fileName)) != null;
+
+					case (FolderLocations.Video):
+						return (await KnownFolders.VideosLibrary.CreateFileAsync(fileName)) != null;
+
+					default:
+						Debug.ThrowError("Streams", "Unsuported folder location: " + folderLocation.ToString());
+						break;
+				}
+			}
+			catch
+			{
+				return false;
+			}
+			return false;
+			#else
+			#if LINUX
+			fileName = fileName.Replace('\\', '/');
+			#else
+			fileName = fileName.Replace('/', '\\');
+			#endif
+			throw new NotImplementedException();
 			#endif
 		}
 		
@@ -521,7 +585,7 @@ namespace Reign.Core
 		}
 	}
 
-	public static class SteamExtensions
+	public static class StreamExtensions
 	{
 		public static void WriteVector(this BinaryWriter writer, Vector2 value)
 		{
