@@ -295,13 +295,14 @@ namespace Reign_Video_D3D11_Component
 				return VideoError::GetDXGIBackBufferFailed;
 			}
 
-			ComPtr<IDXGISurface2> dxgiSurface;
 			if (FAILED(dxgiBackBuffer->CreateSubresourceSurface(0, &dxgiSurface)))
 			{
+				dxgiBackBuffer.Get()->Release();
 				return VideoError::DXGISurfaceFailed;
 			}
+			dxgiBackBuffer.Get()->Release();
 
-			if (FAILED(d2dDeviceContext->CreateBitmapFromDxgiSurface(dxgiSurface.Get(), &bitmapProperties, &d2dRenderTarget)))
+			if (FAILED(d2dDeviceContext->CreateBitmapFromDxgiSurface(dxgiSurface, &bitmapProperties, &d2dRenderTarget)))
 			{
 				return VideoError::D2DBitmapFailed;
 			}
@@ -320,6 +321,7 @@ namespace Reign_Video_D3D11_Component
 		#if METRO
 		if (swapChainBackgroundPanelNative) swapChainBackgroundPanelNative->Release();
 		if (d2dFactory) d2dFactory->Release();
+		if (dxgiSurface) dxgiSurface->Release();
 		if (d2dRenderTarget) d2dRenderTarget->Release();
 		if (d2dDevice) d2dDevice->Release();
 		/*if (d2dDeviceContext)
@@ -362,6 +364,7 @@ namespace Reign_Video_D3D11_Component
 		d2dFactory = 0;
 		d2dDevice = 0;
 		d2dDeviceContext = 0;
+		dxgiSurface = 0;
 		d2dRenderTarget = 0;
 		swapChainBackgroundPanelNative = 0;
 		#endif
@@ -384,6 +387,10 @@ namespace Reign_Video_D3D11_Component
 			renderTarget->Release();
 			depthStencil->Release();
 			depthTexture->Release();
+			#if METRO
+			if (dxgiSurface) dxgiSurface->Release();
+			if (d2dRenderTarget) d2dRenderTarget->Release();
+			#endif
 			swapChain->ResizeBuffers(2, width, height, swapChainFromat, 0);
 			createViews(width, height);
 			lastWidth = width;

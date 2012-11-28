@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Store;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 
@@ -32,13 +34,22 @@ namespace Reign.Core
 		{
 			window.SizeChanged -= sizeChanged;
 			
-			window.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
 			window.PointerMoved -= pointerMoved;
 			window.PointerPressed -= pointerPressed;
 			window.PointerReleased -= pointerReleased;
 			window.PointerWheelChanged -= pointerWheelChanged;
 			window.KeyDown -= keyDown;
 			window.KeyUp -= keyUp;
+		}
+
+		public void ShowCursor()
+		{
+			window.PointerCursor = new CoreCursor(CoreCursorType.Arrow, 0);
+		}
+
+		public void HideCursor()
+		{
+			window.PointerCursor = null;
 		}
 
 		private void pointerMoved(CoreWindow sender, PointerEventArgs e)
@@ -116,6 +127,35 @@ namespace Reign.Core
 		private void sizeChanged(CoreWindow sender, WindowSizeChangedEventArgs args)
 		{
 			application.Metro_FrameSize = new Size2(ConvertDipsToPixels(args.Size.Width), ConvertDipsToPixels(args.Size.Height));
+		}
+
+		public bool IsTrial()
+		{
+			#if DEBUG
+			return CurrentAppSimulator.LicenseInformation.IsTrial;
+			#else
+			return CurrentApp.LicenseInformation.IsTrial;
+			#endif
+		}
+
+		public bool InAppPurchased(string appID)
+		{
+			#if DEBUG
+			return CurrentAppSimulator.LicenseInformation.ProductLicenses[appID].IsActive;
+			#else
+			return CurrentApp.LicenseInformation.ProductLicenses[appID].IsActive;
+			#endif
+		}
+
+		public async Task<bool> BuyInAppItem(string appID)
+		{
+			#if DEBUG
+			await CurrentAppSimulator.RequestProductPurchaseAsync(appID, false);
+			return CurrentAppSimulator.LicenseInformation.ProductLicenses[appID].IsActive;
+			#else
+			await CurrentApp.RequestProductPurchaseAsync(appID, false);
+			return CurrentApp.LicenseInformation.ProductLicenses[appID].IsActive;
+			#endif
 		}
 	}
 }

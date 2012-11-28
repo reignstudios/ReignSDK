@@ -25,6 +25,9 @@ namespace Reign.Core
 	public abstract class MetroApplication : IFrameworkView
     {
 		#region Properties
+		public delegate void BuyAppCallbackMethod(bool succeeded);
+		public BuyAppCallbackMethod BuyAppCallback;
+
 		private CoreMetroWindow coreMetroWindow;
 		internal MetroApplicationSource source;
 		private Application application;
@@ -120,6 +123,32 @@ namespace Reign.Core
 		{
 			application.shown();
 			running = true;
+		}
+
+		public void ShowCursor()
+		{
+			coreMetroWindow.ShowCursor();
+		}
+
+		public void HideCursor()
+		{
+			coreMetroWindow.HideCursor();
+		}
+
+		public bool IsTrial()
+		{
+			return coreMetroWindow.IsTrial();
+		}
+
+		public bool InAppPurchased(string appID)
+		{
+			return coreMetroWindow.InAppPurchased(appID);
+		}
+
+		public async void BuyInAppItem(string appID)
+		{
+			if (BuyAppCallback != null) BuyAppCallback(await coreMetroWindow.BuyInAppItem(appID));
+			else Debug.ThrowError("MetroApplication", "BuyAppCallback method cannot be null");
 		}
 		#endregion
     }

@@ -94,6 +94,7 @@ namespace Reign_Video_D3D11_Component
 		private: ID2D1Factory1* d2dFactory;
 		private: ID2D1Device* d2dDevice;
 		private: ID2D1DeviceContext* d2dDeviceContext;
+		private: IDXGISurface2* dxgiSurface;
 		private: ID2D1Bitmap1* d2dRenderTarget;
 		private: ISwapChainBackgroundPanelNative* swapChainBackgroundPanelNative;
 		#endif

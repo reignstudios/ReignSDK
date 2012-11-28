@@ -19,21 +19,91 @@ namespace Reign.Core
 		private SwapChainBackgroundPanel swapChainPanel;
 		private AdControl adControl;
 
-		public ApplicationPage()
+		public ApplicationPage(string applicationID, string unitID, ApplicationAdSize adSize, ApplicationAdGravity adGravity, bool supportAds)
 		{
 			swapChainPanel = new SwapChainBackgroundPanel();
 
-			adControl = new AdControl();
-			adControl.Width = 250;
-			adControl.Height = 250;
-			adControl.ApplicationId = "d25517cb-12d4-4699-8bdc-52040c712cab";
-			adControl.AdUnitId = "10043105";
-			adControl.HorizontalAlignment = HorizontalAlignment.Left;
-			adControl.VerticalAlignment = VerticalAlignment.Top;
-			swapChainPanel.Children.Add(adControl);
+			if (supportAds)
+			{
+				adControl = new AdControl();
+				adControl.ApplicationId = applicationID;
+				adControl.AdUnitId = unitID;
+
+				adControl.IsEnabled = false;
+				adControl.Visibility = Visibility.Collapsed;
+				
+				switch (adSize)
+				{
+					case (ApplicationAdSize.Sqaure_250x250):
+						adControl.Width = 250;
+						adControl.Height = 250;
+						break;
+
+					default:
+						Debug.ThrowError("ApplicationPage", "Unsuported Ad size");
+						break;
+				}
+
+				switch (adGravity)
+				{
+					case (ApplicationAdGravity.BottomLeft):
+						adControl.HorizontalAlignment = HorizontalAlignment.Left;
+						adControl.VerticalAlignment = VerticalAlignment.Bottom;
+						break;
+
+					case (ApplicationAdGravity.BottomRight):
+						adControl.HorizontalAlignment = HorizontalAlignment.Right;
+						adControl.VerticalAlignment = VerticalAlignment.Bottom;
+						break;
+
+					case (ApplicationAdGravity.BottomCenter):
+						adControl.HorizontalAlignment = HorizontalAlignment.Center;
+						adControl.VerticalAlignment = VerticalAlignment.Top;
+						break;
+
+					case (ApplicationAdGravity.TopLeft):
+						adControl.HorizontalAlignment = HorizontalAlignment.Left;
+						adControl.VerticalAlignment = VerticalAlignment.Top;
+						break;
+
+					case (ApplicationAdGravity.TopRight):
+						adControl.HorizontalAlignment = HorizontalAlignment.Right;
+						adControl.VerticalAlignment = VerticalAlignment.Top;
+						break;
+
+					case (ApplicationAdGravity.TopCenter):
+						adControl.HorizontalAlignment = HorizontalAlignment.Center;
+						adControl.VerticalAlignment = VerticalAlignment.Top;
+						break;
+
+					default:
+						Debug.ThrowError("ApplicationPage", "Unsuported Ad gravity");
+						break;
+				}
+				
+				swapChainPanel.Children.Add(adControl);
+			}
 
 			base.Content = swapChainPanel;
 			OS.CurrentPageApplication.SwapChainPanel = swapChainPanel;
+		}
+
+		public void EnableAds()
+		{
+			if (adControl != null)
+			{
+				adControl.IsEnabled = true;
+				adControl.Visibility = Visibility.Visible;
+			}
+		}
+
+		public void DisableAds()
+		{
+			if (adControl != null)
+			{
+				adControl.Visibility = Visibility.Collapsed;
+				adControl.IsEnabled = false;
+			}
 		}
 	}
 
@@ -67,8 +137,8 @@ namespace Reign.Core
 		#endregion
 
 		#region Constructors
-		public XAMLApplication(ApplicationOrientations orientation)
-		: this()
+		public XAMLApplication(ApplicationOrientations orientation, string applicationID, string unitID, ApplicationAdSize adSize, ApplicationAdGravity adGravity, bool supportAds)
+		: this(applicationID, unitID, adSize, adGravity, supportAds)
 		{
 			this.orientation = orientation;
 			theEvent = new ApplicationEvent();
@@ -120,14 +190,27 @@ namespace Reign.Core
 
 
 		#region Base
+		public delegate void BuyAppCallbackMethod(bool succeeded);
+		public BuyAppCallbackMethod BuyAppCallback;
+
 		private CoreMetroWindow coreMetroWindow;
 		private bool running, visible;
 		private SuspendingDeferral deferral;
+		private string applicationID, unitID;
+		private ApplicationAdSize adSize;
+		private ApplicationAdGravity adGravity;
+		private bool supportAds;
 
-		private XAMLApplication()
+		private XAMLApplication(string applicationID, string unitID, ApplicationAdSize adSize, ApplicationAdGravity adGravity, bool supportAds)
         {
             this.Suspending += onSuspending;
 			this.Resuming += onResuming;
+
+			this.applicationID = applicationID;
+			this.unitID = unitID;
+			this.adSize = adSize;
+			this.adGravity = adGravity;
+			this.supportAds = supportAds;
         }
 
         protected override void OnLaunched(LaunchActivatedEventArgs args)
@@ -147,7 +230,7 @@ namespace Reign.Core
                     //TODO: Load state from previously suspended application
                 }*/
 				
-				Window.Current.Content = new ApplicationPage();
+				Window.Current.Content = new ApplicationPage(applicationID, unitID, adSize, adGravity, supportAds);
 				shown();
             }
 			
@@ -190,6 +273,44 @@ namespace Reign.Core
 		{
 			shown();
 			running = true;
+		}
+
+		public void ShowCursor()
+		{
+			coreMetroWindow.ShowCursor();
+		}
+
+		public void HideCursor()
+		{
+			coreMetroWindow.HideCursor();
+		}
+
+		public void EnableAds()
+		{
+			var page = Window.Current.Content as ApplicationPage;
+			if (page != null) page.EnableAds();
+		}
+
+		public void DisableAds()
+		{
+			var page = Window.Current.Content as ApplicationPage;
+			if (page != null) page.DisableAds();
+		}
+
+		public bool IsTrial()
+		{
+			return coreMetroWindow.IsTrial();
+		}
+
+		public bool InAppPurchased(string appID)
+		{
+			return coreMetroWindow.InAppPurchased(appID);
+		}
+
+		public async void BuyInAppItem(string appID)
+		{
+			if (BuyAppCallback != null) BuyAppCallback(await coreMetroWindow.BuyInAppItem(appID));
+			else Debug.ThrowError("XAMLApplication", "BuyAppCallback method cannot be null");
 		}
 		#endregion
 	}

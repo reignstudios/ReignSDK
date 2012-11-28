@@ -50,21 +50,33 @@ namespace Reign.Core
 	
 	public enum ApplicationAdGravity
 	{
-		#if ANDROID
-		BottomLeft,
-		BottomRight,
-		TopLeft,
-		TopRight
-		#endif
-
 		#if iOS
 		Bottom,
 		Top
+		#endif
+
+		#if ANDROID || METRO
+		BottomLeft,
+		BottomRight,
+		BottomCenter,
+		TopLeft,
+		TopRight,
+		TopCenter
 		#endif
 	}
 
 	public enum ApplicationAdSize
 	{
+		#if METRO
+		Sqaure_250x250,
+		Rect_728x90,
+		Rect_500x130,
+		Rect_300x250,
+		Rect_292x60,
+		Rect_250x125,
+		Rect_160x600
+		#endif
+
 		#if iOS
 		Landscape,
 		Portrait
