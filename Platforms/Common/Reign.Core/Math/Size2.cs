@@ -129,5 +129,22 @@ namespace Reign.Core
 			result.Y = size.Height;
 		}
 		#endregion
+		
+		#region Methods
+		public override bool Equals(object obj)
+		{
+			return obj != null && (Size2)obj == this;
+		}
+		
+		public override string ToString()
+		{
+			return string.Format("<{0}, {1}>", Width, Height);
+		}
+		
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+#endregion
 	}
 }

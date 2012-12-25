@@ -42,9 +42,6 @@
     <Compile Include="..\..\Common\Reign.Audio.Cocoa\Audio.cs">
       <Link>Audio.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Audio.Cocoa\Sound.cs">
-      <Link>Sound.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Audio.Cocoa\SoundWAV.cs">
       <Link>SoundWAV.cs</Link>
     </Compile>

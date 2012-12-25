@@ -13,6 +13,10 @@ namespace Reign.Input.API
 			#if METRO
 			if (type == InputTypes.Metro) MouseAPI.Init(Reign.Input.Metro.Mouse.New);
 			#endif
+			
+			#if OSX
+			if (type == InputTypes.Cocoa) MouseAPI.Init(Reign.Input.Cocoa.Mouse.New);
+			#endif
 		}
 	}
 }

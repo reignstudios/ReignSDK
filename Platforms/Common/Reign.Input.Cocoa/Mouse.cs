@@ -24,6 +24,11 @@ namespace Reign.Input.Cocoa
 		#endregion
 	
 		#region Constructors
+		public static Mouse New(DisposableI parent)
+		{
+			return new Mouse(parent);
+		}
+		
 		public Mouse(DisposableI parent)
 		: base(parent)
 		{
@@ -111,11 +116,8 @@ namespace Reign.Input.Cocoa
 			Middle.Update(middleOn);
 			Right.Update(rightOn);
 			
-			var loc = NSEvent.CurrentMouseLocation;
-			var viewLoc = input.window.ViewLocation;
-			
 			lastPosition = Position;
-			Position = new Point2((int)loc.X, (int)loc.Y) - viewLoc;
+			Position = currentPosition;
 			PositionVector = Position.ToVector2();
 			
 			Velocity = Position - lastPosition;

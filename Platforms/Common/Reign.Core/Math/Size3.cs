@@ -131,5 +131,22 @@ namespace Reign.Core
 		public static bool operator==(Size3 p1, Size3 p2) {return (p1.Width==p2.Width && p1.Height==p2.Height && p1.Depth==p2.Depth);}
 		public static bool operator!=(Size3 p1, Size3 p2) {return (p1.Width!=p2.Width || p1.Height!=p2.Height || p1.Depth!=p2.Depth);}
 		#endregion
+		
+		#region Methods
+		public override bool Equals(object obj)
+		{
+			return obj != null && (Size3)obj == this;
+		}
+		
+		public override string ToString()
+		{
+			return string.Format("<{0}, {1}, {2}>", Width, Height, Depth);
+		}
+		
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+		#endregion
 	}
 }

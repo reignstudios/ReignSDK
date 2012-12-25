@@ -74,52 +74,6 @@ namespace Reign.Core
 			}
 		}
 
-		public new Point2 Location
-		{
-			get
-			{
-				#if WINDOWS
-				var loc = base.Location;
-				return new Point2(loc.X, loc.Y);
-				#endif
-				
-				#if LINUX
-				throw new NotImplementedException();
-				return new Point2();
-				#endif
-				
-				#if OSX
-				var frame = Frame;
-				return new Point2((int)frame.X, (int)frame.Y);
-				#endif
-				
-				#if NaCl
-				return new Point2();
-				#endif
-			}
-		}
-		
-		
-		public Point2 ViewLocation
-		{
-			get
-			{
-				#if WINDOWS
-				var point = PointToScreen(new System.Drawing.Point(0, 0));
-				return new Point2(point.X, point.Y);
-				#endif
-				
-				#if LINUX
-				throw new NotImplementedException();
-				return new Point2();
-				#endif
-			
-				#if OSX || NaCl
-				return Location;
-				#endif
-			}
-		}
-
 		#if NaCl
 		internal Size2 frameSize;
 		#endif
@@ -193,32 +147,6 @@ namespace Reign.Core
 			{
 				#if WINDOWS
 				MaximumSize = new System.Drawing.Size(value.Width, value.Height);
-				#endif
-			}
-		}
-
-		public Size2 ScreenSize
-		{
-			get
-			{
-				#if WINDOWS
-				var screen = System.Windows.Forms.Screen.FromControl(this);
-				return new Size2(screen.Bounds.Width, screen.Bounds.Height);
-				#endif
-
-				#if LINUX
-				throw new NotImplementedException();
-				return new Size2();
-				#endif
-
-				#if OSX
-				throw new NotImplementedException();
-				return new Size2();
-				#endif
-				
-				#if NaCl
-				throw new NotImplementedException();
-				return new Size2();
 				#endif
 			}
 		}

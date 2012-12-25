@@ -25,11 +25,11 @@ namespace Reign.Input.Cocoa
 	
 		#region Constructors
 		#if OSX
-		public Input(RootDisposable rootDisposable, Window window)
+		public Input(DisposableI parent, Window window)
 		#else
-		public Input(RootDisposable rootDisposable, Application application)
+		public Input(DisposableI parent, Application application)
 		#endif
-		: base(rootDisposable)
+		: base(parent)
 		{
 			#if OSX
 			this.window = window;

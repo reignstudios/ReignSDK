@@ -76,7 +76,7 @@ namespace Reign.Audio.API
 					{
 						cocoa = false;
 						type = AudioTypes.Cocoa;
-						return (AudioI)OS.CreateInstance(typeof(Reign.Audio.Cocoa.Audio), args);
+						audio = new Reign.Audio.Cocoa.Audio(parent);
 						break;
 					}
 					else

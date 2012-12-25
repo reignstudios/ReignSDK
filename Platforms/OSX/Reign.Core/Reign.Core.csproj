@@ -144,6 +144,9 @@
     <Compile Include="..\..\Common\Reign.Core\Math\Rect2.cs">
       <Link>Math\Rect2.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Loader.cs">
+      <Link>Loader.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -43,6 +43,9 @@
     <Compile Include="..\..\Common\Reign.Audio\SoundWAV.cs">
       <Link>SoundWAV.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Audio\Music.cs">
+      <Link>Music.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

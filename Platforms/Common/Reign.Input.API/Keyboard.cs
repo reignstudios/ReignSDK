@@ -13,6 +13,10 @@ namespace Reign.Input.API
 			#if METRO
 			if (type == InputTypes.Metro) KeyboardAPI.Init(Reign.Input.Metro.Keyboard.New);
 			#endif
+			
+			#if OSX
+			if (type == InputTypes.Cocoa) KeyboardAPI.Init(Reign.Input.Cocoa.Keyboard.New);
+			#endif
 		}
 	}
 }

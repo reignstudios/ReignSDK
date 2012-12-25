@@ -2,6 +2,7 @@ using Reign.Core;
 using System.Collections.Generic;
 using System;
 using System.Runtime.InteropServices;
+using System.IO;
 
 #if OSX
 using MonoMac.AudioUnit;
@@ -320,30 +321,6 @@ namespace Reign.Audio.Cocoa
 		}
 		#endregion
 	}
-	
-	class SoundWAVStreamLoader : StreamLoaderI
-	{
-		SoundWAV sound;
-		private DisposableI parent;
-		private string fileName;
-		private int instanceCount;
-		private bool looped;
-		
-		public SoundWAVStreamLoader(SoundWAV sound, DisposableI parent, string fileName, int instanceCount, bool looped)
-		{
-			this.sound = sound;
-			this.parent = parent;
-			this.fileName = fileName;
-			this.instanceCount = instanceCount;
-			this.looped = looped;
-		}
-		
-		public override bool Load()
-		{
-			sound.load(parent, fileName, instanceCount, looped);
-			return true;
-		}
-	}
 
 	public class SoundWAV : SoundWAVI
 	{
@@ -355,20 +332,30 @@ namespace Reign.Audio.Cocoa
 		#endregion
 
 		#region Constructors
-		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped)
+		public static new SoundWAV New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return new SoundWAV(parent, fileName, instanceCount, looped, loadedCallback, failedToLoadCallback);
+		}
+		
+		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			new SoundWAVStreamLoader(this, parent, fileName, instanceCount, looped);
+			new StreamLoader(fileName,
+			delegate(object sender)
+			{
+				init(parent, ((StreamLoader)sender).LoadedStream, instanceCount, looped, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
 		}
 		
-		internal void load(DisposableI parent, string fileName, int instanceCount, bool looped)
+		protected override void init(DisposableI parent, Stream stream, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			init(parent, fileName, instanceCount, looped);
-		}
-		
-		protected override void init(DisposableI parent, string fileName, int instanceCount, bool looped)
-		{
-			base.init(parent, fileName, instanceCount, looped);
+			base.init(parent, stream, instanceCount, looped, loadedCallback, failedToLoadCallback);
 		
 			try
 			{
@@ -388,9 +375,15 @@ namespace Reign.Audio.Cocoa
 			}
 			catch (Exception e)
 			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
 				Dispose();
-				throw e;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return;
 			}
+			
+			Loaded = true;
+			if (loadedCallback != null) loadedCallback(this);
 		}
 
 		public override void Dispose()

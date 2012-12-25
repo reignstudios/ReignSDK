@@ -10,17 +10,26 @@ namespace Reign.Video
 {
 	public class ImageOSX : Image
 	{
-		public ImageOSX(string fileName, bool flip)
+		public ImageOSX(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			new ImageStreamLoader(this, fileName, flip);
+			new StreamLoader(fileName,
+         	delegate(object sender)
+         	{
+				init(((StreamLoader)sender).LoadedStream, flip, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
+		}
+		
+		public ImageOSX(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			init(stream, flip, loadedCallback, failedToLoadCallback);
 		}
 
-		public ImageOSX(Stream stream, bool flip)
-		{
-			init(stream, flip);
-		}
-
-		protected override void init(Stream stream, bool flip)
+		protected override void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
 			using (var image = NSImage.FromStream(stream))
 			{

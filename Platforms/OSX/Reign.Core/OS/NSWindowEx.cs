@@ -37,8 +37,8 @@ namespace Reign.Core
 		{
 			this.window = window;
 			
+			AcceptsMouseMovedEvents = true;
 			View = new NSView(new RectangleF(0, 0, width, height));
-			
 			switch (startPosition)
 			{
 				case (WindowStartPositions.CenterCurrentScreen): Center(); break;
@@ -95,10 +95,35 @@ namespace Reign.Core
 			window.handleEvent(theEvent);
 		}
 		
-		/*public override void MouseMoved (NSEvent theEvent)
+		public override void MouseMoved (NSEvent e)
 		{
-			base.MouseMoved (theEvent);
-		}*/
+			mouseMoved(e);
+		}
+		
+		public override void MouseDragged (NSEvent e)
+		{
+			mouseMoved(e);
+		}
+		
+		public override void OtherMouseDragged (NSEvent e)
+		{
+			mouseMoved(e);
+		}
+		
+		public override void RightMouseDragged (NSEvent e)
+		{
+			mouseMoved(e);
+		}
+		
+		private void mouseMoved(NSEvent e)
+		{
+			theEvent.Type = WindowEventTypes.MouseMove;
+			var pos = e.LocationInWindow;
+			theEvent.CursorPosition.X = (int)pos.X;
+			theEvent.CursorPosition.Y = (int)pos.Y;
+			
+			window.handleEvent(theEvent);
+		}
 		
 		public override void MouseDown(NSEvent e)
 		{
@@ -108,6 +133,10 @@ namespace Reign.Core
 				case (NSEventType.OtherMouseDown): theEvent.Type = WindowEventTypes.MiddleMouseDown; break;
 				case (NSEventType.RightMouseDown): theEvent.Type = WindowEventTypes.RightMouseDown; break;
 			}
+			
+			var pos = e.LocationInWindow;
+			theEvent.CursorPosition.X = (int)pos.X;
+			theEvent.CursorPosition.Y = (int)pos.Y;
 			
 			window.handleEvent(theEvent);
 		}
@@ -120,6 +149,10 @@ namespace Reign.Core
 				case (NSEventType.OtherMouseUp): theEvent.Type = WindowEventTypes.MiddleMouseUp; break;
 				case (NSEventType.RightMouseUp): theEvent.Type = WindowEventTypes.RightMouseUp; break;
 			}
+			
+			var pos = e.LocationInWindow;
+			theEvent.CursorPosition.X = (int)pos.X;
+			theEvent.CursorPosition.Y = (int)pos.Y;
 
 			window.handleEvent(theEvent);
 		}
