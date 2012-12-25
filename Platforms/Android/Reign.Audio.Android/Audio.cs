@@ -14,8 +14,8 @@ namespace Reign.Audio.Android
 		#endregion
 
 		#region Constructors
-		public Audio(RootDisposable rootDisposable)
-		: base(rootDisposable)
+		public Audio(DisposableI parent)
+		: base(parent)
 		{
 			
 		}

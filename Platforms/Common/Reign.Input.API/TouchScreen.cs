@@ -11,6 +11,10 @@ namespace Reign.Input.API
 			#if iOS
 			if (type == InputTypes.Cocoa) TouchScreenAPI.Init(Reign.Input.Cocoa.TouchScreen.New);
 			#endif
+			
+			#if ANDROID
+			if (type == InputTypes.Android) TouchScreenAPI.Init(Reign.Input.Android.TouchScreen.New);
+			#endif
 		}
 	}
 }

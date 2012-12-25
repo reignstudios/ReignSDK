@@ -17,6 +17,10 @@ namespace Reign.Audio.API
 			#if OSX || iOS
 			if (type == AudioTypes.Cocoa) SoundWAVAPI.Init(Reign.Audio.Cocoa.SoundWAV.New);
 			#endif
+			
+			#if ANDROID
+			if (type == AudioTypes.Android) SoundWAVAPI.Init(Reign.Audio.Android.SoundWAV.New);
+			#endif
 
 			if (type == AudioTypes.Dumby) SoundWAVAPI.Init(Reign.Audio.Dumby.SoundWAV.New);
 		}

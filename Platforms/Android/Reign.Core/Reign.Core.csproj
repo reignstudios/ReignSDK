@@ -76,17 +76,11 @@
     <Compile Include="..\..\Common\Reign.Core\Math\Matrix4.cs">
       <Link>Math\Matrix4.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\Math\Point.cs">
-      <Link>Math\Point.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Size2.cs">
       <Link>Math\Size2.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Size3.cs">
       <Link>Math\Size3.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Core\Math\Triangle.cs">
-      <Link>Math\Triangle.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Vector2.cs">
       <Link>Math\Vector2.cs</Link>
@@ -143,6 +137,27 @@
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\RigidTransform3.cs">
       <Link>Math\RigidTransform3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Loader.cs">
+      <Link>Loader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingBox2.cs">
+      <Link>Math\BoundingBox2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingSphere2.cs">
+      <Link>Math\BoundingSphere2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Color4.cs">
+      <Link>Math\Color4.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Point2.cs">
+      <Link>Math\Point2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Rect2.cs">
+      <Link>Math\Rect2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Triangle3.cs">
+      <Link>Math\Triangle3.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

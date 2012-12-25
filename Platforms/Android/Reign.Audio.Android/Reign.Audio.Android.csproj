@@ -54,7 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Audio.cs" />
-    <Compile Include="Sound.cs" />
     <Compile Include="SoundWAV.cs" />
   </ItemGroup>
 </Project>

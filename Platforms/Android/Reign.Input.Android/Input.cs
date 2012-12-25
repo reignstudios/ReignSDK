@@ -16,8 +16,8 @@ namespace Reign.Input.Android
 		#endregion
 	
 		#region Constructors
-		public Input(RootDisposable rootDisposable, Application application)
-		: base(rootDisposable)
+		public Input(DisposableI parent, Application application)
+		: base(parent)
 		{
 			this.application = application;
 			application.HandleEvent += updateEvent;

@@ -56,11 +56,11 @@
     <Compile Include="..\..\Common\Reign.Audio.Dumby\Audio.cs">
       <Link>Audio.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Audio.Dumby\Sound.cs">
-      <Link>Sound.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Audio.Dumby\SoundWAV.cs">
       <Link>SoundWAV.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Audio.Dumby\Music.cs">
+      <Link>Music.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

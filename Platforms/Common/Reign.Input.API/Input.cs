@@ -79,7 +79,7 @@ namespace Reign.Input.API
 					{
 						android = false;
 						type = InputTypes.Android;
-						return (InputI)OS.CreateInstance(typeof(Reign.Input.Android.Input), args);
+						input = new Reign.Input.Android.Input(parent, application);
 						break;
 					}
 					#endif
@@ -110,7 +110,7 @@ namespace Reign.Input.API
 			GamePad.Init(type);
 			#endif
 			
-			#if iOS
+			#if iOS || ANDROID
 			TouchScreen.Init(type);
 			#endif
 

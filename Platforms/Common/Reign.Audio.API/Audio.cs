@@ -98,7 +98,7 @@ namespace Reign.Audio.API
 					{
 						android = false;
 						type = AudioTypes.Android;
-						return (AudioI)OS.CreateInstance(typeof(Reign.Audio.Android.Audio), args);
+						audio = new Reign.Audio.Android.Audio(parent);
 						break;
 					}
 					else

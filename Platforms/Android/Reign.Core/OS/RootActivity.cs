@@ -64,7 +64,6 @@ namespace Reign.Core
 				SetEGLConfigChooser(true);//8, 8, 8, 8, 16, 0);
 				renderer = new GLRenderer(application);
 				SetRenderer(renderer);
-				
 			}
 			
 			protected override void OnSizeChanged (int w, int h, int oldw, int oldh)
@@ -155,7 +154,7 @@ namespace Reign.Core
 			}
 			catch (Exception e)
 			{
-				application.Close();
+				application.closing();
 				throw e;
 			}
 		}
@@ -196,7 +195,7 @@ namespace Reign.Core
 				if (group != null) group.RemoveView(adMobView);
 				AdMobWrapper.Destroy(adMobView);
 			}
-			application.Close();
+			application.closing();
 			base.OnDestroy ();
 		}
 	}
