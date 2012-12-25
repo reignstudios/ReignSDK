@@ -1,53 +1,22 @@
-﻿using System;
-using Reign.Core;
-using System.Reflection;
+﻿using Reign.Core;
 
 namespace Reign.Video.API
 {
 	public static class Texture2D
 	{
-		public static Texture2DI Create(VideoTypes apiType, params object[] args)
+		public static void Init(VideoTypes type)
 		{
-			try
-			{
-				#if WINDOWS || METRO
-				if (apiType == VideoTypes.D3D11)
-				{
-					return (Texture2DI)OS.CreateInstance(Video.D3D11, Video.D3D11, "Texture2D", args);
-				}
-				#endif
+			#if WINDOWS || METRO
+			if (type == VideoTypes.D3D11) Texture2DAPI.Init(Reign.Video.D3D11.Texture2D.NewReference, Reign.Video.D3D11.Texture2D.New, Reign.Video.D3D11.Texture2D.New, Reign.Video.D3D11.Texture2D.New);
+			#endif
 
-				#if WINDOWS
-				if (apiType == VideoTypes.D3D9)
-				{
-					return (Texture2DI)OS.CreateInstance(Video.D3D9, Video.D3D9, "Texture2D", args);
-				}
-				#endif
+			#if WINDOWS || OSX || LINUX
+			if (type == VideoTypes.OpenGL) Texture2DAPI.Init(Reign.Video.OpenGL.Texture2D.NewReference, Reign.Video.OpenGL.Texture2D.New, Reign.Video.OpenGL.Texture2D.New, Reign.Video.OpenGL.Texture2D.New);
+			#endif
 
-				#if XNA
-				if (apiType == VideoTypes.XNA)
-				{
-					return (Texture2DI)OS.CreateInstance(Video.XNA, Video.XNA, "Texture2D", args);
-				}
-				#endif
-
-				#if WINDOWS || OSX || LINUX || iOS || ANDROID
-				if (apiType == VideoTypes.OpenGL)
-				{
-					return (Texture2DI)OS.CreateInstance(Video.OpenGL, Video.OpenGL, "Texture2D", args);
-				}
-				#endif
-			}
-			catch (TargetInvocationException e)
-			{
-				throw (e.InnerException != null) ? e.InnerException : e;
-			}
-			catch (Exception e)
-			{
-				throw e;
-			}
-
-			return null;
+			#if XNA
+			if (type == VideoTypes.XNA) Texture2DAPI.Init(Reign.Video.XNA.Texture2D.NewReference, Reign.Video.XNA.Texture2D.New, Reign.Video.XNA.Texture2D.New, Reign.Video.XNA.Texture2D.New);
+			#endif
 		}
 	}
 }

@@ -15,15 +15,20 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public unsafe BufferLayout(DisposableI parent, ShaderI shader, BufferLayoutDescI bufferLayoutDesc)
+		public static BufferLayout New(DisposableI parent, ShaderI shader, BufferLayoutDescI desc)
+		{
+			return new BufferLayout(parent, shader, desc);
+		}
+
+		public unsafe BufferLayout(DisposableI parent, ShaderI shader, BufferLayoutDescI desc)
 		: base(parent)
 		{
 			video = parent.FindParentOrSelfWithException<Video>();
 			this.shader = (Shader)shader;
 			enabledStreamIndices = new bool[2];
 
-			streamBytesSizes = bufferLayoutDesc.StreamBytesSizes;
-			layout = ((BufferLayoutDesc)bufferLayoutDesc).Desc;
+			streamBytesSizes = desc.StreamBytesSizes;
+			layout = ((BufferLayoutDesc)desc).Desc;
 			attribLocations = new int[layout.Length];
 			for (int i = 0; i != layout.Length; ++i)
 			{

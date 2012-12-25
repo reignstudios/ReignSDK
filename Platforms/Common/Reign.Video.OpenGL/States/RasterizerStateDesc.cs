@@ -12,6 +12,11 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
+		public static RasterizerStateDesc New(RasterizerStateTypes type)
+		{
+			return new RasterizerStateDesc(type);
+		}
+
 		public RasterizerStateDesc(RasterizerStateTypes type)
 		{
 			switch (type)

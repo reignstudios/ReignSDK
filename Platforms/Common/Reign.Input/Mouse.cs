@@ -15,4 +15,19 @@ namespace Reign.Input
 	
 		void Update();
 	}
+
+	public static class MouseAPI
+	{
+		public static void Init(NewPtrMethod newPtr)
+		{
+			MouseAPI.newPtr = newPtr;
+		}
+
+		public delegate MouseI NewPtrMethod(DisposableI parent);
+		private static NewPtrMethod newPtr;
+		public static MouseI New(DisposableI parent)
+		{
+			return newPtr(parent);
+		}
+	}
 }

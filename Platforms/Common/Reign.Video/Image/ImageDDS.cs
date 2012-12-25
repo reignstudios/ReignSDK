@@ -201,186 +201,206 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public ImageDDS(string fileName, bool flip)
+		public ImageDDS(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			ImageType = ImageTypes.DDS;
-			new ImageStreamLoader(this, fileName, flip);
-		}
-
-		public ImageDDS(Stream stream, bool flip)
-		{
-			ImageType = ImageTypes.DDS;
-			init(stream, flip);
-		}
-
-		protected override void init(Stream stream, bool flip)
-		{
-			// Load Desc
-			DDSURFACEDESC2 desc = new DDSURFACEDESC2();
-			var reader = new BinaryReader(stream);
-			desc.MagicNumber = reader.ReadUInt32();
-			desc.dwSize = reader.ReadUInt32();
-			desc.dwFlags = reader.ReadUInt32();
-			desc.dwHeight = reader.ReadUInt32();
-			desc.dwWidth = reader.ReadUInt32();
-
-			desc.Union1 = new DDSURFACEDESC2.DUMMYUNIONNAMEN1();
-			desc.Union1.lPitch = reader.ReadInt32();
-
-			desc.Union5 = new DDSURFACEDESC2.DUMMYUNIONNAMEN5();
-			desc.Union5.dwBackBufferCount = reader.ReadUInt32();
-
-			desc.Union2 = new DDSURFACEDESC2.DUMMYUNIONNAMEN2();
-			desc.Union2.dwMipMapCount = reader.ReadUInt32();
-
-			desc.dwAlphaBitDepth = reader.ReadUInt32();
-			desc.dwReserved = reader.ReadUInt32();
-			desc.lpSurface = reader.ReadInt32();
-
-			desc.Union3 = new DDSURFACEDESC2.DUMMYUNIONNAMEN3();
-			desc.Union3.ddckCKDestOverlay = new DDCOLORKEY();
-			desc.Union3.ddckCKDestOverlay.dwColorSpaceLowValue = reader.ReadUInt32();
-			desc.Union3.ddckCKDestOverlay.dwColorSpaceHighValue = reader.ReadUInt32();
-
-			desc.ddckCKDestBlt = new DDCOLORKEY();
-			desc.ddckCKDestBlt.dwColorSpaceLowValue = reader.ReadUInt32();
-			desc.ddckCKDestBlt.dwColorSpaceHighValue = reader.ReadUInt32();
-			desc.ddckCKSrcOverlay = new DDCOLORKEY();
-			desc.ddckCKSrcOverlay.dwColorSpaceLowValue = reader.ReadUInt32();
-			desc.ddckCKSrcOverlay.dwColorSpaceHighValue = reader.ReadUInt32();
-			desc.ddckCKSrcBlt = new DDCOLORKEY();
-			desc.ddckCKSrcBlt.dwColorSpaceLowValue = reader.ReadUInt32();
-			desc.ddckCKSrcBlt.dwColorSpaceHighValue = reader.ReadUInt32();
-
-
-			desc.Union4 = new DDSURFACEDESC2.DUMMYUNIONNAMEN4();
-			desc.Union4.ddpfPixelFormat = new DDPIXELFORMAT();
-			desc.Union4.ddpfPixelFormat.dwSize = reader.ReadUInt32();
-			desc.Union4.ddpfPixelFormat.dwFlags = reader.ReadUInt32();
-			desc.Union4.ddpfPixelFormat.dwFourCC = reader.ReadUInt32();
+			new StreamLoader(fileName,
+			delegate(object sender)
 			{
-				desc.Union4.ddpfPixelFormat.Union1 = new DDPIXELFORMAT.DUMMYUNIONNAMEN1();
-				desc.Union4.ddpfPixelFormat.Union1.dwRGBBitCount = reader.ReadUInt32();
+				init(((StreamLoader)sender).LoadedStream, flip, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
+		}
 
-				desc.Union4.ddpfPixelFormat.Union2 = new DDPIXELFORMAT.DUMMYUNIONNAMEN2();
-				desc.Union4.ddpfPixelFormat.Union2.dwRBitMask = reader.ReadUInt32();
+		public ImageDDS(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			init(stream, flip, loadedCallback, failedToLoadCallback);
+		}
 
-				desc.Union4.ddpfPixelFormat.Union3 = new DDPIXELFORMAT.DUMMYUNIONNAMEN3();
-				desc.Union4.ddpfPixelFormat.Union3.MultiSampleCaps = new DDPIXELFORMAT.DUMMYUNIONNAMEN3.Caps();
-				desc.Union4.ddpfPixelFormat.Union3.MultiSampleCaps.wFlipMSTypes = reader.ReadInt16();
-				desc.Union4.ddpfPixelFormat.Union3.MultiSampleCaps.wBltMSTypes = reader.ReadInt16();
+		protected override void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			try
+			{
+				ImageType = ImageTypes.DDS;
 
-				desc.Union4.ddpfPixelFormat.Union4 = new DDPIXELFORMAT.DUMMYUNIONNAMEN4();
-				desc.Union4.ddpfPixelFormat.Union4.dwBBitMask = reader.ReadUInt32();
+				// Load Desc
+				DDSURFACEDESC2 desc = new DDSURFACEDESC2();
+				var reader = new BinaryReader(stream);
+				desc.MagicNumber = reader.ReadUInt32();
+				desc.dwSize = reader.ReadUInt32();
+				desc.dwFlags = reader.ReadUInt32();
+				desc.dwHeight = reader.ReadUInt32();
+				desc.dwWidth = reader.ReadUInt32();
 
-				desc.Union4.ddpfPixelFormat.Union5 = new DDPIXELFORMAT.DUMMYUNIONNAMEN5();
-				desc.Union4.ddpfPixelFormat.Union5.dwRGBAlphaBitMask = reader.ReadUInt32();
-			}
+				desc.Union1 = new DDSURFACEDESC2.DUMMYUNIONNAMEN1();
+				desc.Union1.lPitch = reader.ReadInt32();
 
-			desc.ddsCaps = new DDSCAPS2();
-			desc.ddsCaps.dwCaps = reader.ReadUInt32();
-			desc.ddsCaps.dwCaps2 = reader.ReadUInt32();
-			desc.ddsCaps.dwCaps3 = reader.ReadUInt32();
-			desc.ddsCaps.Union = new DDSCAPS2.DUMMYUNIONNAMEN();
-			desc.ddsCaps.Union.dwCaps4 = reader.ReadUInt32();
+				desc.Union5 = new DDSURFACEDESC2.DUMMYUNIONNAMEN5();
+				desc.Union5.dwBackBufferCount = reader.ReadUInt32();
 
-			desc.dwTextureStage = reader.ReadUInt32();
+				desc.Union2 = new DDSURFACEDESC2.DUMMYUNIONNAMEN2();
+				desc.Union2.dwMipMapCount = reader.ReadUInt32();
+
+				desc.dwAlphaBitDepth = reader.ReadUInt32();
+				desc.dwReserved = reader.ReadUInt32();
+				desc.lpSurface = reader.ReadInt32();
+
+				desc.Union3 = new DDSURFACEDESC2.DUMMYUNIONNAMEN3();
+				desc.Union3.ddckCKDestOverlay = new DDCOLORKEY();
+				desc.Union3.ddckCKDestOverlay.dwColorSpaceLowValue = reader.ReadUInt32();
+				desc.Union3.ddckCKDestOverlay.dwColorSpaceHighValue = reader.ReadUInt32();
+
+				desc.ddckCKDestBlt = new DDCOLORKEY();
+				desc.ddckCKDestBlt.dwColorSpaceLowValue = reader.ReadUInt32();
+				desc.ddckCKDestBlt.dwColorSpaceHighValue = reader.ReadUInt32();
+				desc.ddckCKSrcOverlay = new DDCOLORKEY();
+				desc.ddckCKSrcOverlay.dwColorSpaceLowValue = reader.ReadUInt32();
+				desc.ddckCKSrcOverlay.dwColorSpaceHighValue = reader.ReadUInt32();
+				desc.ddckCKSrcBlt = new DDCOLORKEY();
+				desc.ddckCKSrcBlt.dwColorSpaceLowValue = reader.ReadUInt32();
+				desc.ddckCKSrcBlt.dwColorSpaceHighValue = reader.ReadUInt32();
+
+
+				desc.Union4 = new DDSURFACEDESC2.DUMMYUNIONNAMEN4();
+				desc.Union4.ddpfPixelFormat = new DDPIXELFORMAT();
+				desc.Union4.ddpfPixelFormat.dwSize = reader.ReadUInt32();
+				desc.Union4.ddpfPixelFormat.dwFlags = reader.ReadUInt32();
+				desc.Union4.ddpfPixelFormat.dwFourCC = reader.ReadUInt32();
+				{
+					desc.Union4.ddpfPixelFormat.Union1 = new DDPIXELFORMAT.DUMMYUNIONNAMEN1();
+					desc.Union4.ddpfPixelFormat.Union1.dwRGBBitCount = reader.ReadUInt32();
+
+					desc.Union4.ddpfPixelFormat.Union2 = new DDPIXELFORMAT.DUMMYUNIONNAMEN2();
+					desc.Union4.ddpfPixelFormat.Union2.dwRBitMask = reader.ReadUInt32();
+
+					desc.Union4.ddpfPixelFormat.Union3 = new DDPIXELFORMAT.DUMMYUNIONNAMEN3();
+					desc.Union4.ddpfPixelFormat.Union3.MultiSampleCaps = new DDPIXELFORMAT.DUMMYUNIONNAMEN3.Caps();
+					desc.Union4.ddpfPixelFormat.Union3.MultiSampleCaps.wFlipMSTypes = reader.ReadInt16();
+					desc.Union4.ddpfPixelFormat.Union3.MultiSampleCaps.wBltMSTypes = reader.ReadInt16();
+
+					desc.Union4.ddpfPixelFormat.Union4 = new DDPIXELFORMAT.DUMMYUNIONNAMEN4();
+					desc.Union4.ddpfPixelFormat.Union4.dwBBitMask = reader.ReadUInt32();
+
+					desc.Union4.ddpfPixelFormat.Union5 = new DDPIXELFORMAT.DUMMYUNIONNAMEN5();
+					desc.Union4.ddpfPixelFormat.Union5.dwRGBAlphaBitMask = reader.ReadUInt32();
+				}
+
+				desc.ddsCaps = new DDSCAPS2();
+				desc.ddsCaps.dwCaps = reader.ReadUInt32();
+				desc.ddsCaps.dwCaps2 = reader.ReadUInt32();
+				desc.ddsCaps.dwCaps3 = reader.ReadUInt32();
+				desc.ddsCaps.Union = new DDSCAPS2.DUMMYUNIONNAMEN();
+				desc.ddsCaps.Union.dwCaps4 = reader.ReadUInt32();
+
+				desc.dwTextureStage = reader.ReadUInt32();
 			
-			// Check file ext
-			if (desc.MagicNumber != 0x20534444u)
-			{
-				Debug.ThrowError("ImageDDS", "Not a DDS file");
-			}
-
-			// Get file caps
-			bool isCubemap = ((desc.ddsCaps.dwCaps & DDSCAPS_COMPLEX) != 0) && ((desc.ddsCaps.dwCaps2 & DDSCAPS2_CUBEMAP) != 0);
-			bool isVolumeTexture = ((desc.ddsCaps.dwCaps2 & DDSCAPS2_VOLUME) != 0);
-			bool hasAlphaChannel = ((desc.Union4.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS) != 0);
-			Compressed = ((desc.Union4.ddpfPixelFormat.dwFlags & DDPF_FOURCC) != 0);
-
-			// Get pixel format
-			Size = new Size2((int)desc.dwWidth, (int)desc.dwHeight);
-			int blockSize = 0, blockDev = 1;
-			if (Compressed)
-			{
-				FormatD3D = desc.Union4.ddpfPixelFormat.dwFourCC;
-				switch (desc.Union4.ddpfPixelFormat.dwFourCC)
+				// Check file ext
+				if (desc.MagicNumber != 0x20534444u)
 				{
-					case FOURCC_DXT1:
-						FormatGL = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-						blockSize = 8;
-						blockDev = 2;
-						SurfaceFormat = SurfaceFormats.DXT1;
-						ImageFormat = ImageFormats.DXT1;
-						break;
+					Debug.ThrowError("ImageDDS", "Not a DDS file");
+				}
 
-					case FOURCC_DXT3:
-						FormatGL = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
-						blockSize = 16;
-						SurfaceFormat = SurfaceFormats.DXT3;
-						ImageFormat = ImageFormats.DXT3;
-						break;
+				// Get file caps
+				bool isCubemap = ((desc.ddsCaps.dwCaps & DDSCAPS_COMPLEX) != 0) && ((desc.ddsCaps.dwCaps2 & DDSCAPS2_CUBEMAP) != 0);
+				bool isVolumeTexture = ((desc.ddsCaps.dwCaps2 & DDSCAPS2_VOLUME) != 0);
+				bool hasAlphaChannel = ((desc.Union4.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS) != 0);
+				Compressed = ((desc.Union4.ddpfPixelFormat.dwFlags & DDPF_FOURCC) != 0);
 
-					case FOURCC_DXT5:
-						FormatGL = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
-						blockSize = 16;
-						SurfaceFormat = SurfaceFormats.DXT5;
-						ImageFormat = ImageFormats.DXT5;
-						break;
+				// Get pixel format
+				Size = new Size2((int)desc.dwWidth, (int)desc.dwHeight);
+				int blockSize = 0, blockDev = 1;
+				if (Compressed)
+				{
+					FormatD3D = desc.Union4.ddpfPixelFormat.dwFourCC;
+					switch (desc.Union4.ddpfPixelFormat.dwFourCC)
+					{
+						case FOURCC_DXT1:
+							FormatGL = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+							blockSize = 8;
+							blockDev = 2;
+							SurfaceFormat = SurfaceFormats.DXT1;
+							ImageFormat = ImageFormats.DXT1;
+							break;
 
-					case FOURCC_ATC_RGB:
-						FormatGL = ATC_RGB_AMD;
-						blockSize = 8;
-						blockDev = 2;
-						SurfaceFormat = SurfaceFormats.ATC_RGB;
-						ImageFormat = ImageFormats.ATC_RGB;
-						break;
+						case FOURCC_DXT3:
+							FormatGL = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
+							blockSize = 16;
+							SurfaceFormat = SurfaceFormats.DXT3;
+							ImageFormat = ImageFormats.DXT3;
+							break;
 
-					case FOURCC_ATC_RGBA_EXPLICIT:
-						FormatGL = ATC_RGBA_EXPLICIT_ALPHA_AMD;
-						blockSize = 16;
-						SurfaceFormat = SurfaceFormats.ATC_RGBA_Explicit;
-						ImageFormat = ImageFormats.ATC_RGBA_Explicit;
-						break;
+						case FOURCC_DXT5:
+							FormatGL = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+							blockSize = 16;
+							SurfaceFormat = SurfaceFormats.DXT5;
+							ImageFormat = ImageFormats.DXT5;
+							break;
 
-					case FOURCC_ATC_RGBA_INTERPOLATED:
-						FormatGL = ATC_RGBA_INTERPOLATED_ALPHA_AMD;
-						blockSize = 16;
-						SurfaceFormat = SurfaceFormats.ATC_RGBA_Interpolated;
-						ImageFormat = ImageFormats.ATC_RGBA_Interpolated;
-						break;
+						case FOURCC_ATC_RGB:
+							FormatGL = ATC_RGB_AMD;
+							blockSize = 8;
+							blockDev = 2;
+							SurfaceFormat = SurfaceFormats.ATC_RGB;
+							ImageFormat = ImageFormats.ATC_RGB;
+							break;
 
-					default:
-						Debug.ThrowError("ImageDDS", "Unsuported DDS Format");
-						break;
+						case FOURCC_ATC_RGBA_EXPLICIT:
+							FormatGL = ATC_RGBA_EXPLICIT_ALPHA_AMD;
+							blockSize = 16;
+							SurfaceFormat = SurfaceFormats.ATC_RGBA_Explicit;
+							ImageFormat = ImageFormats.ATC_RGBA_Explicit;
+							break;
+
+						case FOURCC_ATC_RGBA_INTERPOLATED:
+							FormatGL = ATC_RGBA_INTERPOLATED_ALPHA_AMD;
+							blockSize = 16;
+							SurfaceFormat = SurfaceFormats.ATC_RGBA_Interpolated;
+							ImageFormat = ImageFormats.ATC_RGBA_Interpolated;
+							break;
+
+						default:
+							Debug.ThrowError("ImageDDS", "Unsuported DDS Format");
+							break;
+					}
+				}
+				else
+				{
+					Debug.ThrowError("ImageDDS", "Uncompressed textures not supported yet");
+				}
+
+				if (isCubemap || isVolumeTexture) Debug.ThrowError("ImageDDS", "Cubemap and VolumeTextures not supported yet");
+
+				// Create Mipmaps
+				Mipmaps = new Mipmap[desc.Union2.dwMipMapCount == 0 ? 1 : desc.Union2.dwMipMapCount];
+				var size = Size;
+				for (int i = 0; i < Mipmaps.Length; ++i)
+				{
+					int dataSize = (((size.Width+3)/4) * ((size.Height+3)/4)) * blockSize;
+					var data = new byte[dataSize];
+					stream.Read(data, 0, dataSize);
+
+					if (flip && (FormatD3D == FOURCC_DXT1 || FormatD3D == FOURCC_DXT3 || FormatD3D == FOURCC_DXT5))
+					{
+						data = flipCompressedData(data, size.Width, size.Height, blockSize);
+					}
+					Mipmaps[i] = new Mipmap(data, size.Width, size.Height, blockDev, 4);
+
+					size /= 2;
 				}
 			}
-			else
+			catch (Exception e)
 			{
-				Debug.ThrowError("ImageDDS", "Uncompressed textures not supported yet");
-			}
-
-			if (isCubemap || isVolumeTexture) Debug.ThrowError("ImageDDS", "Cubemap and VolumeTextures not supported yet");
-
-			// Create Mipmaps
-			Mipmaps = new Mipmap[desc.Union2.dwMipMapCount == 0 ? 1 : desc.Union2.dwMipMapCount];
-			var size = Size;
-			for (int i = 0; i < Mipmaps.Length; ++i)
-			{
-				int dataSize = (((size.Width+3)/4) * ((size.Height+3)/4)) * blockSize;
-				var data = new byte[dataSize];
-				stream.Read(data, 0, dataSize);
-
-				if (flip && (FormatD3D == FOURCC_DXT1 || FormatD3D == FOURCC_DXT3 || FormatD3D == FOURCC_DXT5))
-				{
-					data = flipCompressedData(data, size.Width, size.Height, blockSize);
-				}
-				Mipmaps[i] = new Mipmap(data, size.Width, size.Height, blockDev, 4);
-
-				size /= 2;
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return;
 			}
 
 			Loaded = true;
+			if (loadedCallback != null) loadedCallback(this);
 		}
 
 		private byte[] flipCompressedData(byte[] data, int width, int height, int blockSize)

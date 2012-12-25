@@ -28,6 +28,90 @@ using Windows.Foundation;
 
 namespace Reign.Core
 {
+	public class StreamLoader : LoadableI
+	{
+		#region Properties
+		public bool Loaded {get; private set;}
+		public bool FailedToLoad {get; private set;}
+
+		public Stream LoadedStream;
+		bool fromFile;
+		#endregion
+
+		#region Constructors
+		public StreamLoader(Stream stream, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			#if METRO
+			Loader.AddLoadable(this);
+			#endif
+			init(null, stream, loadedCallback, failedToLoadCallback);
+		}
+
+		public StreamLoader(string fileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			#if METRO
+			Loader.AddLoadable(this);
+			#endif
+			init(fileName, null, loadedCallback, failedToLoadCallback);
+		}
+
+		#if METRO
+		private async void init(string fileName, Stream stream, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		#else
+		private void init(string fileName, Stream stream, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		#endif
+		{
+			try
+			{
+				if (fileName != null)
+				{
+					fromFile = true;
+					#if METRO
+					LoadedStream = await Streams.OpenFile(fileName);
+					#else
+					LoadedStream = Streams.OpenFile(fileName);
+					#endif
+				}
+				else
+				{
+					fromFile = false;
+					LoadedStream = stream;
+				}
+			}
+			catch (Exception e)
+			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return;
+			}
+
+			Loaded = true;
+			if (loadedCallback != null) loadedCallback(this);
+		}
+
+		public bool UpdateLoad()
+		{
+			return Loaded;
+		}
+
+		public void Dispose()
+		{
+			if (fromFile && LoadedStream != null)
+			{
+				LoadedStream.Dispose();
+				LoadedStream = null;
+			}
+		}
+
+		~StreamLoader()
+		{
+			Dispose();
+		}
+		#endregion
+	}
+
 	public enum FolderLocations
 	{
 		Unknown,
@@ -38,91 +122,9 @@ namespace Reign.Core
 		Music,
 		Video
 	}
-
-	public abstract class StreamLoaderI
-	{
-		public StreamLoaderI()
-		{
-			Streams.loaders.Add(this);
-		}
-
-		#if METRO
-		public abstract Task<bool> Load();
-		#else
-		public abstract bool Load();
-		#endif
-		public virtual void Dispose() {}
-	}
 	
 	public static class Streams
 	{
-		// file loading
-		public static int ItemsRemainingToLoad {get{return loaders.Count;}}
-		internal static List<StreamLoaderI> loaders;
-		private static bool asyncDone = true;
-		private static Exception asyncException;
-
-		static Streams()
-		{
-			loaders = new List<StreamLoaderI>();
-		}
-
-		public static Exception TryLoad()
-		{
-			if (asyncDone)
-			{
-				if (asyncException != null)
-				{
-					var e = asyncException;
-					asyncException = null;
-					return e;
-				}
-				asyncException = null;
-				asyncDone = false;
-				tryLoad();
-			}
-
-			return null;
-		}
-
-		#if METRO
-		public static async void tryLoad()
-		#else
-		public static void tryLoad()
-		#endif
-		{
-			if (loaders.Count != 0)
-			{
-				var currentLoaders = new StreamLoaderI[loaders.Count];
-				loaders.CopyTo(currentLoaders);
-				foreach (var loader in currentLoaders)
-				{
-					try
-					{
-						#if METRO
-						if (await loader.Load())
-						#else
-						if (loader.Load())
-						#endif
-						{
-							loader.Dispose();
-							loaders.Remove(loader);
-						}
-					}
-					catch (Exception e)
-					{
-						loader.Dispose();
-						loaders.Remove(loader);
-						asyncException = e;
-						asyncDone = true;
-						return;
-					}
-				}
-			}
-
-			asyncDone = true;
-		}
-
 		#if METRO
 		private static PickerLocationId getFolderType(FolderLocations folderLocation)
 		{
@@ -280,7 +282,7 @@ namespace Reign.Core
 		#endif
 		{
 			if (folderLocation == FolderLocations.Unknown) Debug.ThrowError("Streams", "Unsuported folder type: " + folderLocation.ToString());
-
+			
 			#if OSX || iOS
 			fileName = fileName.Replace('\\', '/');
 			string directory = GetFileDirectory(fileName);

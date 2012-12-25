@@ -1,42 +1,18 @@
-﻿using System;
-using Reign.Core;
-using Reign.Input;
+﻿using Reign.Core;
 
 namespace Reign.Input.API
 {
 	public static class Keyboard
 	{
-		public static KeyboardI Create(InputTypes apiType, params object[] args)
+		public static void Init(InputTypes type)
 		{
 			#if WINDOWS
-			if (apiType == InputTypes.WinForms)
-			{
-				return (KeyboardI)OS.CreateInstance(Input.WinForms, Input.WinForms, "Keyboard", args);
-			}
+			if (type == InputTypes.WinForms) KeyboardAPI.Init(Reign.Input.WinForms.Keyboard.New);
 			#endif
 
 			#if METRO
-			if (apiType == InputTypes.Metro)
-			{
-				return (KeyboardI)OS.CreateInstance(Input.Metro, Input.Metro, "Keyboard", args);
-			}
+			if (type == InputTypes.Metro) KeyboardAPI.Init(Reign.Input.Metro.Keyboard.New);
 			#endif
-			
-			#if OSX
-			if (apiType == InputTypes.Cocoa)
-			{
-				return (KeyboardI)OS.CreateInstance(Input.Cocoa, Input.Cocoa, "Keyboard", args);
-			}
-			#endif
-			
-			#if LINUX
-			if (apiType == InputTypes.X11)
-			{
-				return (KeyboardI)OS.CreateInstance(Input.X11, Input.X11, "Keyboard", args);
-			}
-			#endif
-
-			return null;
 		}
 	}
 }

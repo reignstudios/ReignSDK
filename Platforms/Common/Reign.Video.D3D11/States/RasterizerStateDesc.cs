@@ -11,6 +11,11 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
+		public static RasterizerStateDesc New(RasterizerStateTypes type)
+		{
+			return new RasterizerStateDesc(type);
+		}
+
 		public RasterizerStateDesc(RasterizerStateTypes type)
 		{
 			try

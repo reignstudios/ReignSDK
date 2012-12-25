@@ -58,6 +58,9 @@
     <Compile Include="..\..\Common\Reign.Core\Extensions.cs">
       <Link>Extensions.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Loader.cs">
+      <Link>Loader.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\AffineTransform3.cs">
       <Link>Math\AffineTransform3.cs</Link>
     </Compile>

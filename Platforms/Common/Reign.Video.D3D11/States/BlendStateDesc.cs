@@ -11,6 +11,11 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
+		public static BlendStateDesc New(BlendStateTypes type)
+		{
+			return new BlendStateDesc(type);
+		}
+
 		public BlendStateDesc(BlendStateTypes type)
 		{
 			try

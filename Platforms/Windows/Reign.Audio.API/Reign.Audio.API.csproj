@@ -50,6 +50,9 @@
     <Compile Include="..\..\Common\Reign.Audio.API\Audio.cs">
       <Link>Audio.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Audio.API\Music.cs">
+      <Link>Music.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.Audio.API\Sound.cs">
       <Link>Sound.cs</Link>
     </Compile>

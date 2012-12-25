@@ -11,6 +11,11 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
+		public static RasterizerState New(DisposableI parent, RasterizerStateDescI desc)
+		{
+			return new RasterizerState(parent, desc);
+		}
+
 		public RasterizerState(DisposableI parent, RasterizerStateDescI desc)
 		: base(parent)
 		{

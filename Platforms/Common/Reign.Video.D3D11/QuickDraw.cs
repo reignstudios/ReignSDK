@@ -10,6 +10,11 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
+		public static QuickDraw New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc)
+		{
+			return new QuickDraw(parent, bufferLayoutDesc);
+		}
+
 		public QuickDraw(DisposableI parent, BufferLayoutDescI bufferLayoutDesc)
 		: base(parent, bufferLayoutDesc)
 		{
@@ -17,10 +22,10 @@ namespace Reign.Video.D3D11
 			{
 				vertexBuffer = new VertexBuffer(this, bufferLayoutDesc, BufferUsages.Write, VertexBufferTopologys.Triangle, vertices);
 			}
-			catch (Exception ex)
+			catch (Exception e)
 			{
 				Dispose();
-				throw ex;
+				throw e;
 			}
 		}
 		#endregion

@@ -15,17 +15,29 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
-		public RenderTarget(DisposableI parent, string fileName)
-		: base(parent, fileName)
-		{}
-
-		public RenderTarget(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage)
-		: base(parent, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage)
-		{}
-
-		protected override void init(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
+		public static RenderTarget New(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			base.init(parent, fileName, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, usage, true);
+			return new RenderTarget(parent, width, height, multiSampleType, surfaceFormat, usage, renderTargetUsage, loadedCallback, failedToLoadCallback);
+		}
+
+		public static RenderTarget New(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return new RenderTarget(parent, fileName, multiSampleType, usage, renderTargetUsage, loadedCallback, failedToLoadCallback);
+		}
+
+		public RenderTarget(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		: base(parent, width, height, surfaceFormat, usage, loadedCallback, failedToLoadCallback)
+		{
+		}
+
+		public RenderTarget(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		: base(parent, fileName, false, usage, loadedCallback, failedToLoadCallback)
+		{
+		}
+
+		protected override bool init(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			if (!base.init(parent, fileName, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, usage, true, loadedCallback, failedToLoadCallback)) return false;
 
 			try
 			{
@@ -50,11 +62,18 @@ namespace Reign.Video.XNA
 
 				texture = renderTarget;
 			}
-			catch (Exception ex)
+			catch (Exception e)
 			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
 				Dispose();
-				throw ex;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return false;
 			}
+
+			Loaded = true;
+			if (loadedCallback != null) loadedCallback(this);
+			return true;
 		}
 		#endregion
 

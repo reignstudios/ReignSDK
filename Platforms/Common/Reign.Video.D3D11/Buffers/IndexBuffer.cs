@@ -11,6 +11,16 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
+		public static IndexBuffer New(DisposableI parent, BufferUsages usage, int[] indices)
+		{
+			return new IndexBuffer(parent, usage, indices);
+		}
+
+		public static IndexBuffer New(DisposableI parent, BufferUsages usage, int[] indices, bool _32BitIndices)
+		{
+			return new IndexBuffer(parent, usage, indices, _32BitIndices);
+		}
+
 		public IndexBuffer(DisposableI parent, BufferUsages usage, int[] indices)
 		: base(parent, usage)
 		{

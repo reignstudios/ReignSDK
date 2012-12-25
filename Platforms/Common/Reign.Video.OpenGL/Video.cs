@@ -378,10 +378,10 @@ namespace Reign.Video.OpenGL
 				// Init Ext
 				GL.Init();
 			}
-			catch (Exception ex)
+			catch (Exception e)
 			{
 				Dispose();
-				throw ex;
+				throw e;
 			}
 		}
 

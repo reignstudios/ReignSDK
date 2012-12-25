@@ -11,6 +11,16 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
+		public static IndexBuffer New(DisposableI parent, BufferUsages usage, int[] indices)
+		{
+			return new IndexBuffer(parent, usage, indices);
+		}
+
+		public static IndexBuffer New(DisposableI parent, BufferUsages usage, int[] indices, bool _32BitIndices)
+		{
+			return new IndexBuffer(parent, usage, indices, _32BitIndices);
+		}
+
 		public IndexBuffer(DisposableI parent, BufferUsages bufferUsage)
 		: base(parent, bufferUsage)
 		{
@@ -36,10 +46,10 @@ namespace Reign.Video.OpenGL
 				video = parent.FindParentOrSelfWithException<Video>();
 				if (indices != null) Init(indices);
 			}
-			catch (Exception ex)
+			catch (Exception e)
 			{
 				Dispose();
-				throw ex;
+				throw e;
 			}
 		}
 

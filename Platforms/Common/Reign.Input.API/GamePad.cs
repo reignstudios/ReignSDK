@@ -6,23 +6,11 @@ namespace Reign.Input.API
 {
 	public static class GamePad
 	{
-		public static GamePadI Create(InputTypes apiType, params object[] args)
+		public static void Init(InputTypes type)
 		{
-			#if WINDOWS
-			if (apiType == InputTypes.WinForms)
-			{
-				return (GamePadI)OS.CreateInstance(Input.WinForms, Input.WinForms, "GamePad", args);
-			}
-			#endif
-
 			#if XNA
-			if (apiType == InputTypes.XNA)
-			{
-				return (GamePadI)OS.CreateInstance(Input.XNA, Input.XNA, "GamePad", args);
-			}
+			if (type == InputTypes.XNA) GamePadAPI.Init(Reign.Input.XNA.GamePad.New);
 			#endif
-
-			return null;
 		}
 	}
 }

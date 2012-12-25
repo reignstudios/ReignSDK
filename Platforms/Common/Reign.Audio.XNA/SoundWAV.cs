@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Audio;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
+using System;
 
 namespace Reign.Audio.XNA
 {
@@ -45,15 +46,9 @@ namespace Reign.Audio.XNA
 		{
 			switch (instance.State)
 			{
-				case (SoundState.Playing):
-					State = SoundStates.Playing;
-					break;
-				case (SoundState.Paused):
-					State = SoundStates.Paused;
-					break;
-				case (SoundState.Stopped):
-					State = SoundStates.Stopped;
-					break;
+				case (SoundState.Playing): State = SoundStates.Playing; break;
+				case (SoundState.Paused): State = SoundStates.Paused; break;
+				case (SoundState.Stopped): State = SoundStates.Stopped; break;
 			}
 		}
 
@@ -88,30 +83,6 @@ namespace Reign.Audio.XNA
 		#endregion
 	}
 
-	class SoundWAVStreamLoader : StreamLoaderI
-	{
-		SoundWAV sound;
-		private DisposableI parent;
-		private string fileName;
-		private int instanceCount;
-		private bool looped;
-
-		public SoundWAVStreamLoader(SoundWAV sound, DisposableI parent, string fileName, int instanceCount, bool looped)
-		{
-			this.sound = sound;
-			this.parent = parent;
-			this.fileName = fileName;
-			this.instanceCount = instanceCount;
-			this.looped = looped;
-		}
-
-		public override bool Load()
-		{
-			sound.load(parent, fileName, instanceCount, looped);
-			return true;
-		}
-	}
-
 	public class SoundWAV : SoundWAVI
 	{
 		#region Properties
@@ -121,29 +92,38 @@ namespace Reign.Audio.XNA
 		#endregion
 
 		#region Constructors
-		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped)
+		public static new SoundWAV New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return new SoundWAV(parent, fileName, instanceCount, looped, loadedCallback, failedToLoadCallback);
+		}
+
+		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			new SoundWAVStreamLoader(this, parent, fileName, instanceCount, looped);
-		}
-
-		internal void load(DisposableI parent, string fileName, int instanceCount, bool looped)
-		{
-			init(parent, fileName, instanceCount, looped);
-		}
-
-		protected override void init(DisposableI parent, string fileName, int instanceCount, bool looped)
-		{
-			audio = parent.FindParentOrSelfWithException<Audio>();
-			audio.UpdateCallback += Update;
-
-			loadedFromContent = true;
-			sound = parent.FindParentOrSelfWithException<RootDisposable>().Content.Load<SoundEffect>(Streams.StripFileExt(fileName));
-
-			for (int i = 0; i != instanceCount; ++i)
+			try
 			{
-				inactiveInstances.AddLast(new SoundWAVInstance(this, looped));
+				audio = parent.FindParentOrSelfWithException<Audio>();
+				audio.UpdateCallback += Update;
+
+				loadedFromContent = true;
+				sound = parent.FindParentOrSelfWithException<RootDisposable>().Content.Load<SoundEffect>(Streams.StripFileExt(fileName));
+
+				for (int i = 0; i != instanceCount; ++i)
+				{
+					inactiveInstances.AddLast(new SoundWAVInstance(this, looped));
+				}
 			}
+			catch (Exception e)
+			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return;
+			}
+
+			Loaded = true;
+			if (loadedCallback != null) loadedCallback(this);
 		}
 
 		public override void Dispose()

@@ -1,32 +1,10 @@
 using System;
 using Reign.Core;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Reign.Video.OpenGL
 {
-	class ShaderStreamLoader : StreamLoaderI
-	{
-		private Shader shader;
-		private string fileName;
-		private ShaderVersions shaderVersion;
-		private ShaderFloatingPointQuality vsQuality, psQuality;
-
-		public ShaderStreamLoader(Shader shader, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality)
-		{
-			this.shader = shader;
-			this.fileName = fileName;
-			this.shaderVersion = shaderVersion;
-			this.vsQuality = vsQuality;
-			this.psQuality = psQuality;
-		}
-
-		public override bool Load()
-		{
-			shader.load(fileName, shaderVersion, vsQuality, psQuality);
-			return true;
-		}
-	}
-
 	public class Shader : ShaderI
 	{
 		#region Properties
@@ -39,43 +17,56 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion)
+		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			Shader shader = parent.FindChild<Shader>("New",
-				new ConstructorParam(typeof(DisposableI), parent),
-				new ConstructorParam(typeof(string), fileName),
-				new ConstructorParam(typeof(ShaderVersions), shaderVersion));
-
-			if (shader != null)
-			{
-				++shader.referenceCount;
-				return shader;
-			}
-
-			return new Shader(parent, fileName, shaderVersion);
+			return new Shader(parent, fileName, shaderVersion, loadedCallback, failedToLoadCallback);
 		}
 
-		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion)
+		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return new Shader(parent, fileName, shaderVersion, vsQuality, psQuality, loadedCallback, failedToLoadCallback);
+		}
+
+		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			video = parent.FindParentOrSelfWithException<Video>();
-			new ShaderStreamLoader(this, fileName, shaderVersion, ShaderFloatingPointQuality.High, ShaderFloatingPointQuality.Low);
+			new StreamLoader(fileName,
+			delegate(object sender)
+			{
+				init(((StreamLoader)sender).LoadedStream, shaderVersion, ShaderFloatingPointQuality.High, ShaderFloatingPointQuality.Low, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
 		}
 		
-		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality)
+		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			video = parent.FindParentOrSelfWithException<Video>();
-			new ShaderStreamLoader(this, fileName, shaderVersion, vsQuality, psQuality);
+			new StreamLoader(fileName,
+			delegate(object sender)
+			{
+				init(((StreamLoader)sender).LoadedStream, shaderVersion, vsQuality, psQuality, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
 		}
 
-		internal void load(string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality)
+		private void init(Stream stream, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
 			try
 			{
+				video = Parent.FindParentOrSelfWithException<Video>();
 				shaderVersion = (shaderVersion == ShaderVersions.Max) ? this.video.Caps.MaxShaderVersion : shaderVersion;
 
-				var code = getShaders(fileName);
+				var code = getShaders(stream);
 				vertex = new VertexShader(this, code[0], shaderVersion, vsQuality);
 				pixel = new PixelShader(this, code[1], shaderVersion, psQuality);
 
@@ -90,13 +81,18 @@ namespace Reign.Video.OpenGL
 
 				Video.checkForError();
 			}
-			catch (Exception ex)
+			catch (Exception e)
 			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
 				Dispose();
-				throw new Exception(ex.Message + " - File: " + fileName);
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return;
 			}
 
 			Loaded = true;
+			Loader.AddLoadable(this);
+			if (loadedCallback != null) loadedCallback(this);
 		}
 
 		public override void Dispose()

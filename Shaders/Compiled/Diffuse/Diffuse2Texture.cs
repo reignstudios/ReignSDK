@@ -3,40 +3,15 @@ using System;
 using System.Collections.Generic;
 using Reign.Core;
 using Reign.Video;
-using A = Reign.Video.API;
 
 namespace ShaderMaterials.Shaders
 {
-	class Diffuse2TextureMaterialStreamLoader : StreamLoaderI
-	{
-		private A.VideoTypes videoType;
-		private DisposableI parent;
-		private string contentPath;
-		private string tag;
-		private ShaderVersions shaderVersion;
-
-		public Diffuse2TextureMaterialStreamLoader(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
-		{
-			this.videoType = videoType;
-			this.parent = parent;
-			this.contentPath = contentPath;
-			this.tag = tag;
-			this.shaderVersion = shaderVersion;
-		}
-
-		#if METRO
-		public override async System.Threading.Tasks.Task<bool> Load() {
-		#else
-		public override bool Load() {
-		#endif
-			return Diffuse2TextureMaterial.load(videoType, parent, contentPath, tag, shaderVersion);
-		}
-	}
-
 	public class Diffuse2TextureMaterial : MaterialI
 	{
 		#region Static Properties
 		public static bool Loaded {get; private set;}
+		public static bool FailedToLoad {get; private set;}
+		
 		public static ShaderI Shader {get; private set;}
 		public static BufferLayoutDescI BufferLayoutDesc {get; private set;}
 		public static BufferLayoutI BufferLayout {get; private set;}
@@ -45,42 +20,67 @@ namespace ShaderMaterials.Shaders
 
 		#region Instance Properties
 		public string Name {get; set;}
-		public delegate void ApplyCallbackMethod(Diffuse2TextureMaterial material, MeshI mesh);
+		public delegate void ApplyCallbackMethod(Diffuse2TextureMaterial material, Mesh mesh);
 		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
 		[MaterialField(MaterialFieldUsages.Global)] public static Matrix4 Camera;[MaterialField(MaterialFieldUsages.Global)] public static Vector3 LightDirection;[MaterialField(MaterialFieldUsages.Global)] public static Vector3 LightDirection2;[MaterialField(MaterialFieldUsages.Global)] public static Vector4 LightColor;[MaterialField(MaterialFieldUsages.Global)] public static Vector4 LightColor2;[MaterialField(MaterialFieldUsages.Instance)] public Matrix4 Transform;[MaterialField(MaterialFieldUsages.Instance)] public Texture2DI Diffuse;
 		#endregion
 
 		#region Constructors
-		public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
+		public static void Init(DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			Shader = A.Shader.Create(videoType, parent, contentPath + tag + "Diffuse2Texture.rs", shaderVersion);
-			new Diffuse2TextureMaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
-			var elements = new List<BufferLayoutElement>();
-			elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Normal, 0, 0, 3));elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 6));
-			BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
-		}
-
-		public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality)
-		{
-			Shader = A.Shader.Create(videoType, parent, contentPath + tag + "Diffuse2Texture.rs", shaderVersion, vsQuality, psQuality);
-			new Diffuse2TextureMaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
-			var elements = new List<BufferLayoutElement>();
-			elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Normal, 0, 0, 3));elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 6));
-			BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
-		}
-
-		internal static bool load(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
-		{
-			if (!Shader.Loaded)
+			Shader = ShaderAPI.New(parent, contentPath + tag + "Diffuse2Texture.rs", shaderVersion,
+			delegate(object sender)
 			{
-				return false;
+				init((ShaderI)sender, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
+		}
+
+		public static void Init(DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			Shader = ShaderAPI.New(parent, contentPath + tag + "Diffuse2Texture.rs", shaderVersion, vsQuality, psQuality,
+			delegate(object sender)
+			{
+				init((ShaderI)sender, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
+		}
+		
+		private static void init(ShaderI shader, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			try
+			{
+				CameraConstant = shader.Variable("Camera");LightDirectionConstant = shader.Variable("LightDirection");LightDirection2Constant = shader.Variable("LightDirection2");LightColorConstant = shader.Variable("LightColor");LightColor2Constant = shader.Variable("LightColor2");TransformConstant = shader.Variable("Transform");DiffuseConstant = shader.Resource("Diffuse");
+				var elements = new List<BufferLayoutElement>();
+				elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Normal, 0, 0, 3));elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 6));
+				BufferLayoutDesc = BufferLayoutDescAPI.New(elements);
+				BufferLayout = BufferLayoutAPI.New(shader, shader, BufferLayoutDesc);
 			}
-			CameraConstant = Shader.Variable("Camera");LightDirectionConstant = Shader.Variable("LightDirection");LightDirection2Constant = Shader.Variable("LightDirection2");LightColorConstant = Shader.Variable("LightColor");LightColor2Constant = Shader.Variable("LightColor2");TransformConstant = Shader.Variable("Transform");DiffuseConstant = Shader.Resource("Diffuse");
-
-			BufferLayout = A.BufferLayout.Create(videoType, Shader, Shader, BufferLayoutDesc);
-
+			catch (Exception e)
+			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return;
+			}
+			
 			Loaded = true;
-			return true;
+			if (loadedCallback != null) loadedCallback(null);
+		}
+
+		public static void Dispose()
+		{
+			if (BufferLayout != null) BufferLayout.Dispose();
+			if (Shader != null) Shader.Dispose();
 		}
 		#endregion
 
@@ -90,25 +90,25 @@ namespace ShaderMaterials.Shaders
 			BufferLayout.Enable();
 		}
 
-		public void ApplyGlobalContants(MeshI mesh)
+		public void ApplyGlobalContants(Mesh mesh)
 		{
 			if (ApplyGlobalConstantsCallback != null) ApplyGlobalConstantsCallback(this, mesh);
 			CameraConstant.Set(Camera);LightDirectionConstant.Set(LightDirection);LightDirection2Constant.Set(LightDirection2);LightColorConstant.Set(LightColor);LightColor2Constant.Set(LightColor2);
 		}
 
-		public void ApplyInstanceContants(MeshI mesh)
+		public void ApplyInstanceContants(Mesh mesh)
 		{
 			if (ApplyInstanceConstantsCallback != null) ApplyInstanceConstantsCallback(this, mesh);
 			TransformConstant.Set(Transform);DiffuseConstant.Set(Diffuse);
 		}
 
-		public void ApplyInstancingContants(MeshI mesh)
+		public void ApplyInstancingContants(Mesh mesh)
 		{
 			if (ApplyInstancingConstantsCallback != null) ApplyInstancingConstantsCallback(this, mesh);
 			
 		}
 
-		public void Apply(MeshI mesh)
+		public void Apply(Mesh mesh)
 		{
 			ApplyGlobalContants(mesh);
 			ApplyInstanceContants(mesh);

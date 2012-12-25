@@ -8,34 +8,6 @@ using System.Threading.Tasks;
 
 namespace Reign.Video
 {
-	class ImageStreamLoader : StreamLoaderI
-	{
-		private Image image;
-		private string fileName;
-		private bool flip;
-
-		public ImageStreamLoader(Image image, string fileName, bool flip)
-		{
-			this.image = image;
-			this.fileName = fileName;
-			this.flip = flip;
-		}
-
-		#if METRO
-		public override async Task<bool> Load()
-		{
-			await image.load(fileName, flip);
-			return true;
-		}
-		#else
-		public override bool Load()
-		{
-			image.load(fileName, flip);
-			return true;
-		}
-		#endif
-	}
-
 	public enum ImageTypes
 	{
 		DDS,
@@ -64,7 +36,7 @@ namespace Reign.Video
 		BMPC
 	}
 
-	public abstract class Image
+	public abstract class Image : LoadableI
 	{
 		public class Mipmap
 		{
@@ -138,6 +110,8 @@ namespace Reign.Video
 
 		#region Properties
 		public bool Loaded {get; protected set;}
+		public bool FailedToLoad {get; protected set;}
+
 		public Mipmap[] Mipmaps;
 		public Size2 Size {get; protected set;}
 		public bool Compressed {get; protected set;}
@@ -152,50 +126,37 @@ namespace Reign.Video
 			SurfaceFormat = SurfaceFormats.Unknown;
 		}
 
-		protected abstract void init(Stream stream, bool flip);
-
-		#if METRO
-		internal async Task load(string fileName, bool flip)
-		{
-			using (var stream = await Streams.OpenFile(fileName))
-			{
-				init(stream, flip);
-			}
-		}
-		#else
-		internal void load(string fileName, bool flip)
-		{
-			using (var stream = Streams.OpenFile(fileName))
-			{
-				init(stream, flip);
-			}
-		}
-		#endif
-
-		public static Image Load(string fileName, bool flip)
+		public static Image New(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
 			string ext = Streams.GetFileExt(fileName);
 			switch (ext.ToLower())
 			{
-				case (".dds"): return new ImageDDS(fileName, flip);
-				case (".atc"): return new ImageDDS(fileName, flip);
-				case (".pvr"): return new ImagePVR(fileName, flip);
+				case (".dds"): return new ImageDDS(fileName, flip, loadedCallback, failedToLoadCallback);
+				case (".atc"): return new ImageDDS(fileName, flip, loadedCallback, failedToLoadCallback);
+				case (".pvr"): return new ImagePVR(fileName, flip, loadedCallback, failedToLoadCallback);
 				#if !XNA && NaCl
-				case (".bmpc"): return new ImageBMPC(fileName, flip);
+				case (".bmpc"): return new ImageBMPC(fileName, flip, loadedCallback, failedToLoadCallback);
 				#endif
 				#if !XNA && !NaCl
-				case (".bmpc"): return new ImageBMPC(fileName, flip);
-				case (".png"): return new ImagePNG(fileName, flip);
-				case (".jpg"): return new ImageJPG(fileName, flip);
-				case (".jpeg"): return new ImageJPG(fileName, flip);
+				case (".bmpc"): return new ImageBMPC(fileName, flip, loadedCallback, failedToLoadCallback);
+				case (".png"): return new ImagePNG(fileName, flip, loadedCallback, failedToLoadCallback);
+				case (".jpg"): return new ImageJPG(fileName, flip, loadedCallback, failedToLoadCallback);
+				case (".jpeg"): return new ImageJPG(fileName, flip, loadedCallback, failedToLoadCallback);
 				#if !iOS && !ANDROID
-				case (".bmp"): return new ImageBMP(fileName, flip);
+				case (".bmp"): return new ImageBMP(fileName, flip, loadedCallback, failedToLoadCallback);
 				#endif
 				#endif
 				default:
 					Debug.ThrowError("Image", string.Format("File 'ext' {0} not supported.", ext));
 					return null;
 			}
+		}
+
+		protected abstract void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback);
+
+		public bool UpdateLoad()
+		{
+			return Loaded;
 		}
 		#endregion
 
@@ -210,6 +171,19 @@ namespace Reign.Video
 			switch (surfaceFormat)
 			{
 				case (SurfaceFormats.RGBAx8): return width * height * 4;
+				case (SurfaceFormats.RGBx10_Ax2): return width * height * 4;
+				case (SurfaceFormats.RGBAx16f): return (width * height * 4) * 2;
+				case (SurfaceFormats.RGBAx32f): return (width * height * 4) * 4;
+				case (SurfaceFormats.DXT1): return (width * height) / 2;
+				case (SurfaceFormats.DXT3): return width * height;
+				case (SurfaceFormats.DXT5): return width * height;
+				case (SurfaceFormats.ATC_RGB): return (width * height) / 2;
+				case (SurfaceFormats.ATC_RGBA_Explicit): return width * height;
+				case (SurfaceFormats.ATC_RGBA_Interpolated): return width * height;
+				case (SurfaceFormats.PVR_RGB_2): return (width * height) / 4;
+				case (SurfaceFormats.PVR_RGB_4): return (width * height) / 2;
+				case (SurfaceFormats.PVR_RGBA_2): return (width * height) / 4;
+				case (SurfaceFormats.PVR_RGBA_4): return (width * height) / 2;
 				default: Debug.ThrowError("Image", string.Format("Unsuported surface format: ", surfaceFormat)); break;
 			}
 

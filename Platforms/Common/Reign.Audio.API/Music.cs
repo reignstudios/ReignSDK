@@ -1,24 +1,16 @@
-﻿using System;
-using Reign.Core;
-using Reign.Audio;
-#if XNA
-using AX = Reign.Audio.XNA;
-#endif
+﻿using Reign.Core;
 
 namespace Reign.Audio.API
 {
 	public static class Music
 	{
-		public static MusicI Create(DisposableI parent, AudioTypes apiType, string fileName)
+		public static void Init(AudioTypes type)
 		{
 			#if XNA
-			if (apiType == AudioTypes.XNA)
-			{
-				return new AX.Music(parent, fileName);
-			}
+			if (type == AudioTypes.XNA) MusicAPI.Init(Reign.Audio.XNA.Music.New);
 			#endif
 
-			return null;
+			if (type == AudioTypes.Dumby) MusicAPI.Init(Reign.Audio.Dumby.Music.New);
 		}
 	}
 }

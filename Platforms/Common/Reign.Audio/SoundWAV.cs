@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System;
 
-#if METRO
-using System.Threading.Tasks;
-#endif
-
 namespace Reign.Audio
 {
-	public class SoundWAVI : SoundI
+	public abstract class SoundWAVI : SoundI, LoadableI
 	{
 		#region Properites
+		public bool Loaded {get; protected set;}
+		public bool FailedToLoad {get; protected set;}
+
 		protected int chunkID, chunkSize, riffType, formatID, formatSize, sampleRate, formatAvgBytesPerSec, dataID, dataSize;
 		protected short formatCode, channels, formatBlockAlign, bitDepth, formatExtraSize;
 		protected byte[] data;
@@ -85,21 +84,35 @@ namespace Reign.Audio
 			TotalTime = TimeSpan.FromSeconds(dataSize / formatAvgBytesPerSec);
 		}
 
-		#if METRO
-		protected virtual async Task init(DisposableI parent, string fileName, int instanceCount, bool looped) {
-			using (var stream = await Streams.OpenFile(fileName))
-		#else
-		protected virtual void init(DisposableI parent, string fileName, int instanceCount, bool looped) {
-			using (var stream = Streams.OpenFile(fileName))
-		#endif
+		protected virtual void init(DisposableI parent, Stream stream, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			using (stream)
 			using (var reader = new BinaryReader(stream))
 			{
 				readMetaData(stream, reader);
 				data = reader.ReadBytes(dataSize);
 			}
+		}
 
-			Loaded = true;
+		public bool UpdateLoad()
+		{
+			return Loaded;
 		}
 		#endregion
+	}
+
+	public static class SoundWAVAPI
+	{
+		public static void Init(NewPtrMethod newPtr)
+		{
+			SoundWAVAPI.newPtr = newPtr;
+		}
+
+		public delegate SoundWAVI NewPtrMethod(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback);
+		private static NewPtrMethod newPtr;
+		public static SoundWAVI New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return newPtr(parent, fileName, instanceCount, looped, loadedCallback, failedToLoadCallback);
+		}
 	}
 }

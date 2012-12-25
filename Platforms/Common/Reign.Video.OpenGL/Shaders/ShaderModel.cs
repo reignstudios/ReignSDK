@@ -64,10 +64,10 @@ namespace Reign.Video.OpenGL
 
 				Video.checkForError();
 			}
-			catch (Exception ex)
+			catch (Exception e)
 			{
 				Dispose();
-				throw ex;
+				throw e;
 			}
 		}
 		

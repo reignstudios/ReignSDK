@@ -11,6 +11,11 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
+		public static BlendState New(DisposableI parent, BlendStateDescI desc)
+		{
+			return new BlendState(parent, desc);
+		}
+
 		public BlendState(DisposableI parent, BlendStateDescI desc)
 		: base(parent)
 		{

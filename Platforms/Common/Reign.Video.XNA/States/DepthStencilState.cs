@@ -11,6 +11,11 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
+		public static DepthStencilState New(DisposableI parent, DepthStencilStateDescI desc)
+		{
+			return new DepthStencilState(parent, desc);
+		}
+
 		public DepthStencilState(DisposableI parent, DepthStencilStateDescI desc)
 		: base(parent)
 		{

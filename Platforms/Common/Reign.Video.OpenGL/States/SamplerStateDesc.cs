@@ -18,6 +18,11 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
+		public static SamplerStateDesc New(SamplerStateTypes type)
+		{
+			return new SamplerStateDesc(type);
+		}
+
 		public SamplerStateDesc(SamplerStateTypes type)
 		{
 			switch (type)

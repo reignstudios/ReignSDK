@@ -5,365 +5,225 @@ using System.IO;
 using System.Collections;
 using System.Reflection;
 
-#if METRO
-using System.Threading.Tasks;
-#endif
-
 namespace Reign.Video
 {
-	class ModelStreamLoader : StreamLoaderI
-	{
-		private Dictionary<string,string>[] textures;
-		#if METRO
-		private System.Threading.Tasks.Task<Stream> fileStream;
-		#endif
-
-		private ModelI model;
-		private string fileName;
-		private Stream stream;
-		private string contentDirectory;
-		private Dictionary<string,Type> materialTypes;
-		private List<MaterialFieldBinder> value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes;
-		private Dictionary<string,string> fileExtOverrides;
-		private int classicInstanceCount;
-
-		public ModelStreamLoader(ModelI model, string fileName, Stream stream, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount)
-		{
-			this.model = model;
-			this.fileName = fileName;
-			this.stream = stream;
-			this.contentDirectory = contentDirectory;
-			this.materialTypes = materialTypes;
-			this.value1BinderTypes = value1BinderTypes;
-			this.value2BinderTypes = value2BinderTypes;
-			this.value3BinderTypes = value3BinderTypes;
-			this.value4BinderTypes = value4BinderTypes;
-			this.textureBinderTypes = textureBinderTypes;
-			this.fileExtOverrides = fileExtOverrides;
-			this.classicInstanceCount = classicInstanceCount;
-		}
-
-		#if METRO
-		public override async Task<bool> Load() {
-		#else
-		public override bool Load() {
-		#endif
-			if (stream != null)
-			{
-				return model.load(fileName, stream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, ref textures, classicInstanceCount);
-			}
-			else
-			{
-				if (fileName != null)
-				{
-					#if METRO
-					if (fileStream == null)
-					{
-						fileStream = Streams.OpenFile(fileName);
-						return false;
-					}
-					else
-					{
-						if (!fileStream.IsCompleted) return false;
-						bool pass = model.load(fileName, fileStream.Result, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, ref textures, classicInstanceCount);
-						fileName = null;
-						return pass;
-					}
-					#else
-					using (var file = Streams.OpenFile(fileName))
-					{
-						bool pass = model.load(fileName, file, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, ref textures, classicInstanceCount);
-						fileName = null;
-						return pass;
-					}
-					#endif
-				}
-				else
-				{
-					return model.load(null, null, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, ref textures, classicInstanceCount);
-				}
-			}
-		}
-
-		public override void Dispose()
-		{
-			if (stream != null)
-			{
-				stream.Dispose();
-				stream = null;
-			}
-
-			#if METRO
-			if (fileStream != null && fileStream.Result != null)
-			{
-				fileStream.Result.Dispose();
-				fileStream = null;
-			}
-			#endif
-		}
-	}
-
-	class ModelSoftwareStreamLoader : StreamLoaderI
-	{
-		private ModelI model;
-		private SoftwareModel softwareModel;
-		private MeshVertexSizes positionSize;
-		private bool loadColors, loadUVs, loadNormals;
-		private string contentDirectory;
-		private Dictionary<string,Type> materialTypes;
-		private List<MaterialFieldBinder> value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes;
-		private Dictionary<string,string> fileExtOverrides;
-		private int classicInstanceCount;
-
-		public ModelSoftwareStreamLoader(ModelI model, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount)
-		{
-			this.model = model;
-			this.softwareModel = softwareModel;
-			this.positionSize = positionSize;
-			this.loadColors = loadColors;
-			this.loadUVs = loadUVs;
-			this.loadNormals = loadNormals;
-			this.contentDirectory = contentDirectory;
-			this.materialTypes = materialTypes;
-			this.value1BinderTypes = value1BinderTypes;
-			this.value2BinderTypes = value2BinderTypes;
-			this.value3BinderTypes = value3BinderTypes;
-			this.value4BinderTypes = value4BinderTypes;
-			this.textureBinderTypes = textureBinderTypes;
-			this.fileExtOverrides = fileExtOverrides;
-			this.classicInstanceCount = classicInstanceCount;
-		}
-
-		#if METRO
-		public override async Task<bool> Load() {
-		#else
-		public override bool Load() {
-		#endif
-			if (!softwareModel.Loaded) return false;
-			var stream = new MemoryStream();
-			ModelI.Save(stream, false, softwareModel, positionSize, loadColors, loadUVs, loadNormals);
-			stream.Position = 0;
-			new ModelStreamLoader(model, null, stream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, classicInstanceCount);
-			return true;
-		}
-	}
-
-	public abstract class ModelI : Disposable
+	public class Model : Disposable, LoadableI
 	{
 		#region Properties
 		public bool Loaded {get; private set;}
-		public Vector3 Position, Rotation, Scale;
+		public bool FailedToLoad {get; private set;}
 
-		public MeshI[] Meshes {get; private set;}
+		public Vector3 Position, Rotation, Scale;
+		public Mesh[] Meshes {get; private set;}
 		public MaterialI[] Materials {get; private set;}
 		public List<Texture2DI> Textures {get; private set;}
 		#endregion
 
 		#region Constructors
-		public ModelI(DisposableI parent, string fileName, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount)
+		public Model(DisposableI parent, string fileName, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			new ModelStreamLoader(this, fileName, null, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, classicInstanceCount);
+			new StreamLoader(fileName,
+			delegate(object sender)
+			{
+				init(fileName, ((StreamLoader)sender).LoadedStream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, classicInstanceCount, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
 		}
 
-		public ModelI(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount)
+		public Model(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			new ModelSoftwareStreamLoader(this, softwareModel, positionSize, loadColors, loadUVs, loadNormals, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, classicInstanceCount);
+			new LoadWaiter(new LoadableI[]{softwareModel},
+			delegate
+			{
+				using (var stream = new MemoryStream())
+				{
+					try
+					{
+						Model.Save(stream, false, softwareModel, positionSize, loadColors, loadUVs, loadNormals);
+						stream.Position = 0;
+					}
+					catch (Exception e)
+					{
+						FailedToLoad = true;
+						Dispose();
+						if (failedToLoadCallback != null) failedToLoadCallback();
+					}
+
+					init(null, stream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, classicInstanceCount, loadedCallback, failedToLoadCallback);
+				}
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
 		}
 
-		internal bool load(string fileName, Stream stream, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, ref Dictionary<string,string>[] textures, int classicInstanceCount)
+		private void init(string fileName, Stream stream, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
 			try
 			{
-				if (Materials == null)
+				// transform
+				Position = new Vector3();
+				Scale = new Vector3(1);
+				Rotation = new Vector3();
+
+				var reader = new BinaryReader(stream);
+				// meta data
+				if (reader.ReadInt32() != Streams.MakeFourCC('R', 'M', 'F', 'T')) Debug.ThrowError("Error", "Not a ReignModel file: " + fileName);
+				float version = reader.ReadSingle();
+				if (version != 1.0f) Debug.ThrowError("Error", "Unsuported model version: " + version.ToString());
+				bool compressed = reader.ReadBoolean();
+
+				// materials
+				int materialCount = reader.ReadInt32();
+				Materials = new MaterialI[materialCount];
+				Textures = new List<Texture2DI>();
+				for (int i = 0; i != materialCount; ++i)
 				{
-					// transform
-					Position = new Vector3();
-					Scale = new Vector3(1);
-					Rotation = new Vector3();
+					string name = reader.ReadString();
 
-					var reader = new BinaryReader(stream);
-					// meta data
-					if (reader.ReadInt32() != Streams.MakeFourCC('R', 'M', 'F', 'T')) Debug.ThrowError("Error", "Not a ReignModel file: " + fileName);
-					float version = reader.ReadSingle();
-					if (version != 1.0f) Debug.ThrowError("Error", "Unsuported model version: " + version.ToString());
-					bool compressed = reader.ReadBoolean();
-
-					// materials
-					int materialCount = reader.ReadInt32();
-					Materials = new MaterialI[materialCount];
-					textures = new Dictionary<string,string>[materialCount];
-					Textures = new List<Texture2DI>();
-					for (int i = 0; i != materialCount; ++i)
+					// create material
+					bool pass = false;
+					foreach (var materialType in (Dictionary<string,Type>)materialTypes)
 					{
-						string name = reader.ReadString();
-
-						// create material
-						bool pass = false;
-						foreach (var materialType in (Dictionary<string,Type>)materialTypes)
+						if (materialType.Key == name)
 						{
-							if (materialType.Key == name)
-							{
-								Materials[i] = (MaterialI)Activator.CreateInstance(materialType.Value);
-								Materials[i].Name = name;
-								pass = true;
-								break;
-							}
-						}
-						if (!pass) Debug.ThrowError("Model", "Failed to find a valid material type for: " + name);
-
-						// values1
-						var values1 = new Dictionary<string,float>();
-						int valueCount = reader.ReadInt32();
-						for (int i2 = 0; i2 != valueCount; ++i2)
-						{
-							values1.Add(reader.ReadString(), reader.ReadSingle());
-						}
-						MaterialFieldBinder binder;
-						FieldInfo field;
-						if (value1BinderTypes != null && value1BinderTypes.Count != 0)
-						{
-							field = getMaterialFieldInfo(Materials[i], values1, value1BinderTypes, out binder);
-							field.SetValue(Materials[i], values1[binder.ID]);
-						}
-
-						// values2
-						var values2 = new Dictionary<string,Vector2>();
-						valueCount = reader.ReadInt32();
-						for (int i2 = 0; i2 != valueCount; ++i2)
-						{
-							values2.Add(reader.ReadString(), reader.ReadVector2());
-						}
-						if (value2BinderTypes != null && value2BinderTypes.Count != 0)
-						{
-							field = getMaterialFieldInfo(Materials[i], values2, value2BinderTypes, out binder);
-							field.SetValue(Materials[i], values2[binder.ID]);
-						}
-
-						// values3
-						var values3 = new Dictionary<string,Vector3>();
-						valueCount = reader.ReadInt32();
-						for (int i2 = 0; i2 != valueCount; ++i2)
-						{
-							values3.Add(reader.ReadString(), reader.ReadVector3());
-						}
-						if (value3BinderTypes != null && value3BinderTypes.Count != 0)
-						{
-							field = getMaterialFieldInfo(Materials[i], values3, value3BinderTypes, out binder);
-							field.SetValue(Materials[i], values3[binder.ID]);
-						}
-
-						// values4
-						var values4 = new Dictionary<string,Vector4>();
-						valueCount = reader.ReadInt32();
-						for (int i2 = 0; i2 != valueCount; ++i2)
-						{
-							values4.Add(reader.ReadString(), reader.ReadVector4());
-						}
-						if (value4BinderTypes != null && value4BinderTypes.Count != 0)
-						{
-							field = getMaterialFieldInfo(Materials[i], values4, value4BinderTypes, out binder);
-							field.SetValue(Materials[i], values4[binder.ID]);
-						}
-
-						// textures
-						textures[i] = new Dictionary<string,string>();
-						int textureCount = reader.ReadInt32();
-						for (int i2 = 0; i2 != textureCount; ++i2)
-						{
-							textures[i].Add(reader.ReadString(), reader.ReadString());
+							Materials[i] = (MaterialI)Activator.CreateInstance(materialType.Value);
+							Materials[i].Name = name;
+							pass = true;
+							break;
 						}
 					}
+					if (!pass) Debug.ThrowError("Model", "Failed to find a valid material type for: " + name);
+					var material = Materials[i];
 
-					// meshes
-					int meshCount = reader.ReadInt32();
-					Meshes = new MeshI[meshCount];
-					for (int i = 0; i != meshCount; ++i)
-					{
-						Meshes[i] = createMesh(reader, this, classicInstanceCount);
-					}
+					// values1
+					var values1 = new Dictionary<string,float>();
+					int valueCount = reader.ReadInt32();
+					for (int i2 = 0; i2 != valueCount; ++i2) values1.Add(reader.ReadString(), reader.ReadSingle());
+					bindTypes(material, values1, value1BinderTypes, contentDirectory, fileExtOverrides, handleFoundValueBinder);
 
-					return false;
+					// values2
+					var values2 = new Dictionary<string,Vector2>();
+					valueCount = reader.ReadInt32();
+					for (int i2 = 0; i2 != valueCount; ++i2) values2.Add(reader.ReadString(), reader.ReadVector2());
+					bindTypes(material, values2, value2BinderTypes, contentDirectory, fileExtOverrides, handleFoundValueBinder);
+
+					// values3
+					var values3 = new Dictionary<string,Vector3>();
+					valueCount = reader.ReadInt32();
+					for (int i2 = 0; i2 != valueCount; ++i2) values3.Add(reader.ReadString(), reader.ReadVector3());
+					bindTypes(material, values3, value3BinderTypes, contentDirectory, fileExtOverrides, handleFoundValueBinder);
+
+					// values4
+					var values4 = new Dictionary<string,Vector4>();
+					valueCount = reader.ReadInt32();
+					for (int i2 = 0; i2 != valueCount; ++i2) values4.Add(reader.ReadString(), reader.ReadVector4());
+					bindTypes(material, values4, value4BinderTypes, contentDirectory, fileExtOverrides, handleFoundValueBinder);
+
+					// textures
+					var textures = new Dictionary<string,string>();
+					int textureCount = reader.ReadInt32();
+					for (int i2 = 0; i2 != textureCount; ++i2) textures.Add(reader.ReadString(), reader.ReadString());
+					bindTypes(material, textures, textureBinderTypes, contentDirectory, fileExtOverrides, handleFoundTextureBinder);
 				}
-				else
+
+				// meshes
+				int meshCount = reader.ReadInt32();
+				Meshes = new Mesh[meshCount];
+				for (int i = 0; i != meshCount; ++i)
 				{
-					for (int i = 0; i != Materials.Length; ++i)
-					{
-						if (textureBinderTypes == null || textureBinderTypes.Count == 0) continue;
-
-						var material = Materials[i];
-						var materialType = material.GetType();
-						var materialTextures = textures[i];
-						
-						// load texture
-						MaterialFieldBinder binder;
-						var field = getMaterialFieldInfo(Materials[i], materialTextures, textureBinderTypes, out binder);
-						var value = field.GetValue(material);
-						if (value != null)
-						{
-							if (!((Texture2DI)value).Loaded) return false;
-						}
-						else
-						{
-							var textureFileName = materialTextures[binder.ID];
-							if (fileExtOverrides != null)
-							{
-								string ext = Streams.GetFileExt(textureFileName);
-								if (fileExtOverrides.ContainsKey(ext)) textureFileName = Streams.GetFileNameWithoutExt(textureFileName) + fileExtOverrides[ext];
-								else textureFileName = Streams.GetFileNameWithExt(textureFileName);
-							}
-							else
-							{
-								textureFileName = Streams.GetFileNameWithExt(textureFileName);
-							}
-
-							var texture = createTexture(Parent, contentDirectory + textureFileName);
-							if (!Textures.Contains(texture)) Textures.Add(texture);
-							field.SetValue(material, texture);
-							return false;
-						}
-					}
+					Meshes[i] = new Mesh(reader, this, classicInstanceCount);
 				}
 			}
 			catch (Exception e)
 			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
 				Dispose();
-				throw e;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return;
 			}
 
-			Loaded = true;
-			return true;
+			if (Textures.Count == 0)
+			{
+				Loaded = true;
+				if (loadedCallback != null) loadedCallback(this);
+			}
+			else
+			{
+				new LoadWaiter(Textures.ToArray(),
+				delegate(object sender)
+				{
+					Loaded = true;
+					if (loadedCallback != null) loadedCallback(this);
+				},
+				delegate
+				{
+					FailedToLoad = true;
+					Dispose();
+					if (failedToLoadCallback != null) failedToLoadCallback();
+				});
+			}
 		}
 
-		private FieldInfo getMaterialFieldInfo(MaterialI material, IDictionary values, List<MaterialFieldBinder> binderTypes, out MaterialFieldBinder binder)
+		private delegate void FoundBinderMethod(MaterialI material, FieldInfo materialField, IDictionary values, MaterialFieldBinder binder, string contentDirectory, Dictionary<string,string> fileExtOverrides);
+		private void bindTypes(MaterialI material, IDictionary values, List<MaterialFieldBinder> binders, string contentDirectory, Dictionary<string,string> fileExtOverrides, FoundBinderMethod handleFoundBinder)
 		{
-			string materialName = material.Name;
-			Type materialType = material.GetType();
-
-			binder = null;
-			foreach (var binderType in binderTypes)
+			var materialType = material.GetType();
+			foreach (var binder in binders)
 			{
-				if (binderType.MaterialName == materialName && values.Contains(binderType.ID))
+				if (binder.MaterialName == material.Name && values.Contains(binder.ID))
 				{
-					binder = binderType;
-					break;
+					#if METRO
+					var materialField = materialType.GetTypeInfo().GetDeclaredField(binder.ShaderMaterialFieldName);
+					#else
+					var materialField = materialType.GetField(binder.ShaderMaterialFieldName);
+					#endif
+					if (materialField == null) Debug.ThrowError("Model", "Shader material field name does not exist: " + binder.ShaderMaterialFieldName);
+
+					if (handleFoundBinder != null) handleFoundBinder(material, materialField, values, binder, contentDirectory, fileExtOverrides);
 				}
 			}
-			if (binder == null) Debug.ThrowError("Model", "Failed to find a binder for: " + materialType.ToString());
-
-			#if METRO
-			var field = materialType.GetTypeInfo().GetDeclaredField(binder.ShaderMaterialFieldName);
-			#else
-			var field = materialType.GetField(binder.ShaderMaterialFieldName);
-			#endif
-			if (field == null) Debug.ThrowError("Model", "Shader material field name does not exist: " + binder.ShaderMaterialFieldName);
-
-			return field;
 		}
 
-		protected abstract MeshI createMesh(BinaryReader reader, ModelI model, int classicInstanceCount);
-		protected abstract Texture2DI createTexture(DisposableI parent, string fileName);
+		private void handleFoundValueBinder(MaterialI material, FieldInfo materialField, IDictionary values, MaterialFieldBinder binder, string contentDirectory, Dictionary<string,string> fileExtOverrides)
+		{
+			materialField.SetValue(material, values[binder.ID]);
+		}
+
+		private void handleFoundTextureBinder(MaterialI material, FieldInfo materialField, IDictionary values, MaterialFieldBinder binder, string contentDirectory, Dictionary<string,string> fileExtOverrides)
+		{
+			var textureFileName = ((Dictionary<string,string>)values)[binder.ID];
+			if (fileExtOverrides != null)
+			{
+				string ext = Streams.GetFileExt(textureFileName);
+				if (fileExtOverrides.ContainsKey(ext)) textureFileName = Streams.GetFileNameWithoutExt(textureFileName) + fileExtOverrides[ext];
+				else textureFileName = Streams.GetFileNameWithExt(textureFileName);
+			}
+			else
+			{
+				textureFileName = Streams.GetFileNameWithExt(textureFileName);
+			}
+
+			var texture = Texture2DAPI.NewReference(Parent, contentDirectory + textureFileName, null, null);
+			if (!Textures.Contains(texture)) Textures.Add(texture);
+			materialField.SetValue(material, texture);
+		}
+
+		public bool UpdateLoad()
+		{
+			return Loaded;
+		}
 
 		public override void Dispose()
 		{
@@ -455,7 +315,7 @@ namespace Reign.Video
 			writer.Write(softwareModel.Meshes.Count);
 			foreach (var mesh in softwareModel.Meshes)
 			{
-				MeshI.Write(writer, softwareModel, mesh, positionSize, loadColors, loadUVs, loadNormals);
+				Mesh.Write(writer, softwareModel, mesh, positionSize, loadColors, loadUVs, loadNormals);
 			}
 		}
 

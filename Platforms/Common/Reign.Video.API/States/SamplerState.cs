@@ -1,100 +1,40 @@
-﻿using System;
-using Reign.Core;
-using System.Reflection;
+﻿using Reign.Core;
 
 namespace Reign.Video.API
 {
 	public static class SamplerStateDesc
 	{
-		public static SamplerStateDescI Create(VideoTypes apiType, params object[] args)
+		public static void Init(VideoTypes type)
 		{
-			try
-			{
-				#if WINDOWS || METRO
-				if (apiType == VideoTypes.D3D11)
-				{
-					return (SamplerStateDescI)OS.CreateInstance(Video.D3D11, Video.D3D11, "SamplerStateDesc", args);
-				}
-				#endif
+			#if WINDOWS || METRO
+			if (type == VideoTypes.D3D11) SamplerStateDescAPI.Init(Reign.Video.D3D11.SamplerStateDesc.New);
+			#endif
 
-				#if WINDOWS
-				if (apiType == VideoTypes.D3D9)
-				{
-					return (SamplerStateDescI)OS.CreateInstance(Video.D3D9, Video.D3D9, "SamplerStateDesc", args);
-				}
-				#endif
+			#if WINDOWS || OSX || LINUX
+			if (type == VideoTypes.OpenGL) SamplerStateDescAPI.Init(Reign.Video.OpenGL.SamplerStateDesc.New);
+			#endif
 
-				#if XNA
-				if (apiType == VideoTypes.XNA)
-				{
-					return (SamplerStateDescI)OS.CreateInstance(Video.XNA, Video.XNA, "SamplerStateDesc", args);
-				}
-				#endif
-
-				#if WINDOWS || OSX || LINUX || iOS || ANDROID
-				if (apiType == VideoTypes.OpenGL)
-				{
-					return (SamplerStateDescI)OS.CreateInstance(Video.OpenGL, Video.OpenGL, "SamplerStateDesc", args);
-				}
-				#endif
-			}
-			catch (TargetInvocationException e)
-			{
-				throw (e.InnerException != null) ? e.InnerException : e;
-			}
-			catch (Exception e)
-			{
-				throw e;
-			}
-
-			return null;
+			#if XNA
+			if (type == VideoTypes.XNA) SamplerStateDescAPI.Init(Reign.Video.XNA.SamplerStateDesc.New);
+			#endif
 		}
 	}
 
 	public static class SamplerState
 	{
-		public static SamplerStateI Create(VideoTypes apiType, params object[] args)
+		public static void Init(VideoTypes type)
 		{
-			try
-			{
-				#if WINDOWS || METRO
-				if (apiType == VideoTypes.D3D11)
-				{
-					return (SamplerStateI)OS.CreateInstance(Video.D3D11, Video.D3D11, "SamplerState", args);
-				}
-				#endif
+			#if WINDOWS || METRO
+			if (type == VideoTypes.D3D11) SamplerStateAPI.Init(Reign.Video.D3D11.SamplerState.New);
+			#endif
 
-				#if WINDOWS
-				if (apiType == VideoTypes.D3D9)
-				{
-					return (SamplerStateI)OS.CreateInstance(Video.D3D9, Video.D3D9, "SamplerState", args);
-				}
-				#endif
+			#if WINDOWS || OSX || LINUX
+			if (type == VideoTypes.OpenGL) SamplerStateAPI.Init(Reign.Video.OpenGL.SamplerState.New);
+			#endif
 
-				#if XNA
-				if (apiType == VideoTypes.XNA)
-				{
-					return (SamplerStateI)OS.CreateInstance(Video.XNA, Video.XNA, "SamplerState", args);
-				}
-				#endif
-
-				#if WINDOWS || OSX || LINUX || iOS || ANDROID
-				if (apiType == VideoTypes.OpenGL)
-				{
-					return (SamplerStateI)OS.CreateInstance(Video.OpenGL, Video.OpenGL, "SamplerState", args);
-				}
-				#endif
-			}
-			catch (TargetInvocationException e)
-			{
-				throw (e.InnerException != null) ? e.InnerException : e;
-			}
-			catch (Exception e)
-			{
-				throw e;
-			}
-
-			return null;
+			#if XNA
+			if (type == VideoTypes.XNA) SamplerStateAPI.Init(Reign.Video.XNA.SamplerState.New);
+			#endif
 		}
 	}
 }

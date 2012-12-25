@@ -7,28 +7,6 @@ using System.IO;
 
 namespace Reign.Video.XNA
 {
-	class ShaderStreamLoader : StreamLoaderI
-	{
-		private DisposableI parent;
-		private Shader shader;
-		private string fileName;
-		private ShaderVersions shaderVersion;
-
-		public ShaderStreamLoader(Shader shader, DisposableI parent, string fileName, ShaderVersions shaderVersion)
-		{
-			this.shader = shader;
-			this.parent = parent;
-			this.fileName = fileName;
-			this.shaderVersion = shaderVersion;
-		}
-
-		public override bool Load()
-		{
-			shader.load(parent, fileName, shaderVersion);
-			return true;
-		}
-	}
-
 	public class Shader : ShaderI
 	{
 		#region Properties
@@ -40,30 +18,49 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
-		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion)
-		: base(parent)
+		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			new ShaderStreamLoader(this, parent, fileName, shaderVersion);
+			return new Shader(parent, fileName, shaderVersion, loadedCallback, failedToLoadCallback);
 		}
 
-		internal void load(DisposableI parent, string fileName, ShaderVersions shaderVersion)
+		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return new Shader(parent, fileName, shaderVersion, vsQuality, psQuality, loadedCallback, failedToLoadCallback);
+		}
+
+		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		: base(parent)
+		{
+			init(fileName, shaderVersion, loadedCallback, failedToLoadCallback);
+		}
+
+		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		: base(parent)
+		{
+			init(fileName, shaderVersion, loadedCallback, failedToLoadCallback);
+		}
+
+		private void init(string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
 			try
 			{
-				effect = parent.FindParentOrSelfWithException<RootDisposable>().Content.Load<Effect>(Streams.StripFileExt(fileName));
+				effect = Parent.FindParentOrSelfWithException<RootDisposable>().Content.Load<Effect>(Streams.StripFileExt(fileName));
 				loadedFromContentManager = true;
 				pass = effect.CurrentTechnique.Passes[0];
 
 				variables = new List<ShaderVariable>();
 				resources = new List<ShaderResource>();
 			}
-			catch (Exception ex)
+			catch (Exception e)
 			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
 				Dispose();
-				throw ex;
+				if (failedToLoadCallback != null) failedToLoadCallback();
 			}
 
 			Loaded = true;
+			if (loadedCallback != null) loadedCallback(this);
 		}
 
 		public override void Dispose()

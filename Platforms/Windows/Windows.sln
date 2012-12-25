@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Input", "Reign.Input\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video", "Reign.Video\Reign.Video.csproj", "{2E74C4E8-20F5-4EED-821C-FEA6DBF98532}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Reign.Video.D3D9", "Reign.Video.D3D9\Reign.Video.D3D9.vcxproj", "{53E100D6-70F9-4A71-8960-3F9442401826}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.OpenGL", "Reign.Video.OpenGL\Reign.Video.OpenGL.csproj", "{05A743AF-89E8-4094-84DD-DAF07882EF50}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Input.WinForms", "Reign.Input.WinForms\Reign.Input.WinForms.csproj", "{E9254076-C824-4288-A4D6-AD9122B523E6}"
@@ -92,18 +90,6 @@ Global
 		{2E74C4E8-20F5-4EED-821C-FEA6DBF98532}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2E74C4E8-20F5-4EED-821C-FEA6DBF98532}.Release|Win32.ActiveCfg = Release|Any CPU
 		{2E74C4E8-20F5-4EED-821C-FEA6DBF98532}.Release|x86.ActiveCfg = Release|Any CPU
-		{53E100D6-70F9-4A71-8960-3F9442401826}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{53E100D6-70F9-4A71-8960-3F9442401826}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{53E100D6-70F9-4A71-8960-3F9442401826}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{53E100D6-70F9-4A71-8960-3F9442401826}.Debug|Win32.ActiveCfg = Debug|Win32
-		{53E100D6-70F9-4A71-8960-3F9442401826}.Debug|Win32.Build.0 = Debug|Win32
-		{53E100D6-70F9-4A71-8960-3F9442401826}.Debug|x86.ActiveCfg = Debug|Win32
-		{53E100D6-70F9-4A71-8960-3F9442401826}.Release|Any CPU.ActiveCfg = Release|Win32
-		{53E100D6-70F9-4A71-8960-3F9442401826}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{53E100D6-70F9-4A71-8960-3F9442401826}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{53E100D6-70F9-4A71-8960-3F9442401826}.Release|Win32.ActiveCfg = Release|Win32
-		{53E100D6-70F9-4A71-8960-3F9442401826}.Release|Win32.Build.0 = Release|Win32
-		{53E100D6-70F9-4A71-8960-3F9442401826}.Release|x86.ActiveCfg = Release|Win32
 		{05A743AF-89E8-4094-84DD-DAF07882EF50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{05A743AF-89E8-4094-84DD-DAF07882EF50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05A743AF-89E8-4094-84DD-DAF07882EF50}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

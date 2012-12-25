@@ -100,27 +100,30 @@ namespace ShaderCompiler.Core
 			public MetroShaderCompiler(string fileName)
 			: base(null)
 			{
-				var code = getShaders(fileName);
-
-				IntPtr vsBuffer;
-				int vsBufferSize;
-				var error = Reign_Video_D3D11_Component.ShaderModelCom.Compile(code[0], code[0].Length, "vs_4_0_level_9_3", out vsBuffer, out vsBufferSize);
-				if (error != null) throw new Exception("Failed to compile Metro VS shader: " + error);
-
-				IntPtr psBuffer;
-				int psBufferSize;
-				error = Reign_Video_D3D11_Component.ShaderModelCom.Compile(code[1], code[1].Length, "ps_4_0_level_9_3", out psBuffer, out psBufferSize);
-				if (error != null) throw new Exception("Failed to compile Metro PS shader: " + error);
-
-				var data = new byte[vsBufferSize + psBufferSize];
-				System.Runtime.InteropServices.Marshal.Copy(vsBuffer, data, 0, vsBufferSize);
-				System.Runtime.InteropServices.Marshal.Copy(psBuffer, data, vsBufferSize, psBufferSize);
-				using (var file = new FileStream(Reign.Core.Streams.StripFileExt(fileName) + ".mrs", FileMode.Create, FileAccess.Write))
-				using (var writer = new BinaryWriter(file))
+				using (var codeFile = new FileStream(fileName, FileMode.Open, FileAccess.Read))
 				{
-					writer.Write(vsBufferSize);
-					writer.Write(psBufferSize);
-					file.Write(data, 0, data.Length);
+					var code = getShaders(codeFile);
+	
+					IntPtr vsBuffer;
+					int vsBufferSize;
+					var error = Reign_Video_D3D11_Component.ShaderModelCom.Compile(code[0], code[0].Length, "vs_4_0_level_9_3", out vsBuffer, out vsBufferSize);
+					if (error != null) throw new Exception("Failed to compile Metro VS shader: " + error);
+	
+					IntPtr psBuffer;
+					int psBufferSize;
+					error = Reign_Video_D3D11_Component.ShaderModelCom.Compile(code[1], code[1].Length, "ps_4_0_level_9_3", out psBuffer, out psBufferSize);
+					if (error != null) throw new Exception("Failed to compile Metro PS shader: " + error);
+	
+					var data = new byte[vsBufferSize + psBufferSize];
+					System.Runtime.InteropServices.Marshal.Copy(vsBuffer, data, 0, vsBufferSize);
+					System.Runtime.InteropServices.Marshal.Copy(psBuffer, data, vsBufferSize, psBufferSize);
+					using (var file = new FileStream(Reign.Core.Streams.StripFileExt(fileName) + ".mrs", FileMode.Create, FileAccess.Write))
+					using (var writer = new BinaryWriter(file))
+					{
+						writer.Write(vsBufferSize);
+						writer.Write(psBufferSize);
+						file.Write(data, 0, data.Length);
+					}
 				}
 			}
 
@@ -325,12 +328,12 @@ technique MainTechnique
 							field.FieldType == typeof(Matrix2[]) || field.FieldType == typeof(Matrix3[]) || field.FieldType == typeof(Matrix4[]))
 						{
 							constantProperties += string.Format("public static ShaderVariableI {0}Constant {{get; private set;}}", field.Name);
-							constantInitBody += string.Format(@"{0}Constant = Shader.Variable(""{0}"");", field.Name);
+							constantInitBody += string.Format(@"{0}Constant = shader.Variable(""{0}"");", field.Name);
 						}
 						else if (field.FieldType == typeof(Texture2D))
 						{
 							constantProperties += string.Format("public static ShaderResourceI {0}Constant {{get; private set;}}", field.Name);
-							constantInitBody += string.Format(@"{0}Constant = Shader.Resource(""{0}"");", field.Name);
+							constantInitBody += string.Format(@"{0}Constant = shader.Resource(""{0}"");", field.Name);
 						}
 						else
 						{
@@ -443,40 +446,15 @@ using System;
 using System.Collections.Generic;
 using Reign.Core;
 using Reign.Video;
-using A = Reign.Video.API;
 
 namespace ShaderMaterials.{0}
 {{
-	class {1}MaterialStreamLoader : StreamLoaderI
-	{{
-		private A.VideoTypes videoType;
-		private DisposableI parent;
-		private string contentPath;
-		private string tag;
-		private ShaderVersions shaderVersion;
-
-		public {1}MaterialStreamLoader(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
-		{{
-			this.videoType = videoType;
-			this.parent = parent;
-			this.contentPath = contentPath;
-			this.tag = tag;
-			this.shaderVersion = shaderVersion;
-		}}
-
-		#if METRO
-		public override async System.Threading.Tasks.Task<bool> Load() {{
-		#else
-		public override bool Load() {{
-		#endif
-			return {1}Material.load(videoType, parent, contentPath, tag, shaderVersion);
-		}}
-	}}
-
 	public class {1}Material : MaterialI
 	{{
 		#region Static Properties
 		public static bool Loaded {{get; private set;}}
+		public static bool FailedToLoad {{get; private set;}}
+		
 		public static ShaderI Shader {{get; private set;}}
 		public static BufferLayoutDescI BufferLayoutDesc {{get; private set;}}
 		public static BufferLayoutI BufferLayout {{get; private set;}}
@@ -485,42 +463,67 @@ namespace ShaderMaterials.{0}
 
 		#region Instance Properties
 		public string Name {{get; set;}}
-		public delegate void ApplyCallbackMethod({1}Material material, MeshI mesh);
+		public delegate void ApplyCallbackMethod({1}Material material, Mesh mesh);
 		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
 		{3}
 		#endregion
 
 		#region Constructors
-		public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
+		public static void Init(DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{{
-			Shader = A.Shader.Create(videoType, parent, contentPath + tag + ""{1}.rs"", shaderVersion);
-			new {1}MaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
-			var elements = new List<BufferLayoutElement>();
-			{7}
-			BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
-		}}
-
-		public static void Init(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality)
-		{{
-			Shader = A.Shader.Create(videoType, parent, contentPath + tag + ""{1}.rs"", shaderVersion, vsQuality, psQuality);
-			new {1}MaterialStreamLoader(videoType, parent, contentPath, tag, shaderVersion);
-			var elements = new List<BufferLayoutElement>();
-			{7}
-			BufferLayoutDesc = A.BufferLayoutDesc.Create(videoType, elements);
-		}}
-
-		internal static bool load(A.VideoTypes videoType, DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion)
-		{{
-			if (!Shader.Loaded)
+			Shader = ShaderAPI.New(parent, contentPath + tag + ""{1}.rs"", shaderVersion,
+			delegate(object sender)
 			{{
-				return false;
+				init((ShaderI)sender, loadedCallback, failedToLoadCallback);
+			}},
+			delegate
+			{{
+				FailedToLoad = true;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			}});
+		}}
+
+		public static void Init(DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{{
+			Shader = ShaderAPI.New(parent, contentPath + tag + ""{1}.rs"", shaderVersion, vsQuality, psQuality,
+			delegate(object sender)
+			{{
+				init((ShaderI)sender, loadedCallback, failedToLoadCallback);
+			}},
+			delegate
+			{{
+				FailedToLoad = true;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			}});
+		}}
+		
+		private static void init(ShaderI shader, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{{
+			try
+			{{
+				{8}
+				var elements = new List<BufferLayoutElement>();
+				{7}
+				BufferLayoutDesc = BufferLayoutDescAPI.New(elements);
+				BufferLayout = BufferLayoutAPI.New(shader, shader, BufferLayoutDesc);
 			}}
-			{8}
-
-			BufferLayout = A.BufferLayout.Create(videoType, Shader, Shader, BufferLayoutDesc);
-
+			catch (Exception e)
+			{{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return;
+			}}
+			
 			Loaded = true;
-			return true;
+			if (loadedCallback != null) loadedCallback(null);
+		}}
+
+		public static void Dispose()
+		{{
+			if (BufferLayout != null) BufferLayout.Dispose();
+			if (Shader != null) Shader.Dispose();
 		}}
 		#endregion
 
@@ -530,25 +533,25 @@ namespace ShaderMaterials.{0}
 			BufferLayout.Enable();
 		}}
 
-		public void ApplyGlobalContants(MeshI mesh)
+		public void ApplyGlobalContants(Mesh mesh)
 		{{
 			if (ApplyGlobalConstantsCallback != null) ApplyGlobalConstantsCallback(this, mesh);
 			{4}
 		}}
 
-		public void ApplyInstanceContants(MeshI mesh)
+		public void ApplyInstanceContants(Mesh mesh)
 		{{
 			if (ApplyInstanceConstantsCallback != null) ApplyInstanceConstantsCallback(this, mesh);
 			{5}
 		}}
 
-		public void ApplyInstancingContants(MeshI mesh)
+		public void ApplyInstancingContants(Mesh mesh)
 		{{
 			if (ApplyInstancingConstantsCallback != null) ApplyInstancingConstantsCallback(this, mesh);
 			{6}
 		}}
 
-		public void Apply(MeshI mesh)
+		public void Apply(Mesh mesh)
 		{{
 			ApplyGlobalContants(mesh);
 			ApplyInstanceContants(mesh);

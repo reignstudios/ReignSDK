@@ -55,10 +55,21 @@ namespace Reign.Video
 		public Character[] Characters;
 	}
 
-	public abstract class FontI : Disposable
+	public class Font : Disposable, LoadableI
 	{
 		#region Properties
 		public bool Loaded {get; protected set;}
+		public bool FailedToLoad {get; protected set;}
+
+		private ShaderI shader;
+		private ShaderVariableI shaderCamera, shaderLocation, shaderSize, shaderLocationUV, shaderSizeUV, texelOffset, shaderColor;
+		private ShaderResourceI shaderTexture;
+		private Texture2DI texture;
+		private BufferLayoutI layout;
+		private IndexBufferI indexBuffer;
+		private VertexBufferI vertexBuffer;
+		private bool instancing;
+
 		public Character[] Characters {get; private set;}
 
 		public static int[] Indices = new int[6]
@@ -77,30 +88,27 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public FontI(DisposableI parent)
+		public Font(DisposableI parent, ShaderI shader, Texture2DI texture, string metricsFileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			Characters = new Character[95];
-			for (int i = 0; i != Characters.Length; ++i)
+			new StreamLoader(metricsFileName,
+			delegate(object sender)
 			{
-				Characters[i] = new Character((char)(i + 32), new Vector2(), new Vector2());
-			}
+				init(shader, texture, ((StreamLoader)sender).LoadedStream, metricsFileName, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
 		}
 
-		public FontI(DisposableI parent, string metricsFileName)
-		: base(parent)
+		private void init(ShaderI shader, Texture2DI texture, Stream stream, string metricsFileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			
-		}
-
-		#if METRO
-		protected virtual async System.Threading.Tasks.Task init(ShaderI shader, Texture2DI texture, string metricsFileName) {
-			using (var stream = await Streams.OpenFile(metricsFileName))
-		#else
-		protected virtual void init(ShaderI shader, Texture2DI texture, string metricsFileName) {
-			using (var stream = Streams.OpenFile(metricsFileName))
-		#endif
+			try
 			{
+				// load characters
 				var xml = new XmlSerializer(typeof(FontMetrics));
 				var metrics = xml.Deserialize(stream) as FontMetrics;
 				if (metrics == null) Debug.ThrowError("FontI", "Failed to deserialize font metrics: " + metricsFileName);
@@ -111,7 +119,50 @@ namespace Reign.Video
 					var character = metrics.Characters[i];
 					Characters[i] = new Character(character.Key, new Vector2(character.X, character.Y), new Vector2(character.Width, character.Height));
 				}
+
+				// get shader variables
+				this.texture = texture;
+				this.shader = shader;
+				shaderCamera = shader.Variable("Camera");
+				shaderLocation = shader.Variable("Location");
+				shaderSize = shader.Variable("Size");
+				shaderLocationUV = shader.Variable("LocationUV");
+				shaderSizeUV = shader.Variable("SizeUV");
+				texelOffset = shader.Variable("TexelOffset");
+				shaderColor = shader.Variable("Color");
+				shaderTexture = shader.Resource("DiffuseTexture");
+
+				// create buffers
+				var layoutDesc = BufferLayoutDescAPI.New(BufferLayoutTypes.Position2);
+				layout = BufferLayoutAPI.New(this, shader, layoutDesc);
+
+				indexBuffer = IndexBufferAPI.New(this, BufferUsages.Default, Indices);
+				vertexBuffer = VertexBufferAPI.New(this, layoutDesc, BufferUsages.Default, VertexBufferTopologys.Triangle, Vertices);
 			}
+			catch (Exception e)
+			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			}
+
+			Loaded = true;
+			if (loadedCallback != null) loadedCallback(this);
+		}
+
+		public bool UpdateLoad()
+		{
+			return Loaded;
+		}
+
+		public override void Dispose()
+		{
+			disposeChilderen();
+			if (layout != null) layout.Dispose();
+			if (indexBuffer != null) indexBuffer.Dispose();
+			if (vertexBuffer != null) vertexBuffer.Dispose();
+			base.Dispose();
 		}
 		#endregion
 
@@ -128,10 +179,29 @@ namespace Reign.Video
 			return Characters[CharacterIndex(@char)];
 		}
 
-		public abstract void DrawStart(Camera camera);
-		public abstract void Draw(string text, Vector2 location, Vector4 color, float Size, bool centeredX, bool centeredY);
+		public void DrawStart(Camera camera)
+		{
+			vertexBuffer.Enable(indexBuffer);
+			shaderCamera.Set(camera.TransformMatrix);
+			texelOffset.Set(texture.TexelOffset);
+			shaderTexture.Set(texture);
+			layout.Enable();
+			instancing = false;
+		}
 
-		protected void draw(string text, Vector2 textureSize, Vector2 location, Vector4 color, float size, bool centeredX, bool centeredY)
+		public void Draw(string text, Vector2 location, Vector4 color, float size, bool centeredX, bool centeredY)
+		{
+			if (instancing)
+			{
+				
+			}
+			else
+			{
+				draw(text, texture.SizeF, location, color, size, centeredX, centeredY);
+			}
+		}
+
+		private void draw(string text, Vector2 textureSize, Vector2 location, Vector4 color, float size, bool centeredX, bool centeredY)
 		{
 			if (string.IsNullOrEmpty(text)) return;
 
@@ -156,13 +226,22 @@ namespace Reign.Video
 			{
 				var c = FindCharacter(text[i]);
 				var sizeScaled = c.SizeRatio * size;
-				draw(offset + location - centeredLoc, sizeScaled, c.Offset / textureSize, c.Size / textureSize, color);
+				drawCharacter(offset + location - centeredLoc, sizeScaled, c.Offset / textureSize, c.Size / textureSize, color);
 
 				offset.X += sizeScaled.X;
 			}
 		}
 
-		protected abstract void draw(Vector2 location, Vector2 size, Vector2 locationUV, Vector2 sizeUV, Vector4 color);
+		private void drawCharacter(Vector2 location, Vector2 size, Vector2 locationUV, Vector2 sizeUV, Vector4 color)
+		{
+			shaderLocation.Set(location);
+			shaderSize.Set(size);
+			shaderLocationUV.Set(locationUV);
+			shaderSizeUV.Set(sizeUV);
+			shaderColor.Set(color);
+			shader.Apply();
+			vertexBuffer.Draw();
+		}
 		#endregion
 	}
 }

@@ -9,68 +9,71 @@ using ICSharpCode.SharpZipLib.GZip;
 using System.IO.Compression;
 #endif
 
-#if METRO
-using System.Threading.Tasks;
-#endif
-
 namespace Reign.Video
 {
 	public class ImageBMPC : Image
 	{
 		#region Construtors
-		public ImageBMPC(string fileName, bool flip)
+		public ImageBMPC(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			ImageType = ImageTypes.BMPC;
-			ImageFormat = ImageFormats.BMPC;
-			SurfaceFormat = SurfaceFormats.RGBAx8;
-			new ImageStreamLoader(this, fileName, flip);
-		}
-
-		public ImageBMPC(Stream stream, bool flip)
-		{
-			ImageType = ImageTypes.BMPC;
-			ImageFormat = ImageFormats.BMPC;
-			SurfaceFormat = SurfaceFormats.RGBAx8;
-			init(stream, flip);
-		}
-
-		protected override void init(Stream stream, bool flip)
-		{
-			SurfaceFormat = SurfaceFormats.RGBAx8;
-
-			using (var reader = new BinaryReader(stream))
+			new StreamLoader(fileName,
+			delegate(object sender)
 			{
-				// File Type
-				int type = reader.ReadInt32();
-				if (type != Streams.MakeFourCC('b', 'm', 'p', 'c')) throw new Exception("Not a .bmpc file");
+				init(((StreamLoader)sender).LoadedStream, flip, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
+		}
 
-				// Version
-				float version = reader.ReadSingle();
-				if (version != 1.0f) throw new Exception("Unsuported .bmpc version");
+		public ImageBMPC(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			init(stream, flip, loadedCallback, failedToLoadCallback);
+		}
 
-				// Meta Data
-				Size = new Size2(reader.ReadInt32(), reader.ReadInt32());
-				bool zipCompressed = reader.ReadBoolean();
+		protected override void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			try
+			{
+				ImageType = ImageTypes.BMPC;
+				ImageFormat = ImageFormats.BMPC;
+				SurfaceFormat = SurfaceFormats.RGBAx8;
 
-				// Data
-				using (var decompressedDataStream = new MemoryStream())
+				using (var reader = new BinaryReader(stream))
 				{
-					int dataLength = reader.ReadInt32();
-					int dataRead = 0;
-					do
+					// File Type
+					int type = reader.ReadInt32();
+					if (type != Streams.MakeFourCC('b', 'm', 'p', 'c')) throw new Exception("Not a .bmpc file");
+
+					// Version
+					float version = reader.ReadSingle();
+					if (version != 1.0f) throw new Exception("Unsuported .bmpc version");
+
+					// Meta Data
+					Size = new Size2(reader.ReadInt32(), reader.ReadInt32());
+					bool zipCompressed = reader.ReadBoolean();
+
+					// Data
+					using (var decompressedDataStream = new MemoryStream())
 					{
-						int read = 1024;
-						if ((dataRead + read) > dataLength) read -= (int)((dataRead + read) - dataLength);
+						int dataLength = reader.ReadInt32();
+						int dataRead = 0;
+						do
+						{
+							int read = 1024;
+							if ((dataRead + read) > dataLength) read -= (int)((dataRead + read) - dataLength);
 
-						var data = reader.ReadBytes(read);
-						decompressedDataStream.Write(data, 0, data.Length);
+							var data = reader.ReadBytes(read);
+							decompressedDataStream.Write(data, 0, data.Length);
 
-						dataRead += read;
-					} while (dataRead < dataLength);
-					decompressedDataStream.Position = 0;
+							dataRead += read;
+						} while (dataRead < dataLength);
+						decompressedDataStream.Position = 0;
 
-					#if NaCl
-					using (var zip = new GZipInputStream(decompressedDataStream))
+						#if NaCl
+																					using (var zip = new GZipInputStream(decompressedDataStream))
 					using (var dataStream = new MemoryStream())
 					{
 						var buffer = new byte[4096];
@@ -86,20 +89,30 @@ namespace Reign.Video
 						Mipmaps[0] = new Mipmap(dataStream.GetBuffer(), Size.Width, Size.Height);
 						if (flip) Mipmaps[0].FlipVertical();
 					}
-					#else
-					using (var decompressedStream = new GZipStream(decompressedDataStream, CompressionMode.Decompress))
-					using (var dataStream = new MemoryStream())
-					{
-						decompressedStream.CopyTo(dataStream);
-						Mipmaps = new Mipmap[1];
-						Mipmaps[0] = new Mipmap(dataStream.ToArray(), Size.Width, Size.Height, 1, 4);
-						if (flip) Mipmaps[0].FlipVertical();
+						#else
+						using (var decompressedStream = new GZipStream(decompressedDataStream, CompressionMode.Decompress))
+						using (var dataStream = new MemoryStream())
+						{
+							decompressedStream.CopyTo(dataStream);
+							Mipmaps = new Mipmap[1];
+							Mipmaps[0] = new Mipmap(dataStream.ToArray(), Size.Width, Size.Height, 1, 4);
+							if (flip) Mipmaps[0].FlipVertical();
+						}
+						#endif
 					}
-					#endif
 				}
+			}
+			catch (Exception e)
+			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return;
 			}
 
 			Loaded = true;
+			Loader.AddLoadable(this);
+			if (loadedCallback != null) loadedCallback(this);
 		}
 		#endregion
 

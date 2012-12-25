@@ -27,6 +27,11 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
+		public static VertexBuffer New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
+		{
+			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices);
+		}
+
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
 		: base(parent, bufferLayoutDesc, usage)
 		{

@@ -34,19 +34,13 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
-		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology)
-		: base(parent, bufferLayoutDesc, bufferUsage)
+		public static VertexBuffer New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
 		{
-			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, null);
+			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices);
 		}
 
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices)
 		: base(parent, bufferLayoutDesc, bufferUsage)
-		{
-			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices);
-		}
-
-		void init(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices)
 		{
 			try
 			{
@@ -56,10 +50,10 @@ namespace Reign.Video.XNA
 
 				if (vertices != null) Init(vertices);
 			}
-			catch (Exception ex)
+			catch (Exception e)
 			{
 				Dispose();
-				throw ex;
+				throw e;
 			}
 		}
 

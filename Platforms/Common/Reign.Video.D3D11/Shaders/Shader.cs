@@ -1,6 +1,7 @@
 ﻿using System;
 using Reign.Core;
 using System.Collections.Generic;
+using System.IO;
 
 #if METRO
 using System.Threading.Tasks;
@@ -8,34 +9,6 @@ using System.Threading.Tasks;
 
 namespace Reign.Video.D3D11
 {
-	class ShaderStreamLoader : StreamLoaderI
-	{
-		private Shader shader;
-		private string fileName;
-		private ShaderVersions shaderVersion;
-
-		public ShaderStreamLoader(Shader shader, string fileName, ShaderVersions shaderVersion)
-		{
-			this.shader = shader;
-			this.fileName = fileName;
-			this.shaderVersion = shaderVersion;
-		}
-
-		#if METRO
-		public override async Task<bool> Load()
-		{
-			await shader.load(fileName, shaderVersion);
-			return true;
-		}
-		#else
-		public override bool Load()
-		{
-			shader.load(fileName, shaderVersion);
-			return true;
-		}
-		#endif
-	}
-
 	public class Shader : ShaderI
 	{
 		#region Properties
@@ -53,29 +26,72 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
-		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion)
+		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return new Shader(parent, fileName, shaderVersion, loadedCallback, failedToLoadCallback);
+		}
+
+		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return new Shader(parent, fileName, shaderVersion, vsQuality, psQuality, loadedCallback, failedToLoadCallback);
+		}
+
+		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			video = parent.FindParentOrSelfWithException<Video>();
-			new ShaderStreamLoader(this, fileName, shaderVersion);
+			#if METRO
+			Loader.AddLoadable(this);
+			#endif
+			new StreamLoader(Streams.StripFileExt(fileName) + ".mrs",
+			delegate(object sender)
+			{
+				init(fileName, ((StreamLoader)sender).LoadedStream, shaderVersion, ShaderFloatingPointQuality.High, ShaderFloatingPointQuality.Low, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
+		}
+
+		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		: base(parent)
+		{
+			#if METRO
+			Loader.AddLoadable(this);
+			#endif
+			new StreamLoader(Streams.StripFileExt(fileName) + ".mrs",
+			delegate(object sender)
+			{
+				init(fileName, ((StreamLoader)sender).LoadedStream, shaderVersion, vsQuality, psQuality, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
 		}
 
 		#if METRO
-		internal async Task load(string fileName, ShaderVersions shaderVersion)
+		private async void init(string fileName, Stream stream, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		#else
-		internal void load(string fileName, ShaderVersions shaderVersion)
+		private void init(string fileName, Stream stream, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		#endif
 		{
 			try
 			{
+				video = Parent.FindParentOrSelfWithException<Video>();
+
 				#if WINDOWS
 				shaderVersion = (shaderVersion == ShaderVersions.Max) ? video.Cap.MaxShaderVersion : shaderVersion;
-				var code = getShaders(fileName);
+				var code = getShaders(stream);
 				vertex = new VertexShader(this, code[0], shaderVersion);
 				pixel = new PixelShader(this, code[1], shaderVersion);
 				#else
 				await getReflections(fileName);
-				var code = await getShaders(fileName);
+				var code = getShaders(stream);
 				vertex = new VertexShader(this, code[0]);
 				pixel = new PixelShader(this, code[1]);
 				#endif
@@ -85,11 +101,15 @@ namespace Reign.Video.D3D11
 			}
 			catch (Exception e)
 			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
 				Dispose();
-				throw e;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return;
 			}
 
 			Loaded = true;
+			if (loadedCallback != null) loadedCallback(this);
 		}
 
 		#if METRO

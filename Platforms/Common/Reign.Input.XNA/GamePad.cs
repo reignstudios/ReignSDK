@@ -35,6 +35,11 @@ namespace Reign.Input.XNA
 		#endregion
 
 		#region Constructors
+		public static GamePad New(DisposableI parent, GamePadControllers controller)
+		{
+			return new GamePad(parent, controller);
+		}
+
 		public GamePad(DisposableI parent, GamePadControllers controller)
 		: base(parent)
 		{

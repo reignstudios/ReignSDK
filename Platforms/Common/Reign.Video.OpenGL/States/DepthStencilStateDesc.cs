@@ -18,6 +18,11 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
+		public static DepthStencilStateDesc New(DepthStencilStateTypes type)
+		{
+			return new DepthStencilStateDesc(type);
+		}
+
 		public DepthStencilStateDesc(DepthStencilStateTypes type)
 		{
 			switch (type)

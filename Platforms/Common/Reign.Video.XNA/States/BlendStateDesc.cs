@@ -20,6 +20,11 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
+		public static BlendStateDesc New(BlendStateTypes type)
+		{
+			return new BlendStateDesc(type);
+		}
+
 		public BlendStateDesc(BlendStateTypes type)
 		{
 			RenderTargetWriteMask = X.ColorWriteChannels.All;

@@ -52,9 +52,6 @@
     <Compile Include="..\..\Common\Reign.Input\Button.cs">
       <Link>Button.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Input\GamePad.cs">
-      <Link>GamePad.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Input\Input.cs">
       <Link>Input.cs</Link>
     </Compile>
@@ -63,9 +60,6 @@
     </Compile>
     <Compile Include="..\..\Common\Reign.Input\Mouse.cs">
       <Link>Mouse.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Input\Trigger.cs">
-      <Link>Trigger.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

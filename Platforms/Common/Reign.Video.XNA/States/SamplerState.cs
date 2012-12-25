@@ -11,6 +11,11 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
+		public static SamplerState New(DisposableI parent, SamplerStateDescI desc)
+		{
+			return new SamplerState(parent, desc);
+		}
+
 		public SamplerState(DisposableI parent, SamplerStateDescI desc)
 		: base(parent)
 		{

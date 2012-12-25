@@ -102,7 +102,9 @@ namespace Reign.Video
 
 	public interface BufferLayoutI : DisposableI
 	{
+		#region Methods
 		void Enable();
+		#endregion
 	}
 
 	public abstract class BufferLayoutDescI
@@ -202,6 +204,7 @@ namespace Reign.Video
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Normal, 0, 0, 3));
 					break;
 			}
+
 			finish();
 		}
 
@@ -231,5 +234,43 @@ namespace Reign.Video
 			return newList;
 		}
 		#endregion
+	}
+
+	public static class BufferLayoutAPI
+	{
+		public static void Init(NewPtrMethod newPtr)
+		{
+			BufferLayoutAPI.newPtr = newPtr;
+		}
+
+		public delegate BufferLayoutI NewPtrMethod(DisposableI parent, ShaderI shader, BufferLayoutDescI desc);
+		private static NewPtrMethod newPtr;
+		public static BufferLayoutI New(DisposableI parent, ShaderI shader, BufferLayoutDescI desc)
+		{
+			return newPtr(parent, shader, desc);
+		}
+	}
+
+	public static class BufferLayoutDescAPI
+	{
+		public static void Init(NewPtrMethod1 newPtr1, NewPtrMethod2 newPtr2)
+		{
+			BufferLayoutDescAPI.newPtr1 = newPtr1;
+			BufferLayoutDescAPI.newPtr2 = newPtr2;
+		}
+
+		public delegate BufferLayoutDescI NewPtrMethod1(List<BufferLayoutElement> elements);
+		private static NewPtrMethod1 newPtr1;
+		public static BufferLayoutDescI New(List<BufferLayoutElement> elements)
+		{
+			return newPtr1(elements);
+		}
+
+		public delegate BufferLayoutDescI NewPtrMethod2(BufferLayoutTypes bufferFormatType);
+		private static NewPtrMethod2 newPtr2;
+		public static BufferLayoutDescI New(BufferLayoutTypes bufferFormatType)
+		{
+			return newPtr2(bufferFormatType);
+		}
 	}
 }

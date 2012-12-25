@@ -1,100 +1,40 @@
-﻿using System;
-using Reign.Core;
-using System.Reflection;
+﻿using Reign.Core;
 
 namespace Reign.Video.API
 {
 	public static class BlendStateDesc
 	{
-		public static BlendStateDescI Create(VideoTypes apiType, params object[] args)
+		public static void Init(VideoTypes type)
 		{
-			try
-			{
-				#if WINDOWS || METRO
-				if (apiType == VideoTypes.D3D11)
-				{
-					return (BlendStateDescI)OS.CreateInstance(Video.D3D11, Video.D3D11, "BlendStateDesc", args);
-				}
-				#endif
+			#if WINDOWS || METRO
+			if (type == VideoTypes.D3D11) BlendStateDescAPI.Init(Reign.Video.D3D11.BlendStateDesc.New);
+			#endif
 
-				#if WINDOWS
-				if (apiType == VideoTypes.D3D9)
-				{
-					return (BlendStateDescI)OS.CreateInstance(Video.D3D9, Video.D3D9, "BlendStateDesc", args);
-				}
-				#endif
+			#if WINDOWS || OSX || LINUX
+			if (type == VideoTypes.OpenGL) BlendStateDescAPI.Init(Reign.Video.OpenGL.BlendStateDesc.New);
+			#endif
 
-				#if XNA
-				if (apiType == VideoTypes.XNA)
-				{
-					return (BlendStateDescI)OS.CreateInstance(Video.XNA, Video.XNA, "BlendStateDesc", args);
-				}
-				#endif
-
-				#if WINDOWS || OSX || LINUX || iOS || ANDROID
-				if (apiType == VideoTypes.OpenGL)
-				{
-					return (BlendStateDescI)OS.CreateInstance(Video.OpenGL, Video.OpenGL, "BlendStateDesc", args);
-				}
-				#endif
-			}
-			catch (TargetInvocationException e)
-			{
-				throw (e.InnerException != null) ? e.InnerException : e;
-			}
-			catch (Exception e)
-			{
-				throw e;
-			}
-
-			return null;
+			#if XNA
+			if (type == VideoTypes.XNA) BlendStateDescAPI.Init(Reign.Video.XNA.BlendStateDesc.New);
+			#endif
 		}
 	}
 
 	public static class BlendState
 	{
-		public static BlendStateI Create(VideoTypes apiType, params object[] args)
+		public static void Init(VideoTypes type)
 		{
-			try
-			{
-				#if WINDOWS || METRO
-				if (apiType == VideoTypes.D3D11)
-				{
-					return (BlendStateI)OS.CreateInstance(Video.D3D11, Video.D3D11, "BlendState", args);
-				}
-				#endif
+			#if WINDOWS || METRO
+			if (type == VideoTypes.D3D11) BlendStateAPI.Init(Reign.Video.D3D11.BlendState.New);
+			#endif
 
-				#if WINDOWS
-				if (apiType == VideoTypes.D3D9)
-				{
-					return (BlendStateI)OS.CreateInstance(Video.D3D9, Video.D3D9, "BlendState", args);
-				}
-				#endif
+			#if WINDOWS || OSX || LINUX
+			if (type == VideoTypes.OpenGL) BlendStateAPI.Init(Reign.Video.OpenGL.BlendState.New);
+			#endif
 
-				#if XNA
-				if (apiType == VideoTypes.XNA)
-				{
-					return (BlendStateI)OS.CreateInstance(Video.XNA, Video.XNA, "BlendState", args);
-				}
-				#endif
-
-				#if WINDOWS || OSX || LINUX || iOS || ANDROID
-				if (apiType == VideoTypes.OpenGL)
-				{
-					return (BlendStateI)OS.CreateInstance(Video.OpenGL, Video.OpenGL, "BlendState", args);
-				}
-				#endif
-			}
-			catch (TargetInvocationException e)
-			{
-				throw (e.InnerException != null) ? e.InnerException : e;
-			}
-			catch (Exception e)
-			{
-				throw e;
-			}
-
-			return null;
+			#if XNA
+			if (type == VideoTypes.XNA) BlendStateAPI.Init(Reign.Video.XNA.BlendState.New);
+			#endif
 		}
 	}
 }

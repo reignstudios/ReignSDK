@@ -11,6 +11,11 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
+		public static SamplerStateDesc New(SamplerStateTypes type)
+		{
+			return new SamplerStateDesc(type);
+		}
+
 		public SamplerStateDesc(SamplerStateTypes type)
 		{
 			try

@@ -18,12 +18,6 @@ namespace Reign.Video
 			init(bufferLayoutDesc, 128*2);
 		}
 
-		protected QuickDrawI(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, int vertexCount)
-		: base(parent)
-		{
-			init(bufferLayoutDesc, vertexCount);
-		}
-
 		private void init(BufferLayoutDescI bufferLayoutDesc, int vertexCount)
 		{
 			vertexArraySize = bufferLayoutDesc.FloatCount;
@@ -135,5 +129,20 @@ namespace Reign.Video
 			vertex[colorOffset[0]] = System.BitConverter.ToSingle(new byte[]{(byte)(r*255.0f), (byte)(g*255.0f), (byte)(b*255.0f), (byte)(a*255.0f)}, 0);
 		}
 		#endregion
+	}
+
+	public static class QuickDrawAPI
+	{
+		public static void Init(NewPtrMethod newPtr)
+		{
+			QuickDrawAPI.newPtr = newPtr;
+		}
+
+		public delegate QuickDrawI NewPtrMethod(DisposableI parent, BufferLayoutDescI bufferLayoutDesc);
+		private static NewPtrMethod newPtr;
+		public static QuickDrawI New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc)
+		{
+			return newPtr(parent, bufferLayoutDesc);
+		}
 	}
 }

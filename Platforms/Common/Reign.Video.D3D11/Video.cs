@@ -6,9 +6,7 @@ namespace Reign.Video.D3D11
 {
 	public enum FeatureLevels
 	{
-		#if METRO
 		D3D11_1,
-		#endif
 		D3D11,
 		D3D10_1,
 		D3D10,

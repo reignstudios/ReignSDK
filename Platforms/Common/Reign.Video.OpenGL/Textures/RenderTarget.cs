@@ -10,25 +10,29 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public RenderTarget(DisposableI parent, string fileName)
-		: base(parent, fileName)
-		{}
-
-		public RenderTarget(DisposableI parent, string fileName, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage)
-		: base(parent, fileName, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage)
-		{}
-
-		public RenderTarget(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage)
-		: base(parent, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage)
-		{}
-
-		public RenderTarget(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage)
-		: base(parent, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, usage)
-		{}
-
-		protected unsafe override void init(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
+		public static RenderTarget New(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			base.init(parent, image, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, usage, true);
+			return new RenderTarget(parent, width, height, multiSampleType, surfaceFormat, usage, renderTargetUsage, loadedCallback, failedToLoadCallback);
+		}
+
+		public static RenderTarget New(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return new RenderTarget(parent, fileName, multiSampleType, usage, renderTargetUsage, loadedCallback, failedToLoadCallback);
+		}
+
+		public RenderTarget(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		: base(parent, width, height, surfaceFormat, usage, loadedCallback, failedToLoadCallback)
+		{
+		}
+
+		public RenderTarget(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		: base(parent, fileName, false, usage, loadedCallback, failedToLoadCallback)
+		{
+		}
+
+		protected unsafe override bool init(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			if (!base.init(parent, image, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, usage, true, loadedCallback, failedToLoadCallback)) return false;
 			
 			try
 			{
@@ -42,11 +46,18 @@ namespace Reign.Video.OpenGL
 				string errorName;
 				if (Video.checkForError(out error, out errorName)) Debug.ThrowError("RenderTarget", string.Format("{0} {1}: Failed to create renderTarget", error, errorName));
 			}
-			catch (Exception ex)
+			catch (Exception e)
 			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
 				Dispose();
-				throw ex;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return false;
 			}
+
+			Loaded = true;
+			if (loadedCallback != null) loadedCallback(this);
+			return true;
 		}
 
 		public unsafe override void Dispose()

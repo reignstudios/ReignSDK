@@ -16,6 +16,11 @@ namespace Reign.Audio.XNA
 		#endregion
 
 		#region Constructors
+		public static Music New(DisposableI parent, string fileName)
+		{
+			return new Music(parent, fileName);
+		}
+
 		public Music(DisposableI parent, string fileName)
 		: base(parent)
 		{

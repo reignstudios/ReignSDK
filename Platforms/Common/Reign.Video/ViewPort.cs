@@ -11,8 +11,6 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		protected ViewPortI() { }
-
 		protected ViewPortI(int x, int y, int width, int height)
 		{
 			Set(x, y, width, height);
@@ -40,5 +38,28 @@ namespace Reign.Video
 		public abstract void Apply();
 		public abstract void Apply(RenderTargetI renderTarget);
 		#endregion
+	}
+
+	public static class ViewPortAPI
+	{
+		public static void Init(NewPtrMethod1 newPtr1, NewPtrMethod2 newPtr2)
+		{
+			ViewPortAPI.newPtr1 = newPtr1;
+			ViewPortAPI.newPtr2 = newPtr2;
+		}
+
+		public delegate ViewPortI NewPtrMethod1(VideoI video, int x, int y, int width, int height);
+		private static NewPtrMethod1 newPtr1;
+		public static ViewPortI New(VideoI video, int x, int y, int width, int height)
+		{
+			return newPtr1(video, x, y, width, height);
+		}
+
+		public delegate ViewPortI NewPtrMethod2(VideoI video, Point2 location, Size2 size);
+		private static NewPtrMethod2 newPtr2;
+		public static ViewPortI New(VideoI video, Point2 location, Size2 size)
+		{
+			return newPtr2(video, location, size);
+		}
 	}
 }

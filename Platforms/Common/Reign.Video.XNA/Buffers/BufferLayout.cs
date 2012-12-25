@@ -12,6 +12,11 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
+		public static BufferLayout New(DisposableI parent, ShaderI shader, BufferLayoutDescI desc)
+		{
+			return new BufferLayout(parent, shader, desc);
+		}
+
 		public BufferLayout(DisposableI parent, ShaderI shader, BufferLayoutDescI inputLayoutDesc)
 		: base(parent)
 		{
@@ -35,10 +40,10 @@ namespace Reign.Video.XNA
 				var inputLayoutDescTEMP = (BufferLayoutDesc)inputLayoutDesc;
 				layout = new VertexDeclaration(inputLayoutDescTEMP.Desc);
 			}
-			catch (Exception ex)
+			catch (Exception e)
 			{
 				Dispose();
-				throw ex;
+				throw e;
 			}
 		}
 

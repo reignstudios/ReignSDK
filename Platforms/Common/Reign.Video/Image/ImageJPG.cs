@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Reign.Core;
 
 namespace Reign.Video
 {
@@ -15,20 +16,25 @@ namespace Reign.Video
 	#endif
 	{
 		#region Construtors
-		public ImageJPG(string fileName, bool flip)
-		: base(fileName, flip)
+		public ImageJPG(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		: base(fileName, flip, loadedCallback, failedToLoadCallback)
 		{
-			ImageType = ImageTypes.JPG;
-			ImageFormat = ImageFormats.JPG;
-			SurfaceFormat = SurfaceFormats.RGBAx8;
+			
 		}
 
-		public ImageJPG(Stream stream, bool flip)
-		: base(stream, flip)
+		public ImageJPG(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		: base(stream, flip, loadedCallback, failedToLoadCallback)
+		{
+			
+		}
+
+		protected override void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
 			ImageType = ImageTypes.JPG;
 			ImageFormat = ImageFormats.JPG;
 			SurfaceFormat = SurfaceFormats.RGBAx8;
+
+			base.init(stream, flip, loadedCallback, failedToLoadCallback);
 		}
 		#endregion
 	}

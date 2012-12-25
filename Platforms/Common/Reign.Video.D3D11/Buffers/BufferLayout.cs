@@ -11,6 +11,11 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
+		public static BufferLayout New(DisposableI parent, ShaderI shader, BufferLayoutDescI desc)
+		{
+			return new BufferLayout(parent, shader, desc);
+		}
+
 		public BufferLayout(DisposableI parent, ShaderI shader, BufferLayoutDescI desc)
 		: base(parent)
 		{

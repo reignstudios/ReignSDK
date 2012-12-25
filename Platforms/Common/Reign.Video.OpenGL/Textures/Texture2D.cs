@@ -4,128 +4,97 @@ using System.Collections.Generic;
 
 namespace Reign.Video.OpenGL
 {
-	class Texture2DStreamLoader : StreamLoaderI
-	{
-		private Texture2D texture;
-		private DisposableI parent;
-		private string fileName;
-		private int width, height;
-		private bool generateMipmaps;
-		private MultiSampleTypes multiSampleType;
-		private SurfaceFormats surfaceFormat;
-		private RenderTargetUsage renderTargetUsage;
-		private BufferUsages usage;
-		private bool isRenderTarget;
-
-		private Image image;
-
-		public Texture2DStreamLoader(Texture2D texture, DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
-		{
-			this.texture = texture;
-			this.parent = parent;
-			this.fileName = fileName;
-			this.width = width;
-			this.height = height;
-			this.generateMipmaps = generateMipmaps;
-			this.multiSampleType = multiSampleType;
-			this.surfaceFormat = surfaceFormat;
-			this.renderTargetUsage = renderTargetUsage;
-			this.usage = usage;
-			this.isRenderTarget = isRenderTarget;
-		}
-
-		public override bool Load()
-		{
-			if (image == null)
-			{
-				image = Image.Load(fileName, false);
-				return false;
-			}
-			else if (!image.Loaded)
-			{
-				return false;
-			}
-
-			texture.load(parent, image, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, isRenderTarget);
-			return true;
-		}
-	}
-
 	public class Texture2D : Disposable, Texture2DI
 	{
 		#region Properties
-		public bool Loaded {get; private set;}
+		public bool Loaded {get; protected set;}
+		public bool FailedToLoad {get; protected set;}
+
+		public Size2 Size {get; protected set;}
+		public Vector2 SizeF {get; protected set;}
+		public Vector2 TexelOffset {get; protected set;}
+		public int PixelByteSize {get; protected set;}
+
 		protected Video video;
 		public uint Texture {get; private set;}
-		public Size2 Size {get; private set;}
-		public Vector2 SizeF {get; private set;}
-		public Vector2 TexelOffset {get; private set;}
-		public int PixelByteSize {get; private set;}
 		internal bool hasMipmaps;
 		#endregion
 
 		#region Constructors
-		public static Texture2DI New(DisposableI parent, string fileName)
+		public static Texture2D NewReference(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			var texture = parent.FindChild<Texture2D>("New",
+			var texture = parent.FindChild<Texture2D>
+			(
+				"NewReference",
 				new ConstructorParam(typeof(DisposableI), parent),
-				new ConstructorParam(typeof(string), fileName));
+				new ConstructorParam(typeof(string), fileName),
+				new ConstructorParam(typeof(Loader.LoadedCallbackMethod), null),
+				new ConstructorParam(typeof(Loader.FailedToLoadCallbackMethod), null)
+			);
 			if (texture != null)
 			{
 				++texture.referenceCount;
 				return texture;
 			}
-			return new Texture2D(parent, fileName);
+			return new Texture2D(parent, fileName, loadedCallback, failedToLoadCallback);
 		}
 
-		public Texture2D(DisposableI parent, string fileName)
+		public static Texture2D New(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return new Texture2D(parent, fileName, loadedCallback, failedToLoadCallback);
+		}
+
+		public static Texture2D New(DisposableI parent, string fileName, bool generateMipmaps, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return new Texture2D(parent, fileName, generateMipmaps, usage, loadedCallback, failedToLoadCallback);
+		}
+
+		public static Texture2D New(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return new Texture2D(parent, width, height, surfaceFormat, usage, loadedCallback, failedToLoadCallback);
+		}
+
+		public Texture2D(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			new Texture2DStreamLoader(this, parent, fileName, 0, 0, false, MultiSampleTypes.None, SurfaceFormats.RGBAx8, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false);
+			Image.New(fileName, false,
+			delegate(object sender)
+			{
+				var image = (Image)sender;
+				init(parent, image, image.Size.Width, image.Size.Height, false, MultiSampleTypes.None, image.SurfaceFormat, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
 		}
 
-		public Texture2D(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage)
+		public Texture2D(DisposableI parent, string fileName, bool generateMipmaps, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			init(parent, null, width, height, false, MultiSampleTypes.None, surfaceFormat, RenderTargetUsage.PlatformDefault, usage, false);
+			Image.New(fileName, false,
+			delegate(object sender)
+			{
+				var image = (Image)sender;
+				init(parent, image, image.Size.Width, image.Size.Height, generateMipmaps, MultiSampleTypes.None, image.SurfaceFormat, RenderTargetUsage.PlatformDefault, usage, false, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
 		}
 
-		public Texture2D(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat)
+		public Texture2D(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			new Texture2DStreamLoader(this, parent, fileName, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false);
+			init(parent, null, width, height, false, MultiSampleTypes.None, surfaceFormat, RenderTargetUsage.PlatformDefault, usage, false, loadedCallback, failedToLoadCallback);
 		}
 
-		public Texture2D(DisposableI parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat)
-		: base(parent)
-		{
-			init(parent, null, width, height, generateMipmaps, multiSampleType, surfaceFormat, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false);
-		}
-
-		protected Texture2D(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage)
-		: base(parent)
-		{
-			new Texture2DStreamLoader(this, parent, fileName, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, BufferUsages.Default, false);
-		}
-
-		protected Texture2D(DisposableI parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage)
-		: base(parent)
-		{
-			init(parent, null, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, BufferUsages.Default, false);
-		}
-
-		protected Texture2D(DisposableI parent, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage)
-		: base(parent)
-		{
-			init(parent, null, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, false);
-		}
-
-		internal void load(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
-		{
-			init(parent, image, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, isRenderTarget);
-		}
-
-		protected unsafe virtual void init(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget)
+		protected unsafe virtual bool init(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
 			try
 			{
@@ -237,11 +206,24 @@ namespace Reign.Video.OpenGL
 			}
 			catch (Exception e)
 			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
 				Dispose();
-				throw e;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return false;
 			}
 
-			Loaded = true;
+			if (!isRenderTarget)
+			{
+				Loaded = true;
+				if (loadedCallback != null) loadedCallback(this);
+			}
+			return true;
+		}
+
+		public bool UpdateLoad()
+		{
+			return Loaded;
 		}
 
 		public unsafe override void Dispose()

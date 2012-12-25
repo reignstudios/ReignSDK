@@ -1,10 +1,10 @@
 ﻿using System;
 using Reign.Core;
 using Reign.Input;
-using System.Reflection;
 
 namespace Reign.Input.API
 {
+	[Flags]
 	public enum InputTypes
 	{
 		None,
@@ -18,19 +18,9 @@ namespace Reign.Input.API
 
 	public static class Input
 	{
-		internal const string WinForms = "Reign.Input.WinForms";
-		internal const string Metro = "Reign.Input.Metro";
-		internal const string XNA = "Reign.Input.XNA";
-		internal const string Cocoa = "Reign.Input.Cocoa";
-		internal const string X11 = "Reign.Input.X11";
-		internal const string Android = "Reign.Input.Android";
-
-		public static InputI Create(InputTypes typeFlags, out InputTypes type, params object[] args)
+		#if METRO || XNA || iOS || ANDROID
+		public static InputI Init(InputTypes typeFlags, out InputTypes type, DisposableI parent, Application application)
 		{
-			#if WINDOWS
-			bool winForms = (typeFlags & InputTypes.WinForms) != 0;
-			#endif
-
 			#if METRO
 			bool metro = (typeFlags & InputTypes.Metro) != 0;
 			#endif
@@ -39,38 +29,28 @@ namespace Reign.Input.API
 			bool xna = (typeFlags & InputTypes.XNA) != 0;
 			#endif
 
-			#if OSX || iOS
+			#if iOS
 			bool cocoa = (typeFlags & InputTypes.Cocoa) != 0;
-			#endif
-
-			#if LINUX
-			bool x11 = (typeFlags & InputTypes.X11) != 0;
 			#endif
 
 			#if ANDROID
 			bool android = (typeFlags & InputTypes.Android) != 0;
 			#endif
 
+			type = InputTypes.None;
 			Exception lastException = null;
+			InputI input = null;
 			while (true)
 			{
 				try
 				{
-					#if WINDOWS
-					if (winForms)
-					{
-						winForms = false;
-						type = InputTypes.WinForms;
-						return (InputI)OS.CreateInstance(typeof(Reign.Input.WinForms.Input), args);
-					}
-					#endif
-
 					#if METRO
 					if (metro)
 					{
 						metro = false;
 						type = InputTypes.Metro;
-						return (InputI)OS.CreateInstance(typeof(Reign.Input.Metro.Input), args);
+						input = new Reign.Input.Metro.Input(parent, application);
+						break;
 					}
 					#endif
 
@@ -79,25 +59,18 @@ namespace Reign.Input.API
 					{
 						xna = false;
 						type = InputTypes.XNA;
-						return (InputI)OS.CreateInstance(typeof(Reign.Input.XNA.Input), args);
+						input = new Reign.Input.XNA.Input(parent, application);
+						break;
 					}
 					#endif
 					
-					#if OSX || iOS
+					#if iOS
 					if (cocoa)
 					{
 						cocoa = false;
 						type = InputTypes.Cocoa;
 						return (InputI)OS.CreateInstance(typeof(Reign.Input.Cocoa.Input), args);
-					}
-					#endif
-					
-					#if LINUX
-					if (x11)
-					{
-						x11 = false;
-						type = InputTypes.X11;
-						return (InputI)OS.CreateInstance(typeof(Reign.Input.X11.Input), args);
+						break;
 					}
 					#endif
 					
@@ -107,15 +80,11 @@ namespace Reign.Input.API
 						android = false;
 						type = InputTypes.Android;
 						return (InputI)OS.CreateInstance(typeof(Reign.Input.Android.Input), args);
+						break;
 					}
 					#endif
 
 					else break;
-				}
-				catch (TargetInvocationException e)
-				{
-					if (e.InnerException != null) lastException = e.InnerException;
-					else lastException = e;
 				}
 				catch (Exception e)
 				{
@@ -123,10 +92,100 @@ namespace Reign.Input.API
 				}
 			}
 
-			string ex = lastException == null ? "" : " - Exception: " + lastException.Message;
-			Debug.ThrowError("Input", "Failed to create Input API" + ex);
-			type = InputTypes.None;
-			return null;
+			// check for error
+			if (lastException != null)
+			{
+				string ex = lastException == null ? "" : " - Exception: " + lastException.Message;
+				Debug.ThrowError("Input", "Failed to create Input API" + ex);
+				type = InputTypes.None;
+			}
+
+			// init api methods
+			#if METRO
+			Keyboard.Init(type);
+			Mouse.Init(type);
+			#endif
+
+			#if XNA
+			GamePad.Init(type);
+			#endif
+
+			return input;
 		}
+		#else
+		public static InputI Init(InputTypes typeFlags, out InputTypes type, DisposableI parent, Window window)
+		{
+			#if WINDOWS
+			bool winForms = (typeFlags & InputTypes.WinForms) != 0;
+			#endif
+
+			#if OSX
+			bool cocoa = (typeFlags & InputTypes.Cocoa) != 0;
+			#endif
+
+			#if LINUX
+			bool x11 = (typeFlags & InputTypes.X11) != 0;
+			#endif
+
+			type = InputTypes.None;
+			Exception lastException = null;
+			InputI input = null;
+			while (true)
+			{
+				try
+				{
+					#if WINDOWS
+					if (winForms)
+					{
+						winForms = false;
+						type = InputTypes.WinForms;
+						input = new Reign.Input.WinForms.Input(parent, window);
+						break;
+					}
+					#endif
+					
+					#if OSX
+					if (cocoa)
+					{
+						cocoa = false;
+						type = InputTypes.Cocoa;
+						return (InputI)OS.CreateInstance(typeof(Reign.Input.Cocoa.Input), args);
+						break;
+					}
+					#endif
+					
+					#if LINUX
+					if (x11)
+					{
+						x11 = false;
+						type = InputTypes.X11;
+						return (InputI)OS.CreateInstance(typeof(Reign.Input.X11.Input), args);
+						break;
+					}
+					#endif
+
+					else break;
+				}
+				catch (Exception e)
+				{
+					lastException = e;
+				}
+			}
+
+			// check for error
+			if (lastException != null)
+			{
+				string ex = lastException == null ? "" : " - Exception: " + lastException.Message;
+				Debug.ThrowError("Input", "Failed to create Input API" + ex);
+				type = InputTypes.None;
+			}
+
+			// init api methods
+			Keyboard.Init(type);
+			Mouse.Init(type);
+
+			return input;
+		}
+		#endif
 	}
 }

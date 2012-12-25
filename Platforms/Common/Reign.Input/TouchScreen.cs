@@ -6,4 +6,19 @@ namespace Reign.Input
 	{
 		Touch[] Touches {get;}
 	}
+
+	public static class TouchScreenAPI
+	{
+		public static void Init(NewPtrMethod newPtr)
+		{
+			TouchScreenAPI.newPtr = newPtr;
+		}
+
+		public delegate TouchScreenI NewPtrMethod();
+		internal static NewPtrMethod newPtr;
+		public static TouchScreenI New()
+		{
+			return newPtr();
+		}
+	}
 }

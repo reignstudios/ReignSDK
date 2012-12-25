@@ -1,10 +1,7 @@
 ﻿using Reign.Core;
 using Reign_Audio_XAudio_Component;
 using System;
-
-#if METRO
-using System.Threading.Tasks;
-#endif
+using System.IO;
 
 namespace Reign.Audio.XAudio
 {
@@ -103,38 +100,6 @@ namespace Reign.Audio.XAudio
 		#endregion
 	}
 
-	class SoundWAVStreamLoader : StreamLoaderI
-	{
-		SoundWAV sound;
-		private DisposableI parent;
-		private string fileName;
-		private int instanceCount;
-		private bool looped;
-
-		public SoundWAVStreamLoader(SoundWAV sound, DisposableI parent, string fileName, int instanceCount, bool looped)
-		{
-			this.sound = sound;
-			this.parent = parent;
-			this.fileName = fileName;
-			this.instanceCount = instanceCount;
-			this.looped = looped;
-		}
-
-		#if METRO
-		public override async Task<bool> Load()
-		{
-			await sound.load(parent, fileName, instanceCount, looped);
-			return true;
-		}
-		#else
-		public override bool Load()
-		{
-			sound.load(parent, fileName, instanceCount, looped);
-			return true;
-		}
-		#endif
-	}
-
 	public class SoundWAV : SoundWAVI
 	{
 		#region Properties
@@ -143,31 +108,31 @@ namespace Reign.Audio.XAudio
 		#endregion
 
 		#region Constructors
-		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped)
+		public static new SoundWAV New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return new SoundWAV(parent, fileName, instanceCount, looped, loadedCallback, failedToLoadCallback);
+		}
+
+		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			new SoundWAVStreamLoader(this, parent, fileName, instanceCount, looped);
+			new StreamLoader(fileName,
+			delegate(object sender)
+			{
+				init(parent, ((StreamLoader)sender).LoadedStream, instanceCount, looped, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
 		}
 
-		#if METRO
-		internal async Task load(DisposableI parent, string fileName, int instanceCount, bool looped) {
-		#else
-		internal void load(DisposableI parent, string fileName, int instanceCount, bool looped) {
-		#endif
-			#if METRO
-			await init(parent, fileName, instanceCount, looped);
-			#else
-			init(parent, fileName, instanceCount, looped);
-			#endif
-		}
+		protected override void init(DisposableI parent, Stream stream, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			base.init(parent, stream, instanceCount, looped, loadedCallback, failedToLoadCallback);
 
-		#if METRO
-		protected override async Task init(DisposableI parent, string fileName, int instanceCount, bool looped) {
-			await base.init(parent, fileName, instanceCount, looped);
-		#else
-		protected override void init(DisposableI parent, string fileName, int instanceCount, bool looped) {
-			base.init(parent, fileName, instanceCount, looped);
-		#endif
 			try
 			{
 				audio = parent.FindParentOrSelfWithException<Audio>();
@@ -184,9 +149,15 @@ namespace Reign.Audio.XAudio
 			}
 			catch (Exception e)
 			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
 				Dispose();
-				throw e;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return;
 			}
+
+			Loaded = true;
+			if (loadedCallback != null) loadedCallback(this);
 		}
 
 		public override void Dispose()

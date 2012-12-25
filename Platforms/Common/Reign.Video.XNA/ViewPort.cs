@@ -9,9 +9,14 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
-		public ViewPort(VideoI video)
+		public static ViewPort New(VideoI video, int x, int y, int width, int height)
 		{
-			this.video = (Video)video;
+			return new ViewPort(video, x, y, width, height);
+		}
+
+		public static ViewPort New(VideoI video, Point2 location, Size2 size)
+		{
+			return new ViewPort(video, location, size);
 		}
 
 		public ViewPort(VideoI video, int x, int y, int width, int height)

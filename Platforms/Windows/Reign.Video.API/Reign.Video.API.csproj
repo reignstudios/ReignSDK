@@ -40,6 +40,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,15 +59,6 @@
     </Compile>
     <Compile Include="..\..\Common\Reign.Video.API\DepthStencil.cs">
       <Link>DepthStencil.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Video.API\Font.cs">
-      <Link>Font.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Video.API\Model\Mesh.cs">
-      <Link>Model\Mesh.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Video.API\Model\Model.cs">
-      <Link>Model\Model.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Video.API\QuickDraw.cs">
       <Link>QuickDraw.cs</Link>
@@ -108,10 +100,6 @@
     <ProjectReference Include="..\Reign.Video.D3D11\Reign.Video.D3D11.csproj">
       <Project>{86E7C7E2-7E48-4371-81F6-C85BA4958372}</Project>
       <Name>Reign.Video.D3D11</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Reign.Video.D3D9\Reign.Video.D3D9.vcxproj">
-      <Project>{53E100D6-70F9-4A71-8960-3F9442401826}</Project>
-      <Name>Reign.Video.D3D9</Name>
     </ProjectReference>
     <ProjectReference Include="..\Reign.Video.OpenGL\Reign.Video.OpenGL.csproj">
       <Project>{05A743AF-89E8-4094-84DD-DAF07882EF50}</Project>

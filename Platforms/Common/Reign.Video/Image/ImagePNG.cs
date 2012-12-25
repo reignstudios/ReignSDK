@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Reign.Core;
 
 #if METRO
 using System.Threading.Tasks;
@@ -19,20 +20,25 @@ namespace Reign.Video
 	#endif
 	{
 		#region Construtors
-		public ImagePNG(string fileName, bool flip)
-		: base(fileName, flip)
+		public ImagePNG(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		: base(fileName, flip, loadedCallback, failedToLoadCallback)
 		{
-			ImageType = ImageTypes.PNG;
-			ImageFormat = ImageFormats.PNG;
-			SurfaceFormat = SurfaceFormats.RGBAx8;
+			
 		}
 
-		public ImagePNG(Stream stream, bool flip)
-		: base(stream, flip)
+		public ImagePNG(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		: base(stream, flip, loadedCallback, failedToLoadCallback)
+		{
+			
+		}
+
+		protected override void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
 			ImageType = ImageTypes.PNG;
 			ImageFormat = ImageFormats.PNG;
 			SurfaceFormat = SurfaceFormats.RGBAx8;
+
+			base.init(stream, flip, loadedCallback, failedToLoadCallback);
 		}
 		#endregion
 

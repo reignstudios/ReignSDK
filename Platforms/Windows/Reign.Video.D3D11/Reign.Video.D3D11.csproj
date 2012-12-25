@@ -58,15 +58,6 @@
     <Compile Include="..\..\Common\Reign.Video.D3D11\DepthStencil.cs">
       <Link>DepthStencil.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Video.D3D11\Font.cs">
-      <Link>Font.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Video.D3D11\Model\Mesh.cs">
-      <Link>Model\Mesh.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Video.D3D11\Model\Model.cs">
-      <Link>Model\Model.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Video.D3D11\QuickDraw.cs">
       <Link>QuickDraw.cs</Link>
     </Compile>

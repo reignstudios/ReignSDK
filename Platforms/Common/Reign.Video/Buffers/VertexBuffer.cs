@@ -105,4 +105,19 @@ namespace Reign.Video
 		public abstract void DrawInstancedClassic(int drawCount, int meshVertexCount, int meshIndexCount);
 		#endregion
 	}
+
+	public static class VertexBufferAPI
+	{
+		public static void Init(NewPtrMethod newPtr)
+		{
+			VertexBufferAPI.newPtr = newPtr;
+		}
+
+		public delegate VertexBufferI NewPtrMethod(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices);
+		private static NewPtrMethod newPtr;
+		public static VertexBufferI New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
+		{
+			return newPtr(parent, bufferLayoutDesc, usage, topology, vertices);
+		}
+	}
 }

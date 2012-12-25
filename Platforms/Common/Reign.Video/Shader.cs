@@ -89,10 +89,11 @@ namespace Reign.Video
 		void Set(Texture3DI resource);
 	}
 
-	public abstract class ShaderI : Disposable
+	public abstract class ShaderI : Disposable, LoadableI
 	{
 		#region Properties
 		public bool Loaded {get; protected set;}
+		public bool FailedToLoad {get; protected set;}
 		#endregion
 
 		#region Constructors
@@ -101,32 +102,35 @@ namespace Reign.Video
 		{
 			
 		}
+
+		public bool UpdateLoad()
+		{
+			return Loaded;
+		}
 		#endregion
 
 		#region Methods
 		#if METRO
-		protected async System.Threading.Tasks.Task<byte[][]> getShaders(string fileName)
+		protected byte[][] getShaders(Stream stream)
 		{
 			var code = new byte[2][];
-			using (var file = await Streams.OpenFile(Streams.StripFileExt(fileName) + ".mrs"))
-			using (var reader = new BinaryReader(file))
+			using (var reader = new BinaryReader(stream))
 			{
 				int vsSize = reader.ReadInt32();
 				int psSize = reader.ReadInt32();
 				code[0] = new byte[vsSize];
 				code[1] = new byte[psSize];
-				file.Read(code[0], 0, vsSize);
-				file.Read(code[1], 0, psSize);
+				stream.Read(code[0], 0, vsSize);
+				stream.Read(code[1], 0, psSize);
 			}
 
 			return code;
 		}
 		#else
-		protected string[] getShaders(string fileName)
+		protected string[] getShaders(Stream stream)
 		{
 			string code = null;
-			using (var file = Streams.OpenFile(fileName))
-			using (var reader = new StreamReader(file))
+			using (var reader = new StreamReader(stream))
 			{
 				code = reader.ReadToEnd();
 			}
@@ -148,5 +152,28 @@ namespace Reign.Video
 		public abstract ShaderVariableI Variable(string name);
 		public abstract ShaderResourceI Resource(string name);
 		#endregion
+	}
+
+	public static class ShaderAPI
+	{
+		public static void Init(NewPtrMethod1 newPtr1, NewPtrMethod2 newPtr2)
+		{
+			ShaderAPI.newPtr1 = newPtr1;
+			ShaderAPI.newPtr2 = newPtr2;
+		}
+
+		public delegate ShaderI NewPtrMethod1(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback);
+		private static NewPtrMethod1 newPtr1;
+		public static ShaderI New(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return newPtr1(parent, fileName, shaderVersion, loadedCallback, failedToLoadCallback);
+		}
+
+		public delegate ShaderI NewPtrMethod2(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback);
+		private static NewPtrMethod2 newPtr2;
+		public static ShaderI New(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			return newPtr2(parent, fileName, shaderVersion, vsQuality, psQuality, loadedCallback, failedToLoadCallback);
+		}
 	}
 }

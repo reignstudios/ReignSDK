@@ -58,4 +58,27 @@ namespace Reign.Video
 		public abstract void Update(int[] indices, int updateCount);
 		#endregion
 	}
+
+	public static class IndexBufferAPI
+	{
+		public static void Init(NewPtrMethod1 newPtr1, NewPtrMethod2 newPtr2)
+		{
+			IndexBufferAPI.newPtr1 = newPtr1;
+			IndexBufferAPI.newPtr2 = newPtr2;
+		}
+
+		public delegate IndexBufferI NewPtrMethod1(DisposableI parent, BufferUsages usage, int[] indices);
+		private static NewPtrMethod1 newPtr1;
+		public static IndexBufferI New(DisposableI parent, BufferUsages usage, int[] indices)
+		{
+			return newPtr1(parent, usage, indices);
+		}
+
+		public delegate IndexBufferI NewPtrMethod2(DisposableI parent, BufferUsages usage, int[] indices, bool _32BitIndices);
+		private static NewPtrMethod2 newPtr2;
+		public static IndexBufferI New(DisposableI parent, BufferUsages usage, int[] indices, bool _32BitIndices)
+		{
+			return newPtr2(parent, usage, indices, _32BitIndices);
+		}
+	}
 }

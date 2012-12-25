@@ -2,142 +2,113 @@
 using Reign.Core;
 using System.Xml.Serialization;
 using System.IO;
-
-#if METRO
-using System.Threading.Tasks;
-#endif
+using System;
 
 namespace Reign.Video
 {
-	class SoftwareModelStreamLoader : StreamLoaderI
-	{
-		private SoftwareModel softwareModel;
-		private string fileName;
-
-		public SoftwareModelStreamLoader(SoftwareModel softwareModel, string fileName)
-		{
-			this.softwareModel = softwareModel;
-			this.fileName = fileName;
-		}
-
-		#if METRO
-		public override async Task<bool> Load()
-		{
-			return await softwareModel.load(fileName);
-		}
-		#else
-		public override bool Load()
-		{
-			return softwareModel.load(fileName);
-		}
-		#endif
-	}
-
-	public class SoftwareModel
+	public class SoftwareModel : LoadableI
 	{
 		#region Properties
 		public bool Loaded {get; private set;}
-		public delegate void FinishedLoadingMethod(SoftwareModel model);
-		private FinishedLoadingMethod finishedLoading;
+		public bool FailedToLoad {get; protected set;}
 
 		public List<SoftwareMesh> Meshes;
 		public List<SoftwareMaterial> Materials;
 		#endregion
 
 		#region Constructors
-		public SoftwareModel(string fileName, FinishedLoadingMethod finishedLoading)
+		public SoftwareModel(string fileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			this.finishedLoading = finishedLoading;
-			Meshes = new List<SoftwareMesh>();
-			Materials = new List<SoftwareMaterial>();
-			new SoftwareModelStreamLoader(this, fileName);
+			new StreamLoader(fileName,
+			delegate(object sender)
+			{
+				init(((StreamLoader)sender).LoadedStream, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
 		}
 
-		#if METRO
-		internal async Task<bool> load(string fileName)
+		private void init(Stream stream, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			using (var file = await Streams.OpenFile(fileName))
+			try
 			{
-				await init(file);
-				return true;
+				var xml = new XmlSerializer(typeof(ColladaModel), "http://www.collada.org/2005/11/COLLADASchema");
+				var collada = (ColladaModel)xml.Deserialize(stream);
+				collada.Init();
+
+				// check file version
+				var versions = collada.Version.Split('.');
+				bool pass = true;
+				if (versions.Length >= 1 && int.Parse(versions[0]) != 1) pass = false;
+				if (versions.Length >= 2 && int.Parse(versions[1]) != 4) pass = false;
+				if (versions.Length >= 3 && int.Parse(versions[2]) < 1) pass = false;
+				if (!pass) Debug.ThrowError("SoftwareModel", "Unsuported file version, must be 1.4.(1+)");
+
+				// meshes
+				Meshes = new List<SoftwareMesh>();
+				var meshIDHash = new Dictionary<string, SoftwareMesh>();
+				foreach (var geometry in collada.LibraryGeometry.Geometies)
+				{
+					var mesh = new SoftwareMesh(this, geometry);
+					Meshes.Add(mesh);
+					meshIDHash.Add(geometry.ID, mesh);
+				}
+
+				// materials
+				Materials = new List<SoftwareMaterial>();
+				var materialIDHash = new Dictionary<string, SoftwareMaterial>();
+				foreach (var material in collada.LibraryMaterial.Materials)
+				{
+					var newMaterial = new SoftwareMaterial(collada, material);
+					Materials.Add(newMaterial);
+					materialIDHash.Add(material.ID, newMaterial);
+				}
+
+				// apply scenes (translate, rotate, scale and bind materials)
+				var scene = collada.LibraryVisualScene.FindVisualScene(collada.Scene.InstanceVisualScene.URL);
+				if (scene == null) Debug.ThrowError("SoftwareModel", "Failed to find visual scene: " + collada.Scene.InstanceVisualScene.URL);
+				foreach (var node in scene.Nodes)
+				{
+					if (node.InstanceGeometry == null) continue;
+
+					var id = node.InstanceGeometry.URL.Replace("#", "");
+					var mesh = meshIDHash[id];
+
+					// translate, rotate and scale
+					var values = node.Translate.Values;
+					mesh.Position = new Vector3(values[0], values[1], values[2]);
+
+					values = node.Scale.Values;
+					mesh.Scale = new Vector3(values[0], values[1], values[2]);
+
+					var rotX = node.FindRotation("rotationX");
+					var rotY = node.FindRotation("rotationY");
+					var rotZ = node.FindRotation("rotationZ");
+					mesh.Rotation = new Vector3(rotX.Values[3], rotY.Values[3], rotZ.Values[3]).DegToRad();
+
+					// bind material
+					id = node.InstanceGeometry.BindMaterial.TechniqueCommon.InstanceMatrial.Target.Replace("#", "");
+					mesh.Material = materialIDHash[id];
+				}
 			}
-		}
-		#else
-		internal bool load(string fileName)
-		{
-			using (var file = Streams.OpenFile(fileName))
+			catch (Exception e)
 			{
-				init(file);
-				return true;
-			}
-		}
-		#endif
-
-		#if METRO
-		private async Task init(Stream stream)
-		#else
-		private void init(Stream stream)
-		#endif
-		{
-			var xml = new XmlSerializer(typeof(ColladaModel), "http://www.collada.org/2005/11/COLLADASchema");
-			var collada = (ColladaModel)xml.Deserialize(stream);
-			collada.Init();
-
-			// check file version
-			var versions = collada.Version.Split('.');
-			bool pass = true;
-			if (versions.Length >= 1 && int.Parse(versions[0]) != 1) pass = false;
-			if (versions.Length >= 2 && int.Parse(versions[1]) != 4) pass = false;
-			if (versions.Length >= 3 && int.Parse(versions[2]) < 1) pass = false;
-			if (!pass) Debug.ThrowError("SoftwareModel", "Unsuported file version, must be 1.4.(1+)");
-
-			// meshes
-			var meshIDHash = new Dictionary<string, SoftwareMesh>();
-			foreach (var geometry in collada.LibraryGeometry.Geometies)
-			{
-				var mesh = new SoftwareMesh(this, geometry);
-				Meshes.Add(mesh);
-				meshIDHash.Add(geometry.ID, mesh);
-			}
-
-			// materials
-			var materialIDHash = new Dictionary<string, SoftwareMaterial>();
-			foreach (var material in collada.LibraryMaterial.Materials)
-			{
-				var newMaterial = new SoftwareMaterial(collada, material);
-				Materials.Add(newMaterial);
-				materialIDHash.Add(material.ID, newMaterial);
-			}
-
-			// apply scenes (translate, rotate, scale and bind materials)
-			var scene = collada.LibraryVisualScene.FindVisualScene(collada.Scene.InstanceVisualScene.URL);
-			if (scene == null) Debug.ThrowError("SoftwareModel", "Failed to find visual scene: " + collada.Scene.InstanceVisualScene.URL);
-			foreach (var node in scene.Nodes)
-			{
-				if (node.InstanceGeometry == null) continue;
-
-				var id = node.InstanceGeometry.URL.Replace("#", "");
-				var mesh = meshIDHash[id];
-
-				// translate, rotate and scale
-				var values = node.Translate.Values;
-				mesh.Position = new Vector3(values[0], values[1], values[2]);
-
-				values = node.Scale.Values;
-				mesh.Scale = new Vector3(values[0], values[1], values[2]);
-
-				var rotX = node.FindRotation("rotationX");
-				var rotY = node.FindRotation("rotationY");
-				var rotZ = node.FindRotation("rotationZ");
-				mesh.Rotation = new Vector3(rotX.Values[3], rotY.Values[3], rotZ.Values[3]).DegToRad();
-
-				// bind material
-				id = node.InstanceGeometry.BindMaterial.TechniqueCommon.InstanceMatrial.Target.Replace("#", "");
-				mesh.Material = materialIDHash[id];
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return;
 			}
 
 			Loaded = true;
-			if (finishedLoading != null) finishedLoading(this);
+			if (loadedCallback != null) loadedCallback(this);
+		}
+
+		public bool UpdateLoad()
+		{
+			return Loaded;
 		}
 		#endregion
 	}

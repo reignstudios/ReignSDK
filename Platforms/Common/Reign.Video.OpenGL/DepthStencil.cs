@@ -6,13 +6,24 @@ namespace Reign.Video.OpenGL
 	public class DepthStencil : Disposable, DepthStencilI
 	{
 		#region Properties
+		public Size2 Size {get; private set;}
+		public Vector2 SizeF {get; private set;}
+
 		public uint Surface {get; private set;}
 		#endregion
 
 		#region Constructors
+		public static DepthStencilI New(DisposableI parent, int width, int height, DepthStenicFormats depthStenicFormats)
+		{
+			return new DepthStencil(parent, width, height, depthStenicFormats);
+		}
+
 		public unsafe DepthStencil(DisposableI parent, int width, int height, DepthStenicFormats depthStenicFormats)
 		: base(parent)
 		{
+			Size = new Size2(width, height);
+			SizeF = Size.ToVector2();
+
 			uint surface = 0;
 			GL.GenRenderbuffers(1, &surface);
 			Surface = surface;

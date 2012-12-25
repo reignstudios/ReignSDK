@@ -13,64 +13,64 @@ namespace Reign.Video
 {
 	public class ImageMetro : Image
 	{
-		#region Properties
-		private Stream loadingStream;
-		private bool loadingFlip, doneLoading;
-		#endregion
-
 		#region Constructors
-		public ImageMetro(string fileName, bool flip)
+		public ImageMetro(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			new ImageStreamLoader(this, fileName, flip);
-		}
-
-		public ImageMetro(Stream stream, bool flip)
-		{
-			init(stream, flip);
-		}
-
-		protected override void init(Stream stream, bool flip)
-		{
-			loadingStream = stream;
-			loadingFlip = flip;
-			var task = ThreadPool.RunAsync(new WorkItemHandler(loadStream), WorkItemPriority.Normal);
-			while (!doneLoading) new ManualResetEvent(false).WaitOne(1);
-			loadingStream = null;
-		}
-
-		private async void loadStream(Windows.Foundation.IAsyncAction op)
-		{
-			await initThread(loadingStream, loadingFlip);
-			doneLoading = true;
-		}
-
-		private async Task initThread(Stream stream, bool flip)
-		{
-			SurfaceFormat = SurfaceFormats.RGBAx8;
-
-			using (var memoryStream = new InMemoryRandomAccessStream())
+			Loader.AddLoadable(this);
+			new StreamLoader(fileName,
+			delegate(object sender)
 			{
-				await RandomAccessStream.CopyAsync(stream.AsInputStream(), memoryStream);
+				init(((StreamLoader)sender).LoadedStream, flip, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
+		}
 
-				var decoder = await BitmapDecoder.CreateAsync(memoryStream);
-				var frame = await decoder.GetFrameAsync(0);
+		public ImageMetro(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			Loader.AddLoadable(this);
+			init(stream, flip, loadedCallback, failedToLoadCallback);
+		}
 
-				var transform = new BitmapTransform();
-				transform.InterpolationMode = BitmapInterpolationMode.NearestNeighbor;
-				transform.Rotation = BitmapRotation.None;
-				var dataProvider = await decoder.GetPixelDataAsync(BitmapPixelFormat.Rgba8, BitmapAlphaMode.Straight, transform, ExifOrientationMode.IgnoreExifOrientation, ColorManagementMode.ColorManageToSRgb);
-				var data = dataProvider.DetachPixelData();
+		protected override async void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		{
+			try
+			{
+				using (var memoryStream = new InMemoryRandomAccessStream())
+				{
+					await RandomAccessStream.CopyAsync(stream.AsInputStream(), memoryStream);
+
+					var decoder = await BitmapDecoder.CreateAsync(memoryStream);
+					var frame = await decoder.GetFrameAsync(0);
+
+					var transform = new BitmapTransform();
+					transform.InterpolationMode = BitmapInterpolationMode.NearestNeighbor;
+					transform.Rotation = BitmapRotation.None;
+					var dataProvider = await decoder.GetPixelDataAsync(BitmapPixelFormat.Rgba8, BitmapAlphaMode.Straight, transform, ExifOrientationMode.IgnoreExifOrientation, ColorManagementMode.ColorManageToSRgb);
+					var data = dataProvider.DetachPixelData();
 			
-				int width = (int)decoder.PixelWidth;
-				int height = (int)decoder.PixelHeight;
-				Mipmaps = new Mipmap[1];
-				Size = new Size2(width, height);
+					int width = (int)decoder.PixelWidth;
+					int height = (int)decoder.PixelHeight;
+					Mipmaps = new Mipmap[1];
+					Size = new Size2(width, height);
 
-				Mipmaps[0] = new Mipmap(data, width, height, 1, 4);
-				if (flip) Mipmaps[0].FlipVertical();
+					Mipmaps[0] = new Mipmap(data, width, height, 1, 4);
+					if (flip) Mipmaps[0].FlipVertical();
+				}
+			}
+			catch (Exception e)
+			{
+				FailedToLoad = true;
+				Loader.AddLoadableException(e);
+				if (failedToLoadCallback != null) failedToLoadCallback();
+				return;
 			}
 
 			Loaded = true;
+			if (loadedCallback != null) loadedCallback(this);
 		}
 		#endregion
 

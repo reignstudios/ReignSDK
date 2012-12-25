@@ -1,100 +1,40 @@
-﻿using System;
-using Reign.Core;
-using System.Reflection;
+﻿using Reign.Core;
 
 namespace Reign.Video.API
 {
 	public static class RasterizerStateDesc
 	{
-		public static RasterizerStateDescI Create(VideoTypes apiType, params object[] args)
+		public static void Init(VideoTypes type)
 		{
-			try
-			{
-				#if WINDOWS || METRO
-				if (apiType == VideoTypes.D3D11)
-				{
-					return (RasterizerStateDescI)OS.CreateInstance(Video.D3D11, Video.D3D11, "RasterizerStateDesc", args);
-				}
-				#endif
+			#if WINDOWS || METRO
+			if (type == VideoTypes.D3D11) RasterizerStateDescAPI.Init(Reign.Video.D3D11.RasterizerStateDesc.New);
+			#endif
 
-				#if WINDOWS
-				if (apiType == VideoTypes.D3D9)
-				{
-					return (RasterizerStateDescI)OS.CreateInstance(Video.D3D9, Video.D3D9, "RasterizerStateDesc", args);
-				}
-				#endif
+			#if WINDOWS || OSX || LINUX
+			if (type == VideoTypes.OpenGL) RasterizerStateDescAPI.Init(Reign.Video.OpenGL.RasterizerStateDesc.New);
+			#endif
 
-				#if XNA
-				if (apiType == VideoTypes.XNA)
-				{
-					return (RasterizerStateDescI)OS.CreateInstance(Video.XNA, Video.XNA, "RasterizerStateDesc", args);
-				}
-				#endif
-
-				#if WINDOWS || OSX || LINUX || iOS || ANDROID
-				if (apiType == VideoTypes.OpenGL)
-				{
-					return (RasterizerStateDescI)OS.CreateInstance(Video.OpenGL, Video.OpenGL, "RasterizerStateDesc", args);
-				}
-				#endif
-			}
-			catch (TargetInvocationException e)
-			{
-				throw (e.InnerException != null) ? e.InnerException : e;
-			}
-			catch (Exception e)
-			{
-				throw e;
-			}
-
-			return null;
+			#if XNA
+			if (type == VideoTypes.XNA) RasterizerStateDescAPI.Init(Reign.Video.XNA.RasterizerStateDesc.New);
+			#endif
 		}
 	}
 
 	public static class RasterizerState
 	{
-		public static RasterizerStateI Create(VideoTypes apiType, params object[] args)
+		public static void Init(VideoTypes type)
 		{
-			try
-			{
-				#if WINDOWS || METRO
-				if (apiType == VideoTypes.D3D11)
-				{
-					return (RasterizerStateI)OS.CreateInstance(Video.D3D11, Video.D3D11, "RasterizerState", args);
-				}
-				#endif
+			#if WINDOWS || METRO
+			if (type == VideoTypes.D3D11) RasterizerStateAPI.Init(Reign.Video.D3D11.RasterizerState.New);
+			#endif
 
-				#if WINDOWS
-				if (apiType == VideoTypes.D3D9)
-				{
-					return (RasterizerStateI)OS.CreateInstance(Video.D3D9, Video.D3D9, "RasterizerState", args);
-				}
-				#endif
+			#if WINDOWS || OSX || LINUX
+			if (type == VideoTypes.OpenGL) RasterizerStateAPI.Init(Reign.Video.OpenGL.RasterizerState.New);
+			#endif
 
-				#if XNA
-				if (apiType == VideoTypes.XNA)
-				{
-					return (RasterizerStateI)OS.CreateInstance(Video.XNA, Video.XNA, "RasterizerState", args);
-				}
-				#endif
-
-				#if WINDOWS || OSX || LINUX || iOS || ANDROID
-				if (apiType == VideoTypes.OpenGL)
-				{
-					return (RasterizerStateI)OS.CreateInstance(Video.OpenGL, Video.OpenGL, "RasterizerState", args);
-				}
-				#endif
-			}
-			catch (TargetInvocationException e)
-			{
-				throw (e.InnerException != null) ? e.InnerException : e;
-			}
-			catch (Exception e)
-			{
-				throw e;
-			}
-
-			return null;
+			#if XNA
+			if (type == VideoTypes.XNA) RasterizerStateAPI.Init(Reign.Video.XNA.RasterizerState.New);
+			#endif
 		}
 	}
 }

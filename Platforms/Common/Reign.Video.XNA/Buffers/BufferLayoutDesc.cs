@@ -12,6 +12,16 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
+		public static BufferLayoutDesc New(List<BufferLayoutElement> elements)
+		{
+			return new BufferLayoutDesc(elements);
+		}
+
+		public static BufferLayoutDesc New(BufferLayoutTypes type)
+		{
+			return new BufferLayoutDesc(type);
+		}
+
 		public BufferLayoutDesc(List<BufferLayoutElement> elements)
 		: base(elements)
 		{

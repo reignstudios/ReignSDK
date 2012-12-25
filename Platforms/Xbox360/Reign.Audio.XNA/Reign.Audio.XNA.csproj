@@ -68,9 +68,6 @@
     <Compile Include="..\..\Common\Reign.Audio.XNA\Music.cs">
       <Link>Music.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Audio.XNA\Sound.cs">
-      <Link>Sound.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Audio.XNA\SoundWAV.cs">
       <Link>SoundWAV.cs</Link>
     </Compile>

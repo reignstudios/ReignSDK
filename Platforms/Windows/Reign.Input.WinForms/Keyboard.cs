@@ -100,6 +100,11 @@ namespace Reign.Input.WinForms
 		#endregion
 	
 		#region Constructors
+		public static Keyboard New(DisposableI parent)
+		{
+			return new Keyboard(parent);
+		}
+
 		public Keyboard(DisposableI parent)
 		: base(parent)
 		{

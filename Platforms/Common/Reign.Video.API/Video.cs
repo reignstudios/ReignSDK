@@ -1,34 +1,37 @@
 ﻿using System;
 using Reign.Core;
-using System.Reflection;
 
 namespace Reign.Video.API
 {
 	[Flags]
 	public enum VideoTypes
 	{
-		None = 0,
-		D3D11 = 1,
-		D3D9 = 2,
-		XNA = 4,
-		OpenGL = 8
+		None,
+		D3D11,
+		D3D9,
+		XNA,
+		OpenGL
 	}
 
 	public static class Video
 	{
-		internal const string D3D11 = "Reign.Video.D3D11";
-		internal const string D3D9 = "Reign.Video.D3D9";
-		internal const string XNA = "Reign.Video.XNA";
-		internal const string OpenGL = "Reign.Video.OpenGL";
-
-		#if XNA || iOS || ANDROID
-		public static VideoI Create(VideoTypes typeFlags, out VideoTypes type, params object[] args)
+		#if METRO || XNA || iOS || ANDROID
+		public static VideoI Init(VideoTypes typeFlags, out VideoTypes type, DisposableI parent, Application application, bool vSync)
 		{
 			try
 			{
+				#if METRO
+				type = VideoTypes.D3D11;
+				var video = new Reign.Video.D3D11.Video(parent, application, vSync);
+				initMethods(type);
+				return video;
+				#endif
+
 				#if XNA
 				type = VideoTypes.XNA;
-				return (VideoI)OS.CreateInstance(XNA, XNA, "Video", args);
+				var video = new Reign.Video.XNA.Video(parent, application);
+				initMethods(type);
+				return video;
 				#endif
 
 				#if iOS || ANDROID
@@ -36,21 +39,37 @@ namespace Reign.Video.API
 				return (VideoI)OS.CreateInstance(typeof(Reign.Video.OpenGL.Video), args);
 				#endif
 			}
-			catch (TargetInvocationException e)
-			{
-				throw (e.InnerException != null) ? e.InnerException : e;
-			}
 			catch (Exception e)
 			{
 				throw e;
 			}
 		}
-		#endif
 
-		#if WINDOWS || METRO || OSX || LINUX
-		public static VideoI Create(VideoTypes typeFlags, out VideoTypes type, params object[] args)
+		private static void initMethods(VideoTypes type)
 		{
-			#if WINDOWS || METRO
+			ViewPort.Init(type);
+			Shader.Init(type);
+			QuickDraw.Init(type);
+			DepthStencil.Init(type);
+			Texture2D.Init(type);
+			RenderTarget.Init(type);
+			BlendState.Init(type);
+			BlendStateDesc.Init(type);
+			DepthStencilState.Init(type);
+			DepthStencilStateDesc.Init(type);
+			RasterizerState.Init(type);
+			RasterizerStateDesc.Init(type);
+			SamplerState.Init(type);
+			SamplerStateDesc.Init(type);
+			BufferLayout.Init(type);
+			BufferLayoutDesc.Init(type);
+			IndexBuffer.Init(type);
+			VertexBuffer.Init(type);
+		}
+		#else
+		public static VideoI Init(VideoTypes typeFlags, out VideoTypes type, DisposableI parent, Window window, bool vSync)
+		{
+			#if WINDOWS
 			bool d3d11 = (typeFlags & VideoTypes.D3D11) != 0;
 			#endif
 
@@ -62,7 +81,9 @@ namespace Reign.Video.API
 			bool gl = (typeFlags & VideoTypes.OpenGL) != 0;
 			#endif
 
+			type = VideoTypes.None;
 			Exception lastException = null;
+			VideoI video = null;
 			while (true)
 			{
 				try
@@ -72,17 +93,19 @@ namespace Reign.Video.API
 					{
 						d3d11 = false;
 						type = VideoTypes.D3D11;
-						return (VideoI)OS.CreateInstance(typeof(Reign.Video.D3D11.Video), args);
+						video = new Reign.Video.D3D11.Video(parent, window, vSync);
+						break;
 					}
 					#endif
 
 					#if WINDOWS
-					else if (d3d9)
-					{
-						d3d9 = false;
-						type = VideoTypes.D3D9;
-						return (VideoI)OS.CreateInstance(typeof(Reign.Video.D3D9.Video), args);
-					}
+					//else if (d3d9)
+					//{
+					//    d3d9 = false;
+					//    type = VideoTypes.D3D9;
+					//    return (VideoI)OS.CreateInstance(typeof(Reign.Video.D3D9.Video), args);
+					//break;
+					//}
 					#endif
 
 					#if WINDOWS || OSX || LINUX
@@ -90,20 +113,12 @@ namespace Reign.Video.API
 					{
 						gl = false;
 						type = VideoTypes.OpenGL;
-						#if WINDOWS
-						return (VideoI)OS.CreateInstance(typeof(Reign.Video.OpenGL.Video), args);
-						#else
-						return (VideoI)OS.CreateInstance(typeof(Reign.Video.OpenGL.Video), args);
-						#endif
+						video = new Reign.Video.OpenGL.Video(parent, window, vSync);
+						break;
 					}
 					#endif
 
 					else break;
-				}
-				catch (TargetInvocationException e)
-				{
-					if (e.InnerException != null) lastException = e.InnerException;
-					else lastException = e;
 				}
 				catch (Exception e)
 				{
@@ -111,10 +126,35 @@ namespace Reign.Video.API
 				}
 			}
 
-			string ex = lastException == null ? "" : " - Exception: " + lastException.Message;
-			Debug.ThrowError("Video", "Failed to create Video API" + ex);
-			type = VideoTypes.None;
-			return null;
+			// check for error
+			if (lastException != null)
+			{
+				string ex = lastException == null ? "" : " - Exception: " + lastException.Message;
+				Debug.ThrowError("Video", "Failed to create Video API" + ex);
+				type = VideoTypes.None;
+			}
+
+			// init api methods
+			ViewPort.Init(type);
+			Shader.Init(type);
+			QuickDraw.Init(type);
+			DepthStencil.Init(type);
+			Texture2D.Init(type);
+			RenderTarget.Init(type);
+			BlendState.Init(type);
+			BlendStateDesc.Init(type);
+			DepthStencilState.Init(type);
+			DepthStencilStateDesc.Init(type);
+			RasterizerState.Init(type);
+			RasterizerStateDesc.Init(type);
+			SamplerState.Init(type);
+			SamplerStateDesc.Init(type);
+			BufferLayout.Init(type);
+			BufferLayoutDesc.Init(type);
+			IndexBuffer.Init(type);
+			VertexBuffer.Init(type);
+
+			return video;
 		}
 		#endif
 	}

@@ -13,6 +13,11 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
+		public static RasterizerStateDesc New(RasterizerStateTypes type)
+		{
+			return new RasterizerStateDesc(type);
+		}
+
 		public RasterizerStateDesc(RasterizerStateTypes type)
 		{
 			switch (type)

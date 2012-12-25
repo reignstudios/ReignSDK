@@ -31,19 +31,13 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology)
-		: base(parent, bufferLayoutDesc, bufferUsage)
+		public static VertexBuffer New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
 		{
-			init(parent, vertexBufferTopology, null);
+			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices);
 		}
 
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices)
 		: base(parent, bufferLayoutDesc, bufferUsage)
-		{
-			init(parent, vertexBufferTopology, vertices);
-		}
-
-		private void init(DisposableI parent, VertexBufferTopologys vertexBufferTopology, float[] vertices)
 		{
 			try
 			{
@@ -52,10 +46,10 @@ namespace Reign.Video.OpenGL
 
 				if (vertices != null) Init(vertices);
 			}
-			catch (Exception ex)
+			catch (Exception e)
 			{
 				Dispose();
-				throw ex;
+				throw e;
 			}
 		}
 

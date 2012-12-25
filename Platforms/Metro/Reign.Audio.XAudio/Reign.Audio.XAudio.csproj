@@ -117,9 +117,6 @@
     <Compile Include="..\..\Common\Reign.Audio.XAudio\Audio.cs">
       <Link>Audio.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Audio.XAudio\Sound.cs">
-      <Link>Sound.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Audio.XAudio\SoundWAV.cs">
       <Link>SoundWAV.cs</Link>
     </Compile>

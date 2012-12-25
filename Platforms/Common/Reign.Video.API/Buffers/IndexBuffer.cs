@@ -1,53 +1,22 @@
-﻿using System;
-using Reign.Core;
-using System.Reflection;
+﻿using Reign.Core;
 
 namespace Reign.Video.API
 {
 	public static class IndexBuffer
 	{
-		public static IndexBufferI Create(VideoTypes apiType, params object[] args)
+		public static void Init(VideoTypes type)
 		{
-			try
-			{
-				#if WINDOWS || METRO
-				if (apiType == VideoTypes.D3D11)
-				{
-					return (IndexBufferI)OS.CreateInstance(Video.D3D11, Video.D3D11, "IndexBuffer", args);
-				}
-				#endif
+			#if WINDOWS || METRO
+			if (type == VideoTypes.D3D11) IndexBufferAPI.Init(Reign.Video.D3D11.IndexBuffer.New, Reign.Video.D3D11.IndexBuffer.New);
+			#endif
 
-				#if WINDOWS
-				if (apiType == VideoTypes.D3D9)
-				{
-					return (IndexBufferI)OS.CreateInstance(Video.D3D9, Video.D3D9, "IndexBuffer", args);
-				}
-				#endif
+			#if WINDOWS || OSX || LINUX
+			if (type == VideoTypes.OpenGL) IndexBufferAPI.Init(Reign.Video.OpenGL.IndexBuffer.New, Reign.Video.OpenGL.IndexBuffer.New);
+			#endif
 
-				#if XNA
-				if (apiType == VideoTypes.XNA)
-				{
-					return (IndexBufferI)OS.CreateInstance(Video.XNA, Video.XNA, "IndexBuffer", args);
-				}
-				#endif
-
-				#if WINDOWS || OSX || LINUX || iOS || ANDROID
-				if (apiType == VideoTypes.OpenGL)
-				{
-					return (IndexBufferI)OS.CreateInstance(Video.OpenGL, Video.OpenGL, "IndexBuffer", args);
-				}
-				#endif
-			}
-			catch (TargetInvocationException e)
-			{
-				throw (e.InnerException != null) ? e.InnerException : e;
-			}
-			catch (Exception e)
-			{
-				throw e;
-			}
-
-			return null;
+			#if XNA
+			if (type == VideoTypes.XNA) IndexBufferAPI.Init(Reign.Video.XNA.IndexBuffer.New, Reign.Video.XNA.IndexBuffer.New);
+			#endif
 		}
 	}
 }

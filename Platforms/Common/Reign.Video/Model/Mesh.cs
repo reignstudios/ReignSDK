@@ -11,10 +11,10 @@ namespace Reign.Video
 		Float3
 	}
 
-	public abstract class MeshI : Disposable
+	public class Mesh : Disposable
 	{
 		#region Properties
-		public ModelI Model;
+		public Model Model;
 		public Vector3 Position, Rotation, Scale;
 		public Matrix3 RotationMatrix;
 		public MaterialI Material;
@@ -30,7 +30,7 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public MeshI(BinaryReader reader, ModelI model, int classicInstanceCount)
+		public Mesh(BinaryReader reader, Model model, int classicInstanceCount)
 		: base(model)
 		{
 			try
@@ -54,7 +54,7 @@ namespace Reign.Video
 				{
 					elements.Add(new BufferLayoutElement((BufferLayoutElementTypes)reader.ReadInt32(), (BufferLayoutElementUsages)reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32()));
 				}
-				LayoutDesc = createBufferLayoutDesc(elements);
+				LayoutDesc = BufferLayoutDescAPI.New(elements);
 
 				// vertices
 				int vertexFloatCount = reader.ReadInt32();
@@ -63,7 +63,7 @@ namespace Reign.Video
 				{
 					vertices[i] = reader.ReadSingle();
 				}
-				VertexBuffer = createVertexBuffer(this, LayoutDesc, BufferUsages.Default, VertexBufferTopologys.Triangle, vertices);
+				VertexBuffer = VertexBufferAPI.New(this, LayoutDesc, BufferUsages.Default, VertexBufferTopologys.Triangle, vertices);
 
 				// indices
 				int indexCount = reader.ReadInt32();
@@ -72,13 +72,13 @@ namespace Reign.Video
 				{
 					indices[i] = reader.ReadInt32();
 				}
-				IndexBuffer = createIndexBuffer(this, BufferUsages.Default, indices, indices.Length > ushort.MaxValue);
+				IndexBuffer = IndexBufferAPI.New(this, BufferUsages.Default, indices, indices.Length > ushort.MaxValue);
 
 				// create instancing buffers
 				var intancingElements = new List<BufferLayoutElement>();
 				foreach (var element in elements) intancingElements.Add(element);
 				intancingElements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Float, BufferLayoutElementUsages.IndexClassic, 0, 0, LayoutDesc.FloatCount));
-				InstancingLayoutDesc = createBufferLayoutDesc(intancingElements);
+				InstancingLayoutDesc = BufferLayoutDescAPI.New(intancingElements);
 
 				// create vertex buffer
 				ClassicInstanceCount = classicInstanceCount;
@@ -103,7 +103,7 @@ namespace Reign.Video
 							++vi;
 						}
 					}
-					InstancingVertexBuffer = createVertexBuffer(this, InstancingLayoutDesc, BufferUsages.Default, VertexBuffer.Topology, instancingVertices);
+					InstancingVertexBuffer = VertexBufferAPI.New(this, InstancingLayoutDesc, BufferUsages.Default, VertexBuffer.Topology, instancingVertices);
 
 					int instanceIndexCount = (indexCount * classicInstanceCount);
 					var instancingIndices = new int[instanceIndexCount];
@@ -118,7 +118,7 @@ namespace Reign.Video
 
 						iOffset += VertexBuffer.VertexCount;
 					}
-					InstancingIndexBuffer = createIndexBuffer(this, BufferUsages.Default, instancingIndices, instancingIndices.Length > ushort.MaxValue);
+					InstancingIndexBuffer = IndexBufferAPI.New(this, BufferUsages.Default, instancingIndices, instancingIndices.Length > ushort.MaxValue);
 				}
 			}
 			catch (Exception e)
@@ -257,10 +257,6 @@ namespace Reign.Video
 				ti += 3;
 			}
 		}
-
-		protected abstract BufferLayoutDescI createBufferLayoutDesc(List<BufferLayoutElement> elements);
-		protected abstract VertexBufferI createVertexBuffer(DisposableI parent, BufferLayoutDescI layoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices);
-		protected abstract IndexBufferI createIndexBuffer(DisposableI parent, BufferUsages usage, int[] indices, bool _32BitIndices);
 		#endregion
 
 		#region Methods
