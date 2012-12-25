@@ -17,6 +17,10 @@ namespace Reign.Input.API
 			#if OSX
 			if (type == InputTypes.Cocoa) KeyboardAPI.Init(Reign.Input.Cocoa.Keyboard.New);
 			#endif
+			
+			#if LINUX
+			if (type == InputTypes.X11) KeyboardAPI.Init(Reign.Input.X11.Keyboard.New);
+			#endif
 		}
 	}
 }

@@ -163,7 +163,7 @@ namespace Reign.Input.API
 					{
 						x11 = false;
 						type = InputTypes.X11;
-						return (InputI)OS.CreateInstance(typeof(Reign.Input.X11.Input), args);
+						input = new Reign.Input.X11.Input(parent, window);
 						break;
 					}
 					#endif

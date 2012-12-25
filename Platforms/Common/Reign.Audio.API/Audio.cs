@@ -87,7 +87,7 @@ namespace Reign.Audio.API
 					{
 						openAL = false;
 						type = AudioTypes.OpenAL;
-						return (AudioI)OS.CreateInstance(typeof(Reign.Audio.OpenAL.Audio), args);
+						audio = new Reign.Audio.OpenAL.Audio(parent);
 						break;
 					}
 					else

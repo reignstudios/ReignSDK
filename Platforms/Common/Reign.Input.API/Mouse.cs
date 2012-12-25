@@ -17,6 +17,10 @@ namespace Reign.Input.API
 			#if OSX
 			if (type == InputTypes.Cocoa) MouseAPI.Init(Reign.Input.Cocoa.Mouse.New);
 			#endif
+			
+			#if LINUX
+			if (type == InputTypes.X11) MouseAPI.Init(Reign.Input.X11.Mouse.New);
+			#endif
 		}
 	}
 }

@@ -135,10 +135,10 @@ namespace Reign.Video.OpenGL
 				int[] attrbs =
 				{
 					GLX.RGBA,
-					GLX.DOUBLEBUFFER,
-					GLX.RED_SIZE, 8,
-					GLX.GREEN_SIZE, 8,
-					GLX.BLUE_SIZE, 8,
+					GLX.DOUBLEBUFFER, 1,
+					//GLX.RED_SIZE, 8,
+					//GLX.GREEN_SIZE, 8,
+					//GLX.BLUE_SIZE, 8,
 					//GLX.ALPHA_SIZE, 8,
 					GLX.DEPTH_SIZE, 16,
 					GLX.NONE
