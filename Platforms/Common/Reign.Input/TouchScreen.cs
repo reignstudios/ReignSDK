@@ -14,11 +14,11 @@ namespace Reign.Input
 			TouchScreenAPI.newPtr = newPtr;
 		}
 
-		public delegate TouchScreenI NewPtrMethod();
+		public delegate TouchScreenI NewPtrMethod(DisposableI parent);
 		internal static NewPtrMethod newPtr;
-		public static TouchScreenI New()
+		public static TouchScreenI New(DisposableI parent)
 		{
-			return newPtr();
+			return newPtr(parent);
 		}
 	}
 }

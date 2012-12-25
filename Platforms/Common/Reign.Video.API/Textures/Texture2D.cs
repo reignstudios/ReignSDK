@@ -10,7 +10,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D11) Texture2DAPI.Init(Reign.Video.D3D11.Texture2D.NewReference, Reign.Video.D3D11.Texture2D.New, Reign.Video.D3D11.Texture2D.New, Reign.Video.D3D11.Texture2D.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX
+			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) Texture2DAPI.Init(Reign.Video.OpenGL.Texture2D.NewReference, Reign.Video.OpenGL.Texture2D.New, Reign.Video.OpenGL.Texture2D.New, Reign.Video.OpenGL.Texture2D.New);
 			#endif
 

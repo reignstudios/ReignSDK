@@ -10,7 +10,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D11) IndexBufferAPI.Init(Reign.Video.D3D11.IndexBuffer.New, Reign.Video.D3D11.IndexBuffer.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX
+			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) IndexBufferAPI.Init(Reign.Video.OpenGL.IndexBuffer.New, Reign.Video.OpenGL.IndexBuffer.New);
 			#endif
 

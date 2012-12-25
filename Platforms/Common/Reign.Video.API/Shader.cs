@@ -10,7 +10,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D11) ShaderAPI.Init(Reign.Video.D3D11.Shader.New, Reign.Video.D3D11.Shader.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX
+			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) ShaderAPI.Init(Reign.Video.OpenGL.Shader.New, Reign.Video.OpenGL.Shader.New);
 			#endif
 

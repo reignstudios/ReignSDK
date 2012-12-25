@@ -10,7 +10,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D11) RasterizerStateDescAPI.Init(Reign.Video.D3D11.RasterizerStateDesc.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX
+			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) RasterizerStateDescAPI.Init(Reign.Video.OpenGL.RasterizerStateDesc.New);
 			#endif
 
@@ -28,7 +28,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D11) RasterizerStateAPI.Init(Reign.Video.D3D11.RasterizerState.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX
+			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) RasterizerStateAPI.Init(Reign.Video.OpenGL.RasterizerState.New);
 			#endif
 

@@ -108,7 +108,7 @@ namespace Reign.Core
 			}
 			catch (Exception e)
 			{
-				application.Close();
+				application.closing();
 				throw e;
 			}
 		}
@@ -133,7 +133,7 @@ namespace Reign.Core
 		public override void DidReceiveMemoryWarning ()
 		{
 			EAGLContext.SetCurrentContext(context);
-			application.Close();
+			application.closing();
 			EAGLContext.SetCurrentContext(null);
 			base.DidReceiveMemoryWarning ();
 		}

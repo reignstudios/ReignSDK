@@ -14,6 +14,11 @@ namespace Reign.Input.Cocoa
 		#endregion
 	
 		#region Constructors
+		public static TouchScreen New(DisposableI parent)
+		{
+			return new TouchScreen(parent);
+		}
+		
 		public TouchScreen(DisposableI parent)
 		: base(parent)
 		{

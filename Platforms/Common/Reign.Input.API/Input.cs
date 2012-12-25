@@ -69,7 +69,7 @@ namespace Reign.Input.API
 					{
 						cocoa = false;
 						type = InputTypes.Cocoa;
-						return (InputI)OS.CreateInstance(typeof(Reign.Input.Cocoa.Input), args);
+						input = new Reign.Input.Cocoa.Input(parent, application);
 						break;
 					}
 					#endif
@@ -108,6 +108,10 @@ namespace Reign.Input.API
 
 			#if XNA
 			GamePad.Init(type);
+			#endif
+			
+			#if iOS
+			TouchScreen.Init(type);
 			#endif
 
 			return input;

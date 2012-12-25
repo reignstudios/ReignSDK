@@ -36,7 +36,9 @@ namespace Reign.Video.API
 
 				#if iOS || ANDROID
 				type = VideoTypes.OpenGL;
-				return (VideoI)OS.CreateInstance(typeof(Reign.Video.OpenGL.Video), args);
+				var video = new Reign.Video.OpenGL.Video(parent, application);
+				initMethods(type);
+				return video;
 				#endif
 			}
 			catch (Exception e)

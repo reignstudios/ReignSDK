@@ -52,9 +52,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\Reign.Video.API\Font.cs">
-      <Link>Font.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Video.API\QuickDraw.cs">
       <Link>QuickDraw.cs</Link>
     </Compile>
@@ -94,17 +91,13 @@
     <Compile Include="..\..\Common\Reign.Video.API\Textures\Texture2D.cs">
       <Link>Textures\Texture2D.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Video.API\Model\Mesh.cs">
-      <Link>Model\Mesh.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Video.API\Model\Model.cs">
-      <Link>Model\Model.cs</Link>
+    <Compile Include="..\..\Common\Reign.Video.API\DepthStencil.cs">
+      <Link>DepthStencil.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Buffers\" />
     <Folder Include="States\" />
     <Folder Include="Textures\" />
-    <Folder Include="Model\" />
   </ItemGroup>
 </Project>

@@ -6,30 +6,11 @@ namespace Reign.Input.API
 {
 	public static class TouchScreen
 	{
-		public static TouchScreenI Create(InputTypes apiType, params object[] args)
+		public static void Init(InputTypes type)
 		{
-			#if WP7
-			if (apiType == InputTypes.XNA)
-			{
-				return (TouchScreenI)OS.CreateInstance(Input.XNA, Input.XNA, "TouchScreen", args);
-			}
-			#endif
-
 			#if iOS
-			if (apiType == InputTypes.Cocoa)
-			{
-				return (TouchScreenI)OS.CreateInstance(Input.Cocoa, Input.Cocoa, "TouchScreen", args);
-			}
+			if (type == InputTypes.Cocoa) TouchScreenAPI.Init(Reign.Input.Cocoa.TouchScreen.New);
 			#endif
-			
-			#if ANDROID
-			if (apiType == InputTypes.Android)
-			{
-				return (TouchScreenI)OS.CreateInstance(Input.Android, Input.Android, "TouchScreen", args);
-			}
-			#endif
-
-			return null;
 		}
 	}
 }

@@ -10,7 +10,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D11) SamplerStateDescAPI.Init(Reign.Video.D3D11.SamplerStateDesc.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX
+			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) SamplerStateDescAPI.Init(Reign.Video.OpenGL.SamplerStateDesc.New);
 			#endif
 
@@ -28,7 +28,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D11) SamplerStateAPI.Init(Reign.Video.D3D11.SamplerState.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX
+			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) SamplerStateAPI.Init(Reign.Video.OpenGL.SamplerState.New);
 			#endif
 
