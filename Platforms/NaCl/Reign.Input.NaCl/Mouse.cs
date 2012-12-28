@@ -23,6 +23,11 @@ namespace Reign.Input.NaCl
 		#endregion
 	
 		#region Constructors
+		public static Mouse New(DisposableI parent)
+		{
+			return new Mouse(parent);
+		}
+		
 		public Mouse(DisposableI parent)
 		: base(parent)
 		{

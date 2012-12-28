@@ -613,6 +613,12 @@ namespace Reign.Video.OpenGL
 			#if OSX
 			CGL.FlushDrawable(ctx);
 			#endif
+			
+			#if NaCl
+			GL.ColorMask(false, false, false, true);
+			ClearColor(0, 0, 0, 1);
+			GL.ColorMask(true, true, true, true);
+			#endif
 		}
 
 		internal void disableActiveTextures(Texture2D texture)

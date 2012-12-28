@@ -21,6 +21,10 @@ namespace Reign.Input.API
 			#if LINUX
 			if (type == InputTypes.X11) MouseAPI.Init(Reign.Input.X11.Mouse.New);
 			#endif
+			
+			#if NaCl
+			if (type == InputTypes.NaCl) MouseAPI.Init(Reign.Input.NaCl.Mouse.New);
+			#endif
 		}
 	}
 }

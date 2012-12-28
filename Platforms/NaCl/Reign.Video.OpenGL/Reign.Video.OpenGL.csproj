@@ -18,6 +18,7 @@
     <AppVersion>1.0.0</AppVersion>
     <AssemblyName>Reign.Video.OpenGL</AssemblyName>
     <AppLaunchHTML>Reign.Video.OpenGL.html</AppLaunchHTML>
+    <CopyAllJSObjects>True</CopyAllJSObjects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>

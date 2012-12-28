@@ -11,31 +11,32 @@
     <RootNamespace>Reign.Input.NaCl</RootNamespace>
     <AppDescription>This is a MonoNaCl project</AppDescription>
     <AppName>My MonoNaCl Project</AppName>
-    <GenerateManifest>true</GenerateManifest>
-    <CopyAllHtmlObjects>true</CopyAllHtmlObjects>
-    <CopyAllJsonObjects>true</CopyAllJsonObjects>
-    <RequiresGLES>true</RequiresGLES>
+    <GenerateManifest>True</GenerateManifest>
+    <CopyAllHtmlObjects>True</CopyAllHtmlObjects>
+    <CopyAllJsonObjects>True</CopyAllJsonObjects>
+    <RequiresGLES>True</RequiresGLES>
     <AppVersion>1.0.0</AppVersion>
     <AssemblyName>Reign.Input.NaCl</AssemblyName>
     <AppLaunchHTML>Reign.Input.NaCl.html</AppLaunchHTML>
+    <CopyAllJSObjects>True</CopyAllJSObjects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>..\Lib</OutputPath>
     <DefineConstants>DEBUG;NaCl</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>..\Lib</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
     <DefineConstants>NaCl</DefineConstants>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

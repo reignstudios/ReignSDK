@@ -23,6 +23,7 @@ PP_Resource InitOpenGL(PP_Instance instance, PPB_Graphics3D* graphics, PPB_Insta
 
 void swapBufferCallback(void* data, int32_t result)
 {
+	if (!isRendering) return;
 	Mono_InvokeMethodOnMainThread("Reign.Core", "Reign.Core.OS:updateAndRender");
 	if (!isRendering) return;
 	struct PP_CompletionCallback callBack =

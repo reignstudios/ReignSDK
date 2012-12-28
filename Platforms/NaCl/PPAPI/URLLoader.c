@@ -86,3 +86,21 @@ void URLLoader_ReadData(void* data)
 	assert(read_ret == PP_OK_COMPLETIONPENDING);
 }
 
+// Used by Reign.Core.Streams
+void URLLoader_LoadData(int success, const char* buffer, size_t size, const void* data)
+{
+	void** args = malloc(4*sizeof(void*));
+	args[0] = buffer;
+	args[1] = &size;
+	args[2] = data;// ID
+	bool failedToLoad = buffer == 0 ? true : false;//success == 0 ? true : false;
+	args[3] = &failedToLoad;
+	Mono_InvokeMethodArgs("Reign.Core", "Reign.Core.Streams:URLLoader_Done", true, args);
+	free(data);
+	free(args);
+}
+
+void URLLoader_LoadFile(const char* url, const char* id)
+{
+	URLLoader_LoadFileFromURL(url, URLLoader_LoadData, strdup(id));
+}

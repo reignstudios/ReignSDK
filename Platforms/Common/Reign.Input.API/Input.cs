@@ -13,7 +13,8 @@ namespace Reign.Input.API
 		XNA,
 		Cocoa,
 		X11,
-		Android
+		Android,
+		NaCl
 	}
 
 	public static class Input
@@ -130,6 +131,10 @@ namespace Reign.Input.API
 			#if LINUX
 			bool x11 = (typeFlags & InputTypes.X11) != 0;
 			#endif
+			
+			#if NaCl
+			bool nacl = (typeFlags & InputTypes.NaCl) != 0;
+			#endif
 
 			type = InputTypes.None;
 			Exception lastException = null;
@@ -164,6 +169,16 @@ namespace Reign.Input.API
 						x11 = false;
 						type = InputTypes.X11;
 						input = new Reign.Input.X11.Input(parent, window);
+						break;
+					}
+					#endif
+					
+					#if NaCl
+					if (nacl)
+					{
+						nacl = false;
+						type = InputTypes.NaCl;
+						input = new Reign.Input.NaCl.Input(parent, window);
 						break;
 					}
 					#endif

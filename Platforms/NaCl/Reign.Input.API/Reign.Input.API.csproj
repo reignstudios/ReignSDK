@@ -5,20 +5,19 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9B4C2971-EB42-4E97-B169-64934C0CB497}</ProjectGuid>
+    <ProjectGuid>{356E9BFC-BF41-40AE-B31D-87FFB4FE3012}</ProjectGuid>
     <ProjectTypeGuids>{304EDB7B-59C9-4334-85AD-2F54227B63B9};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>Reign.Input</RootNamespace>
-    <AppDescription>This is a MonoNaCl project</AppDescription>
+    <RootNamespace>Reign.Input.API</RootNamespace>
     <AppName>My MonoNaCl Project</AppName>
     <GenerateManifest>True</GenerateManifest>
-    <CopyAllHtmlObjects>True</CopyAllHtmlObjects>
+    <AppVersion>1.0.0</AppVersion>
+    <AppDescription>This is a MonoNaCl project</AppDescription>
     <CopyAllJsonObjects>True</CopyAllJsonObjects>
     <RequiresGLES>True</RequiresGLES>
-    <AppVersion>1.0.0</AppVersion>
-    <AssemblyName>Reign.Input</AssemblyName>
-    <AppLaunchHTML>Reign.Input.html</AppLaunchHTML>
     <CopyAllJSObjects>True</CopyAllJSObjects>
+    <CopyAllHtmlObjects>True</CopyAllHtmlObjects>
+    <AssemblyName>Reign.Input.API</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -45,18 +44,23 @@
       <Project>{60A1936F-D408-4425-874C-7194491BFF30}</Project>
       <Name>Reign.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Reign.Input\Reign.Input.csproj">
+      <Project>{9B4C2971-EB42-4E97-B169-64934C0CB497}</Project>
+      <Name>Reign.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Input.NaCl\Reign.Input.NaCl.csproj">
+      <Project>{6FC439BD-F08D-453E-A5BD-B7126DE75F14}</Project>
+      <Name>Reign.Input.NaCl</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\Reign.Input\Button.cs">
-      <Link>Button.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Input\Input.cs">
+    <Compile Include="..\..\Common\Reign.Input.API\Input.cs">
       <Link>Input.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Input\Keyboard.cs">
+    <Compile Include="..\..\Common\Reign.Input.API\Keyboard.cs">
       <Link>Keyboard.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Input\Mouse.cs">
+    <Compile Include="..\..\Common\Reign.Input.API\Mouse.cs">
       <Link>Mouse.cs</Link>
     </Compile>
   </ItemGroup>

@@ -5,20 +5,19 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9B4C2971-EB42-4E97-B169-64934C0CB497}</ProjectGuid>
+    <ProjectGuid>{331B18BE-532F-41E4-A988-6DE8A5E56028}</ProjectGuid>
     <ProjectTypeGuids>{304EDB7B-59C9-4334-85AD-2F54227B63B9};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>Reign.Input</RootNamespace>
-    <AppDescription>This is a MonoNaCl project</AppDescription>
+    <RootNamespace>Reign.Physics</RootNamespace>
     <AppName>My MonoNaCl Project</AppName>
     <GenerateManifest>True</GenerateManifest>
-    <CopyAllHtmlObjects>True</CopyAllHtmlObjects>
+    <AppVersion>1.0.0</AppVersion>
+    <AppDescription>This is a MonoNaCl project</AppDescription>
     <CopyAllJsonObjects>True</CopyAllJsonObjects>
     <RequiresGLES>True</RequiresGLES>
-    <AppVersion>1.0.0</AppVersion>
-    <AssemblyName>Reign.Input</AssemblyName>
-    <AppLaunchHTML>Reign.Input.html</AppLaunchHTML>
     <CopyAllJSObjects>True</CopyAllJSObjects>
+    <CopyAllHtmlObjects>True</CopyAllHtmlObjects>
+    <AssemblyName>Reign.Physics</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -45,19 +44,20 @@
       <Project>{60A1936F-D408-4425-874C-7194491BFF30}</Project>
       <Name>Reign.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Reign.Video\Reign.Video.csproj">
+      <Project>{E7E37A0B-239F-4098-8CBF-A10480A5F0E8}</Project>
+      <Name>Reign.Video</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\Reign.Input\Button.cs">
-      <Link>Button.cs</Link>
+    <Compile Include="..\..\Common\Reign.Physics\ConvexHull.cs">
+      <Link>ConvexHull.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Input\Input.cs">
-      <Link>Input.cs</Link>
+    <Compile Include="..\..\Common\Reign.Physics\ParticleSystem.cs">
+      <Link>ParticleSystem.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Input\Keyboard.cs">
-      <Link>Keyboard.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Input\Mouse.cs">
-      <Link>Mouse.cs</Link>
+    <Compile Include="..\..\Common\Reign.Physics\TriangleMesh.cs">
+      <Link>TriangleMesh.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>

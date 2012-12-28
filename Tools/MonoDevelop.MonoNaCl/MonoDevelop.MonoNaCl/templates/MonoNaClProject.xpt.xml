@@ -29,28 +29,26 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace ${Namespace}
+using Reign.Core;
+
+namespace MyNewReignnacltest
 {
 	static class Program
 	{
 		[DllImport("__Internal", EntryPoint="HelloWorld")]
 		public extern static string HelloWorld ();
 		
-		[MethodImplAttribute (MethodImplOptions.InternalCall)]
-		public extern static void PostMessage (string s);
-		
 		static void Main (string[] args)
 		{
 			string helloWorld = HelloWorld ();
-			PostMessage (helloWorld);
+			OS.PostMessage (helloWorld);
 			
-			for (int i = 0; i != 5; ++i)
-			{
-				PostMessage("GameLoop test: " + i.ToString());
-				System.Threading.Thread.Sleep(1000);
+			for (int i = 0; i != 5; ++i) {
+			OS.PostMessage ("GameLoop test: " + i.ToString ());
+			System.Threading.Thread.Sleep (1000);
 			}
 			
-			PostMessage("DONE !!!");
+			OS.PostMessage ("DONE !!!");
 		}
 	}
 }
@@ -77,28 +75,30 @@ char* HelloWorld()
 	
 	handleMessage = function(message)
 	{
-		if (message.data === 'Mono Initialized')
+		if (message.data == 'Mono Initialized')
 		{
 			document.getElementById('status').innerHTML = 'Mono Initialized';
 			plugin.postMessage('LoadAssemblyDlls');
 		}
-		else if (message.data === 'Mono Loaded Dlls')
+		else if (message.data == 'Mono Loaded Dlls')
 		{
 			document.getElementById('status').innerHTML = 'Mono Loaded Dlls';
 			plugin.postMessage('LoadAssemblyExe');
 		}
-		else if (message.data === 'Mono Loaded Exe')
+		else if (message.data == 'Mono Loaded Exe')
 		{
 			document.getElementById('status').innerHTML = 'Mono Loaded Exe';
 			plugin.postMessage('ExecuteAssembly');
 		}
-		else if (message.data === 'Mono Executed Exe')
+		else if (message.data == 'Mono Executed Exe')
 		{
 			document.getElementById('status').innerHTML = 'Mono Executed Exe';
 		}
 		else
 		{
-			document.getElementById('output').innerHTML += message.data + '<br>';
+			var reignMessage = message.data.split('^');
+			if (reignMessage.length >= 2 && reignMessage[0] == 'Reign.Core.Message') alert(reignMessage[1]);
+			else document.getElementById('output').innerHTML = message.data + '<br>';
 		}
 	}
 	plugin.addEventListener('message', handleMessage, true);	
@@ -116,7 +116,7 @@ char* HelloWorld()
 	<body>
 		<embed id="plugin" width=128 height=128 src="main.nmf" type="application/x-nacl"></embed>
 		
-		<h1>Mono for NaCl project</h1>
+		<h1>Mono for NaCl project (${ProjectName})</h1>
 		<p>Native client will boot up mono and main.exe, then main.exe will invoke the 'HelloWorld" method build directly into "main_x86_(32/64).nexe" and send back its responce to javaScript.</p>
 		<h2>STATUS</h2>
 		<div id="status">NOT READY</div>
@@ -171,22 +171,46 @@ char* HelloWorld()
 <File name="ppapi/MonoInitialization.h">
 <![CDATA[#pragma once
 #include "Common.h"
+#include <ppapi/c/ppb_graphics_3d.h>
+#include <ppapi/c/ppb_instance.h>
+#include <ppapi/c/ppb_opengles2.h>
 
-void Mono_Init();
+bool g_monoRunning;
+
+void Mono_Init(PPB_Core* core, PP_Instance instance, PPB_Graphics3D* graphics, PPB_Instance* pbbInstance, struct PPB_OpenGLES2* gles);
 void Mono_LoadDlls();
 void Mono_LoadExe();
 void Mono_Execute();
 
+int Mono_GetInstanceCallback();
+PPB_Graphics3D* Mono_GetGraphicsCallback();
+PPB_Instance* Mono_GetPBBInstanceCallback();
+struct PPB_OpenGLES2* Mono_GetGLESCallback();
+
 void Mono_PostMessageCallback(MonoString* arg);
-void Mono_InvokeMethod(const char* assemblyName, const char* method, const char* arg);
+void Mono_InvokeMethodOnMainThread(const char* libName, const char* method);
+void Mono_InvokeMethod(const char* assemblyName, const char* method, bool hasNamespace);
+void Mono_InvokeMethodStringArg(const char* assemblyName, const char* method, bool hasNamespace, const char* arg);
+void Mono_InvokeMethodArgs(const char* assemblyName, const char* method, bool hasNamespace, void* args);
+void Mono_InvokeMethodArgs2(MonoMethod* method, void* args);
+MonoMethod* Mono_FindMethod(const char* assemblyName, const char* method, bool hasNamespace);
 ]]></File>
 
 <File name="ppapi/MonoInitialization.c">
 <![CDATA[#include "MonoInitialization.h"
+#include "ppapi.h"
 
 char* libNames[256];
 int libNamesLength;
 
+PP_Instance g_instance;
+PPB_Graphics3D* g_graphics;
+PPB_Instance* g_pbbInstance;
+struct PPB_OpenGLES2* g_gles;
+PPB_Core* g_core;
+
+int dllsLoadedCount;
+bool loadingDlls;
 void loadLib(int success, const char* buffer, size_t size, const void* data)
 {
 	assert(success);
@@ -200,6 +224,22 @@ void loadLib(int success, const char* buffer, size_t size, const void* data)
 	imgstatus = MONO_IMAGE_OK;
 	MonoAssembly* ma = mono_assembly_load_from_full(mi, assembly_name, &imgstatus, 0);
 	assert(ma && imgstatus == MONO_IMAGE_OK);
+	
+	if (loadingDlls)
+	{
+		++dllsLoadedCount;
+		if (dllsLoadedCount == libNamesLength) PostMessage("Mono Loaded Dlls");
+	}
+	else
+	{
+		PostMessage("Mono Loaded Exe");
+	}
+}
+
+bool coreLoaded, libFileNamesLoaded;
+void checkIfCoreIsLoaded()
+{
+	if (coreLoaded && libFileNamesLoaded) PostMessage("Mono Initialized");
 }
 
 void loadLibFileNames(int success, const char* buffer, size_t size, const void* data)
@@ -236,9 +276,12 @@ void loadLibFileNames(int success, const char* buffer, size_t size, const void* 
 		++i;
 	}
 	libNamesLength = i3;
+	
+	libFileNamesLoaded = true;
+	checkIfCoreIsLoaded();
 }
 
-void Mono_LoadCore(int success, const char* buffer, size_t size, const void* data)
+void loadCore(int success, const char* buffer, size_t size, const void* data)
 {
 	assert(success);
 	
@@ -247,54 +290,65 @@ void Mono_LoadCore(int success, const char* buffer, size_t size, const void* dat
 	mono_config_parse (NULL);
 	mono_jit_init("main.exe");
 	
-	sleep(1);
-	PostMessage("Mono Initialized");
+	coreLoaded = true;
+	checkIfCoreIsLoaded();
 }
 
-void Mono_Init()
+void Mono_Init(PPB_Core* core, PP_Instance instance, PPB_Graphics3D* graphics, PPB_Instance* pbbInstance, struct PPB_OpenGLES2* gles)
 {
-	URLLoader_LoadFileFromURL("mscorlib.dll", Mono_LoadCore, NULL);
-	URLLoader_LoadFileFromURL("main.dep", loadLibFileNames, "main.dep");
+	g_core = core;
+	g_instance = instance;
+	g_graphics = graphics;
+	g_pbbInstance = pbbInstance;
+	g_gles = gles;
+
+	coreLoaded = false;
+	libFileNamesLoaded = false;
+	URLLoader_LoadFileFromURL("mscorlib.dll", loadCore, NULL);
+	URLLoader_LoadFileFromURL("main.dep", loadLibFileNames, NULL);
 }
 
 void Mono_LoadDlls()
 {
-	sleep(1);
-
+	dllsLoadedCount = 0;
+	loadingDlls = true;
 	int i = 0;
 	while (i != libNamesLength)
 	{
-		char* fileName = strdup(libNames[i]);
+		char* fileName = libNames[i];
 		URLLoader_LoadFileFromURL(fileName, loadLib, fileName);
 		++i;
 	}
-	
-	PostMessage("Mono Loaded Dlls");
 }
 
 void Mono_LoadExe()
 {
-	sleep(1);
+	loadingDlls = false;
 	URLLoader_LoadFileFromURL("main.exe", loadLib, "main.exe");
-	PostMessage("Mono Loaded Exe");
 }
 
 void Mono_Execute()
 {
-	sleep(1);
-	MonoThread* monoThread = mono_thread_attach(mono_get_root_domain());
+	g_monoRunning = true;
+	MonoDomain *domain = mono_get_root_domain();
+	MonoThread* monoThread = mono_thread_attach(domain);
 	
-	mono_add_internal_call("${ProjectName}.Program::PostMessage", Mono_PostMessageCallback);
+	mono_add_internal_call("Reign.Core.OS::PostMessage", Mono_PostMessageCallback);
+	mono_add_internal_call("Reign.Core.OS::GetInstance", Mono_GetInstanceCallback);
+	mono_add_internal_call("Reign.Core.OS::GetGraphics", Mono_GetGraphicsCallback);
+	mono_add_internal_call("Reign.Core.OS::GetPBBInstance", Mono_GetPBBInstanceCallback);
+	mono_add_internal_call("Reign.Core.OS::GetGlES", Mono_GetGLESCallback);
+	
 	MonoAssemblyName* assemblyName = mono_assembly_name_new("main");
 	assert(assemblyName);
 	MonoAssembly* assembly = mono_assembly_loaded(assemblyName);
 	assert(assembly);
-	char *args[1];
-	args[0] = "main";
-	mono_jit_exec(mono_get_root_domain(), assembly, 1, args);
+	char* args[0];
+	mono_jit_exec(domain, assembly, 1, args);
 	
 	mono_thread_detach(monoThread);
 	PostMessage("Mono Executed Exe");
+	g_monoRunning = false;
 }
 
 void Mono_PostMessageCallback(MonoString* arg)
@@ -302,22 +356,102 @@ void Mono_PostMessageCallback(MonoString* arg)
 	PostMessage(mono_string_to_utf8(arg));
 }
 
-void Mono_InvokeMethod(const char* assemblyName, const char* method, const char* arg)
+int Mono_GetInstanceCallback()
 {
-	MonoAssemblyName* man = mono_assembly_name_new(assemblyName);
-	assert(man);
-	MonoAssembly* ma = mono_assembly_loaded(man);
-	assert(ma);
-	MonoImage* mi = mono_assembly_get_image(ma);
-	assert(mi);
-	MonoMethodDesc* mmd = mono_method_desc_new(method, 0 /* include_namespace */);
-	assert(mmd);
-	MonoMethod* mm = mono_method_desc_search_in_image(mmd, mi);
-	assert(mm);
-	void *args[1];
-	args[0] = mono_string_new(mono_get_root_domain(), arg);
-	
-	mono_runtime_invoke(mm, NULL /* "this" object */, args, NULL /* exception */);
+	return g_instance;
+}
+
+PPB_Graphics3D* Mono_GetGraphicsCallback()
+{
+	return g_graphics;
+}
+
+PPB_Instance* Mono_GetPBBInstanceCallback()
+{
+	return g_pbbInstance;
+}
+
+struct PPB_OpenGLES2* Mono_GetGLESCallback()
+{
+	return g_gles;
+}
+
+void mono_InvokeCallback(void* data, int32_t result)
+{
+	char** names = (char**)data;
+	Mono_InvokeMethod(names[0], names[1], true);
+	free(names[0]);
+	free(names[1]);
+	free(names);
+}
+
+void Mono_InvokeMethodOnMainThread(const char* assemblyName, const char* method)
+{
+	char** names = malloc(2*sizeof(char*));
+	names[0] = strdup(assemblyName);
+	names[1] = strdup(method);
+
+	if (g_core->IsMainThread())
+	{
+		mono_InvokeCallback(names, 0);
+	}
+	else
+	{
+		struct PP_CompletionCallback cb = PP_MakeCompletionCallback(mono_InvokeCallback, names);
+		g_core->CallOnMainThread(0, cb, 0);
+	}
+}
+
+void Mono_InvokeMethod(const char* assemblyName, const char* method, bool hasNamespace)
+{
+	//MonoDomain *domain = mono_get_root_domain();
+	//MonoThread* monoThread = mono_thread_attach(domain);
+
+	MonoAssemblyName* monoAssemblyName = mono_assembly_name_new(assemblyName);
+	MonoAssembly* assembly = mono_assembly_loaded(monoAssemblyName);
+    MonoImage* image = mono_assembly_get_image(assembly);
+    MonoMethodDesc *desc = mono_method_desc_new(method, hasNamespace);
+    MonoMethod *monoMethod = mono_method_desc_search_in_image(desc, image);
+    mono_runtime_invoke(monoMethod, NULL, NULL, NULL);
+}
+
+void Mono_InvokeMethodStringArg(const char* assemblyName, const char* method, bool hasNamespace, const char* arg)
+{
+	MonoAssemblyName* monoAssemblyName = mono_assembly_name_new(assemblyName);
+	MonoAssembly* assembly = mono_assembly_loaded(monoAssemblyName);
+    MonoImage* image = mono_assembly_get_image(assembly);
+    MonoMethodDesc *desc = mono_method_desc_new(method, hasNamespace);
+    MonoMethod *monoMethod = mono_method_desc_search_in_image(desc, image);
+    
+    MonoDomain *domain = mono_get_root_domain();
+    void* args[1];
+	args[0] = mono_string_new(domain, arg);
+    mono_runtime_invoke(monoMethod, NULL, args, NULL);
+}
+
+void Mono_InvokeMethodArgs(const char* assemblyName, const char* method, bool hasNamespace, void* args)
+{
+	MonoAssemblyName* monoAssemblyName = mono_assembly_name_new(assemblyName);
+	MonoAssembly* assembly = mono_assembly_loaded(monoAssemblyName);
+    MonoImage* image = mono_assembly_get_image(assembly);
+    MonoMethodDesc *desc = mono_method_desc_new(method, hasNamespace);
+    MonoMethod *monoMethod = mono_method_desc_search_in_image(desc, image);
+    
+    mono_runtime_invoke(monoMethod, NULL, args, NULL);
+}
+
+void Mono_InvokeMethodArgs2(MonoMethod* method, void* args)
+{
+    mono_runtime_invoke(method, NULL, args, NULL);
+}
+
+MonoMethod* Mono_FindMethod(const char* assemblyName, const char* method, bool hasNamespace)
+{
+	MonoAssemblyName* monoAssemblyName = mono_assembly_name_new(assemblyName);
+	MonoAssembly* assembly = mono_assembly_loaded(monoAssemblyName);
+    MonoImage* image = mono_assembly_get_image(assembly);
+    MonoMethodDesc *desc = mono_method_desc_new(method, hasNamespace);
+    return mono_method_desc_search_in_image(desc, image);
 }
 ]]></File>
 
@@ -353,7 +487,7 @@ void PostMessage_Callback(void* data, int32_t result)
 	struct PP_Var msg_var = g_var->VarFromUtf8(msg, strlen(msg));
 	g_messaging->PostMessage(g_instance, msg_var);
 	g_var->Release(msg_var);
-	free((char*)msg);
+	free(msg);
 }
 
 void PostMessage(const char *msg)
@@ -482,6 +616,25 @@ void URLLoader_ReadData(void* data)
 	int32_t read_ret = g_url_loader->ReadResponseBody(ldata->loader, ldata->buf + ldata->size, BUFFER_READ_SIZE, callback);
 	assert(read_ret == PP_OK_COMPLETIONPENDING);
 }
+
+// Used by Reign.Core.Streams
+void URLLoader_LoadData(int success, const char* buffer, size_t size, const void* data)
+{
+	void** args = malloc(4*sizeof(void*));
+	args[0] = buffer;
+	args[1] = &size;
+	args[2] = data;// ID
+	bool failedToLoad = buffer == 0 ? true : false;//success == 0 ? true : false;
+	args[3] = &failedToLoad;
+	Mono_InvokeMethodArgs("Reign.Core", "Reign.Core.Streams:URLLoader_Done", true, args);
+	free(data);
+	free(args);
+}
+
+void URLLoader_LoadFile(const char* url, const char* id)
+{
+	URLLoader_LoadFileFromURL(url, URLLoader_LoadData, strdup(id));
+}
 ]]></File>
 
 <File name="ppapi/ppapi.h">
@@ -490,6 +643,7 @@ void URLLoader_ReadData(void* data)
 
 char* VarToCStr(struct PP_Var var);
 static void HandleMessage(PP_Instance instance, struct PP_Var message);
+static PP_Bool HandleInputEvent(PP_Instance instance, PP_Resource input_event);
 
 static PP_Bool Instance_DidCreate(PP_Instance instance, uint32_t argc, const char* argn[], const char* argv[]);
 static void Instance_DidDestroy(PP_Instance instance);
@@ -504,9 +658,17 @@ PP_EXPORT void PPP_ShutdownModule();
 
 <File name="ppapi/ppapi.c">
 <![CDATA[#include "ppapi.h"
+#include "MonoInitialization.h"
+#include "Reign.Video.OpenGL.h"
 #include <pthread.h>
+#include <ppapi/c/ppb_graphics_3d.h>
+#include <ppapi/c/ppb_instance.h>
+#include <ppapi/c/ppb_opengles2.h>
+#include <ppapi/c/ppb_input_event.h>
+#include <ppapi/c/ppp_input_event.h>
+#include <ppapi/c/pp_point.h>
 
-static PPB_GetInterface g_get_browser = NULL;
+static PPB_GetInterface g_get_interface = NULL;
 static PPB_Var* g_ppb_var_interface = NULL;
 pthread_t mainThread;
 
@@ -560,23 +722,97 @@ static void HandleMessage(PP_Instance instance, struct PP_Var message)
 	free(msg);
 }
 
+// Handle input
+void** inputArgs;
+PPB_InputEvent* inputEvent;
+PPB_MouseInputEvent* mouseEvent;
+
+MonoMethod* monoMethod_MouseMoveEvent = 0;
+MonoMethod* monoMethod_LeftMouseDownEvent, *monoMethod_MiddleMouseDownEvent, *monoMethod_RightMouseDownEvent;
+MonoMethod* monoMethod_LeftMouseUpEvent, *monoMethod_MiddleMouseUpEvent, *monoMethod_RightMouseUpEvent;
+
+static PP_Bool HandleInputEvent(PP_Instance instance, PP_Resource input_event)
+{
+	if (monoMethod_MouseMoveEvent == 0)
+	{
+		monoMethod_MouseMoveEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClWindow:naclHandleMouseMoveEvent", true);
+		monoMethod_LeftMouseDownEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClWindow:naclHandleLeftMouseDownEvent", true);
+		monoMethod_MiddleMouseDownEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClWindow:naclHandleMiddleMouseDownEvent", true);
+		monoMethod_RightMouseDownEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClWindow:naclHandleRightMouseDownEvent", true);
+		monoMethod_LeftMouseUpEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClWindow:naclHandleLeftMouseUpEvent", true);
+		monoMethod_MiddleMouseUpEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClWindow:naclHandleMiddleMouseUpEvent", true);
+		monoMethod_RightMouseUpEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClWindow:naclHandleRightMouseUpEvent", true);
+	}
+
+	if (mouseEvent->IsMouseInputEvent(input_event))
+	{
+		PP_InputEvent_Type eventType = inputEvent->GetType(input_event);
+		struct PP_Point point = mouseEvent->GetPosition(input_event);
+		inputArgs[0] = &point.x;
+		inputArgs[1] = &point.y;
+		
+		if (eventType == PP_INPUTEVENT_TYPE_MOUSEMOVE)
+		{
+			Mono_InvokeMethodArgs2(monoMethod_MouseMoveEvent, inputArgs);
+		}
+		else if (eventType == PP_INPUTEVENT_TYPE_MOUSEDOWN)
+		{
+			PP_InputEvent_MouseButton buttonType = mouseEvent->GetButton(input_event);
+			switch (buttonType)
+			{
+				case (PP_INPUTEVENT_MOUSEBUTTON_LEFT): Mono_InvokeMethodArgs2(monoMethod_LeftMouseDownEvent, inputArgs); break;
+				case (PP_INPUTEVENT_MOUSEBUTTON_MIDDLE): Mono_InvokeMethodArgs2(monoMethod_MiddleMouseDownEvent, inputArgs); break;
+				case (PP_INPUTEVENT_MOUSEBUTTON_RIGHT): Mono_InvokeMethodArgs2(monoMethod_RightMouseDownEvent, inputArgs); break;
+			}
+		}
+		else if (eventType == PP_INPUTEVENT_TYPE_MOUSEUP)
+		{
+			PP_InputEvent_MouseButton buttonType = mouseEvent->GetButton(input_event);
+			switch (buttonType)
+			{
+				case (PP_INPUTEVENT_MOUSEBUTTON_LEFT): Mono_InvokeMethodArgs2(monoMethod_LeftMouseUpEvent, inputArgs); break;
+				case (PP_INPUTEVENT_MOUSEBUTTON_MIDDLE): Mono_InvokeMethodArgs2(monoMethod_MiddleMouseUpEvent, inputArgs); break;
+				case (PP_INPUTEVENT_MOUSEBUTTON_RIGHT): Mono_InvokeMethodArgs2(monoMethod_RightMouseUpEvent, inputArgs); break;
+			}
+		}
+	}
+}
+
 // Called when the NaCl module is instantiated on the web page.
 static PP_Bool Instance_DidCreate(PP_Instance instance, uint32_t argc, const char* argn[], const char* argv[])
 {
-	// Init messaging from javaScript
-	URLLoader_Init(instance,
-		g_get_browser(PPB_URLLOADER_INTERFACE),
-		g_get_browser(PPB_URLREQUESTINFO_INTERFACE),
-		g_get_browser(PPB_CORE_INTERFACE),
-		g_get_browser(PPB_VAR_INTERFACE));
+	// Init url loader
+	URLLoader_Init
+	(
+		instance,
+		g_get_interface(PPB_URLLOADER_INTERFACE),
+		g_get_interface(PPB_URLREQUESTINFO_INTERFACE),
+		g_get_interface(PPB_CORE_INTERFACE),
+		g_get_interface(PPB_VAR_INTERFACE)
+	);
 		
-	PostMessage_Init(instance,
-		g_get_browser(PPB_MESSAGING_INTERFACE),
-		g_get_browser(PPB_CORE_INTERFACE),
-		g_get_browser(PPB_VAR_INTERFACE));
+	// Init messaging from javaScript
+	PostMessage_Init
+	(
+		instance,
+		g_get_interface(PPB_MESSAGING_INTERFACE),
+		g_get_interface(PPB_CORE_INTERFACE),
+		g_get_interface(PPB_VAR_INTERFACE)
+	);
+		
+	// Init input
+	inputArgs = malloc(sizeof(void*) * 2);
+	inputEvent = (PPB_InputEvent*)g_get_interface(PPB_INPUT_EVENT_INTERFACE);
+	mouseEvent = (PPB_MouseInputEvent*)g_get_interface(PPB_MOUSE_INPUT_EVENT_INTERFACE);
+	inputEvent->RequestInputEvents(instance, PP_INPUTEVENT_CLASS_MOUSE);
 		
 	// Init mono
-	Mono_Init();
+	PPB_Core* core = (PPB_Core*)g_get_interface(PPB_CORE_INTERFACE);
+	PPB_Graphics3D* graphics = (PPB_Graphics3D*)g_get_interface(PPB_GRAPHICS_3D_INTERFACE);
+	PPB_Instance* pbbInstance = (PPB_Instance*)g_get_interface(PPB_INSTANCE_INTERFACE);
+	struct PPB_OpenGLES2* gles = (struct PPB_OpenGLES2*)g_get_interface(PPB_OPENGLES2_INTERFACE);
+	Mono_Init(core, instance, graphics, pbbInstance, gles);
+	
 	return PP_TRUE;
 }
 
@@ -585,15 +821,23 @@ static PP_Bool Instance_HandleDocumentLoad(PP_Instance instance, PP_Resource url
 	return PP_FALSE;
 }
 
-static void Instance_DidDestroy(PP_Instance instance) {}
+static void Instance_DidDestroy(PP_Instance instance)
+{
+	StopSwapBufferLoop();
+	Mono_InvokeMethodOnMainThread("Reign.Core", "Reign.Core.OS:exit");
+	while (!g_monoRunning) sleep(1);
+	free(inputArgs);
+}
+
 static void Instance_DidChangeView(PP_Instance instance, PP_Resource view_resource) {}
 static void Instance_DidChangeFocus(PP_Instance instance, PP_Bool has_focus) {}
 
 #pragma region EntryPoints
-PP_EXPORT int32_t PPP_InitializeModule(PP_Module a_module_id, PPB_GetInterface get_browser)
+PP_EXPORT int32_t PPP_InitializeModule(PP_Module a_module_id, PPB_GetInterface get_interface)
 {
-	g_ppb_var_interface = (PPB_Var*)(get_browser(PPB_VAR_INTERFACE));
-	g_get_browser = get_browser;
+	g_ppb_var_interface = (PPB_Var*)(get_interface(PPB_VAR_INTERFACE));
+	g_get_interface = get_interface;
+	
 	return PP_OK;
 }
 
@@ -619,11 +863,190 @@ PP_EXPORT const void* PPP_GetInterface(const char* interface_name)
 		};
 		return &messaging_interface;
 	}
+	else if (strcmp(interface_name, PPP_INPUT_EVENT_INTERFACE) == 0)
+	{
+		static PPP_InputEvent input_interface =
+		{
+			&HandleInputEvent
+		};
+		return &input_interface;
+	}
 	
 	return NULL;
 }
 
 PP_EXPORT void PPP_ShutdownModule() {}
+#pragma endregion
+]]></File>
+
+<File name="ppapi/Reign.Video.OpenGL.h">
+<![CDATA[#pragma once
+
+void StopSwapBufferLoop();
+]]></File>
+
+<File name="ppapi/Reign.Video.OpenGL.c">
+<![CDATA[#include <ppapi/c/ppb_graphics_3d.h>
+#include <ppapi/c/ppb_instance.h>
+#include <ppapi/c/ppb_opengles2.h>
+#include <stdbool.h>
+#include "MonoInitialization.h"
+
+PPB_Graphics3D* g_graphics;
+PP_Resource g_context;
+struct PPB_OpenGLES2* g_gles;
+bool isRendering = false;
+
+#pragma region ppapi
+PP_Resource InitOpenGL(PP_Instance instance, PPB_Graphics3D* graphics, PPB_Instance* pbbInstance, const int32_t* attribs, struct PPB_OpenGLES2* gles)
+{
+	PP_Resource context = graphics->Create(instance, 0, attribs);
+	pbbInstance->BindGraphics(instance, context);
+	
+	g_gles = gles;
+	g_graphics = graphics;
+	g_context = context;
+	return context;
+}
+
+void swapBufferCallback(void* data, int32_t result)
+{
+	if (!isRendering) return;
+	Mono_InvokeMethodOnMainThread("Reign.Core", "Reign.Core.OS:updateAndRender");
+	if (!isRendering) return;
+	struct PP_CompletionCallback callBack =
+	{
+		&swapBufferCallback,
+		0
+	};
+	g_gles->Finish(g_context);
+	g_gles->Flush(g_context);
+	g_graphics->SwapBuffers(g_context, callBack);
+}
+
+void StartSwapBufferLoop(PPB_Graphics3D* graphics, PP_Resource context)
+{
+	isRendering = true;
+	Mono_InvokeMethodOnMainThread("Reign.Core", "Reign.Core.OS:updateAndRender");
+	struct PP_CompletionCallback callBack =
+	{
+		&swapBufferCallback,
+		0
+	};
+	g_gles->Finish(context);
+	g_gles->Flush(context);
+	graphics->SwapBuffers(context, callBack);
+}
+
+void StopSwapBufferLoop()
+{
+	isRendering = false;
+}
+
+void SetCurrentContextPPAPI(PP_Resource context)
+{
+	glSetCurrentContextPPAPI(context);
+}
+#pragma endregion
+
+#pragma region GL
+typedef char GLchar;
+
+// ---------------------------------------------
+// Shaders
+// ---------------------------------------------
+void glTexParameteri(GLenum target, GLenum pname, GLint param) {g_gles->TexParameteri(g_context, target, pname, param);}
+void glTexParameteriv(GLenum target, GLenum pname, const GLint *params) {g_gles->TexParameteriv(g_context, target, pname, params);}
+void glGenerateMipmap(GLenum target) {g_gles->GenerateMipmap(g_context, target);}
+GLuint glCreateShader(GLenum type) {return g_gles->CreateShader(g_context, type);}
+void glShaderSource(GLuint shader, GLsizei count, const GLchar** string, const GLint* length) {g_gles->ShaderSource(g_context, shader, count, string, length);}
+void glGetShaderiv(GLuint shader, GLenum pname, GLint* pParams) {g_gles->GetShaderiv(g_context, shader, pname, pParams);}
+void glCompileShader(GLuint shader) {g_gles->CompileShader(g_context, shader);}
+void glDeleteShader(GLuint shader) {g_gles->DeleteShader(g_context, shader);}
+void glGetShaderInfoLog(GLuint shader, GLsizei bufSize, GLsizei* length, GLchar* infoLog) {g_gles->GetShaderInfoLog(g_context, shader, bufSize, length, infoLog);}
+GLuint glCreateProgram() {return g_gles->CreateProgram(g_context);}
+void glDeleteProgram(GLuint program) {g_gles->DeleteProgram(g_context, program);}
+void glAttachShader(GLuint program, GLuint shader) {g_gles->AttachShader(g_context, program, shader);}
+void glLinkProgram(GLuint program) {g_gles->LinkProgram(g_context, program);}
+void glUseProgram(GLuint program) {g_gles->UseProgram(g_context, program);}
+GLint glGetUniformLocation(GLuint program, const GLchar* name) {return g_gles->GetUniformLocation(g_context, program, name);}
+void glUniform1f(GLint location, GLfloat x) {g_gles->Uniform1f(g_context, location, x);}
+void glUniform2f(GLint location, GLfloat x, GLfloat y) {g_gles->Uniform2f(g_context, location, x, y);}
+void glUniform3f(GLint location, GLfloat x, GLfloat y, GLfloat z) {g_gles->Uniform3f(g_context, location, x, y, z);}
+void glUniform4f(GLint location, GLfloat x, GLfloat y, GLfloat z, GLfloat w) {g_gles->Uniform4f(g_context, location, x, y, z, w);}
+void glUniformMatrix2fv(GLint location, GLsizei count, GLboolean transpose, GLfloat* value) {g_gles->UniformMatrix2fv(g_context, location, count, transpose, value);}
+void glUniformMatrix3fv(GLint location, GLsizei count, GLboolean transpose, GLfloat* value) {g_gles->UniformMatrix3fv(g_context, location, count, transpose, value);}
+void glUniformMatrix4fv(GLint location, GLsizei count, GLboolean transpose, GLfloat* value) {g_gles->UniformMatrix4fv(g_context, location, count, transpose, value);}
+void glUniform1i(GLint location, GLint x) {g_gles->Uniform1i(g_context, location, x);}
+void glUniform1fv(GLint location, GLsizei count, GLfloat* v) {g_gles->Uniform1fv(g_context, location, count, v);}
+void glUniform2fv(GLint location, GLsizei count, GLfloat* v) {g_gles->Uniform2fv(g_context, location, count, v);}
+void glUniform3fv(GLint location, GLsizei count, GLfloat* v) {g_gles->Uniform3fv(g_context, location, count, v);}
+void glUniform4fv(GLint location, GLsizei count, GLfloat* v) {g_gles->Uniform4fv(g_context, location, count, v);}
+
+// ---------------------------------------------
+// Buffers
+// ---------------------------------------------
+void glDrawArrays(GLenum mode, GLint first, GLsizei count) {g_gles->DrawArrays(g_context, mode, first, count);}
+void glDrawElements(GLenum mode, GLsizei count, GLenum type, const GLvoid* indices) {g_gles->DrawElements(g_context, mode, count, type, indices);}
+void glCullFace(GLenum mode) {g_gles->CullFace(g_context, mode);}
+// Not in GLES2 - void glPolygonMode(GLenum face, GLenum mode) {g_gles->PolygonMode(g_context, face, mode);}
+void glFrontFace(GLenum mode) {g_gles->FrontFace(g_context, mode);}
+// Not in GLES2 - void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei primcount) {g_gles->DrawArraysInstanced(g_context, mode, first, count, primcount);}
+// Not in GLES2 - void glDrawElementsInstanced(GLenum mode, GLsizei count, GLenum type, const void * indices, GLsizei primcount) {g_gles->DrawElementsInstanced(g_context, mode, count, type, indices, primcount);}
+// Not in GLES2 - void glVertexAttribDivisor(GLuint index, GLuint divisor) {g_gles->VertexAttribDivisor(g_context, index, divisor);}
+void glGenBuffers(GLsizei n, GLuint* buffers) {g_gles->GenBuffers(g_context, n, buffers);}
+void glBindBuffer(GLenum target, GLuint buffer) {g_gles->BindBuffer(g_context, target, buffer);}
+void glBufferData(GLenum target, GLsizeiptr size, const GLvoid* data, GLenum usage) {g_gles->BufferData(g_context, target, size, data, usage);}
+void glBufferSubData(GLenum target, GLintptr offset, GLsizeiptr size, const GLvoid* data) {g_gles->BufferSubData(g_context, target, offset, size, data);}
+void glDeleteBuffers(GLsizei n, const GLuint* buffers) {g_gles->DeleteBuffers(g_context, n, buffers);}
+void glEnableVertexAttribArray(GLuint index) {g_gles->EnableVertexAttribArray(g_context, index);}
+void glDisableVertexAttribArray(GLuint index) {g_gles->DisableVertexAttribArray(g_context, index);}
+void glVertexAttribPointer(GLuint indx, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid* ptr) {g_gles->VertexAttribPointer(g_context, indx, size, type, normalized, stride, ptr);}
+void glBindAttribLocation(GLuint program, GLuint index, const GLchar* name) {g_gles->BindAttribLocation(g_context, program, index, name);}
+GLint glGetAttribLocation(GLuint program, const GLchar* name) {g_gles->GetAttribLocation(g_context, program, name);}
+
+// ---------------------------------------------
+// SurfaceBuffers
+// ---------------------------------------------
+void glDepthMask(GLboolean flag) {g_gles->DepthMask(g_context, flag);}
+void glDepthFunc(GLenum func) {g_gles->DepthFunc(g_context, func);}
+void glStencilFunc(GLenum func, GLint refx, GLuint mask) {g_gles->StencilFunc(g_context, func, refx, mask);}
+void glStencilOp(GLenum fail, GLenum zfail, GLenum zpass) {g_gles->StencilOp(g_context, fail, zfail, zpass);}
+void glBindTexture(GLenum target, GLuint texture) {g_gles->BindTexture(g_context, target, texture);}
+void glGenTextures(GLsizei n, GLuint* textures) {g_gles->GenTextures(g_context, n, textures);}
+void glTexImage2D(GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid* data) {g_gles->TexImage2D(g_context, target, level, internalformat, width, height, border, format, type, data);}
+void glDeleteTextures(GLsizei n, const GLuint* textures) {g_gles->DeleteTextures(g_context, n, textures);}
+void glClearColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) {g_gles->ClearColor(g_context, red, green, blue, alpha);}
+void glClear(GLbitfield mask) {g_gles->Clear(g_context, mask);}
+void glColorMask(GLboolean red, GLboolean green, GLboolean blue, GLboolean alpha) {g_gles->ColorMask(g_context, red, green, blue, alpha);}
+void glBlendFunc(GLenum sfactor, GLenum dfactor) {g_gles->BlendFunc(g_context, sfactor, dfactor);}
+void glBlendEquation(GLenum mode) {g_gles->BlendEquation(g_context, mode);}
+void glBlendEquationSeparate(GLenum modeRGB, GLenum modeAlpha) {g_gles->BlendEquationSeparate(g_context, modeRGB, modeAlpha);}
+void glBlendFuncSeparate(GLenum srcRGB, GLenum dstRGB, GLenum srcAlpha, GLenum dstAlpha) {g_gles->BlendFuncSeparate(g_context, srcRGB, dstRGB, srcAlpha, dstAlpha);}
+void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid* data) {g_gles->CompressedTexImage2D(g_context, target, level, internalformat, width, height, border, imageSize, data);}
+void glGenRenderbuffers(GLsizei n, GLuint* renderbuffers) {g_gles->GenRenderbuffers(g_context, n, renderbuffers);}
+void glBindRenderbuffer(GLenum target, GLuint renderbuffer) {g_gles->BindRenderbuffer(g_context, target, renderbuffer);}
+void glGenFramebuffers(GLsizei n, GLuint* framebuffers) {g_gles->GenFramebuffers(g_context, n, framebuffers);}
+void glBindFramebuffer(GLenum target, GLuint renderbuffer) {g_gles->BindFramebuffer(g_context, target, renderbuffer);}
+GLenum glCheckFramebufferStatus(GLenum target) {return g_gles->CheckFramebufferStatus(g_context, target);}
+void glDeleteFramebuffers(GLsizei n, const GLuint* framebuffers) {g_gles->DeleteFramebuffers(g_context, n, framebuffers);}
+void glRenderbufferStorage(GLenum target, GLenum internalformat, GLsizei width, GLsizei height) {g_gles->RenderbufferStorage(g_context, target, internalformat, width, height);}
+void glFramebufferRenderbuffer(GLenum target, GLenum attachment, GLenum renderbuffertarget, GLuint renderbuffer) {g_gles->FramebufferRenderbuffer(g_context, target, attachment, renderbuffertarget, renderbuffer);}
+void glDeleteRenderbuffers(GLsizei n, const GLuint* renderbuffers) {g_gles->DeleteRenderbuffers(g_context, n, renderbuffers);}
+void glFramebufferTexture2D(GLenum target, GLenum attachment, GLenum textarget, GLuint texture, GLint level) {g_gles->FramebufferTexture2D(g_context, target, attachment, textarget, texture, level);}
+void glActiveTexture(GLenum texture) {g_gles->ActiveTexture(g_context, texture);}
+
+// ---------------------------------------------
+// General
+// ---------------------------------------------
+const GLubyte* glGetString(GLenum name) {return g_gles->GetString(g_context, name);}
+void glGetIntegerv(GLenum pname, GLint* params) {g_gles->GetIntegerv(g_context, pname, params);}
+GLenum glGetError() {return g_gles->GetError(g_context);}
+void glEnable(GLenum cap) {g_gles->Enable(g_context, cap);}
+void glDisable(GLenum cap) {g_gles->Disable(g_context, cap);}
+void glViewport(GLint x, GLint y, GLsizei width, GLsizei height) {g_gles->Viewport(g_context, x, y, width, height);}
+void glFinish() {g_gles->Finish(g_context);}
+void glFlush() {g_gles->Flush(g_context);}
 #pragma endregion
 ]]></File>
 			</Files>

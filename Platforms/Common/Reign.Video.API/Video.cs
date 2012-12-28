@@ -79,7 +79,7 @@ namespace Reign.Video.API
 			bool d3d9 = (typeFlags & VideoTypes.D3D9) != 0;
 			#endif
 
-			#if WINDOWS || OSX || LINUX
+			#if WINDOWS || OSX || LINUX || NaCl
 			bool gl = (typeFlags & VideoTypes.OpenGL) != 0;
 			#endif
 
@@ -110,7 +110,7 @@ namespace Reign.Video.API
 					//}
 					#endif
 
-					#if WINDOWS || OSX || LINUX
+					#if WINDOWS || OSX || LINUX || NaCl
 					if (gl)
 					{
 						gl = false;

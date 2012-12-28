@@ -20,7 +20,7 @@ void PostMessage_Callback(void* data, int32_t result)
 	struct PP_Var msg_var = g_var->VarFromUtf8(msg, strlen(msg));
 	g_messaging->PostMessage(g_instance, msg_var);
 	g_var->Release(msg_var);
-	free((char*)msg);
+	free(msg);
 }
 
 void PostMessage(const char *msg)

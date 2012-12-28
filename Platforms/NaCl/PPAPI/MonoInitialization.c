@@ -10,6 +10,8 @@ PPB_Instance* g_pbbInstance;
 struct PPB_OpenGLES2* g_gles;
 PPB_Core* g_core;
 
+int dllsLoadedCount;
+bool loadingDlls;
 void loadLib(int success, const char* buffer, size_t size, const void* data)
 {
 	assert(success);
@@ -23,6 +25,22 @@ void loadLib(int success, const char* buffer, size_t size, const void* data)
 	imgstatus = MONO_IMAGE_OK;
 	MonoAssembly* ma = mono_assembly_load_from_full(mi, assembly_name, &imgstatus, 0);
 	assert(ma && imgstatus == MONO_IMAGE_OK);
+	
+	if (loadingDlls)
+	{
+		++dllsLoadedCount;
+		if (dllsLoadedCount == libNamesLength) PostMessage("Mono Loaded Dlls");
+	}
+	else
+	{
+		PostMessage("Mono Loaded Exe");
+	}
+}
+
+bool coreLoaded, libFileNamesLoaded;
+void checkIfCoreIsLoaded()
+{
+	if (coreLoaded && libFileNamesLoaded) PostMessage("Mono Initialized");
 }
 
 void loadLibFileNames(int success, const char* buffer, size_t size, const void* data)
@@ -59,9 +77,12 @@ void loadLibFileNames(int success, const char* buffer, size_t size, const void* 
 		++i;
 	}
 	libNamesLength = i3;
+	
+	libFileNamesLoaded = true;
+	checkIfCoreIsLoaded();
 }
 
-void Mono_LoadCore(int success, const char* buffer, size_t size, const void* data)
+void loadCore(int success, const char* buffer, size_t size, const void* data)
 {
 	assert(success);
 	
@@ -70,8 +91,8 @@ void Mono_LoadCore(int success, const char* buffer, size_t size, const void* dat
 	mono_config_parse (NULL);
 	mono_jit_init("main.exe");
 	
-	sleep(1);
-	PostMessage("Mono Initialized");
+	coreLoaded = true;
+	checkIfCoreIsLoaded();
 }
 
 void Mono_Init(PPB_Core* core, PP_Instance instance, PPB_Graphics3D* graphics, PPB_Instance* pbbInstance, struct PPB_OpenGLES2* gles)
@@ -82,36 +103,34 @@ void Mono_Init(PPB_Core* core, PP_Instance instance, PPB_Graphics3D* graphics, P
 	g_pbbInstance = pbbInstance;
 	g_gles = gles;
 
-	URLLoader_LoadFileFromURL("mscorlib.dll", Mono_LoadCore, NULL);
-	URLLoader_LoadFileFromURL("main.dep", loadLibFileNames, "main.dep");
+	coreLoaded = false;
+	libFileNamesLoaded = false;
+	URLLoader_LoadFileFromURL("mscorlib.dll", loadCore, NULL);
+	URLLoader_LoadFileFromURL("main.dep", loadLibFileNames, NULL);
 }
 
 void Mono_LoadDlls()
 {
-	sleep(1);
-
+	dllsLoadedCount = 0;
+	loadingDlls = true;
 	int i = 0;
 	while (i != libNamesLength)
 	{
-		char* fileName = strdup(libNames[i]);
+		char* fileName = libNames[i];
 		URLLoader_LoadFileFromURL(fileName, loadLib, fileName);
 		++i;
 	}
-	
-	PostMessage("Mono Loaded Dlls");
 }
 
 void Mono_LoadExe()
 {
-	sleep(1);
+	loadingDlls = false;
 	URLLoader_LoadFileFromURL("main.exe", loadLib, "main.exe");
-	PostMessage("Mono Loaded Exe");
 }
 
 void Mono_Execute()
 {
 	g_monoRunning = true;
-	sleep(1);
 	MonoDomain *domain = mono_get_root_domain();
 	MonoThread* monoThread = mono_thread_attach(domain);
 	
@@ -135,7 +154,7 @@ void Mono_Execute()
 
 void Mono_PostMessageCallback(MonoString* arg)
 {
-	PostMessage(strdup(mono_string_to_utf8(arg)));
+	PostMessage(mono_string_to_utf8(arg));
 }
 
 int Mono_GetInstanceCallback()
@@ -234,18 +253,4 @@ MonoMethod* Mono_FindMethod(const char* assemblyName, const char* method, bool h
     MonoImage* image = mono_assembly_get_image(assembly);
     MonoMethodDesc *desc = mono_method_desc_new(method, hasNamespace);
     return mono_method_desc_search_in_image(desc, image);
-}
-
-void URLLoader_LoadData(int success, const char* buffer, size_t size, const void* data)
-{
-	void** args = malloc(2*sizeof(void*));
-	args[0] = buffer;
-	args[1] = &size;
-	Mono_InvokeMethodArgs("Reign.Core", "Reign.Core.Streams:URLLoader_Done", true, args);
-	free(args);
-}
-
-void URLLoader_LoadFile(const char* url)
-{
-	URLLoader_LoadFileFromURL(url, URLLoader_LoadData, NULL);
 }

@@ -80,6 +80,10 @@ namespace Reign.Core
 			AndroidMessage.Message = message;
 			OS.CurrentApplication.RunOnUiThread(new AndroidMessage());
 			#endif
+			
+			#if NaCl
+			OS.PostMessage("Reign.Core.Message^" + title + " - " + message);
+			#endif
 		}
 	}
 	

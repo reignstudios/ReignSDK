@@ -93,6 +93,7 @@ namespace Reign.Core
 					this.loadedCallback = loadedCallback;
 					this.failedToLoadCallback = failedToLoadCallback;
 					
+					fileName = fileName.Replace('\\', '/');
 					file = new NaClFile(fileName);
 					Streams.NaClFileLoadedCallback += fileLoaded;
 					Streams.addPendingFile(file);
@@ -141,6 +142,7 @@ namespace Reign.Core
 				try
 				{
 					LoadedStream = new MemoryStream(file.Data);
+					LoadedStream.Position = 0;
 				}
 				catch (Exception e)
 				{

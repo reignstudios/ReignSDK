@@ -414,6 +414,8 @@ namespace MonoDevelop.MonoNaCl
 				{
 					string virtualFileName = buildingConfig.OutputDirectory + file.ProjectVirtualPath.FullPath;
 					var dstFileInfo = new FileInfo(virtualFileName);
+					
+					if (!dstFileInfo.Directory.Exists) dstFileInfo.Directory.Create();
 					if (!dstFileInfo.Exists)
 					{
 						var srcFileInfo = new FileInfo(file.FilePath.FullPath);

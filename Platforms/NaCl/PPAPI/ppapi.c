@@ -1,5 +1,6 @@
 #include "ppapi.h"
 #include "MonoInitialization.h"
+#include "Reign.Video.OpenGL.h"
 #include <pthread.h>
 #include <ppapi/c/ppb_graphics_3d.h>
 #include <ppapi/c/ppb_instance.h>
@@ -122,17 +123,23 @@ static PP_Bool HandleInputEvent(PP_Instance instance, PP_Resource input_event)
 static PP_Bool Instance_DidCreate(PP_Instance instance, uint32_t argc, const char* argn[], const char* argv[])
 {
 	// Init url loader
-	URLLoader_Init(instance,
+	URLLoader_Init
+	(
+		instance,
 		g_get_interface(PPB_URLLOADER_INTERFACE),
 		g_get_interface(PPB_URLREQUESTINFO_INTERFACE),
 		g_get_interface(PPB_CORE_INTERFACE),
-		g_get_interface(PPB_VAR_INTERFACE));
+		g_get_interface(PPB_VAR_INTERFACE)
+	);
 		
 	// Init messaging from javaScript
-	PostMessage_Init(instance,
+	PostMessage_Init
+	(
+		instance,
 		g_get_interface(PPB_MESSAGING_INTERFACE),
 		g_get_interface(PPB_CORE_INTERFACE),
-		g_get_interface(PPB_VAR_INTERFACE));
+		g_get_interface(PPB_VAR_INTERFACE)
+	);
 		
 	// Init input
 	inputArgs = malloc(sizeof(void*) * 2);
@@ -157,6 +164,7 @@ static PP_Bool Instance_HandleDocumentLoad(PP_Instance instance, PP_Resource url
 
 static void Instance_DidDestroy(PP_Instance instance)
 {
+	StopSwapBufferLoop();
 	Mono_InvokeMethodOnMainThread("Reign.Core", "Reign.Core.OS:exit");
 	while (!g_monoRunning) sleep(1);
 	free(inputArgs);

@@ -13,7 +13,8 @@ namespace Reign.Audio.API
 		XNA,
 		Cocoa,
 		OpenAL,
-		Android
+		Android,
+		NaCl
 	}
 
 	public static class Audio
@@ -40,6 +41,10 @@ namespace Reign.Audio.API
 
 			#if ANDROID
 			bool android = (typeFlags & AudioTypes.Android) != 0;
+			#endif
+			
+			#if NaCl
+			bool nacl = (typeFlags & AudioTypes.NaCl) != 0;
 			#endif
 
 			type = AudioTypes.None;
@@ -100,6 +105,14 @@ namespace Reign.Audio.API
 						type = AudioTypes.Android;
 						audio = new Reign.Audio.Android.Audio(parent);
 						break;
+					}
+					else
+					#endif
+					
+					#if NaCl
+					if (nacl)
+					{
+						throw new NotImplementedException();
 					}
 					else
 					#endif

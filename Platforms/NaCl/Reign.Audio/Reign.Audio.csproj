@@ -5,20 +5,19 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{9B4C2971-EB42-4E97-B169-64934C0CB497}</ProjectGuid>
+    <ProjectGuid>{3B12D139-F22E-4B82-942A-F99ACA1955C3}</ProjectGuid>
     <ProjectTypeGuids>{304EDB7B-59C9-4334-85AD-2F54227B63B9};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>Reign.Input</RootNamespace>
-    <AppDescription>This is a MonoNaCl project</AppDescription>
+    <RootNamespace>Reign.Audio</RootNamespace>
     <AppName>My MonoNaCl Project</AppName>
     <GenerateManifest>True</GenerateManifest>
-    <CopyAllHtmlObjects>True</CopyAllHtmlObjects>
+    <AppVersion>1.0.0</AppVersion>
+    <AppDescription>This is a MonoNaCl project</AppDescription>
     <CopyAllJsonObjects>True</CopyAllJsonObjects>
     <RequiresGLES>True</RequiresGLES>
-    <AppVersion>1.0.0</AppVersion>
-    <AssemblyName>Reign.Input</AssemblyName>
-    <AppLaunchHTML>Reign.Input.html</AppLaunchHTML>
     <CopyAllJSObjects>True</CopyAllJSObjects>
+    <CopyAllHtmlObjects>True</CopyAllHtmlObjects>
+    <AssemblyName>Reign.Audio</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -47,17 +46,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\Reign.Input\Button.cs">
-      <Link>Button.cs</Link>
+    <Compile Include="..\..\Common\Reign.Audio\Audio.cs">
+      <Link>Audio.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Input\Input.cs">
-      <Link>Input.cs</Link>
+    <Compile Include="..\..\Common\Reign.Audio\Music.cs">
+      <Link>Music.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Input\Keyboard.cs">
-      <Link>Keyboard.cs</Link>
+    <Compile Include="..\..\Common\Reign.Audio\Sound.cs">
+      <Link>Sound.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Input\Mouse.cs">
-      <Link>Mouse.cs</Link>
+    <Compile Include="..\..\Common\Reign.Audio\SoundWAV.cs">
+      <Link>SoundWAV.cs</Link>
     </Compile>
   </ItemGroup>
 </Project>
