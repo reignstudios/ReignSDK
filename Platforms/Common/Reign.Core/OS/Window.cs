@@ -118,7 +118,7 @@ namespace Reign.Core
 				return new Size2(size.Width, size.Height);
 				#endif
 				
-				#if OSX || LINUX
+				#if OSX || LINUX || NaCl
 				return new Size2();
 				#endif
 			}
@@ -139,7 +139,7 @@ namespace Reign.Core
 				return new Size2(size.Width, size.Height);
 				#endif
 				
-				#if OSX || LINUX
+				#if OSX || LINUX || NaCl
 				return new Size2();
 				#endif
 			}

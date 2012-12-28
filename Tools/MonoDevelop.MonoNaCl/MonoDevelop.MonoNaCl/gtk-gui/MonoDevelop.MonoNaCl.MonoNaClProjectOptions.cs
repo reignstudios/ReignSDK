@@ -13,10 +13,9 @@ namespace MonoDevelop.MonoNaCl
 		private global::Gtk.Entry appName;
 		private global::Gtk.Label label2;
 		private global::Gtk.Entry appVersion;
-		private global::Gtk.Label label3;
-		private global::Gtk.Entry appLaunchHtml;
 		private global::Gtk.Entry appDescription;
 		private global::Gtk.Label label4;
+		private global::Gtk.CheckButton copyAllJSObjects;
 		
 		protected virtual void Build ()
 		{
@@ -111,25 +110,6 @@ namespace MonoDevelop.MonoNaCl
 			w8.X = 130;
 			w8.Y = 175;
 			// Container child fixed1.Gtk.Fixed+FixedChild
-			this.label3 = new global::Gtk.Label ();
-			this.label3.Name = "label3";
-			this.label3.LabelProp = global::Mono.Unix.Catalog.GetString ("App Launch HTML:");
-			this.fixed1.Add (this.label3);
-			global::Gtk.Fixed.FixedChild w9 = ((global::Gtk.Fixed.FixedChild)(this.fixed1 [this.label3]));
-			w9.X = 10;
-			w9.Y = 220;
-			// Container child fixed1.Gtk.Fixed+FixedChild
-			this.appLaunchHtml = new global::Gtk.Entry ();
-			this.appLaunchHtml.WidthRequest = 200;
-			this.appLaunchHtml.CanFocus = true;
-			this.appLaunchHtml.Name = "appLaunchHtml";
-			this.appLaunchHtml.IsEditable = true;
-			this.appLaunchHtml.InvisibleChar = '●';
-			this.fixed1.Add (this.appLaunchHtml);
-			global::Gtk.Fixed.FixedChild w10 = ((global::Gtk.Fixed.FixedChild)(this.fixed1 [this.appLaunchHtml]));
-			w10.X = 130;
-			w10.Y = 215;
-			// Container child fixed1.Gtk.Fixed+FixedChild
 			this.appDescription = new global::Gtk.Entry ();
 			this.appDescription.WidthRequest = 200;
 			this.appDescription.CanFocus = true;
@@ -137,17 +117,28 @@ namespace MonoDevelop.MonoNaCl
 			this.appDescription.IsEditable = true;
 			this.appDescription.InvisibleChar = '●';
 			this.fixed1.Add (this.appDescription);
-			global::Gtk.Fixed.FixedChild w11 = ((global::Gtk.Fixed.FixedChild)(this.fixed1 [this.appDescription]));
-			w11.X = 130;
-			w11.Y = 255;
+			global::Gtk.Fixed.FixedChild w9 = ((global::Gtk.Fixed.FixedChild)(this.fixed1 [this.appDescription]));
+			w9.X = 130;
+			w9.Y = 215;
 			// Container child fixed1.Gtk.Fixed+FixedChild
 			this.label4 = new global::Gtk.Label ();
 			this.label4.Name = "label4";
 			this.label4.LabelProp = global::Mono.Unix.Catalog.GetString ("App Description:");
 			this.fixed1.Add (this.label4);
-			global::Gtk.Fixed.FixedChild w12 = ((global::Gtk.Fixed.FixedChild)(this.fixed1 [this.label4]));
-			w12.X = 10;
-			w12.Y = 260;
+			global::Gtk.Fixed.FixedChild w10 = ((global::Gtk.Fixed.FixedChild)(this.fixed1 [this.label4]));
+			w10.X = 10;
+			w10.Y = 220;
+			// Container child fixed1.Gtk.Fixed+FixedChild
+			this.copyAllJSObjects = new global::Gtk.CheckButton ();
+			this.copyAllJSObjects.CanFocus = true;
+			this.copyAllJSObjects.Name = "copyAllJSObjects";
+			this.copyAllJSObjects.Label = global::Mono.Unix.Catalog.GetString ("Copy all JS objects");
+			this.copyAllJSObjects.DrawIndicator = true;
+			this.copyAllJSObjects.UseUnderline = true;
+			this.fixed1.Add (this.copyAllJSObjects);
+			global::Gtk.Fixed.FixedChild w11 = ((global::Gtk.Fixed.FixedChild)(this.fixed1 [this.copyAllJSObjects]));
+			w11.X = 200;
+			w11.Y = 70;
 			this.Add (this.fixed1);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();

@@ -201,6 +201,7 @@ namespace Reign.Video
 			}
 		}
 		#else
+		#if !NaCl
 		public static void Save(Stream stream, byte[] data, int width, int height, ImageFormats imageFormat)
 		{
 			switch (imageFormat)
@@ -211,6 +212,7 @@ namespace Reign.Video
 				default: Debug.ThrowError("Image", string.Format("Unsuported format: ", imageFormat)); break;
 			}
 		}
+		#endif
 		#endif
 		#endregion
 	}

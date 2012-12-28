@@ -46,11 +46,11 @@ namespace MonoDevelop.MonoNaCl
 			requiresGLES.Active = project.RequiresGLES;
 			copyAllJsonObjects.Active = project.CopyAllJsonObjects;
 			copyAllHtmlObjects.Active = project.CopyAllHtmlObjects;
+			copyAllJSObjects.Active = project.CopyAllJSObjects;
 			generateManifest.Active = project.GenerateManifest;
 			
 			appName.Text = project.AppName;
 			appVersion.Text = project.AppVersion;
-			appLaunchHtml.Text = project.AppLaunchHTML;
 			appDescription.Text = project.AppDescription;
 		}
 		
@@ -66,11 +66,11 @@ namespace MonoDevelop.MonoNaCl
 			project.RequiresGLES = requiresGLES.Active;
 			project.CopyAllJsonObjects = copyAllJsonObjects.Active;
 			project.CopyAllHtmlObjects = copyAllHtmlObjects.Active;
+			project.CopyAllJSObjects = copyAllJSObjects.Active;
 			project.GenerateManifest = generateManifest.Active;
 			
 			project.AppName = appName.Text;
 			project.AppVersion = appVersion.Text;
-			project.AppLaunchHTML = appLaunchHtml.Text;
 			project.AppDescription = appDescription.Text;
 		}
 	}

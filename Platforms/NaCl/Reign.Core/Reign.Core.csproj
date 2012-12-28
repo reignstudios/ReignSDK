@@ -11,34 +11,34 @@
     <RootNamespace>Reign.Core</RootNamespace>
     <AppDescription>This is a MonoNaCl project</AppDescription>
     <AppName>My MonoNaCl Project</AppName>
-    <GenerateManifest>true</GenerateManifest>
-    <CopyAllHtmlObjects>true</CopyAllHtmlObjects>
-    <CopyAllJsonObjects>true</CopyAllJsonObjects>
-    <RequiresGLES>true</RequiresGLES>
+    <GenerateManifest>True</GenerateManifest>
+    <CopyAllHtmlObjects>True</CopyAllHtmlObjects>
+    <CopyAllJsonObjects>True</CopyAllJsonObjects>
+    <RequiresGLES>True</RequiresGLES>
     <AppVersion>1.0.0</AppVersion>
     <AssemblyName>Reign.Core</AssemblyName>
     <AppLaunchHTML>Reign.Core.html</AppLaunchHTML>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>..\Lib</OutputPath>
     <DefineConstants>DEBUG;NaCl</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ConsolePause>False</ConsolePause>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>..\Lib</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
     <DefineConstants>NaCl</DefineConstants>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -50,9 +50,6 @@
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Random.cs">
       <Link>Random.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Core\StopWatch.cs">
-      <Link>StopWatch.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Streams.cs">
       <Link>Streams.cs</Link>
@@ -69,9 +66,6 @@
     <Compile Include="..\..\Common\Reign.Core\Math\Line3.cs">
       <Link>Math\Line3.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\Math\Math.cs">
-      <Link>Math\Math.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Matrix2.cs">
       <Link>Math\Matrix2.cs</Link>
     </Compile>
@@ -81,17 +75,11 @@
     <Compile Include="..\..\Common\Reign.Core\Math\Matrix4.cs">
       <Link>Math\Matrix4.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\Math\Point.cs">
-      <Link>Math\Point.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Size2.cs">
       <Link>Math\Size2.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Size3.cs">
       <Link>Math\Size3.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Core\Math\Triangle.cs">
-      <Link>Math\Triangle.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Math\Vector2.cs">
       <Link>Math\Vector2.cs</Link>
@@ -112,6 +100,63 @@
       <Link>OS\Window.cs</Link>
     </Compile>
     <Compile Include="OS\NaClWindow.cs" />
+    <Compile Include="..\..\Common\Reign.Core\Loader.cs">
+      <Link>Loader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Time.cs">
+      <Link>Time.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\AffineTransform3.cs">
+      <Link>Math\AffineTransform3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingBox2.cs">
+      <Link>Math\BoundingBox2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingBox3.cs">
+      <Link>Math\BoundingBox3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingFrustum3.cs">
+      <Link>Math\BoundingFrustum3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingSphere2.cs">
+      <Link>Math\BoundingSphere2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingSphere3.cs">
+      <Link>Math\BoundingSphere3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Color4.cs">
+      <Link>Math\Color4.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\MathUtilities.cs">
+      <Link>Math\MathUtilities.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Matrix2x3.cs">
+      <Link>Math\Matrix2x3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Matrix3x2.cs">
+      <Link>Math\Matrix3x2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Plane3.cs">
+      <Link>Math\Plane3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Point2.cs">
+      <Link>Math\Point2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Quaternion.cs">
+      <Link>Math\Quaternion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Ray3.cs">
+      <Link>Math\Ray3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Rect2.cs">
+      <Link>Math\Rect2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\RigidTransform3.cs">
+      <Link>Math\RigidTransform3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Triangle3.cs">
+      <Link>Math\Triangle3.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Disposable\" />

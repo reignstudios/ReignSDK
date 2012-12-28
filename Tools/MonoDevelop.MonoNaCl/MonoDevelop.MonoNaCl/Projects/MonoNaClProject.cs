@@ -62,22 +62,28 @@ namespace MonoDevelop.MonoNaCl
 		}
 	
 		[DataMember(EmitDefaultValue = false)]
+		public int manifest_version;
+		
+		[DataMember(EmitDefaultValue = false)]
+		public string version;
+		
+		[DataMember(EmitDefaultValue = false)]
 		public string name;
 		
 		[DataMember(EmitDefaultValue = false)]
 		public string description;
 		
 		[DataMember(EmitDefaultValue = false)]
-		public string version;
+		public Icon icons;
 		
 		[DataMember(EmitDefaultValue = false)]
-		public Icon icons;
+		public App app;
 		
 		[DataMember(EmitDefaultValue = false)]
 		public Requirements requirements;
 		
 		[DataMember(EmitDefaultValue = false)]
-		public App app;
+		public string[] permissions;
 	}
 
 	public class MonoNaClProject : DotNetAssemblyProject, ICustomDataItem
@@ -92,6 +98,9 @@ namespace MonoDevelop.MonoNaCl
 		[ItemProperty("CopyAllHtmlObjects")]
 		public bool CopyAllHtmlObjects = true;
 		
+		[ItemProperty("CopyAllJSObjects")]
+		public bool CopyAllJSObjects = true;
+		
 		[ItemProperty("GenerateManifest")]
 		public bool GenerateManifest = true;
 		
@@ -103,9 +112,6 @@ namespace MonoDevelop.MonoNaCl
 		
 		[ItemProperty("AppVersion")]
 		public string AppVersion = "1.0.0";
-		
-		[ItemProperty("AppLaunchHTML")]
-		public string AppLaunchHTML;
 		
 		public void Deserialize (ITypeSerializer handler, DataCollection data)
 		{
@@ -167,11 +173,6 @@ namespace MonoDevelop.MonoNaCl
 			buildingResult = new BuildResult();
 			var config = GetConfiguration(configuration) as MonoNaClProjectConfiguration;
 			buildingConfig = config;
-			
-			if (string.IsNullOrEmpty(AppLaunchHTML))
-			{
-				AppLaunchHTML = config.AppName + ".html";
-			}
 			
 			var dirInfo = new DirectoryInfo(config.OutputDirectory);
 			if (!dirInfo.Exists) Directory.CreateDirectory(config.OutputDirectory);
@@ -314,22 +315,31 @@ namespace MonoDevelop.MonoNaCl
 				if (GenerateManifest)
 				{
 					var manifest = new Manifest();
+					manifest.manifest_version = 2;
+					manifest.version = AppVersion;
 					manifest.name = AppName;
 					manifest.description = AppDescription;
-					manifest.version = AppVersion;
 					
 					manifest.app = new Manifest.App();
 					manifest.app.launch = new Manifest.App.Launch();
-					manifest.app.launch.local_path = AppLaunchHTML;
+					manifest.app.launch.local_path = "main.html";
 					
 					if (RequiresGLES)
 					{
 						manifest.requirements = new Manifest.Requirements();
 						manifest.requirements._3d = new Manifest.Requirements._3D();
-						manifest.requirements._3d.features = new string[2];
-						manifest.requirements._3d.features[0] = "css3d";
-						manifest.requirements._3d.features[1] = "webgl";
+						manifest.requirements._3d.features = new string[2]
+						{
+							"css3d",
+							"webgl"
+						};
 					}
+					
+					manifest.permissions = new string[2]
+					{
+						"unlimitedStorage",
+						"notifications"
+					};
 					
 					var json = new DataContractJsonSerializer(typeof(Manifest));
 					var memoryStream = new MemoryStream();
@@ -349,7 +359,7 @@ namespace MonoDevelop.MonoNaCl
 				}
 				
 				// Copy Json and Html files
-				if (CopyAllJsonObjects || CopyAllHtmlObjects)
+				if (CopyAllJsonObjects || CopyAllHtmlObjects || CopyAllJSObjects)
 				{
 					foreach (var file in Files)
 					{
@@ -365,6 +375,11 @@ namespace MonoDevelop.MonoNaCl
 							}
 							
 							if (CopyAllJsonObjects && ext == ".html")
+							{
+								srcFileInfo.CopyTo(dstDir, true);
+							}
+							
+							if (CopyAllJSObjects && ext == ".js")
 							{
 								srcFileInfo.CopyTo(dstDir, true);
 							}

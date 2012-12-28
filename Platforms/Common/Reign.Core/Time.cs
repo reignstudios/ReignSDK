@@ -15,7 +15,7 @@ namespace Reign.Core
 	public class Time
 	{
 		#region Properties
-		#if ANDROID
+		#if ANDROID || NaCl
 		private long millisecond;
 		#else
 		private Stopwatch stopWatch;
@@ -39,7 +39,7 @@ namespace Reign.Core
 		{
 			this.fps = fps;
 			FPS = fps;
-			#if !ANDROID
+			#if !ANDROID && !NaCl
 			stopWatch = new Stopwatch();
 			#endif
 		}
@@ -92,6 +92,8 @@ namespace Reign.Core
 		{
 			#if ANDROID
 			millisecond = JavaSystem.CurrentTimeMillis();
+			#elif NaCl
+			millisecond = DateTime.Now.Millisecond;
 			#else
 			stopWatch.Start();
 			#endif
@@ -101,7 +103,11 @@ namespace Reign.Core
 		{
 			#if ANDROID
 			long currentMilli = JavaSystem.CurrentTimeMillis();
-			Delta += (((currentMilli - millisecond) / 1000f) - Delta) * .1f;
+			if (millisecond <= currentMilli) Delta += (((currentMilli - millisecond) / 1000f) - Delta) * .1f;
+			millisecond = currentMilli;
+			#elif NaCl
+			long currentMilli = DateTime.Now.Millisecond;
+			if (millisecond <= currentMilli) Delta += (((currentMilli - millisecond) / 1000f) - Delta) * .1f;
 			millisecond = currentMilli;
 			#else
 			Delta += ((stopWatch.ElapsedTicks / (float)(Stopwatch.Frequency)) - Delta) * .1f;
@@ -140,9 +146,9 @@ namespace Reign.Core
 			}
 		}
 
-		#if !iOS && !ANDROID
 		public void Sleep()
 		{
+			#if !iOS && !ANDROID && !NaCl
 			int sleepTime = (int)System.Math.Max((1000/fps) - stopWatch.ElapsedMilliseconds, 0);
 
 			#if METRO
@@ -150,8 +156,8 @@ namespace Reign.Core
 			#else
 			Thread.Sleep(sleepTime);
 			#endif
+			#endif
 		}
-		#endif
 		#endregion
 	}
 }

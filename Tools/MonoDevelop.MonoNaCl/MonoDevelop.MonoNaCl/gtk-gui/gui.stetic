@@ -5,10 +5,10 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="MonoDevelop.Ide, Version=2.6.0.0, Culture=neutral" />
-    <widget-library name="MonoDevelop.CSharpBinding, Version=2.6.0.0, Culture=neutral" />
-    <widget-library name="MonoDevelop.DesignerSupport, Version=2.6.0.0, Culture=neutral" />
-    <widget-library name="../bin/Debug/MonoDevelop.MonoNaCl.dll" internal="true" />
+    <widget-library name="../../../../../../../../Applications/MonoDevelop.app/Contents/MacOS/lib/monodevelop/bin/MonoDevelop.Ide.dll" />
+    <widget-library name="../../../../../../../../Applications/MonoDevelop.app/Contents/MacOS/lib/monodevelop/AddIns/BackendBindings/MonoDevelop.CSharpBinding.dll" />
+    <widget-library name="../../../../../../../../Applications/MonoDevelop.app/Contents/MacOS/lib/monodevelop/AddIns/MonoDevelop.DesignerSupport/MonoDevelop.DesignerSupport.dll" />
+    <widget-library name="../bin/Release/MonoDevelop.MonoNaCl.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="MonoDevelop.MonoNaCl.MonoNaClGlobalOptions" design-size="453 409">
     <property name="MemberName" />
@@ -202,17 +202,7 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.Label" id="label3">
-            <property name="MemberName" />
-            <property name="LabelProp" translatable="yes">App Launch HTML:</property>
-          </widget>
-          <packing>
-            <property name="X">10</property>
-            <property name="Y">220</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="Gtk.Entry" id="appLaunchHtml">
+          <widget class="Gtk.Entry" id="appDescription">
             <property name="MemberName" />
             <property name="WidthRequest">200</property>
             <property name="CanFocus">True</property>
@@ -225,26 +215,27 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.Entry" id="appDescription">
-            <property name="MemberName" />
-            <property name="WidthRequest">200</property>
-            <property name="CanFocus">True</property>
-            <property name="IsEditable">True</property>
-            <property name="InvisibleChar">●</property>
-          </widget>
-          <packing>
-            <property name="X">130</property>
-            <property name="Y">255</property>
-          </packing>
-        </child>
-        <child>
           <widget class="Gtk.Label" id="label4">
             <property name="MemberName" />
             <property name="LabelProp" translatable="yes">App Description:</property>
           </widget>
           <packing>
             <property name="X">10</property>
-            <property name="Y">260</property>
+            <property name="Y">220</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.CheckButton" id="copyAllJSObjects">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Label" translatable="yes">Copy all JS objects</property>
+            <property name="DrawIndicator">True</property>
+            <property name="HasLabel">True</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">200</property>
+            <property name="Y">70</property>
           </packing>
         </child>
       </widget>

@@ -16,8 +16,8 @@ namespace Reign.Input.NaCl
 		#endregion
 	
 		#region Constructors
-		public Input(RootDisposable rootDisposable, Window window)
-		: base(rootDisposable)
+		public Input(DisposableI parent, Window window)
+		: base(parent)
 		{
 			this.window = window;
 			window.HandleEvent += updateEvent;

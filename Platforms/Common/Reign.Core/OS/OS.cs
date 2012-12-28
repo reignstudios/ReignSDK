@@ -210,15 +210,15 @@ namespace Reign.Core
 		{
 			if (CurrentWindow == null) return;
 			
+			CurrentWindow.Close();
 			running = false;
 			while (!finishedRunning) Thread.Sleep(1);
-			CurrentWindow.Close();
 			closed = true;
 		}
 		
 		private static void updateAndRender()
 		{
-			CurrentWindow.UpdateAndRender();
+			UpdateAndRender();
 		}
 		#endif	
 		
@@ -234,6 +234,10 @@ namespace Reign.Core
 		public static void Run(Window window, int fps)
 		{
 			CurrentWindow = window;
+			
+			#if NaCl
+			fps = 0;
+			#endif
 			time = new Time(fps);
 			time.Start();
 
@@ -291,7 +295,7 @@ namespace Reign.Core
 		{
 			CurrentApplication = application;
 
-			#if iOS || XNA
+			#if iOS || ANDROID || XNA
 			fps = 0;
 			#endif
 			time = new Time(fps);
@@ -370,9 +374,7 @@ namespace Reign.Core
 		#else
 		public static void UpdateAndRender()
 		{
-			#if !iOS && !ANDROID
 			if (time.FPSGoal != 0) time.Sleep();
-			#endif
 			time.Update();
 			if (CurrentApplication != null)
 			{

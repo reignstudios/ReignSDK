@@ -110,11 +110,11 @@ namespace Reign.Input.NaCl
 			Middle.Update(middleOn);
 			Right.Update(rightOn);
 			
-			lastPosition = Location;
-			Location = new Point2(currentPosition.X, input.window.FrameSize.Height - currentPosition.Y);
+			lastPosition = Position;
+			Position = new Point2(currentPosition.X, input.window.FrameSize.Height - currentPosition.Y);
 			PositionVector = Position.ToVector2();
 
-			Velecity = Location - lastPosition;
+			Velocity = Position - lastPosition;
 			VelocityVector = Velocity.ToVector2();
 		}
 		#endregion

@@ -7,9 +7,6 @@ namespace Reign.Core
 		#region Properties
 		private Window window;
 		protected WindowEvent theEvent;
-		
-		public delegate void MonoThreadUpdateCallbackMethod();
-		public MonoThreadUpdateCallbackMethod MonoThreadUpdateCallback;
 		#endregion
 		
 		#region Constructors
@@ -33,55 +30,55 @@ namespace Reign.Core
 		
 		protected internal virtual void monoThreadUpdate()
 		{
-			if (MonoThreadUpdateCallback != null) MonoThreadUpdateCallback();
+			
 		}
 		
 		private void handleMouseMoveEvent(int cursorX, int cursorY)
 		{
 			theEvent.Type = WindowEventTypes.MouseMove;
-			theEvent.CursorLocation = new Point(cursorX, cursorY);
+			theEvent.CursorPosition = new Point2(cursorX, cursorY);
 			window.handleEvent(theEvent);
 		}
 		
 		private void handleLeftMouseDownEvent(int cursorX, int cursorY)
 		{
 			theEvent.Type = WindowEventTypes.LeftMouseDown;
-			theEvent.CursorLocation = new Point(cursorX, cursorY);
+			theEvent.CursorPosition = new Point2(cursorX, cursorY);
 			window.handleEvent(theEvent);
 		}
 		
 		private void handleMiddleMouseDownEvent(int cursorX, int cursorY)
 		{
 			theEvent.Type = WindowEventTypes.MiddleMouseDown;
-			theEvent.CursorLocation = new Point(cursorX, cursorY);
+			theEvent.CursorPosition = new Point2(cursorX, cursorY);
 			window.handleEvent(theEvent);
 		}
 		
 		private void handleRightMouseDownEvent(int cursorX, int cursorY)
 		{
 			theEvent.Type = WindowEventTypes.RightMouseDown;
-			theEvent.CursorLocation = new Point(cursorX, cursorY);
+			theEvent.CursorPosition = new Point2(cursorX, cursorY);
 			window.handleEvent(theEvent);
 		}
 		
 		private void handleLeftMouseUpEvent(int cursorX, int cursorY)
 		{
 			theEvent.Type = WindowEventTypes.LeftMouseUp;
-			theEvent.CursorLocation = new Point(cursorX, cursorY);
+			theEvent.CursorPosition = new Point2(cursorX, cursorY);
 			window.handleEvent(theEvent);
 		}
 		
 		private void handleMiddleMouseUpEvent(int cursorX, int cursorY)
 		{
 			theEvent.Type = WindowEventTypes.MiddleMouseUp;
-			theEvent.CursorLocation = new Point(cursorX, cursorY);
+			theEvent.CursorPosition = new Point2(cursorX, cursorY);
 			window.handleEvent(theEvent);
 		}
 		
 		private void handleRightMouseUpEvent(int cursorX, int cursorY)
 		{
 			theEvent.Type = WindowEventTypes.RightMouseUp;
-			theEvent.CursorLocation = new Point(cursorX, cursorY);
+			theEvent.CursorPosition = new Point2(cursorX, cursorY);
 			window.handleEvent(theEvent);
 		}
 		

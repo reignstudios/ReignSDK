@@ -73,22 +73,22 @@ namespace Reign.Video
 						decompressedDataStream.Position = 0;
 
 						#if NaCl
-																					using (var zip = new GZipInputStream(decompressedDataStream))
-					using (var dataStream = new MemoryStream())
-					{
-						var buffer = new byte[4096];
-						int read = 0;
-						do
+						using (var zip = new GZipInputStream(decompressedDataStream))
+						using (var dataStream = new MemoryStream())
 						{
-							read = zip.Read(buffer, 0, buffer.Length);
-							dataStream.Write(buffer, 0, buffer.Length);
+							var buffer = new byte[4096];
+							int read = 0;
+							do
+							{
+								read = zip.Read(buffer, 0, buffer.Length);
+								dataStream.Write(buffer, 0, buffer.Length);
+								
+							} while (read > 0);
 							
-						} while (read > 0);
-						
-						Mipmaps = new Mipmap[1];
-						Mipmaps[0] = new Mipmap(dataStream.GetBuffer(), Size.Width, Size.Height);
-						if (flip) Mipmaps[0].FlipVertical();
-					}
+							Mipmaps = new Mipmap[1];
+							Mipmaps[0] = new Mipmap(dataStream.GetBuffer(), Size.Width, Size.Height, 1, 4);
+							if (flip) Mipmaps[0].FlipVertical();
+						}
 						#else
 						using (var decompressedStream = new GZipStream(decompressedDataStream, CompressionMode.Decompress))
 						using (var dataStream = new MemoryStream())

@@ -11,31 +11,32 @@
     <RootNamespace>Reign.Video</RootNamespace>
     <AppDescription>This is a MonoNaCl project</AppDescription>
     <AppName>My MonoNaCl Project</AppName>
-    <GenerateManifest>true</GenerateManifest>
-    <CopyAllHtmlObjects>true</CopyAllHtmlObjects>
-    <CopyAllJsonObjects>true</CopyAllJsonObjects>
-    <RequiresGLES>true</RequiresGLES>
+    <GenerateManifest>True</GenerateManifest>
+    <CopyAllHtmlObjects>True</CopyAllHtmlObjects>
+    <CopyAllJsonObjects>True</CopyAllJsonObjects>
+    <RequiresGLES>True</RequiresGLES>
     <AppVersion>1.0.0</AppVersion>
     <AssemblyName>Reign.Video</AssemblyName>
     <AppLaunchHTML>Reign.Video.html</AppLaunchHTML>
+    <CopyAllJSObjects>True</CopyAllJSObjects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>False</Optimize>
     <OutputPath>..\Lib</OutputPath>
     <DefineConstants>DEBUG;NaCl</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>True</Optimize>
     <OutputPath>..\Lib</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+    <ConsolePause>False</ConsolePause>
     <DefineConstants>NaCl</DefineConstants>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -103,15 +104,71 @@
     <Compile Include="..\..\Common\Reign.Video\States\SamplerState.cs">
       <Link>States\SamplerState.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\HardwareMeshProcessor.cs">
+      <Link>Model\HardwareMeshProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\Material.cs">
+      <Link>Model\Material.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\Mesh.cs">
+      <Link>Model\Mesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\Model.cs">
+      <Link>Model\Model.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\Asset.cs">
+      <Link>Model\ColladaModel\Asset.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\ColladaModel.cs">
+      <Link>Model\ColladaModel\ColladaModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryEffect.cs">
+      <Link>Model\ColladaModel\LibraryEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryGeometry.cs">
+      <Link>Model\ColladaModel\LibraryGeometry.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryImage.cs">
+      <Link>Model\ColladaModel\LibraryImage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryMaterial.cs">
+      <Link>Model\ColladaModel\LibraryMaterial.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryVisualScene.cs">
+      <Link>Model\ColladaModel\LibraryVisualScene.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\Scene.cs">
+      <Link>Model\ColladaModel\Scene.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareEdge.cs">
+      <Link>Model\SoftwareModel\SoftwareEdge.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareMaterial.cs">
+      <Link>Model\SoftwareModel\SoftwareMaterial.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareMesh.cs">
+      <Link>Model\SoftwareModel\SoftwareMesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareModel.cs">
+      <Link>Model\SoftwareModel\SoftwareModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareTriangle.cs">
+      <Link>Model\SoftwareModel\SoftwareTriangle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareVertex.cs">
+      <Link>Model\SoftwareModel\SoftwareVertex.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Buffers\" />
     <Folder Include="Image\" />
     <Folder Include="States\" />
+    <Folder Include="Model\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
 </Project>

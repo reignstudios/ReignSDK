@@ -28,7 +28,8 @@ namespace ShaderMaterials.Shaders
 		#region Constructors
 		public static void Init(DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			Shader = ShaderAPI.New(parent, contentPath + tag + "QuickDraw3ColorUV.rs", shaderVersion,
+			//Shader = ShaderAPI.New(parent, contentPath + tag + "QuickDraw3ColorUV.rs", shaderVersion,
+			Shader = new Reign.Video.OpenGL.Shader(parent, contentPath + tag + "QuickDraw3ColorUV.rs", shaderVersion,
 			delegate(object sender)
 			{
 				init((ShaderI)sender, loadedCallback, failedToLoadCallback);
@@ -61,8 +62,8 @@ namespace ShaderMaterials.Shaders
 				CameraConstant = shader.Variable("Camera");DiffuseConstant = shader.Resource("Diffuse");
 				var elements = new List<BufferLayoutElement>();
 				elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.RGBAx8, BufferLayoutElementUsages.Color, 0, 0, 3));elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 4));
-				BufferLayoutDesc = BufferLayoutDescAPI.New(elements);
-				BufferLayout = BufferLayoutAPI.New(shader, shader, BufferLayoutDesc);
+				BufferLayoutDesc = new Reign.Video.OpenGL.BufferLayoutDesc(elements);//BufferLayoutDescAPI.New(elements);
+				BufferLayout = new Reign.Video.OpenGL.BufferLayout(shader, shader, BufferLayoutDesc);//BufferLayoutAPI.New(shader, shader, BufferLayoutDesc);
 			}
 			catch (Exception e)
 			{

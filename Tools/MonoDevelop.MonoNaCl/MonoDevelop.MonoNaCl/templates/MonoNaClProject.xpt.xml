@@ -70,57 +70,62 @@ char* HelloWorld()
 }
 ]]></File>
 
-<File name="${ProjectName}.html">
+<File name="main.js">
+<![CDATA[onload = function()
+{
+	var plugin = document.getElementById('plugin');
+	
+	handleMessage = function(message)
+	{
+		if (message.data === 'Mono Initialized')
+		{
+			document.getElementById('status').innerHTML = 'Mono Initialized';
+			plugin.postMessage('LoadAssemblyDlls');
+		}
+		else if (message.data === 'Mono Loaded Dlls')
+		{
+			document.getElementById('status').innerHTML = 'Mono Loaded Dlls';
+			plugin.postMessage('LoadAssemblyExe');
+		}
+		else if (message.data === 'Mono Loaded Exe')
+		{
+			document.getElementById('status').innerHTML = 'Mono Loaded Exe';
+			plugin.postMessage('ExecuteAssembly');
+		}
+		else if (message.data === 'Mono Executed Exe')
+		{
+			document.getElementById('status').innerHTML = 'Mono Executed Exe';
+		}
+		else
+		{
+			document.getElementById('output').innerHTML += message.data + '<br>';
+		}
+	}
+	plugin.addEventListener('message', handleMessage, true);	
+};
+]]>
+</File>
+
+<File name="main.html">
 <![CDATA[<!DOCTYPE html>
 <html>
 	<head>
-		<title>Mono for NaCl project.</title>
+		<title>Mono for NaCl project (${ProjectName}).</title>
 	</head>
 	
 	<body>
-		<object id="plugin" width=0 height=0 src="${ProjectName}.nmf" type="application/x-nacl"></object>
-		
-		<script type="text/javascript">
-			var plugin = document.getElementById('plugin');
-			
-			handleMessage = function(message)
-			{
-				if (message.data === 'Mono Initialized')
-				{
-					document.getElementById('status').innerHTML = 'Mono Initialized';
-					plugin.postMessage('LoadAssemblyDlls');
-				}
-				else if (message.data === 'Mono Loaded Dlls')
-				{
-					document.getElementById('status').innerHTML = 'Mono Loaded Dlls';
-					plugin.postMessage('LoadAssemblyExe');
-				}
-				else if (message.data === 'Mono Loaded Exe')
-				{
-					document.getElementById('status').innerHTML = 'Mono Loaded Exe';
-					plugin.postMessage('ExecuteAssembly');
-				}
-				else if (message.data === 'Mono Executed Exe')
-				{
-					document.getElementById('status').innerHTML = 'Mono Executed Exe';
-				}
-				else
-				{
-					document.getElementById('output').innerHTML += message.data + '<br>';
-				}
-			}
-			plugin.addEventListener('message', handleMessage, true);
-		</script>
+		<embed id="plugin" width=128 height=128 src="main.nmf" type="application/x-nacl"></embed>
 		
 		<h1>Mono for NaCl project</h1>
-		<p>Native client will boot up mono and ${ProjectName}.exe, then ${ProjectName}.exe will invoke the 'HelloWorld" method build directly into "${ProjectName}_x86_(32/64).nexe" and send back its responce to javaScript.</p>
+		<p>Native client will boot up mono and main.exe, then main.exe will invoke the 'HelloWorld" method build directly into "main_x86_(32/64).nexe" and send back its responce to javaScript.</p>
 		<h2>STATUS</h2>
 		<div id="status">NOT READY</div>
 		<h2>OUTPUT</h2>
 		<br><div id="output"></div>
+		
+		<script src="main.js"></script>
 	</body>
 </html>
-
 ]]></File>
 
 <File name="ppapi/Common.h">
@@ -240,7 +245,7 @@ void Mono_LoadCore(int success, const char* buffer, size_t size, const void* dat
 	mono_set_corlib_data((char*)buffer, size);
 	mono_set_dirs("/", "/");
 	mono_config_parse (NULL);
-	mono_jit_init("${ProjectName}.exe");
+	mono_jit_init("main.exe");
 	
 	sleep(1);
 	PostMessage("Mono Initialized");
@@ -249,7 +254,7 @@ void Mono_LoadCore(int success, const char* buffer, size_t size, const void* dat
 void Mono_Init()
 {
 	URLLoader_LoadFileFromURL("mscorlib.dll", Mono_LoadCore, NULL);
-	URLLoader_LoadFileFromURL("${ProjectName}.dep", loadLibFileNames, "${ProjectName}.dep");
+	URLLoader_LoadFileFromURL("main.dep", loadLibFileNames, "main.dep");
 }
 
 void Mono_LoadDlls()
@@ -270,7 +275,7 @@ void Mono_LoadDlls()
 void Mono_LoadExe()
 {
 	sleep(1);
-	URLLoader_LoadFileFromURL("${ProjectName}.exe", loadLib, "${ProjectName}.exe");
+	URLLoader_LoadFileFromURL("main.exe", loadLib, "main.exe");
 	PostMessage("Mono Loaded Exe");
 }
 
@@ -280,12 +285,12 @@ void Mono_Execute()
 	MonoThread* monoThread = mono_thread_attach(mono_get_root_domain());
 	
 	mono_add_internal_call("${ProjectName}.Program::PostMessage", Mono_PostMessageCallback);
-	MonoAssemblyName* assemblyName = mono_assembly_name_new("${ProjectName}");
+	MonoAssemblyName* assemblyName = mono_assembly_name_new("main");
 	assert(assemblyName);
 	MonoAssembly* assembly = mono_assembly_loaded(assemblyName);
 	assert(assembly);
 	char *args[1];
-	args[0] = "${ProjectName}";
+	args[0] = "main";
 	mono_jit_exec(mono_get_root_domain(), assembly, 1, args);
 	
 	mono_thread_detach(monoThread);

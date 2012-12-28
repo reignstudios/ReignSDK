@@ -87,7 +87,7 @@ namespace Reign.Video.OpenGL
 				currentTextures = new Texture2D[8];
 				currentSamplerStates = new SamplerState[8];
 
-				#if WINDOWS || OSX || LINUX
+				#if WINDOWS || OSX || LINUX || NaCl
 				BackBufferSize = window.FrameSize;
 				this.window = window;
 				#else

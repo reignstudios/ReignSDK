@@ -28,6 +28,22 @@ using Windows.Foundation;
 
 namespace Reign.Core
 {
+	#if NaCl
+	class NaClFile
+	{
+		public string FileName;
+		public Guid ID;
+		public byte[] Data;
+		public bool FailedToLoad;
+		
+		public NaClFile(string fileName)
+		{
+			FileName = fileName;
+			ID = Guid.NewGuid();
+		}
+	}
+	#endif
+
 	public class StreamLoader : LoadableI
 	{
 		#region Properties
@@ -36,6 +52,11 @@ namespace Reign.Core
 
 		public Stream LoadedStream;
 		bool fromFile;
+		#if NaCl
+		private NaClFile file;
+		private Loader.LoadedCallbackMethod loadedCallback;
+		private Loader.FailedToLoadCallbackMethod failedToLoadCallback;
+		#endif
 		#endregion
 
 		#region Constructors
@@ -68,6 +89,16 @@ namespace Reign.Core
 					fromFile = true;
 					#if METRO
 					LoadedStream = await Streams.OpenFile(fileName);
+					#elif NaCl
+					this.loadedCallback = loadedCallback;
+					this.failedToLoadCallback = failedToLoadCallback;
+					
+					file = new NaClFile(fileName);
+					Streams.NaClFileLoadedCallback += fileLoaded;
+					Streams.addPendingFile(file);
+					Loader.AddLoadable(this);
+					
+					return;
 					#else
 					LoadedStream = Streams.OpenFile(fileName);
 					#endif
@@ -90,6 +121,43 @@ namespace Reign.Core
 			Loaded = true;
 			if (loadedCallback != null) loadedCallback(this);
 		}
+		
+		#if NaCl
+		private void fileLoaded(NaClFile file)
+		{
+			if (file.ID == this.file.ID)
+			{
+				Streams.NaClFileLoadedCallback -= fileLoaded;
+				
+				if (file.FailedToLoad)
+				{
+					FailedToLoad = true;
+					if (failedToLoadCallback != null) failedToLoadCallback();
+					failedToLoadCallback = null;
+					Dispose();
+					return;
+				}
+				
+				try
+				{
+					LoadedStream = new MemoryStream(file.Data);
+				}
+				catch (Exception e)
+				{
+					FailedToLoad = true;
+					Loader.AddLoadableException(e);
+					if (failedToLoadCallback != null) failedToLoadCallback();
+					failedToLoadCallback = null;
+					Dispose();
+					return;
+				}
+				
+				Loaded = true;
+				if (loadedCallback != null) loadedCallback(this);
+				loadedCallback = null;
+			}
+		}
+		#endif
 
 		public bool UpdateLoad()
 		{
@@ -98,6 +166,11 @@ namespace Reign.Core
 
 		public void Dispose()
 		{
+			#if NaCl
+			loadedCallback = null;
+			failedToLoadCallback = null;
+			#endif
+		
 			if (fromFile && LoadedStream != null)
 			{
 				LoadedStream.Dispose();
@@ -179,87 +252,49 @@ namespace Reign.Core
 		}
 
 		#if NaCl
-		class NaClFile
+		internal delegate void NaClFileLoadedCallbackMethod(NaClFile file);
+		internal static event NaClFileLoadedCallbackMethod NaClFileLoadedCallback;
+		private static List<NaClFile> naclFiles;
+		
+		static Streams()
 		{
-			public string FileName;
-			public byte[] Data;
+			naclFiles = new List<NaClFile>();
 		}
-		private static List<NaClFile> files = new List<NaClFile>();
-		private static NaClFile pendingFile;
-		private static bool pendingFiles;
 		
 		[DllImport("__Internal", EntryPoint="URLLoader_LoadFile", ExactSpelling = true)]
-		private extern static void URLLoader_LoadFile(string url);
+		private extern static void URLLoader_LoadFile(string url, string id);
 		
-		private static byte[] fileData;
-		private unsafe static void URLLoader_Done(byte* data, uint dataSize)
+		private unsafe static void URLLoader_Done(byte* data, uint dataSize, byte* id, bool failedToLoad)
 		{
-			fileData = new byte[dataSize];
-			var ptr = new IntPtr(data);
-			Marshal.Copy(ptr, fileData, 0, (int)dataSize);
-			Marshal.FreeHGlobal(ptr);
-		}
-		
-		public static void AddPendingFiles(List<string> fileNames)
-		{
-			pendingFiles = true;
-			foreach (var fileName in fileNames)
+			byte[] fileData = null;
+			if (!failedToLoad)
 			{
-				var file = new NaClFile()
-				{
-					FileName = fileName
-				};
-				files.Add(file);
-			}
-		}
-		
-		public static bool LoadPendingFiles()
-		{
-			if (!pendingFiles) return true;
-		
-			if (pendingFile != null)
-			{
-				if (fileData != null)
-				{
-					pendingFile.Data = fileData;
-					fileData = null;
-					pendingFile = null;
-				}
-				else
-				{
-					return false;
-				}
+				fileData = new byte[dataSize];
+				var ptr = new IntPtr(data);
+				Marshal.Copy(ptr, fileData, 0, (int)dataSize);
+				Marshal.FreeHGlobal(ptr);
 			}
 			
-			foreach (var file in files)
+			var stringID = Marshal.PtrToStringAnsi(new IntPtr(id));
+			var guidID = new Guid(stringID);
+			foreach (var file in naclFiles.ToArray())
 			{
-				if (file.Data == null)
+				if (file.ID == guidID)
 				{
-					URLLoader_LoadFile(file.FileName);
-					pendingFile = file;
-					return false;
+					naclFiles.Remove(file);
+					
+					file.Data = fileData;
+					file.FailedToLoad = failedToLoad;
+					if (NaClFileLoadedCallback != null) NaClFileLoadedCallback(file);
+					break;
 				}
 			}
-			
-			pendingFiles = false;
-			return true;
 		}
 		
-		public static void RemoveFiles(List<string> fileNames)
+		internal static void addPendingFile(NaClFile file)
 		{
-			var removingList = new List<NaClFile>();
-			for (int i = 0; i != fileNames.Count; ++i)
-			{
-				for (int i2 = 0; i2 != files.Count; ++i2)
-				{
-					if (fileNames[i] == files[i2].FileName) removingList.Add(files[i2]);
-				}
-			}
-			
-			foreach (var file in removingList)
-			{
-				files.Remove(file);
-			}
+			naclFiles.Add(file);
+			URLLoader_LoadFile(file.FileName, file.ID.ToString());
 		}
 		#endif
 
@@ -309,15 +344,8 @@ namespace Reign.Core
 				return null;
 			}
 			#elif NaCl
-			foreach (var file in files)
-			{
-				if (fileName == file.FileName)
-				{
-					return new MemoryStream(file.Data);
-				}
-			}
-			Debug.ThrowError("Streams", "Could not find file: " + fileName);
-			return new MemoryStream();
+			Debug.ThrowError("Streams", "Method not supported in NaCl. Use StreamLoader instead");
+			return null;
 			#elif METRO
 			fileName = fileName.Replace('/', '\\');
 			switch (folderLocation)
