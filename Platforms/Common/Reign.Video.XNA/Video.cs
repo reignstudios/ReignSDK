@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Reign.Core;
 using R = Reign.Video.XNA;
@@ -25,7 +24,11 @@ namespace Reign.Video.XNA
 			Device = application.GraphicsDevice;
 			defualtStates();
 
+			#if SILVERLIGHT
+			FileTag = "Silverlight_";
+			#else
 			FileTag = "XNA_";
+			#endif
 			BackBufferSize = application.FrameSize;
 
 			backBuffers = Device.GetRenderTargets();
@@ -118,9 +121,11 @@ namespace Reign.Video.XNA
 			switch (surfaceFormat)
 			{
 				case (SurfaceFormats.RGBAx8): return SurfaceFormat.Color;
+				#if !SILVERLIGHT
 				case (SurfaceFormats.RGBx10_Ax2): return SurfaceFormat.Rgba1010102;
 				case (SurfaceFormats.RGBAx16f): return SurfaceFormat.HalfVector4;
 				case (SurfaceFormats.RGBAx32f): return SurfaceFormat.Vector4;
+				#endif
 				default:
 					Debug.ThrowError("RenderTarget", "Unsuported SurfaceFormat");
 					return SurfaceFormat.Color;

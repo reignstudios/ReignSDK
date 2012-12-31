@@ -15,6 +15,8 @@ namespace Reign.Video
 	public class ImagePNG : ImageOSX
 	#elif METRO
 	public class ImagePNG : ImageMetro
+	#elif SILVERLIGHT
+	public class ImagePNG : ImageSilverlight
 	#else
 	public class ImagePNG : ImageGDI
 	#endif

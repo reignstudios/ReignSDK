@@ -76,7 +76,12 @@ namespace Reign.Video.XNA
 				indexBuffer = null;
 			}
 
-			indexBuffer = new X.IndexBuffer(video.Device,  _32BitIndices ? X.IndexElementSize.ThirtyTwoBits : X.IndexElementSize.SixteenBits, indices.Length, X.BufferUsage.WriteOnly);
+			#if SILVERLIGHT
+			X.IndexElementSize elementSize = X.IndexElementSize.SixteenBits;
+			#else
+			X.IndexElementSize elementSize = _32BitIndices ? X.IndexElementSize.ThirtyTwoBits : X.IndexElementSize.SixteenBits;
+			#endif
+			indexBuffer = new X.IndexBuffer(video.Device, elementSize, indices.Length, X.BufferUsage.WriteOnly);
 			Update(indices, indexCount);
 		}
 

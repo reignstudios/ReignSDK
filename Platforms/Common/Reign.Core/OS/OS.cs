@@ -69,9 +69,12 @@ namespace Reign.Core
 	public static class OS
 	{
 		#region Properites
+		#if WINDOWS || OSX || LINUX || NaCl || iOS || ANDROID
 		public static bool AutoDisposedGL {get; internal set;}
+		#endif
+
 		internal static Time time;
-		#if XNA
+		#if XNA && !SILVERLIGHT
 		internal static Time renderTime;
 		#endif
 
@@ -290,7 +293,7 @@ namespace Reign.Core
 		}
 		#endif
 		
-		#if iOS || XNA || METRO
+		#if (iOS || XNA || METRO) && !SILVERLIGHT
 		public static void Run(Application application, int fps)
 		{
 			CurrentApplication = application;

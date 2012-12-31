@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BF18E913-A406-412A-983C-8021BD4C3DEE}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Reign.Video</RootNamespace>
+    <AssemblyName>Reign.Video</AssemblyName>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <!-- This property group is only here to support building this project using the 
+       MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
+       to set the TargetFrameworkVersion to v3.5 -->
+  <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;XNA</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;XNA</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="SharpZipLib.Silverlight5">
+      <HintPath>..\SharpZipLib.Silverlight5.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core">
+      <HintPath>$(TargetFrameworkDirectory)System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Browser" />
+    <Reference Include="System.Xml.Serialization, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\Reign.Video\Buffers\BufferLayout.cs">
+      <Link>Buffers\BufferLayout.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Buffers\IndexBuffer.cs">
+      <Link>Buffers\IndexBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Buffers\VertexBuffer.cs">
+      <Link>Buffers\VertexBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Camera.cs">
+      <Link>Camera.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\DepthStencil.cs">
+      <Link>DepthStencil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Font.cs">
+      <Link>Font.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Image\Image.cs">
+      <Link>Image\Image.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Image\ImageBMP.cs">
+      <Link>Image\ImageBMP.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Image\ImageBMPC.cs">
+      <Link>Image\ImageBMPC.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Image\ImageDDS.cs">
+      <Link>Image\ImageDDS.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Image\ImageJPG.cs">
+      <Link>Image\ImageJPG.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Image\ImagePNG.cs">
+      <Link>Image\ImagePNG.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Image\ImagePVR.cs">
+      <Link>Image\ImagePVR.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\Asset.cs">
+      <Link>Model\ColladaModel\Asset.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\ColladaModel.cs">
+      <Link>Model\ColladaModel\ColladaModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryEffect.cs">
+      <Link>Model\ColladaModel\LibraryEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryGeometry.cs">
+      <Link>Model\ColladaModel\LibraryGeometry.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryImage.cs">
+      <Link>Model\ColladaModel\LibraryImage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryMaterial.cs">
+      <Link>Model\ColladaModel\LibraryMaterial.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryVisualScene.cs">
+      <Link>Model\ColladaModel\LibraryVisualScene.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\Scene.cs">
+      <Link>Model\ColladaModel\Scene.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\HardwareMeshProcessor.cs">
+      <Link>Model\HardwareMeshProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\Material.cs">
+      <Link>Model\Material.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\Mesh.cs">
+      <Link>Model\Mesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\Model.cs">
+      <Link>Model\Model.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareEdge.cs">
+      <Link>Model\SoftwareModel\SoftwareEdge.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareMaterial.cs">
+      <Link>Model\SoftwareModel\SoftwareMaterial.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareMesh.cs">
+      <Link>Model\SoftwareModel\SoftwareMesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareModel.cs">
+      <Link>Model\SoftwareModel\SoftwareModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareTriangle.cs">
+      <Link>Model\SoftwareModel\SoftwareTriangle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareVertex.cs">
+      <Link>Model\SoftwareModel\SoftwareVertex.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\QuickDraw.cs">
+      <Link>QuickDraw.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Shader.cs">
+      <Link>Shader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\States\BlendState.cs">
+      <Link>States\BlendState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\States\DepthStencilState.cs">
+      <Link>States\DepthStencilState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\States\RasterizerState.cs">
+      <Link>States\RasterizerState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\States\SamplerState.cs">
+      <Link>States\SamplerState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Texture.cs">
+      <Link>Texture.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Video.cs">
+      <Link>Video.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\ViewPort.cs">
+      <Link>ViewPort.cs</Link>
+    </Compile>
+    <Compile Include="Image\ImageSilverlight.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{3a35c6ad-750f-48bf-bfe7-582c03ebdcc6}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

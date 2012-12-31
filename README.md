@@ -14,6 +14,7 @@ Platforms
     - Metro
     - Xbox360
     - XNA
+    - Silverlight
 
     Apple
     - OSX

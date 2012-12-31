@@ -1,6 +1,8 @@
 ﻿using System;
 using X = Microsoft.Xna.Framework.Graphics;
+#if !SILVERLIGHT
 using Microsoft.Xna.Framework.Content;
+#endif
 using Reign.Core;
 using System.IO;
 using System.Collections.Generic;
@@ -60,22 +62,52 @@ namespace Reign.Video.XNA
 		public Texture2D(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			init(parent, fileName, 0, 0, false, MultiSampleTypes.None, SurfaceFormats.Unknown, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false, loadedCallback, failedToLoadCallback);
+			#if SILVERLIGHT
+			Image.New(fileName, false,
+			delegate(object sender)
+			{
+				var image = (Image)sender;
+				init(parent, null, image, image.Size.Width, image.Size.Height, false, MultiSampleTypes.None, image.SurfaceFormat, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
+			#else
+			init(parent, fileName, null, 0, 0, false, MultiSampleTypes.None, SurfaceFormats.Unknown, RenderTargetUsage.PlatformDefault, BufferUsages.Default, false, loadedCallback, failedToLoadCallback);
+			#endif
 		}
 
 		public Texture2D(DisposableI parent, string fileName, bool generateMipmaps, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			init(parent, fileName, 0, 0, generateMipmaps, MultiSampleTypes.None, SurfaceFormats.Unknown, RenderTargetUsage.PlatformDefault, usage, false, loadedCallback, failedToLoadCallback);
+			#if SILVERLIGHT
+			Image.New(fileName, false,
+			delegate(object sender)
+			{
+				var image = (Image)sender;
+				init(parent, null, image, image.Size.Width, image.Size.Height, generateMipmaps, MultiSampleTypes.None, SurfaceFormats.Unknown, RenderTargetUsage.PlatformDefault, usage, false, loadedCallback, failedToLoadCallback);
+			},
+			delegate
+			{
+				FailedToLoad = true;
+				Dispose();
+				if (failedToLoadCallback != null) failedToLoadCallback();
+			});
+			#else
+			init(parent, fileName, null, 0, 0, generateMipmaps, MultiSampleTypes.None, SurfaceFormats.Unknown, RenderTargetUsage.PlatformDefault, usage, false, loadedCallback, failedToLoadCallback);
+			#endif
 		}
 
 		public Texture2D(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		: base(parent)
 		{
-			init(parent, null, width, height, false, MultiSampleTypes.None, surfaceFormat, RenderTargetUsage.PlatformDefault, usage, false, loadedCallback, failedToLoadCallback);
+			init(parent, null, null, width, height, false, MultiSampleTypes.None, surfaceFormat, RenderTargetUsage.PlatformDefault, usage, false, loadedCallback, failedToLoadCallback);
 		}
 		
-		protected virtual bool init(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		protected virtual bool init(DisposableI parent, string fileName, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
 			try
 			{
@@ -85,16 +117,23 @@ namespace Reign.Video.XNA
 
 				if (!isRenderTarget)
 				{
-					if (fileName != null)
+					if (fileName != null || image != null)
 					{
+						#if SILVERLIGHT
+						texture = new X.Texture2D(video.Device, 256, 256);
+						texture.SetData<byte>(image.Mipmaps[0].Data);
+						#else
 						texture = parent.FindParentOrSelfWithException<RootDisposable>().Content.Load<X.Texture2D>(Streams.StripFileExt(fileName));
 						loadedFromContentManager = true;
+						#endif
 						switch (texture.Format)
 						{
 							case (X.SurfaceFormat.Color): surfaceFormat = SurfaceFormats.RGBAx8; break;
+							#if !SILVERLIGHT
 							case (X.SurfaceFormat.Dxt1): surfaceFormat = SurfaceFormats.DXT1; break;
 							case (X.SurfaceFormat.Dxt3): surfaceFormat = SurfaceFormats.DXT3; break;
 							case (X.SurfaceFormat.Dxt5): surfaceFormat = SurfaceFormats.DXT5; break;
+							#endif
 							default: Debug.ThrowError("Texture2D", "Unsuported surface format"); break;
 						}
 					}

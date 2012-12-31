@@ -41,6 +41,10 @@
     <Reference Include="Reign_Video_D3D11_Component">
       <HintPath>..\..\..\Platforms\Windows\Lib\Reign_Video_D3D11_Component.dll</HintPath>
     </Reference>
+    <Reference Include="Reign_Video_D3D9_Component">
+      <HintPath>..\..\..\Platforms\Windows\Lib\Reign_Video_D3D9_Component.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />

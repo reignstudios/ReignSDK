@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-#if XNA
+#if XNA && !SILVERLIGHT
 using Microsoft.Xna.Framework.Content;
 #endif
 
@@ -9,7 +9,7 @@ namespace Reign.Core
 	public sealed class RootDisposable : Disposable
 	{
 		#region Properties
-		#if XNA
+		#if XNA && !SILVERLIGHT
 		public ContentManager Content {get; private set;}
 		#endif
 		#endregion
@@ -18,7 +18,7 @@ namespace Reign.Core
 		public RootDisposable()
 		: base(null)
 		{
-			#if XNA
+			#if XNA && !SILVERLIGHT
 			init(OS.CurrentApplication.Content);
 			#endif
 		}
@@ -26,13 +26,13 @@ namespace Reign.Core
 		public RootDisposable(DisposableI disposable)
 		: base(disposable)
 		{
-			#if XNA
+			#if XNA && !SILVERLIGHT
 			var parent = disposable.FindParentOrSelfWithException<RootDisposable>();
 			init(parent.Content);
 			#endif
 		}
 
-		#if XNA
+		#if XNA && !SILVERLIGHT
 		public RootDisposable(ContentManager rootContent)
 		: base(null)
 		{
@@ -48,7 +48,7 @@ namespace Reign.Core
 		public override void Dispose()
 		{
 			disposeChilderen();
-			#if XNA
+			#if XNA && !SILVERLIGHT
 			if (Content != null)
 			{
 				Content.Dispose();

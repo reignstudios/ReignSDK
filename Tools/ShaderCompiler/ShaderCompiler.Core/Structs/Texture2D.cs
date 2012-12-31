@@ -19,6 +19,7 @@ namespace ShaderCompiler.Core
 				case (CompilerOutputs.D3D11): return "texture2D";
 				case (CompilerOutputs.D3D9): return "sampler2D";
 				case (CompilerOutputs.XNA): return "texture2D";
+				case (CompilerOutputs.Silverlight): return "sampler2D";
 				case (CompilerOutputs.GL3): return "sampler2D";
 				case (CompilerOutputs.GL2): return "sampler2D";
 				case (CompilerOutputs.GLES2): return "sampler2D";

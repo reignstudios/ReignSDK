@@ -137,7 +137,7 @@ namespace Reign.Video
 				#if !XNA && NaCl
 				case (".bmpc"): return new ImageBMPC(fileName, flip, loadedCallback, failedToLoadCallback);
 				#endif
-				#if !XNA && !NaCl
+				#if (!XNA && !NaCl) || SILVERLIGHT
 				case (".bmpc"): return new ImageBMPC(fileName, flip, loadedCallback, failedToLoadCallback);
 				case (".png"): return new ImagePNG(fileName, flip, loadedCallback, failedToLoadCallback);
 				case (".jpg"): return new ImageJPG(fileName, flip, loadedCallback, failedToLoadCallback);

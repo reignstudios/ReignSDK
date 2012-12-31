@@ -377,6 +377,11 @@ namespace Reign.Core
 					return await videoFile.OpenStreamForReadAsync();
 			}
 			return null;
+			#elif SILVERLIGHT
+			fileName = fileName.Replace('\\', '/');
+			var file = Application.GetResourceStream(new Uri(fileName, UriKind.Relative));
+			if (file == null) Debug.ThrowError("Streams", "Failed to find file: " + fileName);
+			return file.Stream;
 			#else
 			#if LINUX
 			fileName = fileName.Replace('\\', '/');

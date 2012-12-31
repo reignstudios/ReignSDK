@@ -22,7 +22,7 @@ namespace Reign.Core
 		}
 		#endregion
 
-		#if XNA
+		#if XNA && !SILVERLIGHT
 		public static X.Matrix ToMatrixX(this Matrix4 matrix)
 		{
 			return new X.Matrix

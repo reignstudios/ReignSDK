@@ -125,7 +125,7 @@ namespace ShaderCompiler.Core
 					if (a.Type == VSInputTypes.Index || a.Type == VSInputTypes.IndexClassic)
 					{
 						if (field.FieldType != typeof(uint)) throw new Exception("VS Index type must be uint.");
-						if (a.Type == VSInputTypes.IndexClassic || outputType == CompilerOutputs.D3D9 || outputType == CompilerOutputs.XNA)
+						if (a.Type == VSInputTypes.IndexClassic || outputType == CompilerOutputs.D3D9 || outputType == CompilerOutputs.XNA || outputType == CompilerOutputs.Silverlight)
 						{
 							attributeType = "BLENDINDICES";
 							fieldType = "float";
@@ -240,7 +240,7 @@ namespace ShaderCompiler.Core
 			if (vsConstansts == null) label = "g";
 			else if (vsConstansts == true) label = "vs";
 			else label = "ps";
-			int fieldSize = 0;
+			int fieldSize = 0, registerIndex = 0;
 			foreach (var field in normalFields)
 			{
 				if (field.FieldType == typeof(Texture2D))
@@ -252,72 +252,111 @@ namespace ShaderCompiler.Core
 				{
 					var a = field.GetCustomAttributes(typeof(ArrayType), true);
 					var arrayType = (a != null && a.Length != 0) ? (ArrayType)a[0] : null;
-					string arrayError = "Arrays must have ArrayType attribute.";
 
-					if (field.FieldType == typeof(double[]))
+					if (outputType == CompilerOutputs.Silverlight)
 					{
-						if (a == null || a.Length != 1) throw new Exception(arrayError);
-						fieldSize = sizeof(float) * 4 * arrayType.Length;
+						int registerSize = getRegisterySize(field);
+						reflectionStream.WriteLine(string.Format("{3}Var {0} {1} {2}", field.Name, registerIndex, registerSize, label));
+						registerIndex += registerSize;
 					}
-
-					if (field.FieldType == typeof(Vector2[]))
+					else if (outputType == CompilerOutputs.D3D11)
 					{
-						if (a == null || a.Length != 1) throw new Exception(arrayError);
-						fieldSize = sizeof(float) * 4 * arrayType.Length;
+						bool isArrayType = false;
+						if (field.FieldType == typeof(double[]))
+						{
+							isArrayType = true;
+							fieldSize = sizeof(float) * 4 * arrayType.Length;
+						}
+						
+						if (field.FieldType == typeof(Vector2[]))
+						{
+							isArrayType = true;
+							fieldSize = sizeof(float) * 4 * arrayType.Length;
+						}
+						
+						if (field.FieldType == typeof(Vector3[]))
+						{
+							isArrayType = true;;
+							fieldSize = sizeof(float) * 4 * arrayType.Length;
+						}
+						
+						if (field.FieldType == typeof(Vector4[]))
+						{
+							isArrayType = true;
+							fieldSize = sizeof(float) * 4 * arrayType.Length;
+						}
+						
+						if (field.FieldType == typeof(Matrix2[]))
+						{
+							isArrayType = true;
+							fieldSize = sizeof(float) * 4 * 2 * arrayType.Length;
+						}
+						
+						if (field.FieldType == typeof(Matrix3[]))
+						{
+							isArrayType = true;
+							fieldSize = sizeof(float) * 4 * 3 * arrayType.Length;
+						}
+						
+						if (field.FieldType == typeof(Matrix4[]))
+						{
+							isArrayType = true;
+							fieldSize = sizeof(float) * 4 * 4 * arrayType.Length;
+						}
+						
+						if (isArrayType && (a == null || a.Length != 1)) throw new Exception("Arrays must have ArrayType attribute.");
+					
+						if (field.FieldType == typeof(double)) fieldSize = sizeof(float);
+						if (field.FieldType == typeof(Vector2)) fieldSize = sizeof(float) * 2;
+						if (field.FieldType == typeof(Vector3)) fieldSize = sizeof(float) * 3;
+						if (field.FieldType == typeof(Vector4)) fieldSize = sizeof(float) * 4;
+						if (field.FieldType == typeof(Matrix2)) fieldSize = sizeof(float) * 4 * 2;
+						if (field.FieldType == typeof(Matrix3)) fieldSize = sizeof(float) * 4 * 3;
+						if (field.FieldType == typeof(Matrix4)) fieldSize = sizeof(float) * 4 * 4;
+						
+						int percent = variableByteOffset % 16;
+						int percentOffset = 16 - percent;
+						if (field.FieldType == typeof(Vector2) && percent > 8) variableByteOffset += percentOffset;
+						if (percent != 0 &&
+						 (field.FieldType == typeof(double[]) || field.FieldType == typeof(Vector2[]) || field.FieldType == typeof(Vector3[]) || field.FieldType == typeof(Vector4[]) || 
+						 field.FieldType == typeof(Vector4) || field.FieldType == typeof(Matrix2) || field.FieldType == typeof(Matrix3) || field.FieldType == typeof(Matrix4)))
+						{
+							variableByteOffset += percentOffset;
+						}
+						
+						reflectionStream.WriteLine(string.Format("{3}Var {0} {1} {2}", field.Name, variableByteOffset, fieldSize, label));
+						variableByteOffset += fieldSize;
 					}
-
-					if (field.FieldType == typeof(Vector3[]))
-					{
-						if (a == null || a.Length != 1) throw new Exception(arrayError);
-						fieldSize = sizeof(float) * 4 * arrayType.Length;
-					}
-
-					if (field.FieldType == typeof(Vector4[]))
-					{
-						if (a == null || a.Length != 1) throw new Exception(arrayError);
-						fieldSize = sizeof(float) * 4 * arrayType.Length;
-					}
-
-					if (field.FieldType == typeof(Matrix2[]))
-					{
-						if (a == null || a.Length != 1) throw new Exception(arrayError);
-						fieldSize = sizeof(float) * 4 * 2 * arrayType.Length;
-					}
-
-					if (field.FieldType == typeof(Matrix3[]))
-					{
-						if (a == null || a.Length != 1) throw new Exception(arrayError);
-						fieldSize = sizeof(float) * 4 * 3 * arrayType.Length;
-					}
-
-					if (field.FieldType == typeof(Matrix4[]))
-					{
-						if (a == null || a.Length != 1) throw new Exception(arrayError);
-						fieldSize = sizeof(float) * 4 * 4 * arrayType.Length;
-					}
-
-					if (field.FieldType == typeof(double)) fieldSize = sizeof(float);
-					if (field.FieldType == typeof(Vector2)) fieldSize = sizeof(float) * 2;
-					if (field.FieldType == typeof(Vector3)) fieldSize = sizeof(float) * 3;
-					if (field.FieldType == typeof(Vector4)) fieldSize = sizeof(float) * 4;
-					if (field.FieldType == typeof(Matrix2)) fieldSize = sizeof(float) * 4 * 2;
-					if (field.FieldType == typeof(Matrix3)) fieldSize = sizeof(float) * 4 * 3;
-					if (field.FieldType == typeof(Matrix4)) fieldSize = sizeof(float) * 4 * 4;
-
-					int percent = variableByteOffset % 16;
-					int percentOffset = 16 - percent;
-					if (field.FieldType == typeof(Vector2) && percent > 8) variableByteOffset += percentOffset;
-					if (percent != 0 &&
-						(field.FieldType == typeof(double[]) || field.FieldType == typeof(Vector2[]) || field.FieldType == typeof(Vector3[]) || field.FieldType == typeof(Vector4[]) || 
-						field.FieldType == typeof(Vector4) || field.FieldType == typeof(Matrix2) || field.FieldType == typeof(Matrix3) || field.FieldType == typeof(Matrix4)))
-					{
-						variableByteOffset += percentOffset;
-					}
-
-					reflectionStream.WriteLine(string.Format("{3}Var {0} {1} {2}", field.Name, variableByteOffset, fieldSize, label));
-					variableByteOffset += fieldSize;
 				}
 			}
+		}
+		
+		private int getRegisterySize(FieldInfo field)
+		{
+			var type = field.FieldType;
+		
+			if (type == typeof(double)) return 1;
+			if (type == typeof(Vector2)) return 1;
+			if (type == typeof(Vector3)) return 1;
+			if (type == typeof(Vector4)) return 1;
+			if (type == typeof(Matrix2)) return 2;
+			if (type == typeof(Matrix3)) return 3;
+			if (type == typeof(Matrix4)) return 4;
+			
+			var a = field.GetCustomAttributes(typeof(ArrayType), true);
+			var arrayType = (a != null && a.Length != 0) ? (ArrayType)a[0] : null;
+			int arrayLength = 0;
+			if (type == typeof(double[])) arrayLength = arrayType.Length;
+			if (type == typeof(Vector2[])) arrayLength = arrayType.Length;
+			if (type == typeof(Vector3[])) arrayLength = arrayType.Length;
+			if (type == typeof(Vector4[])) arrayLength = arrayType.Length;
+			if (type == typeof(Matrix2[])) arrayLength = arrayType.Length * 2;
+			if (type == typeof(Matrix3[])) arrayLength = arrayType.Length * 3;
+			if (type == typeof(Matrix4[])) arrayLength = arrayType.Length * 4;
+			
+			if (arrayLength != 0 && (a == null || a.Length != 1)) throw new Exception("Arrays must have ArrayType attribute.");
+			if (arrayLength != 0) return arrayLength;
+			throw new Exception("Method failed: getRegisterySize");
 		}
 
 		private void processNormalFields(StreamWriter stream, List<FieldInfo> normalFields, BaseCompilerOutputs baseType)
@@ -340,7 +379,7 @@ namespace ShaderCompiler.Core
 				}
 			}
 
-			int samplerFieldCount = 0;
+			int samplerFieldCount = 0, registerIndex = 0;
 			foreach (var field in normalFields)
 			{
 				string fieldType = convertToBasicType(field.FieldType, true);
@@ -356,7 +395,24 @@ namespace ShaderCompiler.Core
 					}
 				}
 
-				stream.WriteLine(string.Format("{0} {1};", fieldType, field.Name + ((arrayLength == -1) ? "" : "[" + arrayLength.ToString() + "]")));
+				if (outputType == CompilerOutputs.Silverlight)
+				{
+					if (field.FieldType == typeof(Texture2D))
+					{
+						stream.WriteLine(string.Format("sampler2D {0} : register(s{1});", field.Name, samplerFieldCount));
+						++samplerFieldCount;
+					}
+					else
+					{
+						int registerSize = getRegisterySize(field);
+						stream.WriteLine(string.Format("{0} {1} : register(c{2});", fieldType, field.Name + ((arrayLength == -1) ? "" : "[" + arrayLength.ToString() + "]"), registerIndex));
+						registerIndex += registerSize;
+					}
+				}
+				else
+				{
+					stream.WriteLine(string.Format("{0} {1};", fieldType, field.Name + ((arrayLength == -1) ? "" : "[" + arrayLength.ToString() + "]")));
+				}
 
 				if (outputType == CompilerOutputs.XNA && field.FieldType == typeof(Texture2D))
 				{

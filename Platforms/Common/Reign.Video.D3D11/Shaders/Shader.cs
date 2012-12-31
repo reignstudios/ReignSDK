@@ -160,16 +160,14 @@ namespace Reign.Video.D3D11
 					if (vsVar)
 					{
 						vsVariableNames.Add(values[1]);
-						int offset = int.Parse(values[2]);
-						vsVariableByteOffsets.Add(offset);
+						vsVariableByteOffsets.Add(int.Parse(values[2]));
 						vsVariableBufferSize += int.Parse(values[3]);
 					}
 
 					if (psVar)
 					{
 						psVariableNames.Add(values[1]);
-						int offset = int.Parse(values[2]);
-						psVariableByteOffsets.Add(offset);
+						psVariableByteOffsets.Add(int.Parse(values[2]));
 						psVariableBufferSize += int.Parse(values[3]);
 					}
 

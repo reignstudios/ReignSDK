@@ -13,6 +13,7 @@ namespace ShaderCompiler.Core
 		D3D11,
 		D3D9,
 		XNA,
+		Silverlight,
 		GL3,
 		GL2,
 		GLES2
@@ -68,7 +69,7 @@ namespace ShaderCompiler.Core
 		#endregion
 		
 		#region Methods
-		public void Compile(string outDirectory, CompilerOutputs outputType, bool compileMaterial, bool compileMetroShaders)
+		public void Compile(string outDirectory, CompilerOutputs outputType, bool compileMaterial, bool compileMetroShaders, bool compileSilverlightShaders)
 		{
 			this.outDirectory = outDirectory;
 			this.outputType = outputType;
@@ -91,7 +92,7 @@ namespace ShaderCompiler.Core
 				Directory.CreateDirectory(outDirectory);
 			}
 			
-			compileLibrary(inDirectory + "bin/Debug/" + inFile.Split('.')[0] + ".dll", false, compileMaterial, compileMetroShaders);
+			compileLibrary(inDirectory + "bin/Debug/" + inFile.Split('.')[0] + ".dll", false, compileMaterial, compileMetroShaders, compileSilverlightShaders);
 		}
 
 		#if WINDOWS
@@ -106,12 +107,12 @@ namespace ShaderCompiler.Core
 	
 					IntPtr vsBuffer;
 					int vsBufferSize;
-					var error = Reign_Video_D3D11_Component.ShaderModelCom.Compile(code[0], code[0].Length, "vs_4_0_level_9_3", out vsBuffer, out vsBufferSize);
+					var error = Reign_Video_D3D11_Component.ShaderModelCom.Compile(code[0], code[0].Length, "vs_4_0_level_9_1", out vsBuffer, out vsBufferSize);
 					if (error != null) throw new Exception("Failed to compile Metro VS shader: " + error);
 	
 					IntPtr psBuffer;
 					int psBufferSize;
-					error = Reign_Video_D3D11_Component.ShaderModelCom.Compile(code[1], code[1].Length, "ps_4_0_level_9_3", out psBuffer, out psBufferSize);
+					error = Reign_Video_D3D11_Component.ShaderModelCom.Compile(code[1], code[1].Length, "ps_4_0_level_9_1", out psBuffer, out psBufferSize);
 					if (error != null) throw new Exception("Failed to compile Metro PS shader: " + error);
 	
 					var data = new byte[vsBufferSize + psBufferSize];
@@ -142,9 +143,57 @@ namespace ShaderCompiler.Core
 				throw new NotImplementedException();
 			}
 		}
+		
+		class SilverlightShaderCompiler : Reign.Video.ShaderI
+		{
+			public SilverlightShaderCompiler(string fileName)
+			: base(null)
+			{
+				using (var codeFile = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+				{
+					var code = getShaders(codeFile);
+					
+					IntPtr vsBuffer;
+					int vsBufferSize;
+					var error = Reign_Video_D3D9_Component.ShaderModelCom.Compile(code[0], code[0].Length, "vs_2_0", out vsBuffer, out vsBufferSize);
+					if (error != null) throw new Exception("Failed to compile Silverlight VS shader: " + error);
+					
+					IntPtr psBuffer;
+					int psBufferSize;
+					error = Reign_Video_D3D9_Component.ShaderModelCom.Compile(code[1], code[1].Length, "ps_2_0", out psBuffer, out psBufferSize);
+					if (error != null) throw new Exception("Failed to compile Silverlight PS shader: " + error);
+					
+					var data = new byte[vsBufferSize + psBufferSize];
+					System.Runtime.InteropServices.Marshal.Copy(vsBuffer, data, 0, vsBufferSize);
+					System.Runtime.InteropServices.Marshal.Copy(psBuffer, data, vsBufferSize, psBufferSize);
+					using (var file = new FileStream(Reign.Core.Streams.StripFileExt(fileName) + ".mrs", FileMode.Create, FileAccess.Write))
+					using (var writer = new BinaryWriter(file))
+					{
+						writer.Write(vsBufferSize);
+						writer.Write(psBufferSize);
+						file.Write(data, 0, data.Length);
+					}
+				}
+			}
+			
+			public override void Apply()
+			{
+				throw new NotImplementedException();
+			}
+			
+			public override Reign.Video.ShaderVariableI Variable(string name)
+			{
+				throw new NotImplementedException();
+			}
+			
+			public override Reign.Video.ShaderResourceI Resource(string name)
+			{
+				throw new NotImplementedException();
+			}
+		}
 		#endif
 		
-		private string compileLibrary(string dllFileName, bool writeToMemory, bool compileMaterial, bool compileMetroShaders)
+		private string compileLibrary(string dllFileName, bool writeToMemory, bool compileMaterial, bool compileMetroShaders, bool compileSilverlightShaders)
 		{
 string xnaEndTechniqueBlock =
 @"
@@ -176,8 +225,14 @@ technique MainTechnique
 						using (var psStream = new MemoryStream())
 						using (var reflectionStream = new MemoryStream())
 						{
-							if (outputType == CompilerOutputs.D3D11 && compileMetroShaders) compileShader(obj, stream, vsStream, psStream, reflectionStream);
-							else compileShader(obj, stream, vsStream, psStream, null);
+							if ((outputType == CompilerOutputs.D3D11 && compileMetroShaders) || (outputType == CompilerOutputs.Silverlight && compileSilverlightShaders))
+							{
+								compileShader(obj, stream, vsStream, psStream, reflectionStream);
+							}
+							else
+							{
+								compileShader(obj, stream, vsStream, psStream, null);
+							}
 							
 							string outDirectoryRelitive = outDirectory;	
 							if (writeToMemory)
@@ -250,6 +305,12 @@ technique MainTechnique
 							{
 								new MetroShaderCompiler(outDirectoryRelitive + FileTag + obj.Name + ".rs");
 							}
+							
+							// compile silverlight shader bytecode
+							if (outputType == CompilerOutputs.Silverlight && compileSilverlightShaders)
+							{
+								new SilverlightShaderCompiler(outDirectoryRelitive + FileTag + obj.Name + ".rs");
+							}
 							#endif
 
 							// compile materials
@@ -263,8 +324,8 @@ technique MainTechnique
 								}
 							}
 
-							// compile metro shaders
-							if (outputType == CompilerOutputs.D3D11 && compileMetroShaders)
+							// save reflected metro or silverlight shaders
+							if ((outputType == CompilerOutputs.D3D11 && compileMetroShaders) || (outputType == CompilerOutputs.Silverlight && compileSilverlightShaders))
 							{
 								using (var reflectionFile = new FileStream(outDirectoryRelitive + FileTag + obj.Name + ".ref", FileMode.Create, FileAccess.Write))
 								{
@@ -642,6 +703,7 @@ namespace ShaderMaterials.{0}
 				case (CompilerOutputs.D3D11): return new string[]{"D3D", "D3D11"};
 				case (CompilerOutputs.D3D9): return new string[]{"D3D", "D3D9"};
 				case (CompilerOutputs.XNA): return new string[]{"D3D", "XNA"};
+				case (CompilerOutputs.Silverlight): return new string[]{"D3D", "SILVERLIGHT"};
 				case (CompilerOutputs.GL3): return new string[]{"GL", "GL3"};
 				case (CompilerOutputs.GL2): return new string[]{"GL", "GL2"};
 				case (CompilerOutputs.GLES2): return new string[]{"GL", "GLES2"};
@@ -708,6 +770,7 @@ namespace ShaderMaterials.{0}
 				case (CompilerOutputs.D3D11): return BaseCompilerOutputs.HLSL;
 				case (CompilerOutputs.D3D9): return BaseCompilerOutputs.HLSL;
 				case (CompilerOutputs.XNA): return BaseCompilerOutputs.HLSL;
+				case (CompilerOutputs.Silverlight): return BaseCompilerOutputs.HLSL;
 				case (CompilerOutputs.GL3): return BaseCompilerOutputs.GLSL;
 				case (CompilerOutputs.GL2): return BaseCompilerOutputs.GLSL;
 				case (CompilerOutputs.GLES2): return BaseCompilerOutputs.GLSL;

@@ -3,7 +3,7 @@ using System;
 using System.Runtime.InteropServices;
 using Reign.Core;
 
-#if NaCl
+#if NaCl || SILVERLIGHT
 using ICSharpCode.SharpZipLib.GZip;
 #else
 using System.IO.Compression;
@@ -72,7 +72,7 @@ namespace Reign.Video
 						} while (dataRead < dataLength);
 						decompressedDataStream.Position = 0;
 
-						#if NaCl
+						#if NaCl || SILVERLIGHT
 						using (var zip = new GZipInputStream(decompressedDataStream))
 						using (var dataStream = new MemoryStream())
 						{
@@ -117,7 +117,7 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
-		#if !NaCl
+		#if !NaCl && !SILVERLIGHT
 		public static void Save(byte[] data, int width, int height, Stream outStream)
 		{
 			using (var dataStream = new MemoryStream(data))

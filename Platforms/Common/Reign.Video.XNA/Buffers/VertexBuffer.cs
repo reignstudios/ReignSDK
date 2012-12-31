@@ -146,6 +146,9 @@ namespace Reign.Video.XNA
 
 		public override void DrawInstanced(int drawCount)
 		{
+			#if SILVERLIGHT
+			Debug.ThrowError("VertexBuffer", "DrawInstanced is not supported, use DrawInstancedClassic instead");
+			#else
 			var buffers = new X.VertexBufferBinding[2]
 			{
 			    new X.VertexBufferBinding(vertexBuffer, 0, 0),
@@ -157,6 +160,7 @@ namespace Reign.Video.XNA
 			if (indexBuffer == null) primitiveCount = (vertexCount/primitiveVertexCount);
 			else primitiveCount = (indexBuffer.IndexCount/primitiveVertexCount);
 			video.Device.DrawInstancedPrimitives(primitiveTopology, 0, 0, vertexCount, 0, primitiveCount, drawCount);
+			#endif
 		}
 
 		public override void DrawInstancedClassic(int drawCount, int meshVertexCount, int meshIndexCount)

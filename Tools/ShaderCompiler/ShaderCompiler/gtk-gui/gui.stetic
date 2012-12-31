@@ -84,6 +84,7 @@
 D3D11
 D3D9
 XNA
+Silverlight
 GL2
 GL3
 GLES2</property>
@@ -142,6 +143,21 @@ GLES2</property>
           <packing>
             <property name="X">10</property>
             <property name="Y">126</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.CheckButton" id="compileSilverlightShaders">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Label" translatable="yes">Compile Silverlight Shaders</property>
+            <property name="Active">True</property>
+            <property name="DrawIndicator">True</property>
+            <property name="HasLabel">True</property>
+            <property name="UseUnderline">True</property>
+          </widget>
+          <packing>
+            <property name="X">223</property>
+            <property name="Y">182</property>
           </packing>
         </child>
       </widget>

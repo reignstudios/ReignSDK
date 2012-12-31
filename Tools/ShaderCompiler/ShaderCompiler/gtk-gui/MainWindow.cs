@@ -14,6 +14,7 @@ public partial class MainWindow
 	private global::Gtk.ComboBox recentShaderOutputs;
 	private global::Gtk.Entry shaderDirTextBox;
 	private global::Gtk.Label label2;
+	private global::Gtk.CheckButton compileSilverlightShaders;
 	
 	protected virtual void Build ()
 	{
@@ -78,6 +79,7 @@ public partial class MainWindow
 		this.compileTypesComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("D3D11"));
 		this.compileTypesComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("D3D9"));
 		this.compileTypesComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("XNA"));
+		this.compileTypesComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("Silverlight"));
 		this.compileTypesComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("GL2"));
 		this.compileTypesComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("GL3"));
 		this.compileTypesComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("GLES2"));
@@ -126,6 +128,18 @@ public partial class MainWindow
 		global::Gtk.Fixed.FixedChild w10 = ((global::Gtk.Fixed.FixedChild)(this.fixed1 [this.label2]));
 		w10.X = 10;
 		w10.Y = 126;
+		// Container child fixed1.Gtk.Fixed+FixedChild
+		this.compileSilverlightShaders = new global::Gtk.CheckButton ();
+		this.compileSilverlightShaders.CanFocus = true;
+		this.compileSilverlightShaders.Name = "compileSilverlightShaders";
+		this.compileSilverlightShaders.Label = global::Mono.Unix.Catalog.GetString ("Compile Silverlight Shaders");
+		this.compileSilverlightShaders.Active = true;
+		this.compileSilverlightShaders.DrawIndicator = true;
+		this.compileSilverlightShaders.UseUnderline = true;
+		this.fixed1.Add (this.compileSilverlightShaders);
+		global::Gtk.Fixed.FixedChild w11 = ((global::Gtk.Fixed.FixedChild)(this.fixed1 [this.compileSilverlightShaders]));
+		w11.X = 223;
+		w11.Y = 182;
 		this.Add (this.fixed1);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();

@@ -39,6 +39,7 @@ public partial class MainWindow: Gtk.Window
 				shaderDirTextBox.Text = reader.ReadLine();
 				compileTypesComboBox.Active = int.Parse(reader.ReadLine());
 				compileMetroShadersCheckBox.Active = bool.Parse(reader.ReadLine());
+				compileSilverlightShaders.Active = bool.Parse(reader.ReadLine());
 			}
 		}
 		catch{}
@@ -55,6 +56,7 @@ public partial class MainWindow: Gtk.Window
 				writer.WriteLine(shaderDirTextBox.Text);
 				writer.WriteLine(compileTypesComboBox.Active.ToString());
 				writer.WriteLine(compileMetroShadersCheckBox.Active.ToString());
+				writer.WriteLine(compileSilverlightShaders.Active.ToString());
 			}
 		}
 		catch{}
@@ -70,6 +72,7 @@ public partial class MainWindow: Gtk.Window
 				compileProjectType(compiler, "D3D11", false);
 				compileProjectType(compiler, "D3D9", false);
 				compileProjectType(compiler, "XNA", false);
+				compileProjectType(compiler, "Silverlight", false);
 				compileProjectType(compiler, "GL3", false);
 				compileProjectType(compiler, "GL2", false);
 				compileProjectType(compiler, "GLES2", true);
@@ -110,6 +113,11 @@ public partial class MainWindow: Gtk.Window
 				outputType = CompilerOutputs.XNA;
 				break;
 				
+			case ("Silverlight"):
+				tag = "Silverlight_";
+				outputType = CompilerOutputs.Silverlight;
+				break;
+				
 			case ("GL3"):
 				tag = "GL3_";
 				outputType = CompilerOutputs.GL3;
@@ -127,6 +135,6 @@ public partial class MainWindow: Gtk.Window
 		}
 		
 		compiler.FileTag = tag;
-		compiler.Compile(shaderDirTextBox.Text, outputType, compileMaterial, compileMetroShadersCheckBox.Active);
+		compiler.Compile(shaderDirTextBox.Text, outputType, compileMaterial, compileMetroShadersCheckBox.Active, compileSilverlightShaders.Active);
 	}
 }

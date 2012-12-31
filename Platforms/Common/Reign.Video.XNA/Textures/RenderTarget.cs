@@ -1,7 +1,6 @@
 ﻿using System;
 using X = Microsoft.Xna.Framework.Graphics;
 using XF = Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Reign.Core;
 using System.IO;
 using System.Collections.Generic;
@@ -35,9 +34,9 @@ namespace Reign.Video.XNA
 		{
 		}
 
-		protected override bool init(DisposableI parent, string fileName, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		protected override bool init(DisposableI parent, string fileName, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
 		{
-			if (!base.init(parent, fileName, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, usage, true, loadedCallback, failedToLoadCallback)) return false;
+			if (!base.init(parent, fileName, image, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, usage, true, loadedCallback, failedToLoadCallback)) return false;
 
 			try
 			{
@@ -46,10 +45,21 @@ namespace Reign.Video.XNA
 				if (fileName == null)
 				{
 					// TODO: handle multiSampleType types
+					#if SILVERLIGHT
+					var xUsage = X.RenderTargetUsage.PreserveContents;
+					#else
 					var xUsage = X.RenderTargetUsage.PlatformContents;
+					#endif
 					switch (renderTargetUsage)
 					{
-						case (RenderTargetUsage.PlatformDefault): xUsage = X.RenderTargetUsage.PlatformContents; break;
+						case (RenderTargetUsage.PlatformDefault):
+							#if SILVERLIGHT
+							xUsage = X.RenderTargetUsage.PreserveContents;
+							#else
+							xUsage = X.RenderTargetUsage.PlatformContents;
+							#endif
+							break;
+
 						case (RenderTargetUsage.PreserveContents): xUsage = X.RenderTargetUsage.PreserveContents; break;
 						case (RenderTargetUsage.DiscardContents): xUsage = X.RenderTargetUsage.DiscardContents; break;
 					}

@@ -99,7 +99,9 @@ namespace Reign.Core
 	#if iOS
 	: GLController
 	#elif ANDROID
-	 : RootActivity
+	: RootActivity
+	#elif SILVERLIGHT
+	: SilverlightApplication
 	#elif XNA
 	: XNAGame
 	#elif METRO
@@ -144,6 +146,8 @@ namespace Reign.Core
 		: base(enableAds, publisherID)
 		#elif METRO
 		public Application(ApplicationOrientations orientation)
+		#elif SILVERLIGHT
+		public Application()
 		#elif XNA
 		public Application(int width, int height)
 		#else
@@ -156,7 +160,7 @@ namespace Reign.Core
 			theEvent = new ApplicationEvent();
 				
 			OS.CurrentApplication = this;
-			#if iOS || ANDROID || METRO
+			#if iOS || ANDROID || METRO || SILVERLIGHT
 			setApplication(this);
 			#elif XNA
 			init(this, width, height);
@@ -184,7 +188,7 @@ namespace Reign.Core
 			#endif
 		}
 
-		#if XNA
+		#if XNA && !SILVERLIGHT
 		public void Close()
 		{
 			Exit();

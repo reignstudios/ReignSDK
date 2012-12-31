@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3A35C6AD-750F-48BF-BFE7-582C03EBDCC6}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Reign.Core</RootNamespace>
+    <AssemblyName>Reign.Core</AssemblyName>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <!-- This property group is only here to support building this project using the 
+       MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
+       to set the TargetFrameworkVersion to v3.5 -->
+  <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;XNA</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;XNA</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework" />
+    <Reference Include="Microsoft.Xna.Framework.Graphics" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core">
+      <HintPath>$(TargetFrameworkDirectory)System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Xna" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Browser" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\Reign.Core\Debug.cs">
+      <Link>Debug.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Disposable\Disposable.cs">
+      <Link>Disposable\Disposable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Disposable\RootDisposable.cs">
+      <Link>Disposable\RootDisposable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Extensions.cs">
+      <Link>Extensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Loader.cs">
+      <Link>Loader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\AffineTransform3.cs">
+      <Link>Math\AffineTransform3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingBox2.cs">
+      <Link>Math\BoundingBox2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingBox3.cs">
+      <Link>Math\BoundingBox3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingFrustum3.cs">
+      <Link>Math\BoundingFrustum3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingSphere2.cs">
+      <Link>Math\BoundingSphere2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingSphere3.cs">
+      <Link>Math\BoundingSphere3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Color4.cs">
+      <Link>Math\Color4.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Line2.cs">
+      <Link>Math\Line2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Line3.cs">
+      <Link>Math\Line3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\MathUtilities.cs">
+      <Link>Math\MathUtilities.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Matrix2.cs">
+      <Link>Math\Matrix2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Matrix2x3.cs">
+      <Link>Math\Matrix2x3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Matrix3.cs">
+      <Link>Math\Matrix3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Matrix3x2.cs">
+      <Link>Math\Matrix3x2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Matrix4.cs">
+      <Link>Math\Matrix4.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Plane3.cs">
+      <Link>Math\Plane3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Point2.cs">
+      <Link>Math\Point2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Quaternion.cs">
+      <Link>Math\Quaternion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Ray3.cs">
+      <Link>Math\Ray3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Rect2.cs">
+      <Link>Math\Rect2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\RigidTransform3.cs">
+      <Link>Math\RigidTransform3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Size2.cs">
+      <Link>Math\Size2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Size3.cs">
+      <Link>Math\Size3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Triangle3.cs">
+      <Link>Math\Triangle3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Vector2.cs">
+      <Link>Math\Vector2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Vector3.cs">
+      <Link>Math\Vector3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\Vector4.cs">
+      <Link>Math\Vector4.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\OS\Application.cs">
+      <Link>OS\Application.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\OS\Message.cs">
+      <Link>OS\Message.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\OS\OS.cs">
+      <Link>OS\OS.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Random.cs">
+      <Link>Random.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Streams.cs">
+      <Link>Streams.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Time.cs">
+      <Link>Time.cs</Link>
+    </Compile>
+    <Compile Include="OS\SilverlightApplication.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

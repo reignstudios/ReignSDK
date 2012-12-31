@@ -33,7 +33,9 @@ namespace Reign.Video.XNA
 				MaxAnisotropy = 1,
 				AddressU = desc.AddressU,
 				AddressV = desc.AddressV,
+				#if !SILVERLIGHT
 				AddressW = desc.AddressW
+				#endif
 			};
 
 			video.Device.SamplerStates[index] = samplerState;

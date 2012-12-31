@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Core", "Reign.Core\Reign.Core.csproj", "{3A35C6AD-750F-48BF-BFE7-582C03EBDCC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video", "Reign.Video\Reign.Video.csproj", "{BF18E913-A406-412A-983C-8021BD4C3DEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.XNA", "Reign.Video.XNA\Reign.Video.XNA.csproj", "{AF3FE680-0036-4907-8A7C-D3CE59BA300F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.API", "Reign.Video.API\Reign.Video.API.csproj", "{7747B430-70CF-4A02-9241-ED06CC999E07}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3A35C6AD-750F-48BF-BFE7-582C03EBDCC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A35C6AD-750F-48BF-BFE7-582C03EBDCC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A35C6AD-750F-48BF-BFE7-582C03EBDCC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A35C6AD-750F-48BF-BFE7-582C03EBDCC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF18E913-A406-412A-983C-8021BD4C3DEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF18E913-A406-412A-983C-8021BD4C3DEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF18E913-A406-412A-983C-8021BD4C3DEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF18E913-A406-412A-983C-8021BD4C3DEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF3FE680-0036-4907-8A7C-D3CE59BA300F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF3FE680-0036-4907-8A7C-D3CE59BA300F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF3FE680-0036-4907-8A7C-D3CE59BA300F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF3FE680-0036-4907-8A7C-D3CE59BA300F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7747B430-70CF-4A02-9241-ED06CC999E07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7747B430-70CF-4A02-9241-ED06CC999E07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7747B430-70CF-4A02-9241-ED06CC999E07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7747B430-70CF-4A02-9241-ED06CC999E07}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

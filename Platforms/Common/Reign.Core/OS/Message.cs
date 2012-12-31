@@ -7,7 +7,9 @@ using Windows.UI.Popups;
 using System.Windows.Forms;
 #endif
 
-#if XNA
+#if SILVERLIGHT
+using System.Windows;
+#elif XNA
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.GamerServices;
 #endif
@@ -44,7 +46,9 @@ namespace Reign.Core
 			MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			#endif
 
-			#if XNA
+			#if SILVERLIGHT
+			OS.CurrentApplication.MainUserControl.Dispatcher.BeginInvoke( delegate { MessageBox.Show(message, title, MessageBoxButton.OK); });
+			#elif XNA
 			var options = new List<string>();
 			options.Add("OK");
 			Guide.BeginShowMessageBox(title, message, options, 0, MessageBoxIcon.Alert, null, null);

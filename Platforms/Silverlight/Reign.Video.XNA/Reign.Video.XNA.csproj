@@ -1,0 +1,154 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AF3FE680-0036-4907-8A7C-D3CE59BA300F}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Reign.Video.XNA</RootNamespace>
+    <AssemblyName>Reign.Video.XNA</AssemblyName>
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <!-- This property group is only here to support building this project using the 
+       MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
+       to set the TargetFrameworkVersion to v3.5 -->
+  <PropertyGroup Condition="'$(MSBuildToolsVersion)' == '3.5'">
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT;XNA</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;XNA</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework" />
+    <Reference Include="Microsoft.Xna.Framework.Graphics" />
+    <Reference Include="Microsoft.Xna.Framework.Graphics.Shaders" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core">
+      <HintPath>$(TargetFrameworkDirectory)System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Xna" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Browser" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\Reign.Video.XNA\Buffers\BufferLayout.cs">
+      <Link>Buffers\BufferLayout.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\Buffers\BufferLayoutDesc.cs">
+      <Link>Buffers\BufferLayoutDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\Buffers\IndexBuffer.cs">
+      <Link>Buffers\IndexBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\Buffers\VertexBuffer.cs">
+      <Link>Buffers\VertexBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\DepthStencil.cs">
+      <Link>DepthStencil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\QuickDraw.cs">
+      <Link>QuickDraw.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\Shaders\Shader.cs">
+      <Link>Shaders\Shader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\Shaders\ShaderResource.cs">
+      <Link>Shaders\ShaderResource.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\Shaders\ShaderVariable.cs">
+      <Link>Shaders\ShaderVariable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\States\BlendState.cs">
+      <Link>States\BlendState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\States\BlendStateDesc.cs">
+      <Link>States\BlendStateDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\States\DepthStencilState.cs">
+      <Link>States\DepthStencilState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\States\DepthStencilStateDesc.cs">
+      <Link>States\DepthStencilStateDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\States\RasterizerState.cs">
+      <Link>States\RasterizerState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\States\RasterizerStateDesc.cs">
+      <Link>States\RasterizerStateDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\States\SamplerState.cs">
+      <Link>States\SamplerState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\States\SamplerStateDesc.cs">
+      <Link>States\SamplerStateDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\Textures\RenderTarget.cs">
+      <Link>Textures\RenderTarget.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\Textures\Texture2D.cs">
+      <Link>Textures\Texture2D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\Video.cs">
+      <Link>Video.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.XNA\ViewPort.cs">
+      <Link>ViewPort.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{3a35c6ad-750f-48bf-bfe7-582c03ebdcc6}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Video\Reign.Video.csproj">
+      <Project>{bf18e913-a406-412a-983c-8021bd4c3dee}</Project>
+      <Name>Reign.Video</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

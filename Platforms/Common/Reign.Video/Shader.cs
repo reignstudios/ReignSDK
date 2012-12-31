@@ -110,7 +110,7 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
-		#if METRO
+		#if METRO || SILVERLIGHT
 		protected byte[][] getShaders(Stream stream)
 		{
 			var code = new byte[2][];
