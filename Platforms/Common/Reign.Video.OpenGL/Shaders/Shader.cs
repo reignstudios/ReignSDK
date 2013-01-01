@@ -17,49 +17,55 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return new Shader(parent, fileName, shaderVersion, loadedCallback, failedToLoadCallback);
+			return new Shader(parent, fileName, shaderVersion, loadedCallback);
 		}
 
-		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return new Shader(parent, fileName, shaderVersion, vsQuality, psQuality, loadedCallback, failedToLoadCallback);
+			return new Shader(parent, fileName, shaderVersion, vsQuality, psQuality, loadedCallback);
 		}
 
-		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			new StreamLoader(fileName,
-			delegate(object sender)
+			delegate(object sender, bool succeeded)
 			{
-				init(((StreamLoader)sender).LoadedStream, shaderVersion, ShaderFloatingPointQuality.High, ShaderFloatingPointQuality.Low, loadedCallback, failedToLoadCallback);
-			},
-			delegate
-			{
-				FailedToLoad = true;
-				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (succeeded)
+				{
+					init(((StreamLoader)sender).LoadedStream, shaderVersion, ShaderFloatingPointQuality.High, ShaderFloatingPointQuality.Low, loadedCallback);
+				}
+				else
+				{
+					FailedToLoad = true;
+					Dispose();
+					if (loadedCallback != null) loadedCallback(this, false);
+				}
 			});
 		}
 		
-		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			new StreamLoader(fileName,
-			delegate(object sender)
+			delegate(object sender, bool succeeded)
 			{
-				init(((StreamLoader)sender).LoadedStream, shaderVersion, vsQuality, psQuality, loadedCallback, failedToLoadCallback);
-			},
-			delegate
-			{
-				FailedToLoad = true;
-				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (succeeded)
+				{
+					init(((StreamLoader)sender).LoadedStream, shaderVersion, vsQuality, psQuality, loadedCallback);
+				}
+				else
+				{
+					FailedToLoad = true;
+					Dispose();
+					if (loadedCallback != null) loadedCallback(this, false);
+				}
 			});
 		}
 
-		private void init(Stream stream, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		private void init(Stream stream, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			try
 			{
@@ -86,13 +92,13 @@ namespace Reign.Video.OpenGL
 				FailedToLoad = true;
 				Loader.AddLoadableException(e);
 				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (loadedCallback != null) loadedCallback(this, false);
 				return;
 			}
 
 			Loaded = true;
 			Loader.AddLoadable(this);
-			if (loadedCallback != null) loadedCallback(this);
+			if (loadedCallback != null) loadedCallback(this, true);
 		}
 
 		public override void Dispose()

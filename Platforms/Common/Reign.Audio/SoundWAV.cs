@@ -84,7 +84,7 @@ namespace Reign.Audio
 			TotalTime = TimeSpan.FromSeconds(dataSize / formatAvgBytesPerSec);
 		}
 
-		protected virtual void init(DisposableI parent, Stream stream, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		protected virtual void init(DisposableI parent, Stream stream, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			using (stream)
 			using (var reader = new BinaryReader(stream))
@@ -108,11 +108,11 @@ namespace Reign.Audio
 			SoundWAVAPI.newPtr = newPtr;
 		}
 
-		public delegate SoundWAVI NewPtrMethod(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback);
+		public delegate SoundWAVI NewPtrMethod(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback);
 		private static NewPtrMethod newPtr;
-		public static SoundWAVI New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static SoundWAVI New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return newPtr(parent, fileName, instanceCount, looped, loadedCallback, failedToLoadCallback);
+			return newPtr(parent, fileName, instanceCount, looped, loadedCallback);
 		}
 	}
 }

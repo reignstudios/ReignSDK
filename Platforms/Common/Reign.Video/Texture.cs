@@ -92,32 +92,32 @@ namespace Reign.Video
 			Texture2DAPI.newPtr3 = newPtr3;
 		}
 
-		public delegate Texture2DI NewReferencePtrMethod(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback);
+		public delegate Texture2DI NewReferencePtrMethod(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback);
 		private static NewReferencePtrMethod newReferencePtr;
-		public static Texture2DI NewReference(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static Texture2DI NewReference(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return newReferencePtr(parent, fileName, loadedCallback, failedToLoadCallback);
+			return newReferencePtr(parent, fileName, loadedCallback);
 		}
 
-		public delegate Texture2DI NewPtrMethod1(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback);
+		public delegate Texture2DI NewPtrMethod1(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback);
 		private static NewPtrMethod1 newPtr1;
-		public static Texture2DI New(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static Texture2DI New(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return newPtr1(parent, fileName, loadedCallback, failedToLoadCallback);
+			return newPtr1(parent, fileName, loadedCallback);
 		}
 
-		public delegate Texture2DI NewPtrMethod2(DisposableI parent, string fileName, bool generateMipmaps, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback);
+		public delegate Texture2DI NewPtrMethod2(DisposableI parent, string fileName, bool generateMipmaps, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback);
 		private static NewPtrMethod2 newPtr2;
-		public static Texture2DI New(DisposableI parent, string fileName, bool generateMipmaps, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static Texture2DI New(DisposableI parent, string fileName, bool generateMipmaps, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return newPtr2(parent, fileName, generateMipmaps, usage, loadedCallback, failedToLoadCallback);
+			return newPtr2(parent, fileName, generateMipmaps, usage, loadedCallback);
 		}
 
-		public delegate Texture2DI NewPtrMethod3(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback);
+		public delegate Texture2DI NewPtrMethod3(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback);
 		private static NewPtrMethod3 newPtr3;
-		public static Texture2DI New(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static Texture2DI New(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return newPtr3(parent, width, height, surfaceFormat, usage, loadedCallback, failedToLoadCallback);
+			return newPtr3(parent, width, height, surfaceFormat, usage, loadedCallback);
 		}
 	}
 
@@ -129,18 +129,18 @@ namespace Reign.Video
 			RenderTargetAPI.newPtr2 = newPtr2;
 		}
 
-		public delegate RenderTargetI NewPtrMethod1(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback);
+		public delegate RenderTargetI NewPtrMethod1(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback);
 		private static NewPtrMethod1 newPtr1;
-		public static RenderTargetI New(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static RenderTargetI New(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return newPtr1(parent, width, height, multiSampleType, surfaceFormat, usage, renderTargetUsage, loadedCallback, failedToLoadCallback);
+			return newPtr1(parent, width, height, multiSampleType, surfaceFormat, usage, renderTargetUsage, loadedCallback);
 		}
 
-		public delegate RenderTargetI NewPtrMethod2(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback);
+		public delegate RenderTargetI NewPtrMethod2(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback);
 		private static NewPtrMethod2 newPtr2;
-		public static RenderTargetI New(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static RenderTargetI New(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return newPtr2(parent, fileName, multiSampleType, usage, renderTargetUsage, loadedCallback, failedToLoadCallback);
+			return newPtr2(parent, fileName, multiSampleType, usage, renderTargetUsage, loadedCallback);
 		}
 	}
 }

@@ -18,25 +18,25 @@ namespace Reign.Video
 	#endif
 	{
 		#region Construtors
-		public ImageBMP(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
-		: base(fileName, flip, loadedCallback, failedToLoadCallback)
+		public ImageBMP(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback)
+		: base(fileName, flip, loadedCallback)
 		{
 			
 		}
 
-		public ImageBMP(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
-		: base(stream, flip, loadedCallback, failedToLoadCallback)
+		public ImageBMP(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback)
+		: base(stream, flip, loadedCallback)
 		{
 			
 		}
 
-		protected override void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		protected override void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			ImageType = ImageTypes.BMP;
 			ImageFormat = ImageFormats.BMP;
 			SurfaceFormat = SurfaceFormats.RGBAx8;
 
-			base.init(stream, flip, loadedCallback, failedToLoadCallback);
+			base.init(stream, flip, loadedCallback);
 		}
 		#endregion
 	}

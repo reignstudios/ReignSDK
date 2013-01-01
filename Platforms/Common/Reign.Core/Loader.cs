@@ -16,16 +16,14 @@ namespace Reign.Core
 		public bool Loaded {get; private set;}
 		public bool FailedToLoad {get; private set;}
 		public Loader.LoadedCallbackMethod LoadedCallback {get; private set;}
-		public Loader.FailedToLoadCallbackMethod FailedToLoadCallback {get; private set;}
 
 		private LoadableI[] loadables;
 		public LoadableI[] Loadables {get{return loadables;}}
 
-		public LoadWaiter(LoadableI[] loadables, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public LoadWaiter(LoadableI[] loadables, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			this.loadables = loadables;
 			LoadedCallback = loadedCallback;
-			FailedToLoadCallback = failedToLoadCallback;
 
 			Loader.AddLoadable(this);
 		}
@@ -40,7 +38,7 @@ namespace Reign.Core
 				if (loadable.FailedToLoad)
 				{
 					FailedToLoad = true;
-					if (FailedToLoadCallback != null) FailedToLoadCallback();
+					if (LoadedCallback != null) LoadedCallback(this, false);
 					finish();
 					return false;
 				}
@@ -49,7 +47,7 @@ namespace Reign.Core
 			if (loadables.Length == loadedCount)
 			{
 				Loaded = true;
-				if (LoadedCallback != null) LoadedCallback(this);
+				if (LoadedCallback != null) LoadedCallback(this, true);
 				finish();
 				return true;
 			}
@@ -60,14 +58,12 @@ namespace Reign.Core
 		private void finish()
 		{
 			LoadedCallback = null;
-			FailedToLoadCallback = null;
 		}
 	}
 
 	public static class Loader
 	{
-		public delegate void LoadedCallbackMethod(object sender);
-		public delegate void FailedToLoadCallbackMethod();
+		public delegate void LoadedCallbackMethod(object sender, bool succeeded);
 
 		public static int ItemsRemainingToLoad {get{return loadables.Count;}}
 		private static List<LoadableI> loadables;

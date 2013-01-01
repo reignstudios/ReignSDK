@@ -201,26 +201,29 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public ImageDDS(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public ImageDDS(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			new StreamLoader(fileName,
-			delegate(object sender)
+			delegate(object sender, bool succeeded)
 			{
-				init(((StreamLoader)sender).LoadedStream, flip, loadedCallback, failedToLoadCallback);
-			},
-			delegate
-			{
-				FailedToLoad = true;
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (succeeded)
+				{
+					init(((StreamLoader)sender).LoadedStream, flip, loadedCallback);
+				}
+				else
+				{
+					FailedToLoad = true;
+					if (loadedCallback != null) loadedCallback(this, false);
+				}
 			});
 		}
 
-		public ImageDDS(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public ImageDDS(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			init(stream, flip, loadedCallback, failedToLoadCallback);
+			init(stream, flip, loadedCallback);
 		}
 
-		protected override void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		protected override void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			try
 			{
@@ -395,12 +398,12 @@ namespace Reign.Video
 			{
 				FailedToLoad = true;
 				Loader.AddLoadableException(e);
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (loadedCallback != null) loadedCallback(this, false);
 				return;
 			}
 
 			Loaded = true;
-			if (loadedCallback != null) loadedCallback(this);
+			if (loadedCallback != null) loadedCallback(this, true);
 		}
 
 		private byte[] flipCompressedData(byte[] data, int width, int height, int blockSize)

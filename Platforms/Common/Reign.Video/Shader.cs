@@ -162,18 +162,18 @@ namespace Reign.Video
 			ShaderAPI.newPtr2 = newPtr2;
 		}
 
-		public delegate ShaderI NewPtrMethod1(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback);
+		public delegate ShaderI NewPtrMethod1(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback);
 		private static NewPtrMethod1 newPtr1;
-		public static ShaderI New(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static ShaderI New(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return newPtr1(parent, fileName, shaderVersion, loadedCallback, failedToLoadCallback);
+			return newPtr1(parent, fileName, shaderVersion, loadedCallback);
 		}
 
-		public delegate ShaderI NewPtrMethod2(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback);
+		public delegate ShaderI NewPtrMethod2(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback);
 		private static NewPtrMethod2 newPtr2;
-		public static ShaderI New(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static ShaderI New(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return newPtr2(parent, fileName, shaderVersion, vsQuality, psQuality, loadedCallback, failedToLoadCallback);
+			return newPtr2(parent, fileName, shaderVersion, vsQuality, psQuality, loadedCallback);
 		}
 	}
 }

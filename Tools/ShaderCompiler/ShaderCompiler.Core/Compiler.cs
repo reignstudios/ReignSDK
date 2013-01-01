@@ -530,35 +530,41 @@ namespace ShaderMaterials.{0}
 		#endregion
 
 		#region Constructors
-		public static void Init(DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static void Init(DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
 		{{
 			Shader = ShaderAPI.New(parent, contentPath + tag + ""{1}.rs"", shaderVersion,
-			delegate(object sender)
+			delegate(object sender, bool succeeded)
 			{{
-				init((ShaderI)sender, loadedCallback, failedToLoadCallback);
-			}},
-			delegate
-			{{
-				FailedToLoad = true;
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (succeeded)
+				{{
+					init((ShaderI)sender, loadedCallback);
+				}}
+				else
+				{{
+					FailedToLoad = true;
+					if (loadedCallback != null) loadedCallback(null, false);
+				}}
 			}});
 		}}
 
-		public static void Init(DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static void Init(DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		{{
 			Shader = ShaderAPI.New(parent, contentPath + tag + ""{1}.rs"", shaderVersion, vsQuality, psQuality,
-			delegate(object sender)
+			delegate(object sender, bool succeeded)
 			{{
-				init((ShaderI)sender, loadedCallback, failedToLoadCallback);
-			}},
-			delegate
-			{{
-				FailedToLoad = true;
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (succeeded)
+				{{
+					init((ShaderI)sender, loadedCallback);
+				}}
+				else
+				{{
+					FailedToLoad = true;
+					if (loadedCallback != null) loadedCallback(null, false);
+				}}
 			}});
 		}}
 		
-		private static void init(ShaderI shader, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		private static void init(ShaderI shader, Loader.LoadedCallbackMethod loadedCallback)
 		{{
 			try
 			{{
@@ -573,12 +579,12 @@ namespace ShaderMaterials.{0}
 				FailedToLoad = true;
 				Loader.AddLoadableException(e);
 				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (loadedCallback != null) loadedCallback(null, false);
 				return;
 			}}
 			
 			Loaded = true;
-			if (loadedCallback != null) loadedCallback(null);
+			if (loadedCallback != null) loadedCallback(null, true);
 		}}
 
 		public static void Dispose()

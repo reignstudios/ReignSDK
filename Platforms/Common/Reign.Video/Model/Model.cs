@@ -20,54 +20,60 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public Model(DisposableI parent, string fileName, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public Model(DisposableI parent, string fileName, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			new StreamLoader(fileName,
-			delegate(object sender)
+			delegate(object sender, bool succeeded)
 			{
-				init(fileName, ((StreamLoader)sender).LoadedStream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, classicInstanceCount, loadedCallback, failedToLoadCallback);
-			},
-			delegate
-			{
-				FailedToLoad = true;
-				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (succeeded)
+				{
+					init(fileName, ((StreamLoader)sender).LoadedStream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, classicInstanceCount, loadedCallback);
+				}
+				else
+				{
+					FailedToLoad = true;
+					Dispose();
+					if (loadedCallback != null) loadedCallback(this, false);
+				}
 			});
 		}
 
-		public Model(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public Model(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			new LoadWaiter(new LoadableI[]{softwareModel},
-			delegate
+			delegate(object sender, bool succeeeded)
 			{
-				using (var stream = new MemoryStream())
+				if (succeeeded)
 				{
-					try
+					using (var stream = new MemoryStream())
 					{
-						Model.Save(stream, false, softwareModel, positionSize, loadColors, loadUVs, loadNormals);
-						stream.Position = 0;
-					}
-					catch (Exception e)
-					{
-						FailedToLoad = true;
-						Dispose();
-						if (failedToLoadCallback != null) failedToLoadCallback();
-					}
+						try
+						{
+							Model.Save(stream, false, softwareModel, positionSize, loadColors, loadUVs, loadNormals);
+							stream.Position = 0;
+						}
+						catch (Exception e)
+						{
+							FailedToLoad = true;
+							Dispose();
+							if (loadedCallback != null) loadedCallback(this, false);
+						}
 
-					init(null, stream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, classicInstanceCount, loadedCallback, failedToLoadCallback);
+						init(null, stream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, classicInstanceCount, loadedCallback);
+					}
 				}
-			},
-			delegate
-			{
-				FailedToLoad = true;
-				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				else
+				{
+					FailedToLoad = true;
+					Dispose();
+					if (loadedCallback != null) loadedCallback(this, false);
+				}
 			});
 		}
 
-		private void init(string fileName, Stream stream, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		private void init(string fileName, Stream stream, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			try
 			{
@@ -150,28 +156,31 @@ namespace Reign.Video
 				FailedToLoad = true;
 				Loader.AddLoadableException(e);
 				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (loadedCallback != null) loadedCallback(this, false);
 				return;
 			}
 
 			if (Textures.Count == 0)
 			{
 				Loaded = true;
-				if (loadedCallback != null) loadedCallback(this);
+				if (loadedCallback != null) loadedCallback(this, true);
 			}
 			else
 			{
 				new LoadWaiter(Textures.ToArray(),
-				delegate(object sender)
+				delegate(object sender, bool succeeded)
 				{
-					Loaded = true;
-					if (loadedCallback != null) loadedCallback(this);
-				},
-				delegate
-				{
-					FailedToLoad = true;
-					Dispose();
-					if (failedToLoadCallback != null) failedToLoadCallback();
+					if (succeeded)
+					{
+						Loaded = true;
+						if (loadedCallback != null) loadedCallback(this, true);
+					}
+					else
+					{
+						FailedToLoad = true;
+						Dispose();
+						if (loadedCallback != null) loadedCallback(this, false);
+					}
 				});
 			}
 		}
@@ -215,7 +224,7 @@ namespace Reign.Video
 				textureFileName = Streams.GetFileNameWithExt(textureFileName);
 			}
 
-			var texture = Texture2DAPI.NewReference(Parent, contentDirectory + textureFileName, null, null);
+			var texture = Texture2DAPI.NewReference(Parent, contentDirectory + textureFileName, null);
 			if (!Textures.Contains(texture)) Textures.Add(texture);
 			materialField.SetValue(material, texture);
 		}

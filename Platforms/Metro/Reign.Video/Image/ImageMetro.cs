@@ -14,28 +14,31 @@ namespace Reign.Video
 	public class ImageMetro : Image
 	{
 		#region Constructors
-		public ImageMetro(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public ImageMetro(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			Loader.AddLoadable(this);
 			new StreamLoader(fileName,
-			delegate(object sender)
+			delegate(object sender, bool succeeded)
 			{
-				init(((StreamLoader)sender).LoadedStream, flip, loadedCallback, failedToLoadCallback);
-			},
-			delegate
-			{
-				FailedToLoad = true;
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (succeeded)
+				{
+					init(((StreamLoader)sender).LoadedStream, flip, loadedCallback);
+				}
+				else
+				{
+					FailedToLoad = true;
+					if (loadedCallback != null) loadedCallback(this, false);
+				}
 			});
 		}
 
-		public ImageMetro(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public ImageMetro(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			Loader.AddLoadable(this);
-			init(stream, flip, loadedCallback, failedToLoadCallback);
+			init(stream, flip, loadedCallback);
 		}
 
-		protected override async void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		protected override async void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			try
 			{
@@ -65,37 +68,46 @@ namespace Reign.Video
 			{
 				FailedToLoad = true;
 				Loader.AddLoadableException(e);
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (loadedCallback != null) loadedCallback(this, false);
 				return;
 			}
 
 			Loaded = true;
-			if (loadedCallback != null) loadedCallback(this);
+			if (loadedCallback != null) loadedCallback(this, true);
 		}
 		#endregion
 
 		#region Methods
-		protected static async Task save(byte[] data, int width, int height, Stream outStream, ImageFormats imageFormat)
+		protected static async void save(byte[] inData, int width, int height, Stream outStream, ImageFormats imageFormat, ImageSavedCallbackMethod imageSavedCallback)
 		{
-			using (var memoryStream = new InMemoryRandomAccessStream())
+			try
 			{
-				Guid encodeID = new Guid();
-				switch (imageFormat)
+				using (var memoryStream = new InMemoryRandomAccessStream())
 				{
-					case (ImageFormats.PNG): encodeID = BitmapEncoder.PngEncoderId; break;
-					case (ImageFormats.JPG): encodeID = BitmapEncoder.PngEncoderId; break;
-					case (ImageFormats.BMP): encodeID = BitmapEncoder.PngEncoderId; break;
-					default: Debug.ThrowError("ImageMetro", "Unsuported image format: " + imageFormat.ToString()); break;
-				}
+					Guid encodeID = new Guid();
+					switch (imageFormat)
+					{
+						case (ImageFormats.PNG): encodeID = BitmapEncoder.PngEncoderId; break;
+						case (ImageFormats.JPG): encodeID = BitmapEncoder.PngEncoderId; break;
+						case (ImageFormats.BMP): encodeID = BitmapEncoder.PngEncoderId; break;
+						default: Debug.ThrowError("ImageMetro", "Unsuported image format: " + imageFormat.ToString()); break;
+					}
 
-				BitmapEncoder encoder = await BitmapEncoder.CreateAsync(encodeID, memoryStream);
-				encoder.SetPixelData(BitmapPixelFormat.Rgba8, BitmapAlphaMode.Straight, (uint)width, (uint)height, 96, 96, data);
-				await encoder.FlushAsync();
+					BitmapEncoder encoder = await BitmapEncoder.CreateAsync(encodeID, memoryStream);
+					encoder.SetPixelData(BitmapPixelFormat.Rgba8, BitmapAlphaMode.Straight, (uint)width, (uint)height, 96, 96, inData);
+					await encoder.FlushAsync();
 				
-				var stream = memoryStream.AsStream();
-				stream.Position = 0;
-				await stream.CopyToAsync(outStream);
+					var stream = memoryStream.AsStream();
+					stream.Position = 0;
+					await stream.CopyToAsync(outStream);
+				}
 			}
+			catch (Exception e)
+			{
+				if (imageSavedCallback != null) imageSavedCallback(false);
+			}
+
+			if (imageSavedCallback != null) imageSavedCallback(true);
 		}
 		#endregion
 	}

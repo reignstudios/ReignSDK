@@ -126,24 +126,24 @@ namespace Reign.Video
 			SurfaceFormat = SurfaceFormats.Unknown;
 		}
 
-		public static Image New(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static Image New(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			string ext = Streams.GetFileExt(fileName);
 			switch (ext.ToLower())
 			{
-				case (".dds"): return new ImageDDS(fileName, flip, loadedCallback, failedToLoadCallback);
-				case (".atc"): return new ImageDDS(fileName, flip, loadedCallback, failedToLoadCallback);
-				case (".pvr"): return new ImagePVR(fileName, flip, loadedCallback, failedToLoadCallback);
+				case (".dds"): return new ImageDDS(fileName, flip, loadedCallback);
+				case (".atc"): return new ImageDDS(fileName, flip, loadedCallback);
+				case (".pvr"): return new ImagePVR(fileName, flip, loadedCallback);
 				#if !XNA && NaCl
-				case (".bmpc"): return new ImageBMPC(fileName, flip, loadedCallback, failedToLoadCallback);
+				case (".bmpc"): return new ImageBMPC(fileName, flip, loadedCallback);
 				#endif
 				#if (!XNA && !NaCl) || SILVERLIGHT
-				case (".bmpc"): return new ImageBMPC(fileName, flip, loadedCallback, failedToLoadCallback);
-				case (".png"): return new ImagePNG(fileName, flip, loadedCallback, failedToLoadCallback);
-				case (".jpg"): return new ImageJPG(fileName, flip, loadedCallback, failedToLoadCallback);
-				case (".jpeg"): return new ImageJPG(fileName, flip, loadedCallback, failedToLoadCallback);
+				case (".bmpc"): return new ImageBMPC(fileName, flip, loadedCallback);
+				case (".png"): return new ImagePNG(fileName, flip, loadedCallback);
+				case (".jpg"): return new ImageJPG(fileName, flip, loadedCallback);
+				case (".jpeg"): return new ImageJPG(fileName, flip, loadedCallback);
 				#if !iOS && !ANDROID
-				case (".bmp"): return new ImageBMP(fileName, flip, loadedCallback, failedToLoadCallback);
+				case (".bmp"): return new ImageBMP(fileName, flip, loadedCallback);
 				#endif
 				#endif
 				default:
@@ -152,7 +152,7 @@ namespace Reign.Video
 			}
 		}
 
-		protected abstract void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback);
+		protected abstract void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback);
 
 		public bool UpdateLoad()
 		{
@@ -190,30 +190,20 @@ namespace Reign.Video
 			return -1;
 		}
 
-		#if METRO
-		public static async Task Save(Stream stream, byte[] data, int width, int height, ImageFormats imageFormat)
+		public delegate void ImageSavedCallbackMethod(bool succeeded);
+		public static void Save(byte[] inData, int width, int height, Stream outStream, ImageFormats imageFormat, ImageSavedCallbackMethod imageSavedCallback)
 		{
 			switch (imageFormat)
 			{
-				case (ImageFormats.BMPC): ImageBMPC.Save(data, width, height, stream); break;
-				case (ImageFormats.PNG): await ImagePNG.Save(data, width, height, stream); break;
-				default: Debug.ThrowError("Image", string.Format("Unsuported format: ", imageFormat)); break;
-			}
-		}
-		#else
-		#if !NaCl
-		public static void Save(Stream stream, byte[] data, int width, int height, ImageFormats imageFormat)
-		{
-			switch (imageFormat)
-			{
-				#if !XNA && NaCl
-				case (ImageFormats.BMPC): ImageBMPC.Save(data, width, height, stream); break;
+				#if !NaCl && !XNA
+				case (ImageFormats.BMPC): ImageBMPC.Save(inData, width, height, outStream, imageSavedCallback); break;
+				#endif
+				#if METRO
+				case (ImageFormats.PNG): ImagePNG.Save(inData, width, height, outStream, imageSavedCallback); break;
 				#endif
 				default: Debug.ThrowError("Image", string.Format("Unsuported format: ", imageFormat)); break;
 			}
 		}
-		#endif
-		#endif
 		#endregion
 	}
 }

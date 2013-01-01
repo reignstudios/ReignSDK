@@ -55,31 +55,30 @@ namespace Reign.Core
 		#if NaCl
 		private NaClFile file;
 		private Loader.LoadedCallbackMethod loadedCallback;
-		private Loader.FailedToLoadCallbackMethod failedToLoadCallback;
 		#endif
 		#endregion
 
 		#region Constructors
-		public StreamLoader(Stream stream, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public StreamLoader(Stream stream, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			#if METRO
 			Loader.AddLoadable(this);
 			#endif
-			init(null, stream, loadedCallback, failedToLoadCallback);
+			init(null, stream, loadedCallback);
 		}
 
-		public StreamLoader(string fileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public StreamLoader(string fileName, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			#if METRO
 			Loader.AddLoadable(this);
 			#endif
-			init(fileName, null, loadedCallback, failedToLoadCallback);
+			init(fileName, null, loadedCallback);
 		}
 
 		#if METRO
-		private async void init(string fileName, Stream stream, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		private async void init(string fileName, Stream stream, Loader.LoadedCallbackMethod loadedCallback)
 		#else
-		private void init(string fileName, Stream stream, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		private void init(string fileName, Stream stream, Loader.LoadedCallbackMethod loadedCallback)
 		#endif
 		{
 			try
@@ -115,12 +114,12 @@ namespace Reign.Core
 				FailedToLoad = true;
 				Loader.AddLoadableException(e);
 				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (loadedCallback != null) loadedCallback(this, false);
 				return;
 			}
 
 			Loaded = true;
-			if (loadedCallback != null) loadedCallback(this);
+			if (loadedCallback != null) loadedCallback(this, true);
 		}
 		
 		#if NaCl
@@ -133,7 +132,7 @@ namespace Reign.Core
 				if (file.FailedToLoad)
 				{
 					FailedToLoad = true;
-					if (failedToLoadCallback != null) failedToLoadCallback();
+					if (loadedCallback != null) loadedCallback(this, false);
 					failedToLoadCallback = null;
 					Dispose();
 					return;
@@ -148,14 +147,14 @@ namespace Reign.Core
 				{
 					FailedToLoad = true;
 					Loader.AddLoadableException(e);
-					if (failedToLoadCallback != null) failedToLoadCallback();
+					if (loadedCallback != null) loadedCallback(this, false);
 					failedToLoadCallback = null;
 					Dispose();
 					return;
 				}
 				
 				Loaded = true;
-				if (loadedCallback != null) loadedCallback(this);
+				if (loadedCallback != null) loadedCallback(this, true);
 				loadedCallback = null;
 			}
 		}
@@ -170,7 +169,6 @@ namespace Reign.Core
 		{
 			#if NaCl
 			loadedCallback = null;
-			failedToLoadCallback = null;
 			#endif
 		
 			if (fromFile && LoadedStream != null)

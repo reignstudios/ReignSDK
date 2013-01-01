@@ -22,35 +22,37 @@ namespace Reign.Video
 	#endif
 	{
 		#region Construtors
-		public ImagePNG(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
-		: base(fileName, flip, loadedCallback, failedToLoadCallback)
+		public ImagePNG(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback)
+		: base(fileName, flip, loadedCallback)
 		{
 			
 		}
 
-		public ImagePNG(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
-		: base(stream, flip, loadedCallback, failedToLoadCallback)
+		public ImagePNG(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback)
+		: base(stream, flip, loadedCallback)
 		{
 			
 		}
 
-		protected override void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		protected override void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			ImageType = ImageTypes.PNG;
 			ImageFormat = ImageFormats.PNG;
 			SurfaceFormat = SurfaceFormats.RGBAx8;
 
-			base.init(stream, flip, loadedCallback, failedToLoadCallback);
+			base.init(stream, flip, loadedCallback);
 		}
 		#endregion
 
 		#region Methods
-		#if METRO
-		public static async Task Save(byte[] data, int width, int height, Stream outStream)
+		public static void Save(byte[] inData, int width, int height, Stream outStream, ImageSavedCallbackMethod imageSavedCallback)
 		{
-			await ImageMetro.save(data, width, height, outStream, ImageFormats.PNG);
+			#if METRO
+			ImageMetro.save(inData, width, height, outStream, ImageFormats.PNG, imageSavedCallback);
+			#else
+			throw new System.NotImplementedException();
+			#endif
 		}
-		#endif
 		#endregion
 	}
 }

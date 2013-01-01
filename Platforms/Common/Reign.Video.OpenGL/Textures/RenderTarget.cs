@@ -10,29 +10,29 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public static RenderTarget New(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static RenderTarget New(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return new RenderTarget(parent, width, height, multiSampleType, surfaceFormat, usage, renderTargetUsage, loadedCallback, failedToLoadCallback);
+			return new RenderTarget(parent, width, height, multiSampleType, surfaceFormat, usage, renderTargetUsage, loadedCallback);
 		}
 
-		public static RenderTarget New(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static RenderTarget New(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return new RenderTarget(parent, fileName, multiSampleType, usage, renderTargetUsage, loadedCallback, failedToLoadCallback);
+			return new RenderTarget(parent, fileName, multiSampleType, usage, renderTargetUsage, loadedCallback);
 		}
 
-		public RenderTarget(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
-		: base(parent, width, height, surfaceFormat, usage, loadedCallback, failedToLoadCallback)
-		{
-		}
-
-		public RenderTarget(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
-		: base(parent, fileName, false, usage, loadedCallback, failedToLoadCallback)
+		public RenderTarget(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
+		: base(parent, width, height, surfaceFormat, usage, loadedCallback)
 		{
 		}
 
-		protected unsafe override bool init(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public RenderTarget(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
+		: base(parent, fileName, false, usage, loadedCallback)
 		{
-			if (!base.init(parent, image, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, usage, true, loadedCallback, failedToLoadCallback)) return false;
+		}
+
+		protected unsafe override bool init(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback)
+		{
+			if (!base.init(parent, image, width, height, false, multiSampleType, surfaceFormat, renderTargetUsage, usage, true, loadedCallback)) return false;
 			
 			try
 			{
@@ -51,12 +51,12 @@ namespace Reign.Video.OpenGL
 				FailedToLoad = true;
 				Loader.AddLoadableException(e);
 				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (loadedCallback != null) loadedCallback(this, false);
 				return false;
 			}
 
 			Loaded = true;
-			if (loadedCallback != null) loadedCallback(this);
+			if (loadedCallback != null) loadedCallback(this, true);
 			return true;
 		}
 

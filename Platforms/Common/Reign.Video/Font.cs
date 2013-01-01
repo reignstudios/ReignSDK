@@ -88,23 +88,26 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public Font(DisposableI parent, ShaderI shader, Texture2DI texture, string metricsFileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public Font(DisposableI parent, ShaderI shader, Texture2DI texture, string metricsFileName, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			new StreamLoader(metricsFileName,
-			delegate(object sender)
+			delegate(object sender, bool succeeded)
 			{
-				init(shader, texture, ((StreamLoader)sender).LoadedStream, metricsFileName, loadedCallback, failedToLoadCallback);
-			},
-			delegate
-			{
-				FailedToLoad = true;
-				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (succeeded)
+				{
+					init(shader, texture, ((StreamLoader)sender).LoadedStream, metricsFileName, loadedCallback);
+				}
+				else
+				{
+					FailedToLoad = true;
+					Dispose();
+					if (loadedCallback != null) loadedCallback(this, false);
+				}
 			});
 		}
 
-		private void init(ShaderI shader, Texture2DI texture, Stream stream, string metricsFileName, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		private void init(ShaderI shader, Texture2DI texture, Stream stream, string metricsFileName, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			try
 			{
@@ -144,11 +147,11 @@ namespace Reign.Video
 				FailedToLoad = true;
 				Loader.AddLoadableException(e);
 				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (loadedCallback != null) loadedCallback(this, false);
 			}
 
 			Loaded = true;
-			if (loadedCallback != null) loadedCallback(this);
+			if (loadedCallback != null) loadedCallback(this, true);
 		}
 
 		public bool UpdateLoad()

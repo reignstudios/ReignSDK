@@ -30,12 +30,12 @@ namespace Reign.Audio.Dumby
 	public class SoundWAV : SoundWAVI
 	{
 		#region Constructors
-		public static new SoundWAV New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static new SoundWAV New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return new SoundWAV(parent, fileName, instanceCount, looped, loadedCallback, failedToLoadCallback);
+			return new SoundWAV(parent, fileName, instanceCount, looped, loadedCallback);
 		}
 
-		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			for (int i = 0; i != instanceCount; ++i)
@@ -44,7 +44,7 @@ namespace Reign.Audio.Dumby
 			}
 
 			Loaded = true;
-			if (loadedCallback != null) loadedCallback(this);
+			if (loadedCallback != null) loadedCallback(this, true);
 		}
 		#endregion
 	}

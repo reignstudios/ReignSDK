@@ -30,12 +30,12 @@ namespace Reign.Audio
 		#endregion
 
 		#region Constructors
-		public static SoundI New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static SoundI New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			string ext = Streams.GetFileExt(fileName);
 			switch (ext.ToLower())
 			{
-				case (".wav"): return SoundWAVAPI.New(parent, fileName, instanceCount, looped, loadedCallback, failedToLoadCallback);
+				case (".wav"): return SoundWAVAPI.New(parent, fileName, instanceCount, looped, loadedCallback);
 				default:
 					Debug.ThrowError("SoundI", string.Format("File 'ext' {0} not supported.", ext));
 					return null;
@@ -121,9 +121,9 @@ namespace Reign.Audio
 
 	public static class SoundAPI
 	{
-		public static SoundI New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static SoundI New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return SoundI.New(parent, fileName, instanceCount, looped, loadedCallback, failedToLoadCallback);
+			return SoundI.New(parent, fileName, instanceCount, looped, loadedCallback);
 		}
 	}
 }

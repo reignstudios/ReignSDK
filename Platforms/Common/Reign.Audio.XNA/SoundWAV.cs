@@ -92,12 +92,12 @@ namespace Reign.Audio.XNA
 		#endregion
 
 		#region Constructors
-		public static new SoundWAV New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static new SoundWAV New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return new SoundWAV(parent, fileName, instanceCount, looped, loadedCallback, failedToLoadCallback);
+			return new SoundWAV(parent, fileName, instanceCount, looped, loadedCallback);
 		}
 
-		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			try
@@ -118,12 +118,12 @@ namespace Reign.Audio.XNA
 				FailedToLoad = true;
 				Loader.AddLoadableException(e);
 				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (loadedCallback != null) loadedCallback(this, false);
 				return;
 			}
 
 			Loaded = true;
-			if (loadedCallback != null) loadedCallback(this);
+			if (loadedCallback != null) loadedCallback(this, true);
 		}
 
 		public override void Dispose()

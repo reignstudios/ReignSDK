@@ -14,26 +14,29 @@ namespace Reign.Video
 	public class ImageBMPC : Image
 	{
 		#region Construtors
-		public ImageBMPC(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public ImageBMPC(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			new StreamLoader(fileName,
-			delegate(object sender)
+			delegate(object sender, bool succeeded)
 			{
-				init(((StreamLoader)sender).LoadedStream, flip, loadedCallback, failedToLoadCallback);
-			},
-			delegate
-			{
-				FailedToLoad = true;
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (succeeded)
+				{
+					init(((StreamLoader)sender).LoadedStream, flip, loadedCallback);
+				}
+				else
+				{
+					FailedToLoad = true;
+					if (loadedCallback != null) loadedCallback(this, false);
+				}
 			});
 		}
 
-		public ImageBMPC(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public ImageBMPC(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			init(stream, flip, loadedCallback, failedToLoadCallback);
+			init(stream, flip, loadedCallback);
 		}
 
-		protected override void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		protected override void init(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			try
 			{
@@ -106,50 +109,59 @@ namespace Reign.Video
 			{
 				FailedToLoad = true;
 				Loader.AddLoadableException(e);
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (loadedCallback != null) loadedCallback(this, false);
 				return;
 			}
 
 			Loaded = true;
 			Loader.AddLoadable(this);
-			if (loadedCallback != null) loadedCallback(this);
+			if (loadedCallback != null) loadedCallback(this, true);
 		}
 		#endregion
 
 		#region Methods
 		#if !NaCl && !SILVERLIGHT
-		public static void Save(byte[] data, int width, int height, Stream outStream)
+		public static void Save(byte[] data, int width, int height, Stream outStream, ImageSavedCallbackMethod imageSavedCallback)
 		{
-			using (var dataStream = new MemoryStream(data))
-			using (var writer = new BinaryWriter(outStream))
+			try
 			{
-				// File Type
-				int type = Streams.MakeFourCC('b', 'm', 'p', 'c');
-				writer.Write(type);
-
-				// Version
-				float version = 1.0f;
-				writer.Write(version);
-
-				// Meta Data
-				writer.Write(width);
-				writer.Write(height);
-				writer.Write(true);// Zip Compressed
-
-				// Data
-				using (var compressedDataStream = new MemoryStream())
-				using (var compressedStream = new GZipStream(compressedDataStream, CompressionMode.Compress))
+				using (var dataStream = new MemoryStream(data))
+				using (var writer = new BinaryWriter(outStream))
 				{
-					dataStream.CopyTo(compressedStream);
-					#if !METRO
-					compressedStream.Close();
-					#endif
+					// File Type
+					int type = Streams.MakeFourCC('b', 'm', 'p', 'c');
+					writer.Write(type);
 
-					var compressedData = compressedDataStream.ToArray();
-					writer.Write(compressedData.Length);
-					writer.Write(compressedData);
+					// Version
+					float version = 1.0f;
+					writer.Write(version);
+
+					// Meta Data
+					writer.Write(width);
+					writer.Write(height);
+					writer.Write(true);// Zip Compressed
+
+					// Data
+					using (var compressedDataStream = new MemoryStream())
+					using (var compressedStream = new GZipStream(compressedDataStream, CompressionMode.Compress))
+					{
+						dataStream.CopyTo(compressedStream);
+						#if !METRO
+						compressedStream.Close();
+						#endif
+
+						var compressedData = compressedDataStream.ToArray();
+						writer.Write(compressedData.Length);
+						writer.Write(compressedData);
+					}
 				}
 			}
+			catch (Exception e)
+			{
+				if (imageSavedCallback != null) imageSavedCallback(false);
+			}
+
+			if (imageSavedCallback != null) imageSavedCallback(true);
 		}
 		#endif
 		#endregion

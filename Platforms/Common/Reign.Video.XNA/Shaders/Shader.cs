@@ -31,57 +31,63 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
-		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return new Shader(parent, fileName, shaderVersion, loadedCallback, failedToLoadCallback);
+			return new Shader(parent, fileName, shaderVersion, loadedCallback);
 		}
 
-		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return new Shader(parent, fileName, shaderVersion, vsQuality, psQuality, loadedCallback, failedToLoadCallback);
+			return new Shader(parent, fileName, shaderVersion, vsQuality, psQuality, loadedCallback);
 		}
 
-		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			#if SILVERLIGHT
 			new StreamLoader(Streams.StripFileExt(fileName) + ".mrs",
-			delegate(object sender)
+			delegate(object sender, bool succeeded)
 			{
-				init(fileName, ((StreamLoader)sender).LoadedStream, shaderVersion, loadedCallback, failedToLoadCallback);
-			},
-			delegate
-			{
-				FailedToLoad = true;
-				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (succeeded)
+				{
+					init(fileName, ((StreamLoader)sender).LoadedStream, shaderVersion, loadedCallback);
+				}
+				else
+				{
+					FailedToLoad = true;
+					Dispose();
+					if (loadedCallback != null) loadedCallback(this, false);
+				}
 			});
 			#else
-			init(fileName, null, shaderVersion, loadedCallback, failedToLoadCallback);
+			init(fileName, null, shaderVersion, loadedCallback);
 			#endif
 		}
 
-		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			#if SILVERLIGHT
 			new StreamLoader(Streams.StripFileExt(fileName) + ".mrs",
-			delegate(object sender)
+			delegate(object sender, bool succeeded)
 			{
-				init(fileName, ((StreamLoader)sender).LoadedStream, shaderVersion, loadedCallback, failedToLoadCallback);
-			},
-			delegate
-			{
-				FailedToLoad = true;
-				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (succeeded)
+				{
+					init(fileName, ((StreamLoader)sender).LoadedStream, shaderVersion, loadedCallback);
+				}
+				else
+				{
+					FailedToLoad = true;
+					Dispose();
+					if (loadedCallback != null) loadedCallback(this, false);
+				}
 			});
 			#else
-			init(fileName, null, shaderVersion, loadedCallback, failedToLoadCallback);
+			init(fileName, null, shaderVersion, loadedCallback);
 			#endif
 		}
 
-		private void init(string fileName, Stream stream, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		private void init(string fileName, Stream stream, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			try
 			{
@@ -106,11 +112,11 @@ namespace Reign.Video.XNA
 				FailedToLoad = true;
 				Loader.AddLoadableException(e);
 				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (loadedCallback != null) loadedCallback(this, false);
 			}
 
 			Loaded = true;
-			if (loadedCallback != null) loadedCallback(this);
+			if (loadedCallback != null) loadedCallback(this, true);
 		}
 
 		#if SILVERLIGHT
