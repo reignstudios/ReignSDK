@@ -107,30 +107,33 @@ namespace Reign.Audio.OpenAL
 		#endregion
 	
 		#region Constructors
-		public static new SoundWAV New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static new SoundWAV New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return new SoundWAV(parent, fileName, instanceCount, looped, loadedCallback, failedToLoadCallback);
+			return new SoundWAV(parent, fileName, instanceCount, looped, loadedCallback);
 		}
 		
-		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			new StreamLoader(fileName,
-            delegate(object sender)
+            delegate(object sender, bool succeeded)
             {
-				init(parent, ((StreamLoader)sender).LoadedStream, instanceCount, looped, loadedCallback, failedToLoadCallback);
-			},
-			delegate
-			{
-				FailedToLoad = true;
-				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+            	if (succeeded)
+            	{
+					init(parent, ((StreamLoader)sender).LoadedStream, instanceCount, looped, loadedCallback);
+				}
+				else
+				{
+					FailedToLoad = true;
+					Dispose();
+					if (loadedCallback != null) loadedCallback(this, false);
+				}
 			});
 		}
 		
-		protected unsafe override void init(DisposableI parent, Stream stream, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		protected unsafe override void init(DisposableI parent, Stream stream, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			base.init(parent, stream, instanceCount, looped, loadedCallback, failedToLoadCallback);
+			base.init(parent, stream, instanceCount, looped, loadedCallback);
 		
 			try
 			{
@@ -172,12 +175,12 @@ namespace Reign.Audio.OpenAL
 				FailedToLoad = true;
 				Loader.AddLoadableException(e);
 				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (loadedCallback != null) loadedCallback(this, false);
 				return;
 			}
 			
 			Loaded = true;
-			if (loadedCallback != null) loadedCallback(this);
+			if (loadedCallback != null) loadedCallback(this, true);
 		}
 		
 		public unsafe override void Dispose()
