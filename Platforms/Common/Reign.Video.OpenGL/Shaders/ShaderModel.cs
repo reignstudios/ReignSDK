@@ -18,7 +18,7 @@ namespace Reign.Video.OpenGL
 			try
 			{
 				Shader = GL.CreateShader((shaderType == ShaderTypes.VS) ? GL.VERTEX_SHADER : GL.FRAGMENT_SHADER);
-				if (Shader == 0) Debug.ThrowError("ShaderModel", "Failed to create shader");
+				if (Shader == 0) Debug.ThrowError("ShaderModel", string.Format("Failed to create {0} shader", (shaderType == ShaderTypes.VS) ? "vs": "ps"));
 
 				#if iOS || ANDROID || NaCl
 				code = getQualityText(quality) + Environment.NewLine + code;
@@ -27,7 +27,7 @@ namespace Reign.Video.OpenGL
 				string shaderLvl = "";
 				switch (shaderVersion)
 				{
-					#if iOS || ANDROID || NaCl
+					#if iOS || ANDROID || NaCl || (LINUX && ARM)
 					case (ShaderVersions.GLSL_1_00): shaderLvl = "100"; break;
 					#else
 					case (ShaderVersions.GLSL_1_10): shaderLvl = "110"; break;

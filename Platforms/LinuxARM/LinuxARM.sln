@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Core", "Reign.Core\Reign.Core.csproj", "{298C8901-391C-446E-9414-F98449B4D5EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video", "Reign.Video\Reign.Video.csproj", "{1E32A63B-8C71-45CA-91A2-0F62E2AF5365}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.OpenGL", "Reign.Video.OpenGL\Reign.Video.OpenGL.csproj", "{471B4856-8504-41BE-9BAA-99E2C216540B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.API", "Reign.Video.API\Reign.Video.API.csproj", "{3058C3AF-74C5-4F9D-9188-0294DAA997F5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E32A63B-8C71-45CA-91A2-0F62E2AF5365}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E32A63B-8C71-45CA-91A2-0F62E2AF5365}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E32A63B-8C71-45CA-91A2-0F62E2AF5365}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E32A63B-8C71-45CA-91A2-0F62E2AF5365}.Release|Any CPU.Build.0 = Release|Any CPU
+		{298C8901-391C-446E-9414-F98449B4D5EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{298C8901-391C-446E-9414-F98449B4D5EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{298C8901-391C-446E-9414-F98449B4D5EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{298C8901-391C-446E-9414-F98449B4D5EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3058C3AF-74C5-4F9D-9188-0294DAA997F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3058C3AF-74C5-4F9D-9188-0294DAA997F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3058C3AF-74C5-4F9D-9188-0294DAA997F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3058C3AF-74C5-4F9D-9188-0294DAA997F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{471B4856-8504-41BE-9BAA-99E2C216540B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{471B4856-8504-41BE-9BAA-99E2C216540B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{471B4856-8504-41BE-9BAA-99E2C216540B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{471B4856-8504-41BE-9BAA-99E2C216540B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Reign.Core\Reign.Core.csproj
+	EndGlobalSection
+EndGlobal

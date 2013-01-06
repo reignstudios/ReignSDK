@@ -37,7 +37,7 @@ namespace Reign.Video.OpenGL
 			
 			GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, desc.AddressU);
 			GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, desc.AddressV);
-			#if !iOS && !ANDROID && !NaCl
+			#if !iOS && !ANDROID && !NaCl && !(LINUX && ARM)
 			GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_R, desc.AddressW);
 			
 			unsafe

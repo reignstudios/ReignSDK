@@ -24,7 +24,7 @@ namespace Reign.Video.OpenGL
 		#region Methods
 		public void Enable()
 		{
-			#if !iOS && !ANDROID && !NaCl
+			#if !iOS && !ANDROID && !NaCl && !(LINUX && ARM)
 			GL.PolygonMode(GL.FRONT_AND_BACK, desc.FillMode);
 			#endif
 			
@@ -38,7 +38,7 @@ namespace Reign.Video.OpenGL
 				GL.Disable(GL.CULL_FACE);
 			}
 
-			#if !iOS && !ANDROID && !NaCl
+			#if !iOS && !ANDROID && !NaCl && !(LINUX && ARM)
 			if (desc.MultisampleEnable)
 			{
 				GL.Enable(GL.MULTISAMPLE);

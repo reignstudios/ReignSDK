@@ -89,7 +89,7 @@ namespace Reign.Video.OpenGL
 				}
 				
 			    GL.VertexAttribPointer(atLoc, floatCount, format, normalize, streamBytesSizes[streamIndex], layout[i].Offset.ToPointer());
-			    #if !iOS && !ANDROID && !NaCl
+			    #if !iOS && !ANDROID && !NaCl && !(LINUX && ARM)
 				if (video.Caps.HardwareInstancing)
 				{
 					GL.VertexAttribDivisor(atLoc, (layout[i].Usage == GLBufferElementUsages.Index) ? 1u : 0u);

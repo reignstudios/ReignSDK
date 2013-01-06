@@ -6,7 +6,7 @@ namespace Reign.Video.OpenGL
 {
 	public static class GLX
 	{
-		public const string DLL = "libGL.so.1";
+		public const string DLL = "libGL";
 		
 		public const int RGBA = 4;
 		public const int DOUBLEBUFFER = 5;

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3058C3AF-74C5-4F9D-9188-0294DAA997F5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Reign.Video.API</RootNamespace>
+    <AssemblyName>Reign.Video.API</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <DefineConstants>DEBUG;LINUX;ARM</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <DefineConstants>LINUX;ARM</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="..\..\Common\Reign.Video.API\DepthStencil.cs">
+      <Link>DepthStencil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\QuickDraw.cs">
+      <Link>QuickDraw.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\Shader.cs">
+      <Link>Shader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\Video.cs">
+      <Link>Video.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\ViewPort.cs">
+      <Link>ViewPort.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\Buffers\BufferLayout.cs">
+      <Link>Buffers\BufferLayout.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\Buffers\IndexBuffer.cs">
+      <Link>Buffers\IndexBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\Buffers\VertexBuffer.cs">
+      <Link>Buffers\VertexBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\States\BlendState.cs">
+      <Link>States\BlendState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\States\DepthStencilState.cs">
+      <Link>States\DepthStencilState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\States\RasterizerState.cs">
+      <Link>States\RasterizerState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\States\SamplerState.cs">
+      <Link>States\SamplerState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\Textures\RenderTarget.cs">
+      <Link>Textures\RenderTarget.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.API\Textures\Texture2D.cs">
+      <Link>Textures\Texture2D.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{298C8901-391C-446E-9414-F98449B4D5EE}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Video\Reign.Video.csproj">
+      <Project>{1E32A63B-8C71-45CA-91A2-0F62E2AF5365}</Project>
+      <Name>Reign.Video</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Video.OpenGL\Reign.Video.OpenGL.csproj">
+      <Project>{471B4856-8504-41BE-9BAA-99E2C216540B}</Project>
+      <Name>Reign.Video.OpenGL</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Buffers\" />
+    <Folder Include="States\" />
+    <Folder Include="Textures\" />
+  </ItemGroup>
+</Project>

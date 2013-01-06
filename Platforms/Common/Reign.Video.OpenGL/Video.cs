@@ -61,6 +61,10 @@ namespace Reign.Video.OpenGL
 		#if WINDOWS || LINUX
 		private IntPtr handle;
 		#endif
+		
+		#if LINUX && ARM
+		IntPtr surface;
+		#endif
 
 		#if OSX
 		public NSOpenGLContext NSContext {get; private set;}
@@ -126,6 +130,111 @@ namespace Reign.Video.OpenGL
 				#endif
 				
 				#if LINUX
+				#if ARM
+				//Get DC
+				RaspberryPi.bcm_host_init();
+				handle = window.Handle;
+				GL.GetError();//NOTE: THIS MUST BE HERE SO THAT libGLES LOADS BEFORE libEGL
+				dc = EGL.GetDisplay(IntPtr.Zero);
+				
+				int major, minor;
+				if (!EGL.Initialize(dc, out major, out minor))
+				{
+					Debug.ThrowError("Video", string.Format("Failed to initialize display connection, Error {0}", EGL.GetError()));
+				}
+				if (minor != EGL.OPENGL_ES2_BIT) Debug.ThrowError("Video", "GLES2 is not supported");
+				
+				int[] pixelFormat = new int[] 
+				{ 
+					EGL.RENDERABLE_TYPE, EGL.OPENGL_ES2_BIT,
+					
+					EGL.SURFACE_TYPE, EGL.WINDOW_BIT,
+					/*EGL.RED_SIZE, 8,
+					EGL.GREEN_SIZE, 8,
+					EGL.BLUE_SIZE, 8,
+					EGL.ALPHA_SIZE, 8,*/
+					
+					//EGL.DEPTH_SIZE, 16,
+					//EGL.STENCIL_SIZE, 0,
+					
+					//Egl.SAMPLE_BUFFERS, samples > 0 ? 1 : 0,
+					//EGL.SAMPLES, 0,
+					
+					//EGL.MIN_SWAP_INTERVAL, 0,
+					//EGL.MAX_SWAP_INTERVAL, 1,
+					
+					EGL.NONE,
+				};
+				
+				int num_configs;
+				var configs = new IntPtr[1];
+				if (!EGL.ChooseConfig(dc, pixelFormat, configs, configs.Length, out num_configs) || num_configs == 0)
+				{
+					Debug.ThrowError("Video", string.Format("Failed to retrieve GraphicsMode, error {0}", EGL.GetError()));
+				}
+				
+				int[] attrib_list = new int[]
+				{
+					EGL.CONTEXT_CLIENT_VERSION, 2,
+					EGL.NONE
+				};
+				
+				ctx = EGL.CreateContext(dc, configs[0], IntPtr.Zero, attrib_list);
+				if (ctx == IntPtr.Zero) Debug.ThrowError("Video", "Failed to create context");
+				
+				// Raspberry Pi stuff >>>>>>>>>>>>>>>>>>>>>>>>>
+				unsafe
+				{
+					const int piDisplay = 0;
+				
+					uint piWidth = 0, piHeight = 0;
+					if (RaspberryPi.graphics_get_display_size(piDisplay, &piWidth, &piHeight) < 0) Debug.ThrowError("Video", "Failed to get display size");
+					Console.WriteLine("piWidth - " + piWidth);
+					Console.WriteLine("piHeight - " + piHeight);
+					
+					IntPtr dispman_display = RaspberryPi.vc_dispmanx_display_open(piDisplay);
+					if (dispman_display == IntPtr.Zero) Debug.ThrowError("Video", "Failed: vc_dispmanx_display_open");
+					
+					IntPtr dispman_update = RaspberryPi.vc_dispmanx_update_start(0);
+					if (dispman_update == IntPtr.Zero) Debug.ThrowError("Video", "Failed: vc_dispmanx_update_start");
+					
+					RaspberryPi.VC_RECT_T dstRect = new RaspberryPi.VC_RECT_T()
+					{
+						x = 0,
+						y = 0,
+						width = (int)piWidth,
+						height = (int)piHeight
+					};
+					RaspberryPi.VC_RECT_T srcRect = new RaspberryPi.VC_RECT_T()
+					{
+						x = 0,
+						y = 0,
+						//width = (int)piWidth,
+						//height = (int)piHeight,
+						width = (int)(piWidth << 16),
+						height = (int)(piHeight << 16)
+					};
+					IntPtr dispman_element = RaspberryPi.vc_dispmanx_element_add(dispman_update, dispman_display, 0, &dstRect, IntPtr.Zero, &srcRect, RaspberryPi.DISPMANX_PROTECTION_NONE, IntPtr.Zero, IntPtr.Zero, 0);
+					if (dispman_element == IntPtr.Zero) Debug.ThrowError("Video", "Failed: vc_dispmanx_element_add");
+				
+					RaspberryPi.vc_dispmanx_update_submit_sync(dispman_update);
+					
+					EGL.DISPMANX_WINDOW_T nativeWindow = new EGL.DISPMANX_WINDOW_T()
+					{
+						element = dispman_element,
+						width = (int)piWidth,
+						height = (int)piHeight
+					};
+					surface = EGL.CreateWindowSurface(dc, configs[0], new IntPtr(&nativeWindow), null);
+				}
+				// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+				
+				//surface = EGL.CreateWindowSurface(dc, configs[0], handle, null);// <<<<<<<<<<<<<<<<<<<<<<<<<<<< x86 x64
+				if (surface == IntPtr.Zero) Debug.ThrowError("Video", "Failed to create window surface");
+				
+				if (!EGL.MakeCurrent(dc, surface, surface, ctx)) Debug.ThrowError("Video", "Failed to make EGL context current");
+				if (!EGL.SwapInterval(dc, vSync ? 1 : 0)) Debug.ThrowError("Video", "Failed to set vSync");
+				#else
 				//Get DC
 				handle = window.Handle;
 				dc = X11.XOpenDisplay(IntPtr.Zero);
@@ -159,6 +268,7 @@ namespace Reign.Video.OpenGL
 					GLX.Init();
 					GLX.SwapIntervalMesa(vSync ? 1 : 0);
 				}
+				#endif
 				#endif
 				
 				#if OSX
@@ -254,6 +364,8 @@ namespace Reign.Video.OpenGL
 			   	PPAPI.SetCurrentContextPPAPI(context);
 			   	PPAPI.StartSwapBufferLoop(graphics, context);
 				#endif
+				
+				checkForError();
 		
 				//Setup defualt OpenGL characteristics
 				GL.FrontFace(GL.CCW);
@@ -266,7 +378,7 @@ namespace Reign.Video.OpenGL
 					int max = 0;
 					GL.GetIntegerv(GL.MAX_TEXTURE_SIZE, &max);
 					Caps.MaxTextureSize = max;
-
+					
 					// SEEMS TO MESS UP ON OSX
 					//GL.GetIntegerv(GL.MAX_VERTEX_UNIFORM_VECTORS, &max);
 					//Caps.MaxVertexConstants = max;
@@ -274,7 +386,11 @@ namespace Reign.Video.OpenGL
 					//GL.GetIntegerv(GL.MAX_FRAGMENT_UNIFORM_VECTORS, &max);
 					//Caps.MaxPixelConstants = max;
 
+					#if LINUX && ARM
+					byte* shaderVersionPtr = null;
+					#else
 					byte* shaderVersionPtr = GL.GetString(GL.SHADING_LANGUAGE_VERSION);
+					#endif
 					string shaderVersion = "";
 					while (shaderVersionPtr != null && shaderVersionPtr[0] != 0)
 					{
@@ -282,7 +398,7 @@ namespace Reign.Video.OpenGL
 						shaderVersionPtr++;
 					}
 					
-					#if iOS
+					#if iOS || (LINUX && ARM)
 					shaderVersion = "1.0";
 					#elif ANDROID
 					shaderVersion = shaderVersion.Substring(shaderVersion.Length-4, 4);
@@ -295,7 +411,7 @@ namespace Reign.Video.OpenGL
 					
 					Caps.Version = Versions.GL1;
 					FileTag = "";
-					#if iOS || ANDROID || NaCl
+					#if iOS || ANDROID || NaCl || (LINUX && ARM)
 					if (shaderValue >= 1.0f)
 					{
 						Caps.Version = Versions.GL2;
@@ -371,9 +487,7 @@ namespace Reign.Video.OpenGL
 					}
 				}
 				
-				#if DEBUG
 				checkForError();
-				#endif
 				
 				// Init Ext
 				GL.Init();
@@ -432,6 +546,17 @@ namespace Reign.Video.OpenGL
 			#endif
 			
 			#if LINUX
+			#if ARM
+			if (dc != IntPtr.Zero)
+			{
+				if (surface != IntPtr.Zero) EGL.DestroySurface(dc, surface);
+				if (ctx != IntPtr.Zero) EGL.DestroyContext(dc, ctx);
+				EGL.Terminate(dc);
+				dc = IntPtr.Zero;
+			}
+			
+			RaspberryPi.bcm_host_deinit();
+			#else
 			if (dc != IntPtr.Zero)
 			{
 				if (ctx != IntPtr.Zero)
@@ -443,6 +568,7 @@ namespace Reign.Video.OpenGL
 				X11.XCloseDisplay(dc);
 				dc = IntPtr.Zero;
 			}
+			#endif
 			#endif
 			
 			#if OSX
@@ -470,7 +596,11 @@ namespace Reign.Video.OpenGL
 			#endif
 			
 			#if LINUX
+			#if ARM
+			EGL.MakeCurrent(dc, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+			#else
 			GLX.MakeCurrent(dc, IntPtr.Zero, IntPtr.Zero);
+			#endif
 			#endif
 			
 			#if OSX
@@ -492,7 +622,11 @@ namespace Reign.Video.OpenGL
 			#endif
 			
 			#if LINUX
+			#if ARM
+						
+			#else
 			GLX.MakeCurrent(dc, handle, ctx);
+			#endif
 			#endif
 			
 			#if OSX
@@ -598,6 +732,9 @@ namespace Reign.Video.OpenGL
 			#endif
 			
 			#if LINUX
+			#if ARM
+			EGL.SwapBuffers(dc, surface);
+			#else
 			/*unsafe
 			{
 				if (vSync)
@@ -608,6 +745,7 @@ namespace Reign.Video.OpenGL
 				}
 			}*/
 			GLX.SwapBuffers(dc, handle);
+			#endif
 			#endif
 			
 			#if OSX
@@ -639,7 +777,7 @@ namespace Reign.Video.OpenGL
 			switch (surfaceFormat)
 			{
 				case (SurfaceFormats.RGBAx8):
-					#if iOS || ANDROID || NaCl
+					#if iOS || ANDROID || NaCl || (LINUX && ARM)
 					return (int)GL.RGBA;
 					#else
 					return GL.RGBA8;
