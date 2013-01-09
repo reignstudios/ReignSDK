@@ -7,6 +7,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{995201c1-b287-4a16-9802-da656587e0f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Textures">
+      <UniqueIdentifier>{d380372b-4471-428b-a866-92a78623fbd1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderModel.h">
@@ -17,6 +20,12 @@
       <Filter>Base</Filter>
     </ClInclude>
     <ClInclude Include="Video.h" />
+    <ClInclude Include="Texture2D.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderTarget.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -28,6 +37,13 @@
     <ClCompile Include="..\..\Common\CPP_CLR-CX_Helpers\Common.cpp" />
     <ClCompile Include="pch.cpp">
       <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Video.cpp" />
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderTarget.cpp">
+      <Filter>Textures</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

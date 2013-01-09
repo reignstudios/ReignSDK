@@ -24,7 +24,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: PixelShaderErrors Init(VideoCom^ video, ShaderModelCom^ shaderModel);
-		public: virtual ~PixelShaderCom();
+		public: ~PixelShaderCom();
 		private: void null();
 		#pragma endregion
 

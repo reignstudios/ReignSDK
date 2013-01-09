@@ -19,7 +19,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: BufferLayoutDescCom(int elementCount, const array<string^>^ semanticNames, const array<REIGN_DXGI_FORMAT>^ formats, const array<uint>^ semanticIndices, const array<uint>^ inputSlots, const array<uint>^ alignedByteOffsets);
-		public: virtual ~BufferLayoutDescCom();
+		public: ~BufferLayoutDescCom();
 		private: void null();
 		#pragma endregion
 	};
@@ -33,7 +33,7 @@ namespace Reign_Video_D3D11_Component
 		
 		#pragma region Constructors
 		public: BufferLayoutErrors Init(VideoCom^ video, ShaderModelCom^ vertexShader, BufferLayoutDescCom^ desc);
-		public: virtual ~BufferLayoutCom();
+		public: ~BufferLayoutCom();
 		private: void null();
 		#pragma endregion
 		

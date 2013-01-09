@@ -20,7 +20,7 @@ namespace Reign_Video_D3D11_Component
 	
 		#pragma region Constructors
 		public: TextureError Init(VideoCom^ video, int width, int height, bool generateMipmaps, bool hasMipmaps, const array<__int64>^ mipmaps, const array<int>^ mipmapSizes, const array<int>^ mipmapPitches, int multiSampleMultiple, REIGN_DXGI_FORMAT surfaceFormat, REIGN_D3D11_USAGE usage, REIGN_D3D11_CPU_ACCESS_FLAG cpuUsage, bool isRenderTarget);
-		public: virtual ~Texture2DCom();
+		public: ~Texture2DCom();
 		private: void null();
 		#pragma endregion
 

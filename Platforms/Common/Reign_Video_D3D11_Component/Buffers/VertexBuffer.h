@@ -30,7 +30,7 @@ namespace Reign_Video_D3D11_Component
 		#pragma region Constructors
 		public: VertexBufferCom(VideoCom^ video, REIGN_D3D_PRIMITIVE_TOPOLOGY topology);
 		public: VertexBufferErrors Init(const array<float>^ vertices, int vertexCount, int vertexByteSize, REIGN_D3D11_USAGE usage, REIGN_D3D11_CPU_ACCESS_FLAG cpuUsage);
-		public: virtual ~VertexBufferCom();
+		public: ~VertexBufferCom();
 		private: void null();
 		#pragma endregion
 		

@@ -31,7 +31,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: BlendStateDescCom(bool enable, REIGN_D3D11_BLEND_OP operation, REIGN_D3D11_BLEND blend, REIGN_D3D11_BLEND dstBlend);
-		public: virtual ~BlendStateDescCom();
+		public: ~BlendStateDescCom();
 		private: void null();
 		#pragma endregion
 	};
@@ -45,7 +45,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: BlendStateError Init(VideoCom^ video, BlendStateDescCom^ desc);
-		public: virtual ~BlendStateCom();
+		public: ~BlendStateCom();
 		private: void null();
 		#pragma endregion
 

@@ -22,16 +22,6 @@ namespace Reign_Video_D3D11_Component
 		compositionMode = swapChainBackgroundPanel != nullptr;
 		#endif
 
-		#if WINDOWS
-		if (width == 0 || height == 0)
-		{
-			RECT rect;
-			GetClientRect((HWND)handle.ToInt32(), &rect);
-			width = rect.right - rect.left;
-			height = rect.bottom - rect.top;
-		}
-		#endif
-
 		lastWidth = width;
 		lastHeight = height;
 

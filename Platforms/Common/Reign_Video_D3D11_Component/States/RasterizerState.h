@@ -30,7 +30,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: RasterizerStateDescCom(REIGN_D3D11_FILL_MODE fillMode, REIGN_D3D11_CULL_NONE cullMode, bool frontCounterClockwise, int depthBias, float depthBiasClamp, float slopeScaledDepthBias, bool depthClipEnable, bool scissorEnable, bool multisampleEnable, bool antialiasedLineEnable);
-		public: virtual ~RasterizerStateDescCom();
+		public: ~RasterizerStateDescCom();
 		private: void null();
 		#pragma endregion
 	};
@@ -44,7 +44,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: RasterizerStateError Init(VideoCom^ video, RasterizerStateDescCom^ desc);
-		public: virtual ~RasterizerStateCom();
+		public: ~RasterizerStateCom();
 		private: void null();
 		#pragma endregion
 

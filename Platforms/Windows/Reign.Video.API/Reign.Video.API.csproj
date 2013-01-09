@@ -101,6 +101,10 @@
       <Project>{86E7C7E2-7E48-4371-81F6-C85BA4958372}</Project>
       <Name>Reign.Video.D3D11</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Reign.Video.D3D9\Reign.Video.D3D9.csproj">
+      <Project>{1458BC70-3FF0-41C2-9AD6-93B466D40509}</Project>
+      <Name>Reign.Video.D3D9</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Reign.Video.OpenGL\Reign.Video.OpenGL.csproj">
       <Project>{05A743AF-89E8-4094-84DD-DAF07882EF50}</Project>
       <Name>Reign.Video.OpenGL</Name>

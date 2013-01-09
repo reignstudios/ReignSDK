@@ -30,7 +30,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: DepthStencilStateDescCom(bool enable, REIGN_D3D11_DEPTH_WRITE_MASK mask, REIGN_D3D11_COMPARISON_FUNC func);
-		public: virtual ~DepthStencilStateDescCom();
+		public: ~DepthStencilStateDescCom();
 		private: void null();
 		#pragma endregion
 	};
@@ -44,7 +44,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: DepthStencilStateError Init(VideoCom^ video, DepthStencilStateDescCom^ desc);
-		public: virtual ~DepthStencilStateCom();
+		public: ~DepthStencilStateCom();
 		private: void null();
 		#pragma endregion
 

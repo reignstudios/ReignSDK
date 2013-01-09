@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.UI", "Reign.UI\Reign.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Reign_Video_D3D9_Component", "Reign_Video_D3D9_Component\Reign_Video_D3D9_Component.vcxproj", "{AF208116-8078-4FF3-8D85-8299313D19A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.D3D9", "Reign.Video.D3D9\Reign.Video.D3D9.csproj", "{1458BC70-3FF0-41C2-9AD6-93B466D40509}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = Windows.vsmdi
@@ -296,6 +298,18 @@ Global
 		{AF208116-8078-4FF3-8D85-8299313D19A7}.Release|Win32.ActiveCfg = Release|Win32
 		{AF208116-8078-4FF3-8D85-8299313D19A7}.Release|Win32.Build.0 = Release|Win32
 		{AF208116-8078-4FF3-8D85-8299313D19A7}.Release|x86.ActiveCfg = Release|Win32
+		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Release|Win32.ActiveCfg = Release|Any CPU
+		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
