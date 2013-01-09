@@ -25,7 +25,7 @@ namespace Reign_Audio_XAudio_Component
 
 		#pragma region Constructors
 		public: SoundWAVErrors Init(AudioCom^ audio, const array<byte>^ data, short formatCode, short channels, int sampleRate, int formatAvgBytesPerSec, short formatBlockAlign, short bitDepth, short formatExtraSize);
-		public: ~SoundWAVCom();
+		public: virtual ~SoundWAVCom();
 		private: void null();
 		#pragma endregion
 	};
@@ -39,7 +39,7 @@ namespace Reign_Audio_XAudio_Component
 		
 		#pragma region Constructors
 		public: SoundWAVInstanceErrors Init(SoundWAVCom^ sound, bool looped);
-		public: ~SoundWAVInstanceCom();
+		public: virtual ~SoundWAVInstanceCom();
 		private: void null();
 		#pragma endregion
 

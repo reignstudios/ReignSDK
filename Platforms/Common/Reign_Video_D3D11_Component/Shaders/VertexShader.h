@@ -24,7 +24,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: VertexShaderErrors Init(VideoCom^ video, ShaderModelCom^ shaderModel);
-		public: ~VertexShaderCom();
+		public: virtual ~VertexShaderCom();
 		private: void null();
 		#pragma endregion
 

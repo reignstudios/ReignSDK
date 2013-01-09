@@ -118,7 +118,7 @@ namespace Reign_Video_D3D11_Component
 		public: VideoError Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ swapChainBackgroundPanel);
 		#endif
 		private: VideoError createViews(int width, int height);
-		public: ~VideoCom();
+		public: virtual ~VideoCom();
 		private: void null();
 		#pragma endregion
 

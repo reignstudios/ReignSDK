@@ -43,7 +43,7 @@ namespace Reign_Video_D3D11_Component
 		#else
 		public: ShaderModelErrors Init(VideoCom^ video, const array<byte>^ code, int codeSize, int variableBufferSize, int resourceCount);
 		#endif
-		public: ~ShaderModelCom();
+		public: virtual ~ShaderModelCom();
 		private: void null();
 		#pragma endregion
 

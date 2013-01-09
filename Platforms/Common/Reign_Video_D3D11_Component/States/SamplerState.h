@@ -30,7 +30,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: SamplerStateDescCom(REIGN_D3D11_FILTER filter, REIGN_D3D11_TEXTURE_ADDRESS_MODE address);
-		public: ~SamplerStateDescCom();
+		public: virtual ~SamplerStateDescCom();
 		private: void null();
 		#pragma endregion
 	};
@@ -44,7 +44,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: SamplerStateError Init(VideoCom^ video, SamplerStateDescCom^ desc);
-		public: ~SamplerStateCom();
+		public: virtual ~SamplerStateCom();
 		private: void null();
 		#pragma endregion
 

@@ -20,7 +20,7 @@ namespace Reign_Audio_XAudio_Component
 
 		#pragma region Constructors
 		public: AudioErrors Init();
-		public: ~AudioCom();
+		public: virtual virtual ~AudioCom();
 		private: void null();
 		#pragma endregion
 	};
