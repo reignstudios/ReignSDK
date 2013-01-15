@@ -7,6 +7,10 @@ namespace Reign.Video.API
 		public static void Init(VideoTypes type)
 		{
 			#if WINDOWS || METRO
+			if (type == VideoTypes.D3D9) RasterizerStateDescAPI.Init(Reign.Video.D3D9.RasterizerStateDesc.New);
+			#endif
+
+			#if WINDOWS || METRO
 			if (type == VideoTypes.D3D11) RasterizerStateDescAPI.Init(Reign.Video.D3D11.RasterizerStateDesc.New);
 			#endif
 
@@ -24,6 +28,10 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
+			#if WINDOWS || METRO
+			if (type == VideoTypes.D3D9) RasterizerStateAPI.Init(Reign.Video.D3D9.RasterizerState.New);
+			#endif
+
 			#if WINDOWS || METRO
 			if (type == VideoTypes.D3D11) RasterizerStateAPI.Init(Reign.Video.D3D11.RasterizerState.New);
 			#endif

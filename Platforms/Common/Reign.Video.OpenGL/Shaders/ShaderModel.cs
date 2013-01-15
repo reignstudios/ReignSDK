@@ -37,6 +37,7 @@ namespace Reign.Video.OpenGL
 					case (ShaderVersions.GLSL_1_50): shaderLvl = "150"; break;
 					case (ShaderVersions.GLSL_3_30): shaderLvl = "330"; break;
 					#endif
+					default: Debug.ThrowError("ShaderModel", "Unsuported ShaderVersion: " + shaderVersion); break;
 				}
 				code = "#version " + shaderLvl + Environment.NewLine + code;
 				

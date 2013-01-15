@@ -6,7 +6,7 @@ namespace Reign.Video.D3D9
 {
 	public class Caps
 	{
-		public bool D3D9Ex {get; internal set;}
+		public bool ExDevice {get; internal set;}
 
 		public bool HardwareInstancing {get; internal set;}
 		public uint MaxTextureCount {get; internal set;}
@@ -18,7 +18,7 @@ namespace Reign.Video.D3D9
 	public class Video : Disposable, VideoI
 	{
 		#region Properties
-		private VideoCom com;
+		internal VideoCom com;
 		private Window window;
 		internal Texture2D[] currentVertexTextures, currentPixelTextures;
 		public Size2 BackBufferSize {get; private set;}
@@ -59,7 +59,7 @@ namespace Reign.Video.D3D9
 
 				Caps = new Caps()
 				{
-					D3D9Ex = componentCaps.D3D9Ex,
+					ExDevice = componentCaps.ExDevice,
 					HardwareInstancing = componentCaps.HardwareInstancing,
 					MaxTextureCount = componentCaps.MaxTextureCount,
 					MaxVertexShaderVersion = getMaxShaderVersion(componentCaps.MaxVertexShaderVersion),
@@ -109,13 +109,13 @@ namespace Reign.Video.D3D9
 		private void deviceLost()
 		{
 			deviceIsLost = true;
+			deviceReseting = true;
 			if (DeviceLost != null) DeviceLost();
 		}
 
 		private void deviceReset()
 		{
 			deviceIsLost = false;
-			deviceReseting = true;
 			if (DeviceReset != null) DeviceReset();
 			deviceReseting = false;
 		}
@@ -127,8 +127,8 @@ namespace Reign.Video.D3D9
 
 		public void EnableRenderTarget(DepthStencilI depthStencil)
 		{
-			//if (depthStencil != null) com.EnableRenderTarget(((DepthStencil)depthStencil).com);
-			//else com.EnableRenderTarget(null);
+			if (depthStencil != null) com.EnableRenderTarget(((DepthStencil)depthStencil).com);
+			else com.EnableRenderTarget(null);
 		}
 
 		public void ClearAll(float r, float g, float b, float a)
@@ -156,20 +156,43 @@ namespace Reign.Video.D3D9
 			com.Present();
 		}
 
-		internal REIGN_D3DFMT surfaceFormat(SurfaceFormats surfaceFormat)
+		internal void removeActiveTexture(Texture2D texture)
+		{
+			var textures = currentVertexTextures;
+			for (int i = 0; i != textures.Length; ++i)
+			{
+				if (textures[i] == texture)
+				{
+					com.DisableVertexTexture(i);
+					textures[i] = null;
+				}
+			}
+
+			textures = currentPixelTextures;
+			for (int i = 0; i != textures.Length; ++i)
+			{
+				if (textures[i] == texture)
+				{
+					com.DisableTexture(i);
+					textures[i] = null;
+				}
+			}
+		}
+
+		internal REIGN_D3DFORMAT surfaceFormat(SurfaceFormats surfaceFormat)
 		{
 		    switch (surfaceFormat)
 		    {
-		        case (SurfaceFormats.DXT1): return REIGN_D3DFMT.DXT1;
-		        case (SurfaceFormats.DXT3): return REIGN_D3DFMT.DXT3;
-		        case (SurfaceFormats.DXT5): return REIGN_D3DFMT.DXT5;
-		        case (SurfaceFormats.RGBAx8): return REIGN_D3DFMT.A8R8G8B8;
-		        case (SurfaceFormats.RGBx10_Ax2): return REIGN_D3DFMT.A2R10G10B10;
-		        case (SurfaceFormats.RGBAx16f): return REIGN_D3DFMT.A16B16G16R16F;
-		        case (SurfaceFormats.RGBAx32f): return REIGN_D3DFMT.A32B32G32R32F;
+		        case (SurfaceFormats.DXT1): return REIGN_D3DFORMAT.DXT1;
+		        case (SurfaceFormats.DXT3): return REIGN_D3DFORMAT.DXT3;
+		        case (SurfaceFormats.DXT5): return REIGN_D3DFORMAT.DXT5;
+		        case (SurfaceFormats.RGBAx8): return REIGN_D3DFORMAT.A8R8G8B8;
+		        case (SurfaceFormats.RGBx10_Ax2): return REIGN_D3DFORMAT.A2R10G10B10;
+		        case (SurfaceFormats.RGBAx16f): return REIGN_D3DFORMAT.A16B16G16R16F;
+		        case (SurfaceFormats.RGBAx32f): return REIGN_D3DFORMAT.A32B32G32R32F;
 		        default:
 		            Debug.ThrowError("Video", "Unsuported SurfaceFormat.");
-		            return REIGN_D3DFMT.A8R8G8B8;
+		            return REIGN_D3DFORMAT.A8R8G8B8;
 		    }
 		}
 		#endregion

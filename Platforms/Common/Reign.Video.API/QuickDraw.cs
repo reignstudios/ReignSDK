@@ -6,6 +6,10 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
+			#if WINDOWS
+			if (type == VideoTypes.D3D9) QuickDrawAPI.Init(Reign.Video.D3D9.QuickDraw.New);
+			#endif
+
 			#if WINDOWS || METRO
 			if (type == VideoTypes.D3D11) QuickDrawAPI.Init(Reign.Video.D3D11.QuickDraw.New);
 			#endif

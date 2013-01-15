@@ -83,23 +83,54 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Common\CPP_CLR-CX_Helpers\Common.h" />
+    <ClInclude Include="BlendState.h" />
+    <ClInclude Include="BufferLayout.h" />
+    <ClInclude Include="DepthStencil.h" />
+    <ClInclude Include="DepthStencilState.h" />
+    <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="PixelShader.h" />
+    <ClInclude Include="RasterizerState.h" />
     <ClInclude Include="RenderTarget.h" />
+    <ClInclude Include="SamplerState.h" />
     <ClInclude Include="ShaderModel.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="ShaderResource.h" />
+    <ClInclude Include="ShaderVariable.h" />
     <ClInclude Include="Texture2D.h" />
+    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="VertexShader.h" />
     <ClInclude Include="Video.h" />
+    <ClInclude Include="ViewPort.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Common\CPP_CLR-CX_Helpers\Common.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="BlendState.cpp" />
+    <ClCompile Include="BlendStateDesc.cpp" />
+    <ClCompile Include="DepthStencilStateDesc.cpp" />
+    <ClCompile Include="BufferLayout.cpp" />
+    <ClCompile Include="BufferLayoutDesc.cpp" />
+    <ClCompile Include="DepthStencil.cpp" />
+    <ClCompile Include="DepthStencilState.cpp" />
+    <ClCompile Include="IndexBuffer.cpp" />
+    <ClCompile Include="PixelShader.cpp" />
+    <ClCompile Include="RasterizerState.cpp" />
+    <ClCompile Include="RasterizerStateDesc.cpp" />
     <ClCompile Include="RenderTarget.cpp" />
+    <ClCompile Include="SamplerState.cpp" />
+    <ClCompile Include="SamplerStateDesc.cpp" />
     <ClCompile Include="ShaderModel.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ShaderResource.cpp" />
+    <ClCompile Include="ShaderVariable.cpp" />
     <ClCompile Include="Texture2D.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
+    <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="Video.cpp" />
+    <ClCompile Include="ViewPort.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

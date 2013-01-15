@@ -6,6 +6,10 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
+			#if WINDOWS
+			if (type == VideoTypes.D3D9) Texture2DAPI.Init(Reign.Video.D3D9.Texture2D.NewReference, Reign.Video.D3D9.Texture2D.New, Reign.Video.D3D9.Texture2D.New, Reign.Video.D3D9.Texture2D.New);
+			#endif
+
 			#if WINDOWS || METRO
 			if (type == VideoTypes.D3D11) Texture2DAPI.Init(Reign.Video.D3D11.Texture2D.NewReference, Reign.Video.D3D11.Texture2D.New, Reign.Video.D3D11.Texture2D.New, Reign.Video.D3D11.Texture2D.New);
 			#endif

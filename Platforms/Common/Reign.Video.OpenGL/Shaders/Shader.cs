@@ -97,7 +97,6 @@ namespace Reign.Video.OpenGL
 			}
 
 			Loaded = true;
-			Loader.AddLoadable(this);
 			if (loadedCallback != null) loadedCallback(this, true);
 		}
 

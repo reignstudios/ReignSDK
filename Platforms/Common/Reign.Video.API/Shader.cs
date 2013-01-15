@@ -6,6 +6,10 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
+			#if WINDOWS
+			if (type == VideoTypes.D3D9) ShaderAPI.Init(Reign.Video.D3D9.Shader.New, Reign.Video.D3D9.Shader.New);
+			#endif
+
 			#if WINDOWS || METRO
 			if (type == VideoTypes.D3D11) ShaderAPI.Init(Reign.Video.D3D11.Shader.New, Reign.Video.D3D11.Shader.New);
 			#endif

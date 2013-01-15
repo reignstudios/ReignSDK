@@ -6,6 +6,10 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
+			#if WINDOWS
+			if (type == VideoTypes.D3D9) RenderTargetAPI.Init(Reign.Video.D3D9.RenderTarget.New, Reign.Video.D3D9.RenderTarget.New);
+			#endif
+
 			#if WINDOWS || METRO
 			if (type == VideoTypes.D3D11) RenderTargetAPI.Init(Reign.Video.D3D11.RenderTarget.New, Reign.Video.D3D11.RenderTarget.New);
 			#endif

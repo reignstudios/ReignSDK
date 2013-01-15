@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Video.h"
+#include "DepthStencil.h"
 
 namespace Reign_Video_D3D9_Component
 {
@@ -48,14 +49,14 @@ namespace Reign_Video_D3D9_Component
 		if (direct3D != 0)
 		{
 			isExDevice = true;
-			caps->D3D9Ex = true;
+			caps->ExDevice = true;
 		}
 		else
 		{
 			direct3D = Direct3DCreate9(D3D_SDK_VERSION);
 			if (direct3D == 0) return VideoError::Direct3DInterfaceFailed;
 			isExDevice = false;
-			caps->D3D9Ex = false;
+			caps->ExDevice = false;
 		}
 
 		D3DDISPLAYMODE displayMode;
@@ -286,19 +287,18 @@ namespace Reign_Video_D3D9_Component
 		device->SetRenderTarget(0, backBuffer);
 	}
 
-	/*void VideoCom::EnableRenderTarget(DepthStencilI^ depthStencil)
+	void VideoCom::EnableRenderTarget(DepthStencilCom^ depthStencil)
 	{
 		if (depthStencil != nullptr)
 		{
-			DepthStencil^ depthStencilTEMP = (DepthStencil^)depthStencil;
-			device->SetDepthStencilSurface(depthStencilTEMP->Surface);
+			device->SetDepthStencilSurface(depthStencil->surface);
 		}
 		else
 		{
 			device->SetDepthStencilSurface(0);
 		}
 		device->SetRenderTarget(0, backBuffer);
-	}*/
+	}
 
 	void VideoCom::DisableRenderTarget()
 	{
@@ -324,6 +324,16 @@ namespace Reign_Video_D3D9_Component
 	void VideoCom::ClearDepthStencil()
 	{
 		device->Clear(0, 0, D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL, 0, 1.0f, MB_ICONSTOP);
+	}
+
+	void VideoCom::DisableTexture(int index)
+	{
+		device->SetTexture(index, 0);
+	}
+
+	void VideoCom::DisableVertexTexture(int index)
+	{
+		device->SetTexture(D3DVERTEXTEXTURESAMPLER0 + index, 0);
 	}
 	#pragma endregion
 }

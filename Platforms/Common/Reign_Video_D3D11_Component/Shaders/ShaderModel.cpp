@@ -25,12 +25,7 @@ namespace Reign_Video_D3D11_Component
 			if (codeAscii) delete codeAscii;
 			if (err)
 			{
-				string^ error = gcnew string(AsciiToUnicode((char*)err->GetBufferPointer()));
-				#if WINDOWS
-				errorText = error;
-				#else
-				*errorText = error;
-				#endif
+				errorText = gcnew string(AsciiToUnicode((char*)err->GetBufferPointer()));
 				err->Release();
 			}
 			return ShaderModelErrors::CompileCode;
@@ -134,6 +129,7 @@ namespace Reign_Video_D3D11_Component
 		}
 		#endif
 
+		errorText = nullptr;
 		return ShaderModelErrors::None;
 	}
 

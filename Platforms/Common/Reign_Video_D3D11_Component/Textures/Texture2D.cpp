@@ -8,9 +8,9 @@ namespace Reign_Video_D3D11_Component
 	{
 		null();
 		this->video = video;
-		DXGI_FORMAT surfaceFormatD3D = (DXGI_FORMAT)surfaceFormat;
-		D3D11_USAGE usageType = (D3D11_USAGE)usage;
-		D3D11_CPU_ACCESS_FLAG cpuAccessFlags = (D3D11_CPU_ACCESS_FLAG)cpuUsage;
+		DXGI_FORMAT nativeSurfaceFormat = (DXGI_FORMAT)surfaceFormat;
+		D3D11_USAGE nativeUsage = (D3D11_USAGE)usage;
+		D3D11_CPU_ACCESS_FLAG nativeCPUAccess = (D3D11_CPU_ACCESS_FLAG)cpuUsage;
 
 		if (isRenderTarget) generateMipmaps = false;
 		
@@ -22,12 +22,12 @@ namespace Reign_Video_D3D11_Component
 		desc.Height = height;
 		desc.MipLevels = mipLvls;
 		desc.ArraySize = 1;
-		desc.Format = surfaceFormatD3D;
+		desc.Format = nativeSurfaceFormat;
 		desc.SampleDesc.Count = 1;
 		desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 		if (isRenderTarget) desc.BindFlags |= D3D11_BIND_RENDER_TARGET;
-		desc.Usage = usageType;
-		desc.CPUAccessFlags = cpuAccessFlags;
+		desc.Usage = nativeUsage;
+		desc.CPUAccessFlags = nativeCPUAccess;
 
 		D3D11_SUBRESOURCE_DATA* subData = 0;
 		if (hasMipmaps && mipmaps)
@@ -56,7 +56,7 @@ namespace Reign_Video_D3D11_Component
 		texture->GetDesc(&textureDesc);
 		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
 		ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
-		srvDesc.Format = surfaceFormatD3D;
+		srvDesc.Format = nativeSurfaceFormat;
 		srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MipLevels = textureDesc.MipLevels;
 		srvDesc.Texture2D.MostDetailedMip = 0;

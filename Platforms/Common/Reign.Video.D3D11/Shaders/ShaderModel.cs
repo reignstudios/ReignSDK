@@ -40,7 +40,7 @@ namespace Reign.Video.D3D11
 					case (ShaderVersions.HLSL_4_0): shaderLvl = "_4_0"; break;
 					case (ShaderVersions.HLSL_4_1): shaderLvl = "_4_1"; break;
 					case (ShaderVersions.HLSL_5_0): shaderLvl = "_5_0"; break;
-					default: Debug.ThrowError("ShaderModel", "Unsuported ShaderVersion"); break;
+					default: Debug.ThrowError("ShaderModel", "Unsuported ShaderVersion: " + shaderVersion); break;
 				}
 
 				string errorText;

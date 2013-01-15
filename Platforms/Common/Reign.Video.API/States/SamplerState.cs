@@ -6,6 +6,10 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
+			#if WINDOWS
+			if (type == VideoTypes.D3D9) SamplerStateDescAPI.Init(Reign.Video.D3D9.SamplerStateDesc.New);
+			#endif
+
 			#if WINDOWS || METRO
 			if (type == VideoTypes.D3D11) SamplerStateDescAPI.Init(Reign.Video.D3D11.SamplerStateDesc.New);
 			#endif
@@ -24,6 +28,10 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
+			#if WINDOWS
+			if (type == VideoTypes.D3D9) SamplerStateAPI.Init(Reign.Video.D3D9.SamplerState.New);
+			#endif
+
 			#if WINDOWS || METRO
 			if (type == VideoTypes.D3D11) SamplerStateAPI.Init(Reign.Video.D3D11.SamplerState.New);
 			#endif

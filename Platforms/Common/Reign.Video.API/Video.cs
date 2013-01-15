@@ -101,13 +101,13 @@ namespace Reign.Video.API
 					#endif
 
 					#if WINDOWS
-					//else if (d3d9)
-					//{
-					//    d3d9 = false;
-					//    type = VideoTypes.D3D9;
-					//    return (VideoI)OS.CreateInstance(typeof(Reign.Video.D3D9.Video), args);
-					//break;
-					//}
+					else if (d3d9)
+					{
+					    d3d9 = false;
+					    type = VideoTypes.D3D9;
+					    video = new Reign.Video.D3D9.Video(parent, window, vSync);
+						break;
+					}
 					#endif
 
 					#if WINDOWS || OSX || LINUX || NaCl

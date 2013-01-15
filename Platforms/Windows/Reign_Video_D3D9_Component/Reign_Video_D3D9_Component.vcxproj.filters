@@ -10,6 +10,15 @@
     <Filter Include="Textures">
       <UniqueIdentifier>{d380372b-4471-428b-a866-92a78623fbd1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="DepthStencil">
+      <UniqueIdentifier>{47da4ebe-958d-43f3-917c-d09ffaf590bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Buffers">
+      <UniqueIdentifier>{87364e25-cc1d-4115-8883-dfd22d0d1c36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="States">
+      <UniqueIdentifier>{28f75222-51c2-4404-bd8c-9c2aa2a894d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShaderModel.h">
@@ -26,6 +35,43 @@
     <ClInclude Include="RenderTarget.h">
       <Filter>Textures</Filter>
     </ClInclude>
+    <ClInclude Include="DepthStencil.h">
+      <Filter>DepthStencil</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderVariable.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderResource.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="BufferLayout.h">
+      <Filter>Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="BlendState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterizerState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="SamplerState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPort.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -45,5 +91,57 @@
     <ClCompile Include="RenderTarget.cpp">
       <Filter>Textures</Filter>
     </ClCompile>
+    <ClCompile Include="DepthStencil.cpp">
+      <Filter>DepthStencil</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderVariable.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderResource.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="BufferLayout.cpp">
+      <Filter>Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="BufferLayoutDesc.cpp">
+      <Filter>Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="BlendState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="BlendStateDesc.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterizerState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterizerStateDesc.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="SamplerState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="SamplerStateDesc.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilStateDesc.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPort.cpp" />
   </ItemGroup>
 </Project>

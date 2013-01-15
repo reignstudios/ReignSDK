@@ -141,7 +141,7 @@ namespace Reign.Video.D3D11
 				if (usage == BufferUsages.Read)
 				{
 					if (!isRenderTarget) Debug.ThrowError("Texture2D", "Only RenderTargets may be readable");
-					// NOTE: Staging texture will be created in the RenderTarget
+					// NOTE: Staging texture and states will be created in the RenderTarget
 					//usageType = REIGN_D3D11_USAGE.STAGING;
 					//cpuAccessFlags = REIGN_D3D11_CPU_ACCESS_FLAG.READ;
 				}
