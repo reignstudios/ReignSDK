@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7321D28F-5C38-4484-B4DB-5A685C6DA678}</ProjectGuid>
+    <ProjectTypeGuids>{69878862-DA7D-4DC6-B0A1-50D8FAB4242F};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Reign.Video.Vita</RootNamespace>
+    <AssemblyName>Reign.Video.Vita</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <DefineConstants>DEBUG;VITA</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DefineConstants>VITA</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Sce.PlayStation.Core" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Sce\Sce.Psm.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{240D5543-D936-4225-B77F-99CDBD5FC970}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Video\Reign.Video.csproj">
+      <Project>{F4C1417E-3368-4148-A414-616B010ED794}</Project>
+      <Name>Reign.Video</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Video.cs" />
+    <Compile Include="ViewPort.cs" />
+    <Compile Include="QuickDraw.cs" />
+    <Compile Include="DepthBuffer.cs" />
+    <Compile Include="Textures\Texture2D.cs" />
+    <Compile Include="Textures\RenderTarget.cs" />
+    <Compile Include="Shaders\Shader.cs" />
+    <Compile Include="Shaders\ShaderVariable.cs" />
+    <Compile Include="Shaders\ShaderResource.cs" />
+    <Compile Include="Buffers\BufferLayout.cs" />
+    <Compile Include="Buffers\BufferLayoutDesc.cs" />
+    <Compile Include="Buffers\VertexBuffer.cs" />
+    <Compile Include="Buffers\IndexBuffer.cs" />
+    <Compile Include="States\BlendState.cs" />
+    <Compile Include="States\BlendStateDesc.cs" />
+    <Compile Include="States\DepthStencilState.cs" />
+    <Compile Include="States\DepthStencilStateDesc.cs" />
+    <Compile Include="States\RasterizerState.cs" />
+    <Compile Include="States\RasterizerStateDesc.cs" />
+    <Compile Include="States\SamplerState.cs" />
+    <Compile Include="States\SamplerStateDesc.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Textures\" />
+    <Folder Include="Shaders\" />
+    <Folder Include="Buffers\" />
+    <Folder Include="States\" />
+  </ItemGroup>
+</Project>

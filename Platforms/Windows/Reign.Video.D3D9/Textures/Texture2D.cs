@@ -117,6 +117,7 @@ namespace Reign.Video.D3D9
 			try
 			{
 				video = parent.FindParentOrSelfWithException<Video>();
+				if (isRenderTarget) generateMipmaps = false;
 
 				// load image data
 				if (image != null)

@@ -21,6 +21,10 @@ namespace Reign.Video.API
 			#if XNA
 			if (type == VideoTypes.XNA) VertexBufferAPI.Init(Reign.Video.XNA.VertexBuffer.New);
 			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) VertexBufferAPI.Init(Reign.Video.Vita.VertexBuffer.New);
+			#endif
 		}
 	}
 }

@@ -32,7 +32,7 @@ namespace Reign.Video.OpenGL
 			attribLocations = new int[layout.Length];
 			for (int i = 0; i != layout.Length; ++i)
 			{
-				attribLocations[i] = GL.GetAttribLocation(this.shader.Program, layout[i].Name);
+				attribLocations[i] = GL.GetAttribLocation(this.shader.program, layout[i].Name);
 				Video.checkForError();
 			}
 		}

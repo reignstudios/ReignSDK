@@ -21,6 +21,10 @@ namespace Reign.Video.API
 			#if XNA
 			if (type == VideoTypes.XNA) BufferLayoutDescAPI.Init(Reign.Video.XNA.BufferLayoutDesc.New, Reign.Video.XNA.BufferLayoutDesc.New);
 			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) BufferLayoutDescAPI.Init(Reign.Video.Vita.BufferLayoutDesc.New, Reign.Video.Vita.BufferLayoutDesc.New);
+			#endif
 		}
 	}
 
@@ -42,6 +46,10 @@ namespace Reign.Video.API
 
 			#if XNA
 			if (type == VideoTypes.XNA) BufferLayoutAPI.Init(Reign.Video.XNA.BufferLayout.New);
+			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) BufferLayoutAPI.Init(Reign.Video.Vita.BufferLayout.New);
 			#endif
 		}
 	}

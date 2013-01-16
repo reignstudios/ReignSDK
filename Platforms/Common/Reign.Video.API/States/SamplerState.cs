@@ -21,6 +21,10 @@ namespace Reign.Video.API
 			#if XNA
 			if (type == VideoTypes.XNA) SamplerStateDescAPI.Init(Reign.Video.XNA.SamplerStateDesc.New);
 			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) SamplerStateDescAPI.Init(Reign.Video.Vita.SamplerStateDesc.New);
+			#endif
 		}
 	}
 
@@ -42,6 +46,10 @@ namespace Reign.Video.API
 
 			#if XNA
 			if (type == VideoTypes.XNA) SamplerStateAPI.Init(Reign.Video.XNA.SamplerState.New);
+			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) SamplerStateAPI.Init(Reign.Video.Vita.SamplerState.New);
 			#endif
 		}
 	}

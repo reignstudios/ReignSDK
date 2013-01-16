@@ -12,13 +12,19 @@ namespace Reign.Video.D3D9
 
 		public string Name {get; private set;}
 		private ShaderResourceCom com;
+		private Video video;
+		private int vertexIndex, pixelIndex;
 		#endregion
 
 		#region Constructors
-		public ShaderResource(VideoCom video, string name, int vertexIndex, int pixelIndex)
+		public ShaderResource(Video video, string name, int vertexIndex, int pixelIndex)
 		{
 			Name = name;
-			com = new ShaderResourceCom(video, vertexIndex, pixelIndex);
+			this.video = video;
+			this.vertexIndex = vertexIndex;
+			this.pixelIndex = pixelIndex;
+
+			com = new ShaderResourceCom(video.com, vertexIndex, pixelIndex);
 			Apply = setNothing;
 			resource = new WeakReference(null);
 		}
@@ -38,6 +44,8 @@ namespace Reign.Video.D3D9
 		public void Set(Texture2DI resource)
 		{
 			this.resource.Target = resource;
+			if (vertexIndex != -1) video.currentVertexTextures[vertexIndex] = (Texture2D)resource;
+			if (pixelIndex != -1) video.currentPixelTextures[pixelIndex] = (Texture2D)resource;
 			Apply = setTexture2D;
 		}
 

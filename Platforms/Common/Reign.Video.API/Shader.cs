@@ -21,6 +21,10 @@ namespace Reign.Video.API
 			#if XNA
 			if (type == VideoTypes.XNA) ShaderAPI.Init(Reign.Video.XNA.Shader.New, Reign.Video.XNA.Shader.New);
 			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) ShaderAPI.Init(Reign.Video.Vita.Shader.New, Reign.Video.Vita.Shader.New);
+			#endif
 		}
 	}
 }

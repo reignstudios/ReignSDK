@@ -40,7 +40,7 @@ namespace Reign.Core
 		}
 	}
 	
-	#if !XNA
+	#if !XNA && !VITA
 	public enum ApplicationOrientations
 	{
 		Landscape,
@@ -106,10 +106,12 @@ namespace Reign.Core
 	: XNAGame
 	#elif METRO
 	: MetroApplication, ApplicationI
+	#elif VITA
+	: VitaApplication
 	#endif
 	{
 		#region Properties
-		#if !XNA
+		#if !XNA && !VITA
 		internal ApplicationOrientations orientation;
 		#endif
 		
@@ -146,7 +148,7 @@ namespace Reign.Core
 		: base(enableAds, publisherID)
 		#elif METRO
 		public Application(ApplicationOrientations orientation)
-		#elif SILVERLIGHT
+		#elif SILVERLIGHT || VITA
 		public Application()
 		#elif XNA
 		public Application(int width, int height)
@@ -154,7 +156,7 @@ namespace Reign.Core
 		public Application(int width, int height, ApplicationOrientations orientation)
 		#endif
 		{
-			#if !XNA
+			#if !XNA && !VITA
 			this.orientation = orientation;
 			#endif
 			theEvent = new ApplicationEvent();
@@ -164,6 +166,8 @@ namespace Reign.Core
 			setApplication(this);
 			#elif XNA
 			init(this, width, height);
+			#elif VITA
+			init(this);
 			#else
 			init(this, width, height, orientation);
 			#endif

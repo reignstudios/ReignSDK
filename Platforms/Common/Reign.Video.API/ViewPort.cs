@@ -21,6 +21,10 @@ namespace Reign.Video.API
 			#if XNA
 			if (type == VideoTypes.XNA) ViewPortAPI.Init(Reign.Video.XNA.ViewPort.New, Reign.Video.XNA.ViewPort.New);
 			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) ViewPortAPI.Init(Reign.Video.Vita.ViewPort.New, Reign.Video.Vita.ViewPort.New);
+			#endif
 		}
 	}
 }

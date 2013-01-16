@@ -148,7 +148,7 @@ namespace Reign.Video.D3D9
 			    Debug.ThrowError("Shader", string.Format("Shader resource '{0}' does not exist.", name));
 			}
 
-			ShaderResource newResource = new ShaderResource(video.com, name, vertexIndex, pixelIndex);
+			ShaderResource newResource = new ShaderResource(video, name, vertexIndex, pixelIndex);
 			resources.Add(newResource);
 			return newResource;
 		}

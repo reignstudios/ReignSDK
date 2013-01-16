@@ -21,6 +21,10 @@ namespace Reign.Video.API
 			#if XNA
 			if (type == VideoTypes.XNA) DepthStencilStateDescAPI.Init(Reign.Video.XNA.DepthStencilStateDesc.New);
 			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) DepthStencilStateDescAPI.Init(Reign.Video.Vita.DepthStencilStateDesc.New);
+			#endif
 		}
 	}
 
@@ -42,6 +46,10 @@ namespace Reign.Video.API
 
 			#if XNA
 			if (type == VideoTypes.XNA) DepthStencilStateAPI.Init(Reign.Video.XNA.DepthStencilState.New);
+			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) DepthStencilStateAPI.Init(Reign.Video.Vita.DepthStencilState.New);
 			#endif
 		}
 	}

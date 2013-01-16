@@ -21,6 +21,10 @@ namespace Reign.Video.API
 			#if XNA
 			if (type == VideoTypes.XNA) QuickDrawAPI.Init(Reign.Video.XNA.QuickDraw.New);
 			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) QuickDrawAPI.Init(Reign.Video.Vita.QuickDraw.New);
+			#endif
 		}
 	}
 }

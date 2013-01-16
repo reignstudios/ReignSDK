@@ -111,7 +111,7 @@ namespace Reign.Core
 			millisecond = currentMilli;
 			#else
 			Delta += ((stopWatch.ElapsedTicks / (float)(Stopwatch.Frequency)) - Delta) * .1f;
-			#if XBOX360
+			#if XBOX360 || VITA
 			stopWatch.Reset();
 			stopWatch.Start();
 			#else

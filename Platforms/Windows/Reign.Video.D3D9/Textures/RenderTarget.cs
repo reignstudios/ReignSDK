@@ -85,7 +85,6 @@ namespace Reign.Video.D3D9
 		public void Enable()
 		{
 			// TODO: disable unsused active renderTargets and resolve last multisampled rendertarget
-
 			video.removeActiveTexture(this);
 			renderTargetCom.Enable();
 		}

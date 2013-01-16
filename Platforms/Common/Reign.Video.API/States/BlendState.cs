@@ -21,6 +21,10 @@ namespace Reign.Video.API
 			#if XNA
 			if (type == VideoTypes.XNA) BlendStateDescAPI.Init(Reign.Video.XNA.BlendStateDesc.New);
 			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) BlendStateDescAPI.Init(Reign.Video.Vita.BlendStateDesc.New);
+			#endif
 		}
 	}
 
@@ -42,6 +46,10 @@ namespace Reign.Video.API
 
 			#if XNA
 			if (type == VideoTypes.XNA) BlendStateAPI.Init(Reign.Video.XNA.BlendState.New);
+			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) BlendStateAPI.Init(Reign.Video.Vita.BlendState.New);
 			#endif
 		}
 	}

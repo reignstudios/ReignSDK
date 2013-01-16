@@ -21,6 +21,10 @@ namespace Reign.Video.API
 			#if XNA
 			if (type == VideoTypes.XNA) RenderTargetAPI.Init(Reign.Video.XNA.RenderTarget.New, Reign.Video.XNA.RenderTarget.New);
 			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) RenderTargetAPI.Init(Reign.Video.Vita.RenderTarget.New, Reign.Video.Vita.RenderTarget.New);
+			#endif
 		}
 	}
 }

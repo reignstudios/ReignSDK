@@ -29,6 +29,10 @@ using System.Reflection;
 using Windows.ApplicationModel.Core;
 #endif
 
+#if VITA
+using Sce.PlayStation.Core.Environment;
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -293,12 +297,12 @@ namespace Reign.Core
 		}
 		#endif
 		
-		#if (iOS || XNA || METRO) && !SILVERLIGHT
+		#if (iOS || XNA || METRO || VITA) && !SILVERLIGHT
 		public static void Run(Application application, int fps)
 		{
 			CurrentApplication = application;
 
-			#if iOS || ANDROID || XNA
+			#if iOS || ANDROID || XNA || VITA
 			fps = 0;
 			#endif
 			time = new Time(fps);
@@ -325,6 +329,16 @@ namespace Reign.Core
 			#if !XBOX360
 			Time.EndOptimizedMode();
 			#endif
+			#endif
+			
+			#if VITA
+			application.shown();
+			while (true)
+			{
+				SystemEvents.CheckEvents ();
+				UpdateAndRender();
+			}
+			//application.closing();// Application never has you handle closing
 			#endif
 		}
 		#endif

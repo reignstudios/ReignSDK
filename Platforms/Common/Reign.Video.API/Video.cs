@@ -10,12 +10,13 @@ namespace Reign.Video.API
 		D3D11,
 		D3D9,
 		XNA,
+		Vita,
 		OpenGL
 	}
 
 	public static class Video
 	{
-		#if METRO || XNA || iOS || ANDROID
+		#if METRO || XNA || iOS || ANDROID || VITA
 		public static VideoI Init(VideoTypes typeFlags, out VideoTypes type, DisposableI parent, Application application, bool vSync)
 		{
 			try
@@ -30,6 +31,13 @@ namespace Reign.Video.API
 				#if XNA
 				type = VideoTypes.XNA;
 				var video = new Reign.Video.XNA.Video(parent, application);
+				initMethods(type);
+				return video;
+				#endif
+				
+				#if VITA
+				type = VideoTypes.Vita;
+				var video = new Reign.Video.Vita.Video(parent, application);
 				initMethods(type);
 				return video;
 				#endif

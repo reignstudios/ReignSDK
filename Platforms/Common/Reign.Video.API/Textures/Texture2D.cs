@@ -21,6 +21,10 @@ namespace Reign.Video.API
 			#if XNA
 			if (type == VideoTypes.XNA) Texture2DAPI.Init(Reign.Video.XNA.Texture2D.NewReference, Reign.Video.XNA.Texture2D.New, Reign.Video.XNA.Texture2D.New, Reign.Video.XNA.Texture2D.New);
 			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) Texture2DAPI.Init(Reign.Video.Vita.Texture2D.NewReference, Reign.Video.Vita.Texture2D.New, Reign.Video.Vita.Texture2D.New, Reign.Video.Vita.Texture2D.New);
+			#endif
 		}
 	}
 }

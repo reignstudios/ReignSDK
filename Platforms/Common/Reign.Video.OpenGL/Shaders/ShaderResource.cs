@@ -1,6 +1,5 @@
 ﻿using System;
 using Reign.Core;
-using System.Runtime.InteropServices;
 
 namespace Reign.Video.OpenGL
 {
@@ -64,7 +63,7 @@ namespace Reign.Video.OpenGL
 		public void Set(Texture2DI resource)
 		{
 			var texture = (Texture2D)resource;
-			video.currentTextures[index] = texture;
+			video.currentPixelTextures[index] = texture;
 			resourceIndex = texture.Texture;
 			this.texture = new WeakReference(texture);
 			Apply = setTexture2D;
@@ -72,10 +71,7 @@ namespace Reign.Video.OpenGL
 
 		public void Set(Texture3DI resource)
 		{
-			//var texture = (Texture2D)resource;
-			//video.currentTextures[index] = texture;
-			//resourceIndex = texture.Texture;
-			//Apply = setTexture2D;
+			throw new NotImplementedException();
 		}
 		#endregion
 	}

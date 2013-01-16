@@ -13,7 +13,7 @@ namespace Reign.Video.OpenGL
 		private PixelShader pixel;
 		private List<ShaderVariable> variables;
 		private List<ShaderResource> resources;
-		public uint Program {get; private set;}
+		internal uint program;
 		#endregion
 
 		#region Constructors
@@ -76,11 +76,11 @@ namespace Reign.Video.OpenGL
 				vertex = new VertexShader(this, code[0], shaderVersion, vsQuality);
 				pixel = new PixelShader(this, code[1], shaderVersion, psQuality);
 
-				Program = GL.CreateProgram();
-				if (Program == 0) Debug.ThrowError("Shader", "Failed to create shader program");
-				GL.AttachShader(Program, vertex.Shader);
-				GL.AttachShader(Program, pixel.Shader);
-				GL.LinkProgram(Program);
+				program = GL.CreateProgram();
+				if (program == 0) Debug.ThrowError("Shader", "Failed to create shader program");
+				GL.AttachShader(program, vertex.Shader);
+				GL.AttachShader(program, pixel.Shader);
+				GL.LinkProgram(program);
 
 				variables = new List<ShaderVariable>();
 				resources = new List<ShaderResource>();
@@ -103,14 +103,14 @@ namespace Reign.Video.OpenGL
 		public override void Dispose()
 		{
 			disposeChilderen();
-			if (Program != 0)
+			if (program != 0)
 			{
 				if (!OS.AutoDisposedGL)
 				{
 					GL.UseProgram(0);
-					GL.DeleteProgram(Program);
+					GL.DeleteProgram(program);
 				}
-				Program = 0;
+				program = 0;
 
 				#if DEBUG && !ANDROID
 				Video.checkForError();
@@ -123,7 +123,7 @@ namespace Reign.Video.OpenGL
 		#region Methods
 		public override void Apply()
 		{
-			GL.UseProgram(Program);
+			GL.UseProgram(program);
 			
 			foreach (var variable in variables)
 			{
@@ -149,7 +149,7 @@ namespace Reign.Video.OpenGL
 			}
 
 			// Otherwise add a variable instance
-			int uniform = GL.GetUniformLocation(Program, name);
+			int uniform = GL.GetUniformLocation(program, name);
 			if (uniform == -1)
 			{
 				Debug.ThrowError("Shader", string.Format("Shader variable '{0}' does not exist", name));
@@ -169,7 +169,7 @@ namespace Reign.Video.OpenGL
 			}
 
 			// Otherwise add a variable instance
-			int uniform = GL.GetUniformLocation(Program, name);
+			int uniform = GL.GetUniformLocation(program, name);
 			if (uniform == -1)
 			{
 				Debug.ThrowError("Shader", string.Format("Shader resource '{0}' does not exist", name));

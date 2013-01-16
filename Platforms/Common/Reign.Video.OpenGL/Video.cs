@@ -50,7 +50,7 @@ namespace Reign.Video.OpenGL
 
 		public Caps Caps;
 		private bool disposed;
-		internal Texture2D[] currentTextures;
+		internal Texture2D[] currentPixelTextures, currentVertexTextures;
 		internal SamplerState[] currentSamplerStates;
 		internal BufferLayout currentBufferLayout;
 		internal VertexBuffer currentVertexBuffer;
@@ -88,7 +88,8 @@ namespace Reign.Video.OpenGL
 		{
 			try
 			{
-				currentTextures = new Texture2D[8];
+				currentPixelTextures = new Texture2D[8];
+				currentVertexTextures = new Texture2D[8];
 				currentSamplerStates = new SamplerState[8];
 
 				#if WINDOWS || OSX || LINUX || NaCl
@@ -692,7 +693,7 @@ namespace Reign.Video.OpenGL
 			
 			if (depthStencil != null)
 			{
-				uint surface = ((DepthStencil)depthStencil).Surface;
+				uint surface = ((DepthStencil)depthStencil).surface;
 				GL.BindRenderbuffer(GL.RENDERBUFFER, surface);
 				GL.FramebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, surface);
 			}
@@ -761,13 +762,24 @@ namespace Reign.Video.OpenGL
 
 		internal void disableActiveTextures(Texture2D texture)
 		{
-			for (int i = 0; i != currentTextures.Length; ++i)
+			var textures = currentVertexTextures;
+			for (int i = 0; i != textures.Length; ++i)
 			{
-				if (currentTextures[i] == texture)
+				if (textures[i] == texture)
+				{
+					throw new NotImplementedException();
+					//textures[i] = null;
+				}
+			}
+
+			textures = currentPixelTextures;
+			for (int i = 0; i != textures.Length; ++i)
+			{
+				if (textures[i] == texture)
 				{
 					GL.ActiveTexture(ShaderResource.textureMaps[i]);
 					GL.BindTexture(GL.TEXTURE_2D, 0);
-					currentTextures[i] = null;
+					textures[i] = null;
 				}
 			}
 		}

@@ -21,6 +21,10 @@ namespace Reign.Video.API
 			#if XNA
 			if (type == VideoTypes.XNA) RasterizerStateDescAPI.Init(Reign.Video.XNA.RasterizerStateDesc.New);
 			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) RasterizerStateDescAPI.Init(Reign.Video.Vita.RasterizerStateDesc.New);
+			#endif
 		}
 	}
 
@@ -42,6 +46,10 @@ namespace Reign.Video.API
 
 			#if XNA
 			if (type == VideoTypes.XNA) RasterizerStateAPI.Init(Reign.Video.XNA.RasterizerState.New);
+			#endif
+			
+			#if VITA
+			if (type == VideoTypes.Vita) RasterizerStateAPI.Init(Reign.Video.Vita.RasterizerState.New);
 			#endif
 		}
 	}

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F4C1417E-3368-4148-A414-616B010ED794}</ProjectGuid>
+    <ProjectTypeGuids>{69878862-DA7D-4DC6-B0A1-50D8FAB4242F};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Reign.Video</RootNamespace>
+    <AssemblyName>Reign.Video</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <DefineConstants>DEBUG;VITA</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <DefineConstants>VITA</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Sce.PlayStation.Core" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Sce\Sce.Psm.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{240D5543-D936-4225-B77F-99CDBD5FC970}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\Reign.Video\Camera.cs">
+      <Link>Camera.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\DepthStencil.cs">
+      <Link>DepthStencil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Font.cs">
+      <Link>Font.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\QuickDraw.cs">
+      <Link>QuickDraw.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Shader.cs">
+      <Link>Shader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Texture.cs">
+      <Link>Texture.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Video.cs">
+      <Link>Video.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\ViewPort.cs">
+      <Link>ViewPort.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Buffers\BufferLayout.cs">
+      <Link>Buffers\BufferLayout.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Buffers\IndexBuffer.cs">
+      <Link>Buffers\IndexBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Buffers\VertexBuffer.cs">
+      <Link>Buffers\VertexBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Image\Image.cs">
+      <Link>Image\Image.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Image\ImageDDS.cs">
+      <Link>Image\ImageDDS.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Image\ImagePVR.cs">
+      <Link>Image\ImagePVR.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\HardwareMeshProcessor.cs">
+      <Link>Model\HardwareMeshProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\Material.cs">
+      <Link>Model\Material.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\Mesh.cs">
+      <Link>Model\Mesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\Model.cs">
+      <Link>Model\Model.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\Asset.cs">
+      <Link>Model\ColladaModel\Asset.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\ColladaModel.cs">
+      <Link>Model\ColladaModel\ColladaModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryEffect.cs">
+      <Link>Model\ColladaModel\LibraryEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryGeometry.cs">
+      <Link>Model\ColladaModel\LibraryGeometry.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryImage.cs">
+      <Link>Model\ColladaModel\LibraryImage.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryMaterial.cs">
+      <Link>Model\ColladaModel\LibraryMaterial.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryVisualScene.cs">
+      <Link>Model\ColladaModel\LibraryVisualScene.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\Scene.cs">
+      <Link>Model\ColladaModel\Scene.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareEdge.cs">
+      <Link>Model\SoftwareModel\SoftwareEdge.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareMaterial.cs">
+      <Link>Model\SoftwareModel\SoftwareMaterial.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareMesh.cs">
+      <Link>Model\SoftwareModel\SoftwareMesh.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareModel.cs">
+      <Link>Model\SoftwareModel\SoftwareModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareTriangle.cs">
+      <Link>Model\SoftwareModel\SoftwareTriangle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareVertex.cs">
+      <Link>Model\SoftwareModel\SoftwareVertex.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\States\BlendState.cs">
+      <Link>States\BlendState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\States\DepthStencilState.cs">
+      <Link>States\DepthStencilState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\States\RasterizerState.cs">
+      <Link>States\RasterizerState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\States\SamplerState.cs">
+      <Link>States\SamplerState.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Buffers\" />
+    <Folder Include="Image\" />
+    <Folder Include="Model\" />
+    <Folder Include="States\" />
+  </ItemGroup>
+</Project>
