@@ -10,7 +10,7 @@ Platforms
 --------
 ========================================================================
     Microsoft
-    - Windows
+    - Windows (D3D11, D3D9 and OpenGL supported)
     - Metro
     - Xbox360
     - XNA
