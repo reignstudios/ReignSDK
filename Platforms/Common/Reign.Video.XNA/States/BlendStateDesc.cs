@@ -7,16 +7,16 @@ namespace Reign.Video.XNA
 	public class BlendStateDesc : BlendStateDescI
 	{
 		#region Properties
-		public X.ColorWriteChannels RenderTargetWriteMask {get; private set;}
+		internal X.ColorWriteChannels renderTargetWriteMask;
 
-		public bool BlendEnable {get; private set;}
-		public X.BlendFunction BlendOp {get; private set;}
-		public X.Blend SrcBlend {get; private set;}
-		public X.Blend DstBlend {get; private set;}
+		internal bool blendEnable;
+		internal X.BlendFunction blendOp;
+		internal X.Blend srcBlend;
+		internal X.Blend dstBlend;
 
-		public X.BlendFunction BlendOpAlpha {get; private set;}
-		public X.Blend SrcBlendAlpha {get; private set;}
-		public X.Blend DstBlendAlpha {get; private set;}
+		internal X.BlendFunction blendOpAlpha;
+		internal X.Blend srcBlendAlpha;
+		internal X.Blend dstBlendAlpha;
 		#endregion
 
 		#region Constructors
@@ -27,63 +27,63 @@ namespace Reign.Video.XNA
 
 		public BlendStateDesc(BlendStateTypes type)
 		{
-			RenderTargetWriteMask = X.ColorWriteChannels.All;
+			renderTargetWriteMask = X.ColorWriteChannels.All;
 
 			switch (type)
 			{
 			    case (BlendStateTypes.None):
-			        BlendEnable = false;
-					BlendOp = X.BlendFunction.Add;
-					SrcBlend = X.Blend.One;
-					DstBlend = X.Blend.One;
+			        blendEnable = false;
+					blendOp = X.BlendFunction.Add;
+					srcBlend = X.Blend.One;
+					dstBlend = X.Blend.One;
 
-					BlendOpAlpha = X.BlendFunction.Add;
-					SrcBlendAlpha = X.Blend.One;
-					DstBlendAlpha = X.Blend.One;
+					blendOpAlpha = X.BlendFunction.Add;
+					srcBlendAlpha = X.Blend.One;
+					dstBlendAlpha = X.Blend.One;
 			        break;
 
 				case (BlendStateTypes.Add):
-			        BlendEnable = true;
-					BlendOp = X.BlendFunction.Add;
-					SrcBlend = X.Blend.One;
-					DstBlend = X.Blend.One;
+			        blendEnable = true;
+					blendOp = X.BlendFunction.Add;
+					srcBlend = X.Blend.One;
+					dstBlend = X.Blend.One;
 
-					BlendOpAlpha = X.BlendFunction.Add;
-					SrcBlendAlpha = X.Blend.One;
-					DstBlendAlpha = X.Blend.One;
+					blendOpAlpha = X.BlendFunction.Add;
+					srcBlendAlpha = X.Blend.One;
+					dstBlendAlpha = X.Blend.One;
 			        break;
 
 				case (BlendStateTypes.Subtract):
-			        BlendEnable = true;
-					BlendOp = X.BlendFunction.Subtract;
-					SrcBlend = X.Blend.One;
-					DstBlend = X.Blend.One;
+			        blendEnable = true;
+					blendOp = X.BlendFunction.Subtract;
+					srcBlend = X.Blend.One;
+					dstBlend = X.Blend.One;
 
-					BlendOpAlpha = X.BlendFunction.Subtract;
-					SrcBlendAlpha = X.Blend.One;
-					DstBlendAlpha = X.Blend.One;
+					blendOpAlpha = X.BlendFunction.Subtract;
+					srcBlendAlpha = X.Blend.One;
+					dstBlendAlpha = X.Blend.One;
 			        break;
 
 				case (BlendStateTypes.RevSubtract):
-			        BlendEnable = true;
-					BlendOp = X.BlendFunction.ReverseSubtract;
-					SrcBlend = X.Blend.One;
-					DstBlend = X.Blend.One;
+			        blendEnable = true;
+					blendOp = X.BlendFunction.ReverseSubtract;
+					srcBlend = X.Blend.One;
+					dstBlend = X.Blend.One;
 
-					BlendOpAlpha = X.BlendFunction.ReverseSubtract;
-					SrcBlendAlpha = X.Blend.One;
-					DstBlendAlpha = X.Blend.One;
+					blendOpAlpha = X.BlendFunction.ReverseSubtract;
+					srcBlendAlpha = X.Blend.One;
+					dstBlendAlpha = X.Blend.One;
 			        break;
 
 				case (BlendStateTypes.Alpha):
-			        BlendEnable = true;
-					BlendOp = X.BlendFunction.Add;
-					SrcBlend = X.Blend.SourceAlpha;
-					DstBlend = X.Blend.InverseSourceAlpha;
+			        blendEnable = true;
+					blendOp = X.BlendFunction.Add;
+					srcBlend = X.Blend.SourceAlpha;
+					dstBlend = X.Blend.InverseSourceAlpha;
 
-					BlendOpAlpha = X.BlendFunction.Add;
-					SrcBlendAlpha = X.Blend.SourceAlpha;
-					DstBlendAlpha = X.Blend.InverseSourceAlpha;
+					blendOpAlpha = X.BlendFunction.Add;
+					srcBlendAlpha = X.Blend.SourceAlpha;
+					dstBlendAlpha = X.Blend.InverseSourceAlpha;
 			        break;
 
 				default:

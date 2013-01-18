@@ -24,17 +24,17 @@ namespace Reign.Video.OpenGL
 		#region Methods
 		public void Enable()
 		{
-			if (desc.DepthReadEnable)
+			if (desc.depthReadEnable)
 			{
 				GL.Enable(GL.DEPTH_TEST);
-				GL.DepthFunc(desc.DepthFunc);
+				GL.DepthFunc(desc.depthFunc);
 			}
 			else
 			{
 				GL.Disable(GL.DEPTH_TEST);
 			}
 			
-			if (desc.DepthWriteEnable)
+			if (desc.depthWriteEnable)
 			{
 				GL.DepthMask(true);
 			}
@@ -43,12 +43,12 @@ namespace Reign.Video.OpenGL
 				GL.DepthMask(false);
 			}
 
-			if (desc.StencilEnable)
+			if (desc.stencilEnable)
 			{
 				GL.Enable(GL.STENCIL_TEST);
-				GL.StencilFunc(desc.StencilFunc, 0, 0xFFFFFFFF);
+				GL.StencilFunc(desc.stencilFunc, 0, 0xFFFFFFFF);
 				//GL.StencilFuncSeparate(depthStencilDesc.StencilFunc, 0, 0xFFFFFFFF);
-				GL.StencilOp(desc.StencilFailOp, desc.StencilDepthFailOp, desc.StencilPassOp);
+				GL.StencilOp(desc.stencilFailOp, desc.stencilDepthFailOp, desc.stencilPassOp);
 				//GL.StencilOpSeparate(depthStencilDesc.StencilFailOp, depthStencilDesc.StencilDepthFailOp, depthStencilDesc.StencilPassOp);
 			}
 			else

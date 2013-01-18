@@ -34,6 +34,7 @@ namespace Reign.Video.Vita
 		private void setTexture2D()
 		{
 			var textureRef = (Texture2D)texture.Target;
+			video.currentSamplerStates[index].enable(textureRef);
 			video.context.SetTexture(index, textureRef.texture);
 		}
 

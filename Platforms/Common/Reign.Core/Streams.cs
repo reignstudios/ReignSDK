@@ -385,6 +385,9 @@ namespace Reign.Core
 			fileName = fileName.Replace('\\', '/');
 			#else
 			fileName = fileName.Replace('/', '\\');
+			#if VITA
+			fileName = "/Application/" + fileName;
+			#endif
 			#endif
 			return new FileStream(fileName, FileMode.Open, FileAccess.Read);
 			#endif

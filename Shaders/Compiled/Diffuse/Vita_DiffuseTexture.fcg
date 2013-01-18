@@ -1,0 +1,13 @@
+uniform float3 LightDirection;
+uniform float4 LightColor;
+uniform sampler2D Diffuse;
+
+void main(
+float4 in Position_VSPS : POSITION,
+float3 in Normal_VSPS : TEXCOORD0,
+float2 in UV_VSPS : TEXCOORD1,
+float4 out Color_PS : COLOR)
+{
+	float light = dot(-LightDirection, Normal_VSPS);
+	Color_PS = tex2D(Diffuse, UV_VSPS) * LightColor * light;
+}

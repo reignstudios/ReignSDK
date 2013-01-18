@@ -77,31 +77,31 @@ namespace Reign.Video.Vita
 			program.SetUniformValue(index, valueObject.X);
 		}
 
-		private unsafe void setVector2()
+		private void setVector2()
 		{
-			fixed (void* ptr = &valueObject.Vector2)
-			{
-				C.Vector2* vector = (C.Vector2*)ptr;
-				program.SetUniformValue(index, ref *vector);
-			}
+			C.Vector2 vector;
+			vector.X = valueObject.Vector2.X;
+			vector.Y = valueObject.Vector2.Y;
+			program.SetUniformValue(index, ref vector);
 		}
 
-		private unsafe void setVector3()
+		private void setVector3()
 		{
-			fixed (void* ptr = &valueObject.Vector3)
-			{
-				C.Vector3* vector = (C.Vector3*)ptr;
-				program.SetUniformValue(index, ref *vector);
-			}
+			C.Vector3 vector;
+			vector.X = valueObject.Vector3.X;
+			vector.Y = valueObject.Vector3.Y;
+			vector.Z = valueObject.Vector3.Z;
+			program.SetUniformValue(index, ref vector);
 		}
 
-		private unsafe void setVector4()
+		private void setVector4()
 		{
-			fixed (void* ptr = &valueObject.Vector4)
-			{
-				C.Vector4* vector = (C.Vector4*)ptr;
-				program.SetUniformValue(index, ref *vector);
-			}
+			C.Vector4 vector;
+			vector.X = valueObject.Vector4.X;
+			vector.Y = valueObject.Vector4.Y;
+			vector.Z = valueObject.Vector4.Z;
+			vector.W = valueObject.Vector4.W;
+			program.SetUniformValue(index, ref vector);
 		}
 
 		private void setMatrix2()
@@ -114,13 +114,29 @@ namespace Reign.Video.Vita
 			throw new NotImplementedException();
 		}
 
-		private unsafe void setMatrix4()
+		private void setMatrix4()
 		{
-			fixed (void* ptr = &valueObject.Matrix4)
-			{
-				C.Matrix4* vector = (C.Matrix4*)ptr;
-				program.SetUniformValue(index, ref *vector);
-			}
+			C.Matrix4 matrix;
+			matrix.M11 = valueObject.Matrix4.X.X;
+			matrix.M21 = valueObject.Matrix4.X.Y;
+			matrix.M31 = valueObject.Matrix4.X.Z;
+			matrix.M41 = valueObject.Matrix4.X.W;
+			
+			matrix.M12 = valueObject.Matrix4.Y.X;
+			matrix.M22 = valueObject.Matrix4.Y.Y;
+			matrix.M32 = valueObject.Matrix4.Y.Z;
+			matrix.M42 = valueObject.Matrix4.Y.W;
+			
+			matrix.M13 = valueObject.Matrix4.Z.X;
+			matrix.M23 = valueObject.Matrix4.Z.Y;
+			matrix.M33 = valueObject.Matrix4.Z.Z;
+			matrix.M43 = valueObject.Matrix4.Z.W;
+			
+			matrix.M14 = valueObject.Matrix4.W.X;
+			matrix.M24 = valueObject.Matrix4.W.Y;
+			matrix.M34 = valueObject.Matrix4.W.Z;
+			matrix.M44 = valueObject.Matrix4.W.W;
+			program.SetUniformValue(index, ref matrix);
 		}
 
 		private void setFloatArray()

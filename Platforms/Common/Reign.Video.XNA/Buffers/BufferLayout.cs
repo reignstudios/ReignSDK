@@ -38,7 +38,7 @@ namespace Reign.Video.XNA
 				video = parent.FindParentOrSelfWithException<Video>();
 
 				var inputLayoutDescTEMP = (BufferLayoutDesc)inputLayoutDesc;
-				layout = new VertexDeclaration(inputLayoutDescTEMP.Desc);
+				layout = new VertexDeclaration(inputLayoutDescTEMP.desc);
 			}
 			catch (Exception e)
 			{

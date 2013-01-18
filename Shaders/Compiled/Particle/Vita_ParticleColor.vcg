@@ -1,0 +1,16 @@
+uniform float4x4 Camera;
+uniform float4x4 BillboardTransform;
+uniform float4 ColorPallet[4];
+uniform float4 ScalePallet;
+uniform float4 Transforms[10];
+
+void main(
+float3 in Position_VS : POSITION,
+float2 in UV_VS : TEXCOORD0,
+float4 out Position_VSPS : POSITION,
+float2 out UV_VSPS : TEXCOORD0)
+{
+	float4 loc = mul( float4(Position_VS, 1), BillboardTransform);
+	Position_VSPS = mul(loc, Camera);
+	UV_VSPS = float2(UV_VS.x, 1.0-UV_VS.y);
+}

@@ -31,18 +31,18 @@ namespace Reign.Video.OpenGL
 
 		internal void enable(Texture2D texture)
 		{
-			if (!texture.hasMipmaps) GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, desc.FilterMin);
-			else GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, desc.FilterMinMiped);
-			GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, desc.FilterMag);
+			if (!texture.hasMipmaps) GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, desc.filterMin);
+			else GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, desc.filterMinMiped);
+			GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, desc.filterMag);
 			
-			GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, desc.AddressU);
-			GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, desc.AddressV);
+			GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, desc.addressU);
+			GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, desc.addressV);
 			#if !iOS && !ANDROID && !NaCl && !(LINUX && ARM)
-			GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_R, desc.AddressW);
+			GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_R, desc.addressW);
 			
 			unsafe
 			{
-				int color = desc.BorderColor;
+				int color = desc.borderColor;
 				GL.TexParameteriv(GL.TEXTURE_2D, GL.TEXTURE_BORDER_COLOR, &color);
 			}
 			#endif

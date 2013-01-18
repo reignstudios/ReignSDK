@@ -82,7 +82,7 @@ namespace Reign.Video.Vita
 				
 				if (fileName != null)
 				{
-					texture = new G.Texture2D(fileName, generateMipmaps);
+					texture = new G.Texture2D("/Application/" + fileName, generateMipmaps);
 				}
 				else
 				{

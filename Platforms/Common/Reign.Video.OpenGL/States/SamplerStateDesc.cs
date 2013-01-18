@@ -6,15 +6,15 @@ namespace Reign.Video.OpenGL
 	public class SamplerStateDesc : SamplerStateDescI
 	{
 		#region Properties
-		public int FilterMin {get; private set;}
-		public int FilterMinMiped {get; private set;}
-		public int FilterMag {get; private set;}
+		internal int filterMin;
+		internal int filterMinMiped;
+		internal int filterMag;
 
-		public int AddressU {get; private set;}
-		public int AddressV {get; private set;}
-		public int AddressW {get; private set;}
+		internal int addressU;
+		internal int addressV;
+		internal int addressW;
 
-		public int BorderColor {get; private set;}
+		internal int borderColor;
 		#endregion
 
 		#region Constructors
@@ -28,43 +28,43 @@ namespace Reign.Video.OpenGL
 			switch (type)
 			{
 				case (SamplerStateTypes.Point_Wrap):
-					FilterMin = GL.NEAREST;
-					FilterMinMiped = GL.NEAREST_MIPMAP_NEAREST;
-					FilterMag = GL.NEAREST;
-					AddressU = GL.REPEAT;
-					AddressV = GL.REPEAT;
-					AddressW = GL.REPEAT;
-					BorderColor = 0;
+					filterMin = GL.NEAREST;
+					filterMinMiped = GL.NEAREST_MIPMAP_NEAREST;
+					filterMag = GL.NEAREST;
+					addressU = GL.REPEAT;
+					addressV = GL.REPEAT;
+					addressW = GL.REPEAT;
+					borderColor = 0;
 					break;
 
 				case (SamplerStateTypes.Point_Clamp):
-					FilterMin = GL.NEAREST;
-					FilterMinMiped = GL.NEAREST_MIPMAP_NEAREST;
-					FilterMag = GL.NEAREST;
-					AddressU = GL.CLAMP_TO_EDGE;
-					AddressV = GL.CLAMP_TO_EDGE;
-					AddressW = GL.CLAMP_TO_EDGE;
-					BorderColor = 0;
+					filterMin = GL.NEAREST;
+					filterMinMiped = GL.NEAREST_MIPMAP_NEAREST;
+					filterMag = GL.NEAREST;
+					addressU = GL.CLAMP_TO_EDGE;
+					addressV = GL.CLAMP_TO_EDGE;
+					addressW = GL.CLAMP_TO_EDGE;
+					borderColor = 0;
 					break;
 
 				case (SamplerStateTypes.Linear_Wrap):
-					FilterMin = GL.LINEAR;
-					FilterMinMiped = GL.LINEAR_MIPMAP_LINEAR;
-					FilterMag = GL.LINEAR;
-					AddressU = GL.REPEAT;
-					AddressV = GL.REPEAT;
-					AddressW = GL.REPEAT;
-					BorderColor = 0;
+					filterMin = GL.LINEAR;
+					filterMinMiped = GL.LINEAR_MIPMAP_LINEAR;
+					filterMag = GL.LINEAR;
+					addressU = GL.REPEAT;
+					addressV = GL.REPEAT;
+					addressW = GL.REPEAT;
+					borderColor = 0;
 					break;
 
 				case (SamplerStateTypes.Linear_Clamp):
-					FilterMin = GL.LINEAR;
-					FilterMinMiped = GL.LINEAR_MIPMAP_LINEAR;
-					FilterMag = GL.LINEAR;
-					AddressU = GL.CLAMP_TO_EDGE;
-					AddressV = GL.CLAMP_TO_EDGE;
-					AddressW = GL.CLAMP_TO_EDGE;
-					BorderColor = 0;
+					filterMin = GL.LINEAR;
+					filterMinMiped = GL.LINEAR_MIPMAP_LINEAR;
+					filterMag = GL.LINEAR;
+					addressU = GL.CLAMP_TO_EDGE;
+					addressV = GL.CLAMP_TO_EDGE;
+					addressW = GL.CLAMP_TO_EDGE;
+					borderColor = 0;
 					break;
 
 				default:

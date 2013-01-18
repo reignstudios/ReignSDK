@@ -1,0 +1,14 @@
+uniform float4x4 Camera;
+
+void main(
+float3 in Position_VS : POSITION,
+float4 in Color_VS : COLOR0,
+float2 in UV_VS : TEXCOORD0,
+float4 out Position_VSPS : POSITION,
+float4 out Color_VSPS : TEXCOORD0,
+float2 out UV_VSPS : TEXCOORD1)
+{
+	Position_VSPS = mul( float4(Position_VS, 1), Camera);
+	Color_VSPS = Color_VS;
+	UV_VSPS = float2(UV_VS.x, 1.0-UV_VS.y);
+}

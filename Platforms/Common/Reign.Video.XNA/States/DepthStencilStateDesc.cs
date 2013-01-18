@@ -7,15 +7,15 @@ namespace Reign.Video.XNA
 	public class DepthStencilStateDesc : DepthStencilStateDescI
 	{
 		#region Properties
-		public bool DepthReadEnable {get; private set;}
-		public bool DepthWriteEnable {get; private set;}
-		public X.CompareFunction DepthFunc {get; private set;}
+		internal bool depthReadEnable;
+		internal bool depthWriteEnable;
+		internal X.CompareFunction depthFunc;
 
-		public bool StencilEnable {get; private set;}
-		public X.CompareFunction StencilFunc {get; private set;}
-		public X.StencilOperation StencilFailOp {get; private set;}
-		public X.StencilOperation StencilDepthFailOp {get; private set;}
-		public X.StencilOperation StencilPassOp {get; private set;}
+		internal bool stencilEnable;
+		internal X.CompareFunction stencilFunc;
+		internal X.StencilOperation stencilFailOp;
+		internal X.StencilOperation stencilDepthFailOp;
+		internal X.StencilOperation stencilPassOp;
 		#endregion
 
 		#region Constructors
@@ -29,27 +29,27 @@ namespace Reign.Video.XNA
 			switch (type)
 			{
 			    case (DepthStencilStateTypes.None):
-			        DepthReadEnable = false;
-			        DepthWriteEnable = false;
-			        DepthFunc = X.CompareFunction.Less;
+			        depthReadEnable = false;
+			        depthWriteEnable = false;
+			        depthFunc = X.CompareFunction.Less;
 
-			        StencilEnable = false;
-			        StencilFunc = X.CompareFunction.Never;
-			        StencilFailOp = X.StencilOperation.Keep;
-			        StencilDepthFailOp = X.StencilOperation.Keep;
-			        StencilPassOp = X.StencilOperation.Keep;
+			        stencilEnable = false;
+			        stencilFunc = X.CompareFunction.Never;
+			        stencilFailOp = X.StencilOperation.Keep;
+			        stencilDepthFailOp = X.StencilOperation.Keep;
+			        stencilPassOp = X.StencilOperation.Keep;
 			        break;
 
 			    case (DepthStencilStateTypes.ReadWrite_Less):
-			        DepthReadEnable = true;
-			        DepthWriteEnable = true;
-			        DepthFunc = X.CompareFunction.Less;
+			        depthReadEnable = true;
+			        depthWriteEnable = true;
+			        depthFunc = X.CompareFunction.Less;
 
-			        StencilEnable = false;
-			        StencilFunc = X.CompareFunction.Never;
-			        StencilFailOp = X.StencilOperation.Keep;
-			        StencilDepthFailOp = X.StencilOperation.Keep;
-			        StencilPassOp = X.StencilOperation.Keep;
+			        stencilEnable = false;
+			        stencilFunc = X.CompareFunction.Never;
+			        stencilFailOp = X.StencilOperation.Keep;
+			        stencilDepthFailOp = X.StencilOperation.Keep;
+			        stencilPassOp = X.StencilOperation.Keep;
 			        break;
 
 				default:

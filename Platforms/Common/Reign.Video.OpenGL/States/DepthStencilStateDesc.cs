@@ -6,15 +6,15 @@ namespace Reign.Video.OpenGL
 	public class DepthStencilStateDesc : DepthStencilStateDescI
 	{
 		#region Properties
-		public bool DepthReadEnable {get; private set;}
-		public bool DepthWriteEnable {get; private set;}
-		public uint DepthFunc {get; private set;}
+		internal bool depthReadEnable;
+		internal bool depthWriteEnable;
+		internal uint depthFunc;
 
-		public bool StencilEnable {get; private set;}
-		public uint StencilFunc {get; private set;}
-		public uint StencilFailOp {get; private set;}
-		public uint StencilDepthFailOp {get; private set;}
-		public uint StencilPassOp {get; private set;}
+		internal bool stencilEnable;
+		internal uint stencilFunc;
+		internal uint stencilFailOp;
+		internal uint stencilDepthFailOp;
+		internal uint stencilPassOp;
 		#endregion
 
 		#region Constructors
@@ -28,27 +28,27 @@ namespace Reign.Video.OpenGL
 			switch (type)
 			{
 				case (DepthStencilStateTypes.None):
-					DepthReadEnable = false;
-					DepthWriteEnable = false;
-					DepthFunc = GL.LESS;
+					depthReadEnable = false;
+					depthWriteEnable = false;
+					depthFunc = GL.LESS;
 
-					StencilEnable = false;
-					StencilFunc = GL.NEVER;
-					StencilFailOp = GL.KEEP;
-					StencilDepthFailOp = GL.KEEP;
-					StencilPassOp = GL.KEEP;
+					stencilEnable = false;
+					stencilFunc = GL.NEVER;
+					stencilFailOp = GL.KEEP;
+					stencilDepthFailOp = GL.KEEP;
+					stencilPassOp = GL.KEEP;
 					break;
 
 				case (DepthStencilStateTypes.ReadWrite_Less):
-					DepthReadEnable = true;
-					DepthWriteEnable = true;
-					DepthFunc = GL.LESS;
+					depthReadEnable = true;
+					depthWriteEnable = true;
+					depthFunc = GL.LESS;
 
-					StencilEnable = false;
-					StencilFunc = GL.NEVER;
-					StencilFailOp = GL.KEEP;
-					StencilDepthFailOp = GL.KEEP;
-					StencilPassOp = GL.KEEP;
+					stencilEnable = false;
+					stencilFunc = GL.NEVER;
+					stencilFailOp = GL.KEEP;
+					stencilDepthFailOp = GL.KEEP;
+					stencilPassOp = GL.KEEP;
 					break;
 
 				default:

@@ -43,7 +43,7 @@ namespace Reign.Video.Vita
 			try
 			{
 				video = Parent.FindParentOrSelfWithException<Video>();
-				program = new ShaderProgram(fileName);
+				program = new ShaderProgram("/Application/" + fileName.Replace(".rs", ".cgx"));
 				
 				variables = new List<ShaderVariable>();
 				resources = new List<ShaderResource>();
@@ -125,7 +125,7 @@ namespace Reign.Video.Vita
 			{
 				if (program.GetUniformName(i) == name)
 				{
-					var newResource = new ShaderResource(video, i, name);
+					var newResource = new ShaderResource(video, program.GetUniformTexture(i), name);
 					resources.Add(newResource);
 					return newResource;
 				}

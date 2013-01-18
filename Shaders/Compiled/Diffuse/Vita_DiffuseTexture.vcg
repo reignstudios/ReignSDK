@@ -1,0 +1,16 @@
+uniform float4x4 Camera;
+uniform float4x4 Transform;
+
+void main(
+float3 in Position_VS : POSITION,
+float3 in Normal_VS : NORMAL,
+float2 in UV_VS : TEXCOORD0,
+float4 out Position_VSPS : POSITION,
+float3 out Normal_VSPS : TEXCOORD0,
+float2 out UV_VSPS : TEXCOORD1)
+{
+	float4 loc = mul(Transform,  float4(Position_VS, 1));
+	Position_VSPS = mul(loc, Camera);
+	Normal_VSPS = normalize(mul(Transform,  float4(Normal_VS, 0)).xyz);
+	UV_VSPS = float2(UV_VS.x, 1.0-UV_VS.y);
+}

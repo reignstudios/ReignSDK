@@ -7,9 +7,9 @@ namespace Reign.Video.XNA
 	public class RasterizerStateDesc : RasterizerStateDescI
 	{
 		#region Properties
-		public X.FillMode FillMode {get; private set;}
-		public X.CullMode CullMode {get; private set;}
-		public bool MultisampleEnable {get; private set;}
+		internal X.FillMode fillMode;
+		internal X.CullMode cullMode;
+		internal bool multisampleEnable;
 		#endregion
 
 		#region Constructors
@@ -23,21 +23,21 @@ namespace Reign.Video.XNA
 			switch (type)
 			{
 				case (RasterizerStateTypes.Solid_CullNone):
-					FillMode = X.FillMode.Solid;
-					CullMode = X.CullMode.None;
-					MultisampleEnable = false;
+					fillMode = X.FillMode.Solid;
+					cullMode = X.CullMode.None;
+					multisampleEnable = false;
 					break;
 
 				case (RasterizerStateTypes.Solid_CullCW):
-					FillMode = X.FillMode.Solid;
-					CullMode = X.CullMode.CullClockwiseFace;
-					MultisampleEnable = false;
+					fillMode = X.FillMode.Solid;
+					cullMode = X.CullMode.CullClockwiseFace;
+					multisampleEnable = false;
 					break;
 
 				case (RasterizerStateTypes.Solid_CullCCW):
-					FillMode = X.FillMode.Solid;
-					CullMode = X.CullMode.CullCounterClockwiseFace;
-					MultisampleEnable = false;
+					fillMode = X.FillMode.Solid;
+					cullMode = X.CullMode.CullCounterClockwiseFace;
+					multisampleEnable = false;
 					break;
 
 				default:

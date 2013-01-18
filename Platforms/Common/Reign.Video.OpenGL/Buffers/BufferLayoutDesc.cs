@@ -36,7 +36,7 @@ namespace Reign.Video.OpenGL
 	public class BufferLayoutDesc : BufferLayoutDescI
 	{
 		#region Properties
-		internal GLBufferElement[] Desc {get; private set;}
+		internal GLBufferElement[] desc;
 		#endregion
 
 		#region Constructors
@@ -64,42 +64,42 @@ namespace Reign.Video.OpenGL
 
 		private void init()
 		{
-			Desc = new GLBufferElement[ElementCount];
+			desc = new GLBufferElement[ElementCount];
 			int i = 0;
 			foreach (BufferLayoutElement element in Elements)
 			{
-				Desc[i] = new GLBufferElement();
+				desc[i] = new GLBufferElement();
 				string usageIndex = element.UsageIndex.ToString();
 			    switch (element.Usage)
 			    {
 					case (BufferLayoutElementUsages.Position):
-						Desc[i].Usage = GLBufferElementUsages.Position;
-						Desc[i].Name = "Position" + usageIndex;
+						desc[i].Usage = GLBufferElementUsages.Position;
+						desc[i].Name = "Position" + usageIndex;
 						break;
 
 					case (BufferLayoutElementUsages.Color):
-						Desc[i].Usage = GLBufferElementUsages.Color;
-						Desc[i].Name = "Color" + usageIndex;
+						desc[i].Usage = GLBufferElementUsages.Color;
+						desc[i].Name = "Color" + usageIndex;
 						break;
 
 					case (BufferLayoutElementUsages.UV):
-						Desc[i].Usage = GLBufferElementUsages.UV;
-						Desc[i].Name = "Texcoord" + usageIndex;
+						desc[i].Usage = GLBufferElementUsages.UV;
+						desc[i].Name = "Texcoord" + usageIndex;
 						break;
 
 					case (BufferLayoutElementUsages.Normal):
-						Desc[i].Usage = GLBufferElementUsages.Normal;
-						Desc[i].Name = "Normal" + usageIndex;
+						desc[i].Usage = GLBufferElementUsages.Normal;
+						desc[i].Name = "Normal" + usageIndex;
 						break;
 
 					case (BufferLayoutElementUsages.Index):
-						Desc[i].Usage = GLBufferElementUsages.Index;
-						Desc[i].Name = "BlendIndex" + usageIndex;
+						desc[i].Usage = GLBufferElementUsages.Index;
+						desc[i].Name = "BlendIndex" + usageIndex;
 						break;
 
 					case (BufferLayoutElementUsages.IndexClassic):
-						Desc[i].Usage = GLBufferElementUsages.IndexClassic;
-						Desc[i].Name = "BlendIndex" + usageIndex;
+						desc[i].Usage = GLBufferElementUsages.IndexClassic;
+						desc[i].Name = "BlendIndex" + usageIndex;
 						break;
 
 					default: Debug.ThrowError("BufferLayoutDesc", "Unsuported ElementUsage"); break;
@@ -107,18 +107,18 @@ namespace Reign.Video.OpenGL
 
 			    switch (element.Type)
 			    {
-			        case (BufferLayoutElementTypes.Float): Desc[i].Format = GLBufferElementFormats.Single; break;
-			        case (BufferLayoutElementTypes.Vector2): Desc[i].Format = GLBufferElementFormats.Vector2f; break;
-			        case (BufferLayoutElementTypes.Vector3): Desc[i].Format = GLBufferElementFormats.Vector3f; break;
-			        case (BufferLayoutElementTypes.Vector4): Desc[i].Format = GLBufferElementFormats.Vector4f; break;
-			        case (BufferLayoutElementTypes.RGBAx8): Desc[i].Format = GLBufferElementFormats.Color; break;
+			        case (BufferLayoutElementTypes.Float): desc[i].Format = GLBufferElementFormats.Single; break;
+			        case (BufferLayoutElementTypes.Vector2): desc[i].Format = GLBufferElementFormats.Vector2f; break;
+			        case (BufferLayoutElementTypes.Vector3): desc[i].Format = GLBufferElementFormats.Vector3f; break;
+			        case (BufferLayoutElementTypes.Vector4): desc[i].Format = GLBufferElementFormats.Vector4f; break;
+			        case (BufferLayoutElementTypes.RGBAx8): desc[i].Format = GLBufferElementFormats.Color; break;
 					default: Debug.ThrowError("BufferLayoutDesc", "Unsuported ElementType"); break;
 			    }
 
-			    Desc[i].UsageIndex = element.UsageIndex;
-			    Desc[i].Offset = new IntPtr(element.ByteOffset);
-				Desc[i].FloatCount = element.FloatCount;
-				Desc[i].StreamIndex = (uint)element.StreamIndex;
+			    desc[i].UsageIndex = element.UsageIndex;
+			    desc[i].Offset = new IntPtr(element.ByteOffset);
+				desc[i].FloatCount = element.FloatCount;
+				desc[i].StreamIndex = (uint)element.StreamIndex;
 
 			    ++i;
 			}

@@ -23,6 +23,7 @@ namespace ShaderCompiler.Core
 				case (CompilerOutputs.GL3): return "sampler2D";
 				case (CompilerOutputs.GL2): return "sampler2D";
 				case (CompilerOutputs.GLES2): return "sampler2D";
+				case (CompilerOutputs.Vita): return "sampler2D";
 				default: throw new Exception("Texture2D - Unsuported platform.");
 			}
 		}

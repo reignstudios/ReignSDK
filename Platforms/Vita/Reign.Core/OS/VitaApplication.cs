@@ -17,6 +17,13 @@ namespace Reign.Core
 			application.shown();
 		}
 		#endregion
+		
+		#region Methods
+		public void Vita_SetFrameSize(int width, int height)
+		{
+			application.frameSize = new Size2(width, height);
+		}
+		#endregion
 	}
 }
 

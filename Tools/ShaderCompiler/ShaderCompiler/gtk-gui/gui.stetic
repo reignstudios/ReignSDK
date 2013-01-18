@@ -87,7 +87,8 @@ XNA
 Silverlight
 GL2
 GL3
-GLES2</property>
+GLES2
+Vita</property>
             <property name="Active">0</property>
           </widget>
           <packing>

@@ -27,19 +27,19 @@ namespace Reign.Video.XNA
 		#region Methods
 		public void Enable()
 		{
-			if (desc.BlendEnable)
+			if (desc.blendEnable)
 			{
 				var blendState = new X.BlendState()
 				{
-					ColorWriteChannels = desc.RenderTargetWriteMask,
+					ColorWriteChannels = desc.renderTargetWriteMask,
 					
-					ColorBlendFunction = desc.BlendOp,
-					ColorSourceBlend = desc.SrcBlend,
-					ColorDestinationBlend = desc.DstBlend,
+					ColorBlendFunction = desc.blendOp,
+					ColorSourceBlend = desc.srcBlend,
+					ColorDestinationBlend = desc.dstBlend,
 
-					AlphaBlendFunction = desc.BlendOpAlpha,
-					AlphaSourceBlend = desc.SrcBlendAlpha,
-					AlphaDestinationBlend = desc.DstBlendAlpha
+					AlphaBlendFunction = desc.blendOpAlpha,
+					AlphaSourceBlend = desc.srcBlendAlpha,
+					AlphaDestinationBlend = desc.dstBlendAlpha
 				};
 			
 				video.Device.BlendState = blendState;

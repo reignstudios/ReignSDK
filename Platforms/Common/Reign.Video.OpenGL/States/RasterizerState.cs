@@ -25,13 +25,13 @@ namespace Reign.Video.OpenGL
 		public void Enable()
 		{
 			#if !iOS && !ANDROID && !NaCl && !(LINUX && ARM)
-			GL.PolygonMode(GL.FRONT_AND_BACK, desc.FillMode);
+			GL.PolygonMode(GL.FRONT_AND_BACK, desc.fillMode);
 			#endif
 			
-			if (desc.CullMode != GL.NONE)
+			if (desc.cullMode != GL.NONE)
 			{
 				GL.Enable(GL.CULL_FACE);
-				GL.CullFace(desc.CullMode);
+				GL.CullFace(desc.cullMode);
 			}
 			else
 			{
@@ -39,7 +39,7 @@ namespace Reign.Video.OpenGL
 			}
 
 			#if !iOS && !ANDROID && !NaCl && !(LINUX && ARM)
-			if (desc.MultisampleEnable)
+			if (desc.multisampleEnable)
 			{
 				GL.Enable(GL.MULTISAMPLE);
 			}

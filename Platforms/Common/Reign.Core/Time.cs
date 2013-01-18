@@ -15,7 +15,7 @@ namespace Reign.Core
 	public class Time
 	{
 		#region Properties
-		#if ANDROID || NaCl || SILVERLIGHT
+		#if ANDROID || NaCl
 		private long millisecond;
 		#else
 		private Stopwatch stopWatch;
@@ -39,7 +39,7 @@ namespace Reign.Core
 		{
 			this.fps = fps;
 			FPS = fps;
-			#if !ANDROID && !NaCl && !SILVERLIGHT
+			#if !ANDROID && !NaCl
 			stopWatch = new Stopwatch();
 			#endif
 		}
@@ -92,7 +92,7 @@ namespace Reign.Core
 		{
 			#if ANDROID
 			millisecond = JavaSystem.CurrentTimeMillis();
-			#elif NaCl || SILVERLIGHT
+			#elif NaCl
 			millisecond = DateTime.Now.Millisecond;
 			#else
 			stopWatch.Start();
@@ -105,13 +105,19 @@ namespace Reign.Core
 			long currentMilli = JavaSystem.CurrentTimeMillis();
 			if (millisecond <= currentMilli) Delta += (((currentMilli - millisecond) / 1000f) - Delta) * .1f;
 			millisecond = currentMilli;
-			#elif NaCl || SILVERLIGHT
+			#elif NaCl
 			long currentMilli = DateTime.Now.Millisecond;
 			if (millisecond <= currentMilli) Delta += (((currentMilli - millisecond) / 1000f) - Delta) * .1f;
 			millisecond = currentMilli;
+			#elif SILVERLIGHT || VITA
+			long currentMilli = stopWatch.ElapsedMilliseconds;
+			Delta += ((currentMilli / 1000f) - Delta) * .1f;
+			
+			stopWatch.Reset();
+			stopWatch.Start();
 			#else
 			Delta += ((stopWatch.ElapsedTicks / (float)(Stopwatch.Frequency)) - Delta) * .1f;
-			#if XBOX360 || VITA
+			#if XBOX360
 			stopWatch.Reset();
 			stopWatch.Start();
 			#else
@@ -148,7 +154,7 @@ namespace Reign.Core
 
 		public void Sleep()
 		{
-			#if !iOS && !ANDROID && !NaCl && !SILVERLIGHT
+			#if !iOS && !ANDROID && !NaCl && !SILVERLIGHT && !VITA
 			int sleepTime = (int)System.Math.Max((1000/fps) - stopWatch.ElapsedMilliseconds, 0);
 
 			#if METRO

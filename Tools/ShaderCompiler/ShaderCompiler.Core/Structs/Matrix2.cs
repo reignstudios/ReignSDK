@@ -33,6 +33,7 @@ namespace ShaderCompiler.Core
 			var baseType = Compiler.getBaseCompilerOutput(output);
 			if (baseType == BaseCompilerOutputs.HLSL) return "float2x2";
 			if (baseType == BaseCompilerOutputs.GLSL) return "mat2";
+			if (baseType == BaseCompilerOutputs.CG) return "float2x2";
 
 			throw new Exception("Matrix2 - Unsuported platform.");
 		}

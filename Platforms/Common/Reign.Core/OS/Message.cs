@@ -88,6 +88,10 @@ namespace Reign.Core
 			#if NaCl
 			OS.PostMessage("Reign.Core.Message^" + title + " - " + message);
 			#endif
+			
+			#if VITA
+			System.Console.WriteLine(title + " - " + message);
+			#endif
 		}
 	}
 	

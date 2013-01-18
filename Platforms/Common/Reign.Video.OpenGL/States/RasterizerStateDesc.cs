@@ -6,9 +6,9 @@ namespace Reign.Video.OpenGL
 	public class RasterizerStateDesc : RasterizerStateDescI
 	{
 		#region Properties
-		public uint FillMode {get; private set;}
-		public uint CullMode {get; private set;}
-		public bool MultisampleEnable {get; private set;}
+		internal uint fillMode;
+		internal uint cullMode;
+		internal bool multisampleEnable;
 		#endregion
 
 		#region Constructors
@@ -22,21 +22,21 @@ namespace Reign.Video.OpenGL
 			switch (type)
 			{
 				case (RasterizerStateTypes.Solid_CullNone):
-					FillMode = GL.FILL;
-					CullMode = GL.NONE;
-					MultisampleEnable = false;
+					fillMode = GL.FILL;
+					cullMode = GL.NONE;
+					multisampleEnable = false;
 					break;
 
 				case (RasterizerStateTypes.Solid_CullCW):
-					FillMode = GL.FILL;
-					CullMode = GL.BACK;
-					MultisampleEnable = false;
+					fillMode = GL.FILL;
+					cullMode = GL.BACK;
+					multisampleEnable = false;
 					break;
 
 				case (RasterizerStateTypes.Solid_CullCCW):
-					FillMode = GL.FILL;
-					CullMode = GL.FRONT;
-					MultisampleEnable = false;
+					fillMode = GL.FILL;
+					cullMode = GL.FRONT;
+					multisampleEnable = false;
 					break;
 
 				default:

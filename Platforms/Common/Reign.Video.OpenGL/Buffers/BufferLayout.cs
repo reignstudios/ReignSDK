@@ -28,7 +28,7 @@ namespace Reign.Video.OpenGL
 			enabledStreamIndices = new bool[2];
 
 			streamBytesSizes = desc.StreamBytesSizes;
-			layout = ((BufferLayoutDesc)desc).Desc;
+			layout = ((BufferLayoutDesc)desc).desc;
 			attribLocations = new int[layout.Length];
 			for (int i = 0; i != layout.Length; ++i)
 			{

@@ -34,6 +34,7 @@ namespace ShaderCompiler.Core
 			var baseType = Compiler.getBaseCompilerOutput(output);
 			if (baseType == BaseCompilerOutputs.HLSL) return "float3x3";
 			if (baseType == BaseCompilerOutputs.GLSL) return "mat3";
+			if (baseType == BaseCompilerOutputs.CG) return "float3x3";
 
 			throw new Exception("Matrix3 - Unsuported platform.");
 		}

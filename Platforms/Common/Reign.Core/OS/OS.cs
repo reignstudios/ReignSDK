@@ -332,7 +332,7 @@ namespace Reign.Core
 			#endif
 			
 			#if VITA
-			application.shown();
+			//application.shown();
 			while (true)
 			{
 				SystemEvents.CheckEvents ();

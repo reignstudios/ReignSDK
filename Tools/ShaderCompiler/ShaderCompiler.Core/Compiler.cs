@@ -16,13 +16,15 @@ namespace ShaderCompiler.Core
 		Silverlight,
 		GL3,
 		GL2,
-		GLES2
+		GLES2,
+		Vita
 	}
 
 	enum BaseCompilerOutputs
 	{
 		HLSL,
-		GLSL
+		GLSL,
+		CG
 	}
 
 	public partial class Compiler
@@ -92,7 +94,7 @@ namespace ShaderCompiler.Core
 				Directory.CreateDirectory(outDirectory);
 			}
 			
-			compileLibrary(inDirectory + "bin/Debug/" + inFile.Split('.')[0] + ".dll", false, compileMaterial, compileMetroShaders, compileSilverlightShaders);
+			compileLibrary(inDirectory + "bin/Debug/" + inFile.Split('.')[0] + ".dll", compileMaterial, compileMetroShaders, compileSilverlightShaders);
 		}
 
 		#if WINDOWS
@@ -193,7 +195,7 @@ namespace ShaderCompiler.Core
 		}
 		#endif
 		
-		private string compileLibrary(string dllFileName, bool writeToMemory, bool compileMaterial, bool compileMetroShaders, bool compileSilverlightShaders)
+		private string compileLibrary(string dllFileName, bool compileMaterial, bool compileMetroShaders, bool compileSilverlightShaders)
 		{
 string xnaEndTechniqueBlock =
 @"
@@ -234,67 +236,60 @@ technique MainTechnique
 								compileShader(obj, stream, vsStream, psStream, null);
 							}
 							
-							string outDirectoryRelitive = outDirectory;	
-							if (writeToMemory)
+							string outDirectoryRelitive = outDirectory;
+							string relitivePath = "";
+							foreach (var codeFile in codeFiles)
 							{
-								if (outputType != CompilerOutputs.XNA) lastShaderOut += "#GLOBAL" + Environment.NewLine;
-								lastShaderOut += formatCode(stream.GetBuffer());
-								if (outputType != CompilerOutputs.XNA) lastShaderOut += "#END" + Environment.NewLine;
-								lastShaderOut += Environment.NewLine;
-										
-								if (outputType != CompilerOutputs.XNA) lastShaderOut += "#VS" + Environment.NewLine;
-								lastShaderOut += formatCode(vsStream.GetBuffer());
-								if (outputType != CompilerOutputs.XNA) lastShaderOut += "#END" + Environment.NewLine;
-								lastShaderOut += Environment.NewLine;
-										
-								if (outputType != CompilerOutputs.XNA) lastShaderOut += "#PS" + Environment.NewLine;
-								lastShaderOut += formatCode(psStream.GetBuffer());
-								if (outputType != CompilerOutputs.XNA) lastShaderOut += "#END" + Environment.NewLine;
-										
-								if (outputType == CompilerOutputs.XNA)
+								if (codeFile.IsFileOfShader(obj))
 								{
-									lastShaderOut += xnaEndTechniqueBlock;
+									relitivePath = Reign.Core.Streams.GetFileDirectory(codeFile.ReletivePath);
+									if (!Directory.Exists(outDirectory + relitivePath)) Directory.CreateDirectory(outDirectory + relitivePath);
+									break;
+								}
+							}
+							outDirectoryRelitive += relitivePath;
+
+							if (outputType == CompilerOutputs.Vita)
+							{
+								// write vs
+								using (var file = new FileStream(outDirectoryRelitive + FileTag + obj.Name + ".vcg", FileMode.Create, FileAccess.Write))
+								using (var writer = new StreamWriter(file))
+								{
+									writer.Write(formatCode(vsStream.GetBuffer()));
+								}
+								
+								// write ps
+								using (var file = new FileStream(outDirectoryRelitive + FileTag + obj.Name + ".fcg", FileMode.Create, FileAccess.Write))
+									using (var writer = new StreamWriter(file))
+								{
+									writer.Write(formatCode(psStream.GetBuffer()));
 								}
 							}
 							else
 							{
-								string relitivePath = "";
-								foreach (var codeFile in codeFiles)
-								{
-									if (codeFile.IsFileOfShader(obj))
-									{
-										relitivePath = Reign.Core.Streams.GetFileDirectory(codeFile.ReletivePath);
-										if (!Directory.Exists(outDirectory + relitivePath)) Directory.CreateDirectory(outDirectory + relitivePath);
-										break;
-									}
-								}
-								outDirectoryRelitive += relitivePath;
-
 								string fileExt = ".rs";
 								if (outputType == CompilerOutputs.XNA) fileExt = ".fx";
 								using (var file = new FileStream(outDirectoryRelitive + FileTag + obj.Name + fileExt, FileMode.Create, FileAccess.Write))
+								using (var writer = new StreamWriter(file))
 								{
-									using (var writer = new StreamWriter(file))
+									if (outputType != CompilerOutputs.XNA) writer.WriteLine("#GLOBAL");
+									writer.Write(formatCode(stream.GetBuffer()));
+									if (outputType != CompilerOutputs.XNA) writer.WriteLine("#END");
+									writer.WriteLine();
+
+									if (outputType != CompilerOutputs.XNA) writer.WriteLine("#VS");
+									writer.Write(formatCode(vsStream.GetBuffer()));
+									if (outputType != CompilerOutputs.XNA) writer.WriteLine("#END");
+									writer.WriteLine();
+
+									if (outputType != CompilerOutputs.XNA) writer.WriteLine("#PS");
+									writer.Write(formatCode(psStream.GetBuffer()));
+									if (outputType != CompilerOutputs.XNA) writer.WriteLine("#END");
+									if (outputType != CompilerOutputs.XNA) writer.WriteLine();
+											
+									if (outputType == CompilerOutputs.XNA)
 									{
-										if (outputType != CompilerOutputs.XNA) writer.WriteLine("#GLOBAL");
-										writer.Write(formatCode(stream.GetBuffer()));
-										if (outputType != CompilerOutputs.XNA) writer.WriteLine("#END");
-										writer.WriteLine();
-	
-										if (outputType != CompilerOutputs.XNA) writer.WriteLine("#VS");
-										writer.Write(formatCode(vsStream.GetBuffer()));
-										if (outputType != CompilerOutputs.XNA) writer.WriteLine("#END");
-										writer.WriteLine();
-	
-										if (outputType != CompilerOutputs.XNA) writer.WriteLine("#PS");
-										writer.Write(formatCode(psStream.GetBuffer()));
-										if (outputType != CompilerOutputs.XNA) writer.WriteLine("#END");
-										if (outputType != CompilerOutputs.XNA) writer.WriteLine();
-												
-										if (outputType == CompilerOutputs.XNA)
-										{
-											writer.Write(xnaEndTechniqueBlock);
-										}
+										writer.Write(xnaEndTechniqueBlock);
 									}
 								}
 							}
@@ -713,6 +708,7 @@ namespace ShaderMaterials.{0}
 				case (CompilerOutputs.GL3): return new string[]{"GL", "GL3"};
 				case (CompilerOutputs.GL2): return new string[]{"GL", "GL2"};
 				case (CompilerOutputs.GLES2): return new string[]{"GL", "GLES2"};
+				case (CompilerOutputs.Vita): return new string[]{"CG", "VITA"};
 				default: throw new Exception("Unknown CompilerIfBlockType.");
 			}
 		}
@@ -780,6 +776,7 @@ namespace ShaderMaterials.{0}
 				case (CompilerOutputs.GL3): return BaseCompilerOutputs.GLSL;
 				case (CompilerOutputs.GL2): return BaseCompilerOutputs.GLSL;
 				case (CompilerOutputs.GLES2): return BaseCompilerOutputs.GLSL;
+				case (CompilerOutputs.Vita): return BaseCompilerOutputs.CG;
 				default: throw new Exception("Unknown BaseCompilerType.");
 			}
 		}

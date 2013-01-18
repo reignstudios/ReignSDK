@@ -83,6 +83,7 @@ public partial class MainWindow
 		this.compileTypesComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("GL2"));
 		this.compileTypesComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("GL3"));
 		this.compileTypesComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("GLES2"));
+		this.compileTypesComboBox.AppendText (global::Mono.Unix.Catalog.GetString ("Vita"));
 		this.compileTypesComboBox.Name = "compileTypesComboBox";
 		this.compileTypesComboBox.Active = 0;
 		this.fixed1.Add (this.compileTypesComboBox);

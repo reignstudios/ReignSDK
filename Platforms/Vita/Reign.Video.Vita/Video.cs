@@ -11,6 +11,8 @@ namespace Reign.Video.Vita
 		internal GraphicsContext context;
 		internal FrameBuffer currentFrameBuffer;
 		internal Texture2D[] currentPixelTextures;
+		internal SamplerState[] currentSamplerStates;
+		internal EnableMode currentEnableMode;
 		
 		public string FileTag {get; private set;}
 		public Size2 BackBufferSize {get; private set;}
@@ -24,10 +26,15 @@ namespace Reign.Video.Vita
 			{
 				FileTag = "Vita_";
 				currentPixelTextures = new Texture2D[4];
+				currentSamplerStates = new SamplerState[4];
 				
-				context = new GraphicsContext();
+				context = new GraphicsContext(0, 0, PixelFormat.Rgba, PixelFormat.Depth16, MultiSampleMode.None);
 				currentFrameBuffer = context.Screen;
 				BackBufferSize = new Size2(currentFrameBuffer.Width, currentFrameBuffer.Height);
+				((VitaApplication)application).Vita_SetFrameSize(currentFrameBuffer.Width, currentFrameBuffer.Height);
+				
+				currentEnableMode = EnableMode.None;
+				context.Enable(currentEnableMode);
 			}
 			catch (Exception e)
 			{

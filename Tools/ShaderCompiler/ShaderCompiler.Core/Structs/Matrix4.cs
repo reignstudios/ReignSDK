@@ -50,6 +50,7 @@ namespace ShaderCompiler.Core
 			var baseType = Compiler.getBaseCompilerOutput(output);
 			if (baseType == BaseCompilerOutputs.HLSL) return "float4x4";
 			if (baseType == BaseCompilerOutputs.GLSL) return "mat4";
+			if (baseType == BaseCompilerOutputs.CG) return "float4x4";
 
 			throw new Exception("Matrix4 - Unsuported platform.");
 		}

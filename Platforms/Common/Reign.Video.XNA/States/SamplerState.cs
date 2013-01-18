@@ -29,12 +29,12 @@ namespace Reign.Video.XNA
 		{
 			var samplerState = new X.SamplerState()
 			{
-				Filter = desc.Filter,
+				Filter = desc.filter,
 				MaxAnisotropy = 1,
-				AddressU = desc.AddressU,
-				AddressV = desc.AddressV,
+				AddressU = desc.addressU,
+				AddressV = desc.addressV,
 				#if !SILVERLIGHT
-				AddressW = desc.AddressW
+				AddressW = desc.addressW
 				#endif
 			};
 

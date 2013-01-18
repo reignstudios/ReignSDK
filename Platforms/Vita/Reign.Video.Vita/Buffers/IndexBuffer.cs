@@ -57,6 +57,7 @@ namespace Reign.Video.Vita
 		public override void Init(int[] indices)
 		{
 			base.Init(indices);
+			this.indices = new ushort[indices.Length];
 			for (int i = 0; i != indices.Length; ++i)
 			{
 				this.indices[i] = (ushort)indices[i];

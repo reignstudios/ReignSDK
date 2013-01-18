@@ -91,6 +91,7 @@ namespace ShaderCompiler.Core
 			var baseType = Compiler.getBaseCompilerOutput(output);
 			if (baseType == BaseCompilerOutputs.HLSL) return "float3";
 			if (baseType == BaseCompilerOutputs.GLSL) return "vec3";
+			if (baseType == BaseCompilerOutputs.CG) return "float3";
 
 			throw new Exception("Vector3 - Unsuported platform.");
 		}

@@ -76,6 +76,7 @@ public partial class MainWindow: Gtk.Window
 				compileProjectType(compiler, "GL3", false);
 				compileProjectType(compiler, "GL2", false);
 				compileProjectType(compiler, "GLES2", true);
+				compileProjectType(compiler, "Vita", true);
 			}
 			else
 			{
@@ -131,6 +132,11 @@ public partial class MainWindow: Gtk.Window
 			case ("GLES2"):
 				tag = "GLES2_";
 				outputType = CompilerOutputs.GLES2;
+				break;
+				
+			case ("Vita"):
+				tag = "Vita_";
+				outputType = CompilerOutputs.Vita;
 				break;
 		}
 		

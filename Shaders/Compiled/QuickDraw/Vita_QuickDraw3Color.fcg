@@ -1,0 +1,8 @@
+
+void main(
+float4 in Position_VSPS : POSITION,
+float4 in Color_VSPS : TEXCOORD0,
+float4 out Color_PS : COLOR)
+{
+	Color_PS = Color_VSPS;
+}

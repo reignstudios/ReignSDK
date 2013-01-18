@@ -24,20 +24,20 @@ namespace Reign.Video.OpenGL
 		#region Methods
 		public void Enable()
 		{
-			GL.ColorMask(desc.RenderTargetWriteMaskR, desc.RenderTargetWriteMaskG, desc.RenderTargetWriteMaskB, desc.RenderTargetWriteMaskA);
+			GL.ColorMask(desc.renderTargetWriteMaskR, desc.renderTargetWriteMaskG, desc.renderTargetWriteMaskB, desc.renderTargetWriteMaskA);
 
-			if (desc.BlendEnable)
+			if (desc.blendEnable)
 			{
 				GL.Enable(GL.BLEND);
-				if (desc.BlendEnableAlpha)
+				if (desc.blendEnableAlpha)
 				{
-					GL.BlendEquationSeparate(desc.BlendOp, desc.BlendOpAlpha);
-					GL.BlendFuncSeparate(desc.SrcBlend, desc.DstBlend, desc.SrcBlendAlpha, desc.DstBlendAlpha);
+					GL.BlendEquationSeparate(desc.blendOp, desc.blendOpAlpha);
+					GL.BlendFuncSeparate(desc.srcBlend, desc.dstBlend, desc.srcBlendAlpha, desc.dstBlendAlpha);
 				}
 				else
 				{
-					GL.BlendEquation(desc.BlendOp);
-					GL.BlendFunc(desc.SrcBlend, desc.DstBlend);
+					GL.BlendEquation(desc.blendOp);
+					GL.BlendFunc(desc.srcBlend, desc.dstBlend);
 				}
 			}
 			else

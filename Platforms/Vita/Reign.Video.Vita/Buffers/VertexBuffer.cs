@@ -91,6 +91,7 @@ namespace Reign.Video.Vita
 
 		public override void Enable()
 		{
+			if (indexBuffer != null) Debug.ThrowError("VertexBuffer", "Already enabled with IndexBuffer. Can't change the enable type");
 			if (!initialized) initialize(null);
 			video.context.SetVertexBuffer(0, vertexBuffer);
 		}
@@ -111,12 +112,12 @@ namespace Reign.Video.Vita
 		
 			if (indexBuffer != null)
 			{
-				vertexBuffer = new G.VertexBuffer(vertices.Length, indexBuffer.indices.Length, format);
+				vertexBuffer = new G.VertexBuffer(vertexCount, indexBuffer.indices.Length, format);
 				vertexBuffer.SetIndices(indexBuffer.indices);
 			}
 			else
 			{
-				vertexBuffer = new G.VertexBuffer(vertices.Length, format);
+				vertexBuffer = new G.VertexBuffer(vertexCount, format);
 			}
 			vertexBuffer.SetVertices(vertices);
 			vertices = null;
@@ -128,7 +129,7 @@ namespace Reign.Video.Vita
 		{
 			// check if index buffer is usable
 			var i = (IndexBuffer)indexBuffer;
-			if (i.Used && !i.Updateable) Debug.ThrowError("VertexBuffer", "IndexBuffer has already been used. IndexBuffer can only be used with one VertexBuffer");
+			if (this.indexBuffer != indexBuffer && i.Used && !i.Updateable) Debug.ThrowError("VertexBuffer", "IndexBuffer has already been used. IndexBuffer can only be used with one VertexBuffer");
 			
 			// init
 			if (!initialized) initialize(i);
@@ -159,7 +160,8 @@ namespace Reign.Video.Vita
 
 		public override void Draw()
 		{
-			video.context.DrawArrays(primitiveTopology, 0, vertexCount);
+			if (indexBuffer != null) video.context.DrawArrays(primitiveTopology, 0, indexBuffer.IndexCount);
+			else video.context.DrawArrays(primitiveTopology, 0, vertexCount);
 		}
 
 		public override void Draw(int drawCount)
@@ -174,7 +176,8 @@ namespace Reign.Video.Vita
 
 		public override void DrawInstancedClassic(int drawCount, int meshVertexCount, int meshIndexCount)
 		{
-			video.context.DrawArrays(primitiveTopology, 0, meshVertexCount * drawCount);
+			if (indexBuffer != null) video.context.DrawArrays(primitiveTopology, 0, meshIndexCount * drawCount);
+			else video.context.DrawArrays(primitiveTopology, 0, meshVertexCount * drawCount);
 		}
 		#endregion
 	}

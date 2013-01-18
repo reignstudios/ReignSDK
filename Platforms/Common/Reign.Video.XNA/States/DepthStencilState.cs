@@ -29,15 +29,15 @@ namespace Reign.Video.XNA
 		{
 			var depthStencilState = new X.DepthStencilState()
 			{
-				DepthBufferEnable = desc.DepthReadEnable,
-				DepthBufferWriteEnable = desc.DepthWriteEnable,
-				DepthBufferFunction = desc.DepthFunc,
+				DepthBufferEnable = desc.depthReadEnable,
+				DepthBufferWriteEnable = desc.depthWriteEnable,
+				DepthBufferFunction = desc.depthFunc,
 
-				StencilEnable = desc.StencilEnable,
-				StencilFunction = desc.StencilFunc,
-				StencilFail = desc.StencilFailOp,
-				StencilDepthBufferFail = desc.StencilDepthFailOp,
-				StencilPass = desc.StencilPassOp,
+				StencilEnable = desc.stencilEnable,
+				StencilFunction = desc.stencilFunc,
+				StencilFail = desc.stencilFailOp,
+				StencilDepthBufferFail = desc.stencilDepthFailOp,
+				StencilPass = desc.stencilPassOp,
 
 				TwoSidedStencilMode = false,
 				CounterClockwiseStencilFunction = X.CompareFunction.Never,

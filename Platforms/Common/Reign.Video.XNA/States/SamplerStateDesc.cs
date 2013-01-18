@@ -7,11 +7,11 @@ namespace Reign.Video.XNA
 	public class SamplerStateDesc : SamplerStateDescI
 	{
 		#region Properties
-		public X.TextureFilter Filter {get; private set;}
+		internal X.TextureFilter filter;
 
-		public X.TextureAddressMode AddressU {get; private set;}
-		public X.TextureAddressMode AddressV {get; private set;}
-		public X.TextureAddressMode AddressW {get; private set;}
+		internal X.TextureAddressMode addressU;
+		internal X.TextureAddressMode addressV;
+		internal X.TextureAddressMode addressW;
 		#endregion
 
 		#region Constructors
@@ -25,31 +25,31 @@ namespace Reign.Video.XNA
 			switch (type)
 			{
 				case (SamplerStateTypes.Point_Wrap):
-					Filter = X.TextureFilter.Point;
-					AddressU = X.TextureAddressMode.Wrap;
-					AddressV = X.TextureAddressMode.Wrap;
-					AddressW = X.TextureAddressMode.Wrap;
+					filter = X.TextureFilter.Point;
+					addressU = X.TextureAddressMode.Wrap;
+					addressV = X.TextureAddressMode.Wrap;
+					addressW = X.TextureAddressMode.Wrap;
 					break;
 
 				case (SamplerStateTypes.Point_Clamp):
-					Filter = X.TextureFilter.Point;
-					AddressU = X.TextureAddressMode.Clamp;
-					AddressV = X.TextureAddressMode.Clamp;
-					AddressW = X.TextureAddressMode.Clamp;
+					filter = X.TextureFilter.Point;
+					addressU = X.TextureAddressMode.Clamp;
+					addressV = X.TextureAddressMode.Clamp;
+					addressW = X.TextureAddressMode.Clamp;
 					break;
 
 				case (SamplerStateTypes.Linear_Wrap):
-					Filter = X.TextureFilter.Linear;
-					AddressU = X.TextureAddressMode.Wrap;
-					AddressV = X.TextureAddressMode.Wrap;
-					AddressW = X.TextureAddressMode.Wrap;
+					filter = X.TextureFilter.Linear;
+					addressU = X.TextureAddressMode.Wrap;
+					addressV = X.TextureAddressMode.Wrap;
+					addressW = X.TextureAddressMode.Wrap;
 					break;
 
 				case (SamplerStateTypes.Linear_Clamp):
-					Filter = X.TextureFilter.Linear;
-					AddressU = X.TextureAddressMode.Clamp;
-					AddressV = X.TextureAddressMode.Clamp;
-					AddressW = X.TextureAddressMode.Clamp;
+					filter = X.TextureFilter.Linear;
+					addressU = X.TextureAddressMode.Clamp;
+					addressV = X.TextureAddressMode.Clamp;
+					addressW = X.TextureAddressMode.Clamp;
 					break;
 
 				default:

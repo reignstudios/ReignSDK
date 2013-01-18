@@ -108,12 +108,30 @@ namespace ShaderCompiler.Core
 				writeReflectionFile(reflectionStream, normalVSFields, ref variableByteOffset2, ref resourceIndex2, true);
 				writeReflectionFile(reflectionStream, normalPSFields, ref variableByteOffset, ref resourceIndex, false);
 			}
+			
+			// Process normal fields
+			var baseType = getBaseCompilerOutput();
+			if (baseType == BaseCompilerOutputs.CG)
+			{
+				processNormalFields(stream, normalGlobalFields, baseType);
+				processNormalFields(vsStream, normalVSFields, baseType);
+				processNormalFields(psStream, normalPSFields, baseType);
+			}
 
 			// Process VSInput fields
-			var baseType = getBaseCompilerOutput();
-			if (baseType == BaseCompilerOutputs.HLSL)
+			bool cgFirstParamater = true;
+			if (baseType == BaseCompilerOutputs.HLSL || baseType == BaseCompilerOutputs.CG)
 			{
-				vsStream.WriteLine("struct VSIn" + Environment.NewLine + '{');
+				if (baseType != BaseCompilerOutputs.CG)
+				{
+					vsStream.WriteLine("struct VSIn" + Environment.NewLine + '{');
+				}
+				else
+				{
+					vsStream.WriteLine("void main(");
+					psStream.WriteLine("void main(");// write ps one as well
+				}
+				
 				foreach (var field in vsInFields)
 				{
 					var a = (VSInput)field.GetCustomAttributes(true)[0];
@@ -135,9 +153,19 @@ namespace ShaderCompiler.Core
 							attributeType = "SV_InstanceID";
 						}
 					}
-					vsStream.WriteLine(string.Format("{0} {1} : {2}{3};", fieldType, field.Name, attributeType, a.Index));
+					
+					if (baseType == BaseCompilerOutputs.CG)
+					{
+						if (!cgFirstParamater) vsStream.WriteLine(",");
+						cgFirstParamater = false;
+						vsStream.Write(string.Format("{0} in {1} : {2}{3}", fieldType, field.Name, attributeType, (attributeType != "NORMAL" && attributeType != "POSITION") ? a.Index.ToString() : ""));
+					}
+					else
+					{
+						vsStream.WriteLine(string.Format("{0} {1} : {2}{3};", fieldType, field.Name, attributeType, a.Index));
+					}
 				}
-				vsStream.WriteLine("};");
+				if (baseType != BaseCompilerOutputs.CG) vsStream.WriteLine("};");
 			}
 
 			if (baseType == BaseCompilerOutputs.GLSL)
@@ -157,25 +185,39 @@ namespace ShaderCompiler.Core
 					else vsStream.WriteLine(string.Format("in {0} {1};", fieldType, fieldName));
 				}
 			}
-			vsStream.WriteLine();
+			if (baseType != BaseCompilerOutputs.CG) vsStream.WriteLine();
 
 			// Process VSOutPSIn fields
-			if (baseType == BaseCompilerOutputs.HLSL)
+			cgFirstParamater = true;
+			if (baseType == BaseCompilerOutputs.HLSL || baseType == BaseCompilerOutputs.CG)
 			{
-				stream.WriteLine("struct VSOutPSIn" + Environment.NewLine + '{');
+				if (baseType != BaseCompilerOutputs.CG) stream.WriteLine("struct VSOutPSIn" + Environment.NewLine + '{');
 				foreach (var field in vsInPSOutFields)
 				{
+					var fieldType = convertToBasicType(field.FieldType, true);
 					var a = (VSOutputPSInput)field.GetCustomAttributes(true)[0];
 					if (a.Type == VSOutputPSInputTypes.Position && field.FieldType != typeof(Vector4))
 					{
 						throw new Exception("VS Position ouput must be a Vector4.");
 					}
-					string attributeType = "SV_POSITION";
+					string attributeType = baseType != BaseCompilerOutputs.CG ? "SV_POSITION" : "POSITION";
 					if (a.Type == VSOutputPSInputTypes.InOut) attributeType = "TEXCOORD";
-                    stream.WriteLine(string.Format("{0} {1} : {2}{3};", convertToBasicType(field.FieldType, true), field.Name, attributeType, a.Index));
+					
+					if (baseType == BaseCompilerOutputs.CG)
+					{
+						vsStream.Write(string.Format(",{4}{0} out {1} : {2}{3}", fieldType, field.Name, attributeType, attributeType != "POSITION" ? a.Index.ToString() : "", Environment.NewLine));
+						if (!cgFirstParamater) psStream.WriteLine(",");
+						cgFirstParamater = false;
+						psStream.Write(string.Format("{0} in {1} : {2}{3}", fieldType, field.Name, attributeType, attributeType != "POSITION" ? a.Index.ToString() : ""));
+					}
+					else
+					{
+						stream.WriteLine(string.Format("{0} {1} : {2}{3};", fieldType, field.Name, attributeType, a.Index));
+                    }
 				}
-				stream.WriteLine("};");
+				if (baseType != BaseCompilerOutputs.CG) stream.WriteLine("};");
 			}
+			if (baseType == BaseCompilerOutputs.CG) vsStream.WriteLine(")");
 
 			if (baseType == BaseCompilerOutputs.GLSL)
 			{
@@ -202,24 +244,38 @@ namespace ShaderCompiler.Core
 			{
 				stream.WriteLine();
 			}
-			else
+			else if (baseType != BaseCompilerOutputs.CG)
 			{
 				vsStream.WriteLine();
 				psStream.WriteLine();
 			}
 
 			// Process PSOut fields
-			if (baseType == BaseCompilerOutputs.HLSL)
+			if (baseType == BaseCompilerOutputs.HLSL || baseType == BaseCompilerOutputs.CG)
 			{
-				psStream.WriteLine("struct PSOut" + Environment.NewLine + '{');
+				if (baseType != BaseCompilerOutputs.CG) psStream.WriteLine("struct PSOut" + Environment.NewLine + '{');
 				foreach (var field in psOutFields)
 				{
+					var fieldType = convertToBasicType(field.FieldType, true);
 					var a = (PSOutput)field.GetCustomAttributes(true)[0];
-					string attributeType = "SV_TARGET";
-                    psStream.WriteLine(string.Format("{0} {1} : {2}{3};", convertToBasicType(field.FieldType, true), field.Name, attributeType, a.Index));
+					string attributeType = baseType != BaseCompilerOutputs.CG ? "SV_TARGET" : "COLOR";
+					
+					if (baseType == BaseCompilerOutputs.CG)
+					{
+						if (!cgFirstParamater) psStream.WriteLine(",");
+						cgFirstParamater = false;
+						psStream.Write(string.Format("{0} out {1} : {2}{3}", fieldType, field.Name, attributeType, (attributeType != "COLOR" && attributeType != "NORMAL" && attributeType != "POSITION") ? a.Index.ToString() : ""));
+					}
+					else
+					{
+						psStream.WriteLine(string.Format("{0} {1} : {2}{3};", fieldType, field.Name, attributeType, a.Index));
+                    }
 				}
-				psStream.WriteLine("};");
-				psStream.WriteLine();
+				if (baseType != BaseCompilerOutputs.CG)
+				{
+					psStream.WriteLine("};");
+					psStream.WriteLine();
+				}
 			}
 
 			if (outputType == CompilerOutputs.GL3)
@@ -227,11 +283,15 @@ namespace ShaderCompiler.Core
 				psStream.WriteLine(string.Format("out vec4 {0}[{1}];", "glFragColorOut", psOutFields.Count));
 				psStream.WriteLine();
 			}
+			if (baseType == BaseCompilerOutputs.CG) psStream.WriteLine(")");
 
 			// Process normal fields
-			processNormalFields(stream, normalGlobalFields, baseType);
-			processNormalFields(vsStream, normalVSFields, baseType);
-			processNormalFields(psStream, normalPSFields, baseType);
+			if (baseType != BaseCompilerOutputs.CG)
+			{
+				processNormalFields(stream, normalGlobalFields, baseType);
+				processNormalFields(vsStream, normalVSFields, baseType);
+				processNormalFields(psStream, normalPSFields, baseType);
+			}
 		}
 
 		private void writeReflectionFile(StreamWriter reflectionStream, List<FieldInfo> normalFields, ref int variableByteOffset, ref int resourceIndex, bool? vsConstansts)
@@ -383,7 +443,7 @@ namespace ShaderCompiler.Core
 			foreach (var field in normalFields)
 			{
 				string fieldType = convertToBasicType(field.FieldType, true);
-				if (baseType == BaseCompilerOutputs.GLSL) stream.Write("uniform ");
+				if (baseType == BaseCompilerOutputs.GLSL || baseType == BaseCompilerOutputs.CG) stream.Write("uniform ");
 
 				int arrayLength = -1;
 				if (field.FieldType.IsArray && field.GetCustomAttributes(typeof(ArrayType), true).Length != 0)

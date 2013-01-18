@@ -29,9 +29,9 @@ namespace Reign.Video.XNA
 		{
 			var rasterizerState = new X.RasterizerState()
 			{
-				CullMode = desc.CullMode,
-				FillMode = desc.FillMode,
-				MultiSampleAntiAlias = desc.MultisampleEnable
+				CullMode = desc.cullMode,
+				FillMode = desc.fillMode,
+				MultiSampleAntiAlias = desc.multisampleEnable
 			};
 
 			video.Device.RasterizerState = rasterizerState;
