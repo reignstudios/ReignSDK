@@ -563,6 +563,7 @@ namespace Reign.Video.OpenGL
 			}
 			
 			RaspberryPi.bcm_host_deinit();
+			windowHandle.Free();
 			#else
 			if (dc != IntPtr.Zero)
 			{
