@@ -3,47 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace Reign.Video.OpenGL
 {
-	[StructLayout(LayoutKind.Sequential)]
-	public struct VC_RECT_T
-	{
-		public int x, y, width, height;
-	}
-
-	public static class RaspberryPi
-	{
-		public const string DLL = "libbcm_host";
-		
-		public const int DISPMANX_PROTECTION_NONE = 0;
-		
-		[DllImport(DLL, EntryPoint = "bcm_host_init")]
-		public static extern void bcm_host_init();
-		
-		[DllImport(DLL, EntryPoint = "bcm_host_deinit")]
-		public static extern void bcm_host_deinit();
-		
-		[DllImport(DLL, EntryPoint = "graphics_get_display_size")]
-		public unsafe static extern int graphics_get_display_size(ushort display_number, uint *width, uint *height);
-		
-		[DllImport(DLL, EntryPoint = "vc_dispmanx_display_open")]
-		public static extern IntPtr vc_dispmanx_display_open(uint device);
-		
-		[DllImport(DLL, EntryPoint = "vc_dispmanx_update_start")]
-		public static extern IntPtr vc_dispmanx_update_start(int priority);
-		
-		[DllImport(DLL, EntryPoint = "vc_dispmanx_update_submit_sync")]
-		public static extern int vc_dispmanx_update_submit_sync(IntPtr update);
-		
-		[DllImport(DLL, EntryPoint = "vc_dispmanx_element_add")]
-		public unsafe static extern IntPtr vc_dispmanx_element_add(IntPtr update, IntPtr display, int layer, VC_RECT_T *dest_rect, IntPtr src, VC_RECT_T *src_rect, uint protection, IntPtr alpha, IntPtr clamp, int transform);
-	}
-	
-	[StructLayout(LayoutKind.Sequential)]
-	public struct DISPMANX_WINDOW_T
-	{
-		public IntPtr element;
-		public int width, height;
-	}
-
 	public static class EGL
 	{
 		public const string DLL = "libEGL";
@@ -72,6 +31,22 @@ namespace Reign.Video.OpenGL
 		public const int MIN_SWAP_INTERVAL = 12347;
 		public const int MAX_SWAP_INTERVAL = 12348;
 		public const int OPENGL_ES_API = 12448;
+		
+		public const int SUCCESS = 0x3000;
+		public const int NOT_INITIALIZED = 0x3001;
+		public const int BAD_ACCESS = 0x3002;
+		public const int BAD_ALLOC = 0x3003;
+		public const int BAD_ATTRIBUTE = 0x3004;
+		public const int BAD_CONFIG = 0x3005;
+		public const int BAD_CONTEXT = 0x3006;
+		public const int BAD_CURRENT_SURFACE = 0x3007;
+		public const int BAD_DISPLAY = 0x3008;
+		public const int BAD_MATCH = 0x3009;
+		public const int BAD_NATIVE_PIXMAP = 0x300A;
+		public const int BAD_NATIVE_WINDOW = 0x300B;
+		public const int BAD_PARAMETER = 0x300C;
+		public const int BAD_SURFACE = 0x300D;
+		public const int CONTEXT_LOST = 0x300E;
 		
 		[DllImport(DLL, EntryPoint = "eglGetError")]
 		public static extern int GetError();

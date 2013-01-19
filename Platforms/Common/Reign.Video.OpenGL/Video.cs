@@ -13,6 +13,10 @@ using MonoMac.OpenGL;
 using MonoTouch.GLKit;
 #endif
 
+#if RPI
+using System.Runtime.InteropServices;
+#endif
+
 namespace Reign.Video.OpenGL
 {
 	public enum Versions
@@ -63,7 +67,9 @@ namespace Reign.Video.OpenGL
 		#endif
 		
 		#if RPI
-		IntPtr surface;
+		private IntPtr surface;
+		private RaspberryPi.DISPMANX_WINDOW_T nativeWindow;
+		private GCHandle windowHandle;
 		#endif
 
 		#if OSX
@@ -134,8 +140,49 @@ namespace Reign.Video.OpenGL
 				#if RPI
 				unsafe
 				{
-					//Get DC
+					// Init Pi video
 					RaspberryPi.bcm_host_init();
+					
+					const int piDisplay = 0;
+					uint piWidth = 0, piHeight = 0;
+					if (RaspberryPi.graphics_get_display_size(piDisplay, &piWidth, &piHeight) < 0) Debug.ThrowError("Video", "Failed to get display size");
+					Console.WriteLine("piWidth - " + piWidth);
+					Console.WriteLine("piHeight - " + piHeight);
+					BackBufferSize = new Size2((int)piWidth, (int)piHeight);
+					
+					IntPtr dispman_display = RaspberryPi.vc_dispmanx_display_open(piDisplay);
+					if (dispman_display == IntPtr.Zero) Debug.ThrowError("Video", "Failed: vc_dispmanx_display_open");
+					
+					IntPtr dispman_update = RaspberryPi.vc_dispmanx_update_start(0);
+					if (dispman_update == IntPtr.Zero) Debug.ThrowError("Video", "Failed: vc_dispmanx_update_start");
+					
+					var dstRect = new RaspberryPi.VC_RECT_T()
+					{
+						x = 0,
+						y = 0,
+						width = (int)piWidth,
+						height = (int)piHeight
+					};
+					var srcRect = new RaspberryPi.VC_RECT_T()
+					{
+						x = 0,
+						y = 0,
+						width = ((int)piWidth) << 16,
+						height = ((int)piHeight) << 16
+					};
+					IntPtr dispman_element = RaspberryPi.vc_dispmanx_element_add(dispman_update, dispman_display, 0, &dstRect, IntPtr.Zero, &srcRect, RaspberryPi.DISPMANX_PROTECTION_NONE, IntPtr.Zero, IntPtr.Zero, 0);
+					if (dispman_element == IntPtr.Zero) Debug.ThrowError("Video", "Failed: vc_dispmanx_element_add");
+					
+					nativeWindow = new RaspberryPi.DISPMANX_WINDOW_T()
+					{
+						element = dispman_element,
+						width = (int)piWidth,
+						height = (int)piHeight
+					};
+					windowHandle = GCHandle.Alloc(nativeWindow, GCHandleType.Pinned);
+					RaspberryPi.vc_dispmanx_update_submit_sync(dispman_update);
+					
+					// Init EGL
 					handle = window.Handle;
 					GL.GetError();//NOTE: THIS MUST BE HERE SO THAT libGLES LOADS BEFORE libEGL
 					dc = EGL.GetDisplay(IntPtr.Zero);
@@ -145,22 +192,21 @@ namespace Reign.Video.OpenGL
 					{
 						Debug.ThrowError("Video", string.Format("Failed to initialize display connection, Error {0}", EGL.GetError()));
 					}
-					if (minor != EGL.OPENGL_ES2_BIT) Debug.ThrowError("Video", "GLES2 is not supported");
 					
 					int[] pixelFormat = new int[] 
 					{ 
 						//EGL.RENDERABLE_TYPE, EGL.OPENGL_ES2_BIT,
 						
-						//EGL.SURFACE_TYPE, EGL.WINDOW_BIT,
-						EGL.RED_SIZE, 5,
-						EGL.GREEN_SIZE, 6,
-						EGL.BLUE_SIZE, 5,
-						EGL.ALPHA_SIZE, EGL.DONT_CARE,
+						//EGL.RED_SIZE, 5,
+						//EGL.GREEN_SIZE, 6,
+						//EGL.BLUE_SIZE, 5,
+						//EGL.ALPHA_SIZE, 0,//EGL.DONT_CARE,
+						EGL.SURFACE_TYPE, EGL.WINDOW_BIT,
 						
-						EGL.DEPTH_SIZE, EGL.DONT_CARE,
-						EGL.STENCIL_SIZE, EGL.DONT_CARE,
+						EGL.DEPTH_SIZE, 16,
+						//EGL.STENCIL_SIZE, EGL.DONT_CARE,
 						
-						EGL.SAMPLE_BUFFERS, 0,
+						//EGL.SAMPLE_BUFFERS, 0,
 						//EGL.SAMPLES, 0,
 						
 						//EGL.MIN_SWAP_INTERVAL, 0,
@@ -187,51 +233,13 @@ namespace Reign.Video.OpenGL
 					ctx = EGL.CreateContext(dc, configs, IntPtr.Zero, attrib_list);
 					if (ctx == IntPtr.Zero) Debug.ThrowError("Video", "Failed to create context");
 					
-					const int piDisplay = 0;
-					uint piWidth = 0, piHeight = 0;
-					if (RaspberryPi.graphics_get_display_size(piDisplay, &piWidth, &piHeight) < 0) Debug.ThrowError("Video", "Failed to get display size");
-					piWidth = 640;
-					piHeight = 480;
-					Console.WriteLine("piWidth - " + piWidth);
-					Console.WriteLine("piHeight - " + piHeight);
-					
-					IntPtr dispman_display = RaspberryPi.vc_dispmanx_display_open(piDisplay);
-					if (dispman_display == IntPtr.Zero) Debug.ThrowError("Video", "Failed: vc_dispmanx_display_open");
-					
-					IntPtr dispman_update = RaspberryPi.vc_dispmanx_update_start(0);
-					if (dispman_update == IntPtr.Zero) Debug.ThrowError("Video", "Failed: vc_dispmanx_update_start");
-					
-					VC_RECT_T dstRect = new VC_RECT_T()
-					{
-						x = 0,
-						y = 0,
-						width = (int)piWidth,
-						height = (int)piHeight
-					};
-					VC_RECT_T srcRect = new VC_RECT_T()
-					{
-						x = 0,
-						y = 0,
-						width = ((int)piWidth) << 16,
-						height = ((int)piHeight) << 16
-					};
-					IntPtr dispman_element = RaspberryPi.vc_dispmanx_element_add(dispman_update, dispman_display, 0, &dstRect, IntPtr.Zero, &srcRect, RaspberryPi.DISPMANX_PROTECTION_NONE, IntPtr.Zero, IntPtr.Zero, 0);
-					if (dispman_element == IntPtr.Zero) Debug.ThrowError("Video", "Failed: vc_dispmanx_element_add");
-					
-					DISPMANX_WINDOW_T nativeWindow = new DISPMANX_WINDOW_T()
-					{
-						element = dispman_element,
-						width = (int)piWidth,
-						height = (int)piHeight
-					};
-					RaspberryPi.vc_dispmanx_update_submit_sync(dispman_update);
-					
-					surface = EGL.CreateWindowSurface(dc, configs, new IntPtr(&nativeWindow), null);
+					surface = EGL.CreateWindowSurface(dc, configs, windowHandle.AddrOfPinnedObject(), null);
 					//surface = EGL.CreateWindowSurface(dc, configs[0], handle, null);// <<<<<<<<<<<<<<<<<<<<<<<<<<<< used in x11
 					if (surface == IntPtr.Zero) Debug.ThrowError("Video", "Failed to create window surface");
 					
 					if (EGL.MakeCurrent(dc, surface, surface, ctx) == 0) Debug.ThrowError("Video", "Failed to make EGL context current");
-					//if (!EGL.SwapInterval(dc, vSync ? 1 : 0)) Debug.ThrowError("Video", "Failed to set vSync");
+					//if (EGL.SwapInterval(dc, vSync ? 1 : 0) == 0) Debug.ThrowError("Video", "Failed to set vSync");
+					checkForEGLError();
 				}
 				#else
 				//Get DC
@@ -609,12 +617,14 @@ namespace Reign.Video.OpenGL
 
 		public void Update()
 		{
+			#if !RPI
 			#if WINDOWS || OSX || LINUX || NaCl
 			var frame = window.FrameSize;
 			#else
 			var frame = application.FrameSize;
 			#endif
 			if (frame.Width != 0 && frame.Height != 0) BackBufferSize = frame;
+			#endif
 
 			#if WINDOWS
 			WGL.MakeCurrent(dc, ctx);
@@ -637,6 +647,9 @@ namespace Reign.Video.OpenGL
 			#endif
 
 			#if DEBUG
+			#if RPI
+			checkForEGLError();
+			#endif
 			checkForError();
 			#endif
 		}
@@ -671,6 +684,46 @@ namespace Reign.Video.OpenGL
 			errorName = null;
 			return false;
 		}
+		
+		#if RPI
+		internal static bool checkForEGLError(out int error, out string errorName)
+		{
+			error = EGL.GetError();
+			if (error != EGL.SUCCESS)
+			{
+				switch (error)
+				{
+					case (EGL.NOT_INITIALIZED): errorName = "NOT_INITIALIZED"; break;
+					case (EGL.BAD_ACCESS): errorName = "BAD_ACCESS"; break;
+					case (EGL.BAD_ALLOC): errorName = "BAD_ALLOC"; break;
+					case (EGL.BAD_ATTRIBUTE): errorName = "BAD_ATTRIBUTE"; break;
+					case (EGL.BAD_CONFIG): errorName = "BAD_CONFIG"; break;
+					case (EGL.BAD_CONTEXT): errorName = "BAD_CONTEXT"; break;
+					case (EGL.BAD_CURRENT_SURFACE): errorName = "BAD_CURRENT_SURFACE"; break;
+					case (EGL.BAD_DISPLAY): errorName = "BAD_DISPLAY"; break;
+					case (EGL.BAD_MATCH): errorName = "BAD_MATCH"; break;
+					case (EGL.BAD_NATIVE_PIXMAP): errorName = "BAD_NATIVE_PIXMAP"; break;
+					case (EGL.BAD_NATIVE_WINDOW): errorName = "BAD_NATIVE_WINDOW"; break;
+					case (EGL.BAD_PARAMETER): errorName = "BAD_PARAMETER"; break;
+					case (EGL.BAD_SURFACE): errorName = "BAD_SURFACE"; break;
+					case (EGL.CONTEXT_LOST): errorName = "CONTEXT_LOST"; break;
+					default: errorName = "Unknown Error"; break;
+				}
+				
+				return true;
+			}
+			
+			errorName = null;
+			return false;
+		}
+		
+		public void checkForEGLError()
+		{
+			int error;
+			string errorName;
+			if (checkForEGLError(out error, out errorName)) Debug.ThrowError("Video", string.Format("EGL ERROR {0}: {1}", error, errorName));
+		}
+		#endif
 
 		public void EnableRenderTarget()
 		{

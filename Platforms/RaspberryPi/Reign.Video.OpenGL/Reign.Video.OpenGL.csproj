@@ -111,7 +111,10 @@
     <Compile Include="..\..\Common\Reign.Video.OpenGL\Wrappers\GL.cs">
       <Link>Wrappers\GL.cs</Link>
     </Compile>
-    <Compile Include="Wrappers\EGL.cs" />
+    <Compile Include="Wrappers\RaspberryPi.cs" />
+    <Compile Include="..\..\Common\Reign.Video.OpenGL\Wrappers\EGL.cs">
+      <Link>Wrappers\EGL.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
