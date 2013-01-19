@@ -35,7 +35,7 @@ namespace Reign.Video
 		GLSL_4_10,
 		GLSL_4_20,
 		#endif
-		#if iOS || ANDROID || NaCl || (LINUX && ARM)
+		#if iOS || ANDROID || NaCl || RPI
 		GLSL_1_00
 		#endif
 	}

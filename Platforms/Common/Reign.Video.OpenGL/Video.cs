@@ -62,7 +62,7 @@ namespace Reign.Video.OpenGL
 		private IntPtr handle;
 		#endif
 		
-		#if LINUX && ARM
+		#if RPI
 		IntPtr surface;
 		#endif
 
@@ -131,7 +131,7 @@ namespace Reign.Video.OpenGL
 				#endif
 				
 				#if LINUX
-				#if ARM
+				#if RPI
 				unsafe
 				{
 					//Get DC
@@ -385,7 +385,7 @@ namespace Reign.Video.OpenGL
 					//GL.GetIntegerv(GL.MAX_FRAGMENT_UNIFORM_VECTORS, &max);
 					//Caps.MaxPixelConstants = max;
 
-					#if LINUX && ARM
+					#if RPI
 					byte* shaderVersionPtr = null;
 					#else
 					byte* shaderVersionPtr = GL.GetString(GL.SHADING_LANGUAGE_VERSION);
@@ -397,7 +397,7 @@ namespace Reign.Video.OpenGL
 						shaderVersionPtr++;
 					}
 					
-					#if iOS || (LINUX && ARM)
+					#if iOS || RPI
 					shaderVersion = "1.0";
 					#elif ANDROID
 					shaderVersion = shaderVersion.Substring(shaderVersion.Length-4, 4);
@@ -410,7 +410,7 @@ namespace Reign.Video.OpenGL
 					
 					Caps.Version = Versions.GL1;
 					FileTag = "";
-					#if iOS || ANDROID || NaCl || (LINUX && ARM)
+					#if iOS || ANDROID || NaCl || RPI
 					if (shaderValue >= 1.0f)
 					{
 						Caps.Version = Versions.GL2;
@@ -545,7 +545,7 @@ namespace Reign.Video.OpenGL
 			#endif
 			
 			#if LINUX
-			#if ARM
+			#if RPI
 			if (dc != IntPtr.Zero)
 			{
 				if (surface != IntPtr.Zero) EGL.DestroySurface(dc, surface);
@@ -595,7 +595,7 @@ namespace Reign.Video.OpenGL
 			#endif
 			
 			#if LINUX
-			#if ARM
+			#if RPI
 			EGL.MakeCurrent(dc, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 			#else
 			GLX.MakeCurrent(dc, IntPtr.Zero, IntPtr.Zero);
@@ -621,7 +621,7 @@ namespace Reign.Video.OpenGL
 			#endif
 			
 			#if LINUX
-			#if ARM
+			#if RPI
 			EGL.MakeCurrent(dc, surface, surface, ctx);
 			#else
 			GLX.MakeCurrent(dc, handle, ctx);
@@ -731,7 +731,7 @@ namespace Reign.Video.OpenGL
 			#endif
 			
 			#if LINUX
-			#if ARM
+			#if RPI
 			EGL.SwapBuffers(dc, surface);
 			#else
 			/*unsafe
@@ -787,7 +787,7 @@ namespace Reign.Video.OpenGL
 			switch (surfaceFormat)
 			{
 				case (SurfaceFormats.RGBAx8):
-					#if iOS || ANDROID || NaCl || (LINUX && ARM)
+					#if iOS || ANDROID || NaCl || RPI
 					return (int)GL.RGBA;
 					#else
 					return GL.RGBA8;

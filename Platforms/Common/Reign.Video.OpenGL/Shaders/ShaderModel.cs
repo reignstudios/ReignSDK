@@ -27,7 +27,7 @@ namespace Reign.Video.OpenGL
 				string shaderLvl = "";
 				switch (shaderVersion)
 				{
-					#if iOS || ANDROID || NaCl || (LINUX && ARM)
+					#if iOS || ANDROID || NaCl || RPI
 					case (ShaderVersions.GLSL_1_00): shaderLvl = "100"; break;
 					#else
 					case (ShaderVersions.GLSL_1_10): shaderLvl = "110"; break;

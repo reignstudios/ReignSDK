@@ -1,4 +1,4 @@
-﻿#if OSX || iOS || ANDROID || NaCl || (LINUX && ARM)
+﻿#if OSX || iOS || ANDROID || NaCl || RPI
 #define IS_NOT_EXT
 #endif
 
@@ -31,7 +31,7 @@ namespace Reign.Video.OpenGL
 		#endif
 		
 		#if LINUX
-		#if ARM
+		#if RPI
 		public const string DLL = "libGLESv2";
 		#else
 		public const string DLL = "libGL";
@@ -75,7 +75,7 @@ namespace Reign.Video.OpenGL
 		public const string DLL = "__Internal";
 		#endif
 
-		#if WINDOWS || (LINUX && !ARM)
+		#if WINDOWS || (LINUX && !RPI)
 		public static IntPtr GetProcAddress(string procedureName)
 		{
 			IntPtr ptr = getProcAddress(procedureName);
@@ -87,7 +87,7 @@ namespace Reign.Video.OpenGL
 		//Ext Methods
 		public static void Init()
 		{
-			#if WINDOWS || (LINUX && !ARM)
+			#if WINDOWS || (LINUX && !RPI)
 			init_Shaders();
 			init_Buffers();
 			init_SurfaceBuffers();
@@ -95,7 +95,7 @@ namespace Reign.Video.OpenGL
 		}
 
 		#region Shaders
-		#if WINDOWS || (LINUX && !ARM)
+		#if WINDOWS || (LINUX && !RPI)
 		private static void init_Shaders()
 		{
 			GenerateMipmap = (GenerateMipmapFunc)Marshal.GetDelegateForFunctionPointer(GetProcAddress("glGenerateMipmap"), typeof(GenerateMipmapFunc));
@@ -389,7 +389,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Buffers
-		#if WINDOWS || (LINUX && !ARM)
+		#if WINDOWS || (LINUX && !RPI)
 		private static void init_Buffers()
 		{
 			DrawArraysInstanced = (DrawArraysInstancedFunc)Marshal.GetDelegateForFunctionPointer(GetProcAddress("glDrawArraysInstanced"), typeof(DrawArraysInstancedFunc));
@@ -572,7 +572,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 		
 		#region SurfaceBuffers
-		#if WINDOWS || (LINUX && !ARM)
+		#if WINDOWS || (LINUX && !RPI)
 		private static void init_SurfaceBuffers()
 		{
 			BlendEquation = (BlendEquationFunc)Marshal.GetDelegateForFunctionPointer(GetProcAddress("glBlendEquation"), typeof(BlendEquationFunc));
