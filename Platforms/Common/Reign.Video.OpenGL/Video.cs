@@ -132,64 +132,66 @@ namespace Reign.Video.OpenGL
 				
 				#if LINUX
 				#if ARM
-				//Get DC
-				RaspberryPi.bcm_host_init();
-				handle = window.Handle;
-				GL.GetError();//NOTE: THIS MUST BE HERE SO THAT libGLES LOADS BEFORE libEGL
-				dc = EGL.GetDisplay(IntPtr.Zero);
-				
-				int major, minor;
-				if (!EGL.Initialize(dc, out major, out minor))
-				{
-					Debug.ThrowError("Video", string.Format("Failed to initialize display connection, Error {0}", EGL.GetError()));
-				}
-				if (minor != EGL.OPENGL_ES2_BIT) Debug.ThrowError("Video", "GLES2 is not supported");
-				
-				int[] pixelFormat = new int[] 
-				{ 
-					EGL.RENDERABLE_TYPE, EGL.OPENGL_ES2_BIT,
-					
-					EGL.SURFACE_TYPE, EGL.WINDOW_BIT,
-					/*EGL.RED_SIZE, 8,
-					EGL.GREEN_SIZE, 8,
-					EGL.BLUE_SIZE, 8,
-					EGL.ALPHA_SIZE, 8,*/
-					
-					//EGL.DEPTH_SIZE, 16,
-					//EGL.STENCIL_SIZE, 0,
-					
-					//Egl.SAMPLE_BUFFERS, samples > 0 ? 1 : 0,
-					//EGL.SAMPLES, 0,
-					
-					//EGL.MIN_SWAP_INTERVAL, 0,
-					//EGL.MAX_SWAP_INTERVAL, 1,
-					
-					EGL.NONE,
-				};
-				
-				int num_configs;
-				var configs = new IntPtr[1];
-				if (!EGL.ChooseConfig(dc, pixelFormat, configs, configs.Length, out num_configs) || num_configs == 0)
-				{
-					Debug.ThrowError("Video", string.Format("Failed to retrieve GraphicsMode, error {0}", EGL.GetError()));
-				}
-				
-				int[] attrib_list = new int[]
-				{
-					EGL.CONTEXT_CLIENT_VERSION, 2,
-					EGL.NONE
-				};
-				
-				ctx = EGL.CreateContext(dc, configs[0], IntPtr.Zero, attrib_list);
-				if (ctx == IntPtr.Zero) Debug.ThrowError("Video", "Failed to create context");
-				
-				// Raspberry Pi stuff >>>>>>>>>>>>>>>>>>>>>>>>>
 				unsafe
 				{
+					//Get DC
+					RaspberryPi.bcm_host_init();
+					handle = window.Handle;
+					GL.GetError();//NOTE: THIS MUST BE HERE SO THAT libGLES LOADS BEFORE libEGL
+					dc = EGL.GetDisplay(IntPtr.Zero);
+					
+					int major, minor;
+					if (!EGL.Initialize(dc, out major, out minor))
+					{
+						Debug.ThrowError("Video", string.Format("Failed to initialize display connection, Error {0}", EGL.GetError()));
+					}
+					if (minor != EGL.OPENGL_ES2_BIT) Debug.ThrowError("Video", "GLES2 is not supported");
+					
+					int[] pixelFormat = new int[] 
+					{ 
+						//EGL.RENDERABLE_TYPE, EGL.OPENGL_ES2_BIT,
+						
+						//EGL.SURFACE_TYPE, EGL.WINDOW_BIT,
+						EGL.RED_SIZE, 5,
+						EGL.GREEN_SIZE, 6,
+						EGL.BLUE_SIZE, 5,
+						EGL.ALPHA_SIZE, EGL.DONT_CARE,
+						
+						EGL.DEPTH_SIZE, EGL.DONT_CARE,
+						EGL.STENCIL_SIZE, EGL.DONT_CARE,
+						
+						EGL.SAMPLE_BUFFERS, 0,
+						//EGL.SAMPLES, 0,
+						
+						//EGL.MIN_SWAP_INTERVAL, 0,
+						//EGL.MAX_SWAP_INTERVAL, 1,
+						
+						EGL.NONE,
+					};
+					
+					int num_configs;
+					var configs = new IntPtr();
+					if (EGL.ChooseConfig(dc, pixelFormat, &configs, 1, &num_configs) == 0 || num_configs == 0)
+					{
+						Debug.ThrowError("Video", string.Format("Failed to retrieve GraphicsMode, error {0}", EGL.GetError()));
+					}
+					
+					if (EGL.BindAPI(EGL.OPENGL_ES_API) == 0) Debug.ThrowError("Video", "Failed to bind GLES API");;
+					
+					int[] attrib_list = new int[]
+					{
+						EGL.CONTEXT_CLIENT_VERSION, 2,
+						EGL.NONE
+					};
+					
+					ctx = EGL.CreateContext(dc, configs, IntPtr.Zero, attrib_list);
+					if (ctx == IntPtr.Zero) Debug.ThrowError("Video", "Failed to create context");
+					
 					const int piDisplay = 0;
-				
 					uint piWidth = 0, piHeight = 0;
 					if (RaspberryPi.graphics_get_display_size(piDisplay, &piWidth, &piHeight) < 0) Debug.ThrowError("Video", "Failed to get display size");
+					piWidth = 640;
+					piHeight = 480;
 					Console.WriteLine("piWidth - " + piWidth);
 					Console.WriteLine("piHeight - " + piHeight);
 					
@@ -199,42 +201,38 @@ namespace Reign.Video.OpenGL
 					IntPtr dispman_update = RaspberryPi.vc_dispmanx_update_start(0);
 					if (dispman_update == IntPtr.Zero) Debug.ThrowError("Video", "Failed: vc_dispmanx_update_start");
 					
-					RaspberryPi.VC_RECT_T dstRect = new RaspberryPi.VC_RECT_T()
+					VC_RECT_T dstRect = new VC_RECT_T()
 					{
 						x = 0,
 						y = 0,
 						width = (int)piWidth,
 						height = (int)piHeight
 					};
-					RaspberryPi.VC_RECT_T srcRect = new RaspberryPi.VC_RECT_T()
+					VC_RECT_T srcRect = new VC_RECT_T()
 					{
 						x = 0,
 						y = 0,
-						//width = (int)piWidth,
-						//height = (int)piHeight,
-						width = (int)(piWidth << 16),
-						height = (int)(piHeight << 16)
+						width = ((int)piWidth) << 16,
+						height = ((int)piHeight) << 16
 					};
 					IntPtr dispman_element = RaspberryPi.vc_dispmanx_element_add(dispman_update, dispman_display, 0, &dstRect, IntPtr.Zero, &srcRect, RaspberryPi.DISPMANX_PROTECTION_NONE, IntPtr.Zero, IntPtr.Zero, 0);
 					if (dispman_element == IntPtr.Zero) Debug.ThrowError("Video", "Failed: vc_dispmanx_element_add");
-				
-					RaspberryPi.vc_dispmanx_update_submit_sync(dispman_update);
 					
-					EGL.DISPMANX_WINDOW_T nativeWindow = new EGL.DISPMANX_WINDOW_T()
+					DISPMANX_WINDOW_T nativeWindow = new DISPMANX_WINDOW_T()
 					{
 						element = dispman_element,
 						width = (int)piWidth,
 						height = (int)piHeight
 					};
-					surface = EGL.CreateWindowSurface(dc, configs[0], new IntPtr(&nativeWindow), null);
+					RaspberryPi.vc_dispmanx_update_submit_sync(dispman_update);
+					
+					surface = EGL.CreateWindowSurface(dc, configs, new IntPtr(&nativeWindow), null);
+					//surface = EGL.CreateWindowSurface(dc, configs[0], handle, null);// <<<<<<<<<<<<<<<<<<<<<<<<<<<< used in x11
+					if (surface == IntPtr.Zero) Debug.ThrowError("Video", "Failed to create window surface");
+					
+					if (EGL.MakeCurrent(dc, surface, surface, ctx) == 0) Debug.ThrowError("Video", "Failed to make EGL context current");
+					//if (!EGL.SwapInterval(dc, vSync ? 1 : 0)) Debug.ThrowError("Video", "Failed to set vSync");
 				}
-				// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-				
-				//surface = EGL.CreateWindowSurface(dc, configs[0], handle, null);// <<<<<<<<<<<<<<<<<<<<<<<<<<<< x86 x64
-				if (surface == IntPtr.Zero) Debug.ThrowError("Video", "Failed to create window surface");
-				
-				if (!EGL.MakeCurrent(dc, surface, surface, ctx)) Debug.ThrowError("Video", "Failed to make EGL context current");
-				if (!EGL.SwapInterval(dc, vSync ? 1 : 0)) Debug.ThrowError("Video", "Failed to set vSync");
 				#else
 				//Get DC
 				handle = window.Handle;
@@ -624,7 +622,7 @@ namespace Reign.Video.OpenGL
 			
 			#if LINUX
 			#if ARM
-						
+			EGL.MakeCurrent(dc, surface, surface, ctx);
 			#else
 			GLX.MakeCurrent(dc, handle, ctx);
 			#endif
