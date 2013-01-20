@@ -26,6 +26,7 @@ Platforms
 
     Other
     - Linux
+    - RaspberryPi
 
     Sony
     - Vita
