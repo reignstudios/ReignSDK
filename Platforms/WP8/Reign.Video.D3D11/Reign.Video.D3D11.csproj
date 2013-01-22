@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DFC8C6D7-C45B-487F-BDB6-37BE28672575}</ProjectGuid>
+    <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Reign.Video.D3D11</RootNamespace>
+    <AssemblyName>Reign.Video.D3D11</AssemblyName>
+    <TargetFrameworkIdentifier>WindowsPhone</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\x86\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\x86\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|ARM' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WP8</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|ARM' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>TRACE;WP8</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\Buffers\BufferLayout.cs">
+      <Link>Buffers\BufferLayout.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\Buffers\BufferLayoutDesc.cs">
+      <Link>Buffers\BufferLayoutDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\Buffers\IndexBuffer.cs">
+      <Link>Buffers\IndexBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\Buffers\VertexBuffer.cs">
+      <Link>Buffers\VertexBuffer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\DepthStencil.cs">
+      <Link>DepthStencil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\QuickDraw.cs">
+      <Link>QuickDraw.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\Shaders\PixelShader.cs">
+      <Link>Shaders\PixelShader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\Shaders\Shader.cs">
+      <Link>Shaders\Shader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\Shaders\ShaderModel.cs">
+      <Link>Shaders\ShaderModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\Shaders\ShaderResource.cs">
+      <Link>Shaders\ShaderResource.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\Shaders\ShaderVariable.cs">
+      <Link>Shaders\ShaderVariable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\Shaders\VertexShader.cs">
+      <Link>Shaders\VertexShader.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\States\BlendState.cs">
+      <Link>States\BlendState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\States\BlendStateDesc.cs">
+      <Link>States\BlendStateDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\States\DepthStencilState.cs">
+      <Link>States\DepthStencilState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\States\DepthStencilStateDesc.cs">
+      <Link>States\DepthStencilStateDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\States\RasterizerState.cs">
+      <Link>States\RasterizerState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\States\RasterizerStateDesc.cs">
+      <Link>States\RasterizerStateDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\States\SamplerState.cs">
+      <Link>States\SamplerState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\States\SamplerStateDesc.cs">
+      <Link>States\SamplerStateDesc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\Textures\RenderTarget.cs">
+      <Link>Textures\RenderTarget.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\Textures\Texture2D.cs">
+      <Link>Textures\Texture2D.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\Video.cs">
+      <Link>Video.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video.D3D11\ViewPort.cs">
+      <Link>ViewPort.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{B8DFCD38-4370-43F8-925B-87A13C51DEF2}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Video\Reign.Video.csproj">
+      <Project>{245841D3-A4BD-4976-AD41-82A94F3EEC9C}</Project>
+      <Name>Reign.Video</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign_Video_D3D11_Component\Reign_Video_D3D11_Component.vcxproj">
+      <Project>{9B007A7D-A6BA-4D6A-A868-660400EDE8C6}</Project>
+      <Name>Reign_Video_D3D11_Component</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
+  <ProjectExtensions />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

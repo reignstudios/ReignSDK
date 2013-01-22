@@ -85,7 +85,7 @@ namespace Reign.Core
 			}
 
 			base.Content = swapChainPanel;
-			OS.CurrentPageApplication.SwapChainPanel = swapChainPanel;
+			OS.CurrentXAMLApplication.SwapChainPanel = swapChainPanel;
 		}
 
 		public void EnableAds()

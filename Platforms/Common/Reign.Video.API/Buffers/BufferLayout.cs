@@ -10,7 +10,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D9) BufferLayoutDescAPI.Init(Reign.Video.D3D9.BufferLayoutDesc.New, Reign.Video.D3D9.BufferLayoutDesc.New);
 			#endif
 
-			#if WINDOWS || METRO
+			#if WINDOWS || METRO || WP8
 			if (type == VideoTypes.D3D11) BufferLayoutDescAPI.Init(Reign.Video.D3D11.BufferLayoutDesc.New, Reign.Video.D3D11.BufferLayoutDesc.New);
 			#endif
 
@@ -36,7 +36,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D9) BufferLayoutAPI.Init(Reign.Video.D3D9.BufferLayout.New);
 			#endif
 
-			#if WINDOWS || METRO
+			#if WINDOWS || METRO || WP8
 			if (type == VideoTypes.D3D11) BufferLayoutAPI.Init(Reign.Video.D3D11.BufferLayout.New);
 			#endif
 

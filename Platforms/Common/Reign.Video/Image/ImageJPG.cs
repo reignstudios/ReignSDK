@@ -3,18 +3,21 @@ using Reign.Core;
 
 namespace Reign.Video
 {
+	public class ImageJPG
 	#if iOS
-	public class ImageJPG : ImageIOS
+	: ImageIOS
 	#elif ANDROID
-	public class ImageJPG : ImageAndroid
+	: ImageAndroid
 	#elif OSX
-	public class ImageJPG : ImageOSX
+	: ImageOSX
 	#elif METRO
-	public class ImageJPG : ImageMetro
+	: ImageMetro
+	#elif WP8
+	: ImageWP8
 	#elif SILVERLIGHT
-	public class ImageJPG : ImageSilverlight
+	: ImageSilverlight
 	#else
-	public class ImageJPG : ImageGDI
+	: ImageGDI
 	#endif
 	{
 		#region Construtors

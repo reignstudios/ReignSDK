@@ -8,7 +8,7 @@ namespace Reign.Video.D3D11
 	public abstract class ShaderModel : Disposable
 	{
 		#region Properties
-		#if METRO
+		#if METRO || WP8
 		protected Shader shader;
 		#endif
 		internal ShaderModelCom com;
@@ -24,7 +24,7 @@ namespace Reign.Video.D3D11
 		{
 			try
 			{
-				#if METRO
+				#if METRO || WP8
 				this.shader = shader;
 				#endif
 				var video = shader.FindParentOrSelfWithException<Video>();

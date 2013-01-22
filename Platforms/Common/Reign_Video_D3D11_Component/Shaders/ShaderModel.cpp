@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
-#include <D3DCompiler.h>
 #include "ShaderModel.h"
+#if WINDOWS
+#include <D3DCompiler.h>
+#endif
 
 namespace Reign_Video_D3D11_Component
 {
@@ -129,8 +131,10 @@ namespace Reign_Video_D3D11_Component
 		}
 		#endif
 
+		#if WINDOWS
 		errorText = nullptr;
 		return ShaderModelErrors::None;
+		#endif
 	}
 
 	ShaderModelCom::~ShaderModelCom()

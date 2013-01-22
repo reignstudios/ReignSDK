@@ -217,15 +217,13 @@ namespace Reign.Video.XNA
 		{
 			var data = new X.Vector4[values.Length];
 			fixed (Vector4* ptr = values)
+			fixed (X.Vector4* ptr2 = data)
 			{
 				var ptrOffset = ptr;
-				fixed (X.Vector4* ptr2 = data)
-				{ 
-					var ptrOffset2 = ptr2;
-					for (int i = 0; i != values.Length; ++i)
-					{
-						*ptrOffset2++ = *(X.Vector4*)(ptrOffset++);
-					}
+				var ptrOffset2 = ptr2;
+				for (int i = 0; i != values.Length; ++i)
+				{
+					*ptrOffset2++ = *(X.Vector4*)(ptrOffset++);
 				}
 			}
 			parameter.SetValue(data);
@@ -252,15 +250,13 @@ namespace Reign.Video.XNA
 		{
 			var data = new X.Matrix[values.Length];
 			fixed (Matrix4* ptr = values)
-			{
+			fixed (X.Matrix* ptr2 = data)
+			{ 
 				var ptrOffset = ptr;
-				fixed (X.Matrix* ptr2 = data)
-				{ 
-					var ptrOffset2 = ptr2;
-					for (int i = 0; i != values.Length; ++i)
-					{
-						*ptrOffset2++ = *(X.Matrix*)(ptrOffset++);
-					}
+				var ptrOffset2 = ptr2;
+				for (int i = 0; i != values.Length; ++i)
+				{
+					*ptrOffset2++ = *(X.Matrix*)(ptrOffset++);
 				}
 			}
 			parameter.SetValue(data);
@@ -301,15 +297,13 @@ namespace Reign.Video.XNA
 		{
 			var data = new X.Vector4[count];
 			fixed (Vector4* ptr = values)
-			{
+			fixed (X.Vector4* ptr2 = data)
+			{ 
 				var ptrOffset = ptr;
-				fixed (X.Vector4* ptr2 = data)
-				{ 
-					var ptrOffset2 = ptr2;
-					for (int i = 0; i != count; ++i)
-					{
-						*ptrOffset2++ = *(X.Vector4*)(ptrOffset++);
-					}
+				var ptrOffset2 = ptr2;
+				for (int i = 0; i != count; ++i)
+				{
+					*ptrOffset2++ = *(X.Vector4*)(ptrOffset++);
 				}
 			}
 			parameter.SetValue(data);
@@ -336,15 +330,13 @@ namespace Reign.Video.XNA
 		{
 			var data = new X.Matrix[count];
 			fixed (Matrix4* ptr = values)
+			fixed (X.Matrix* ptr2 = data)
 			{
 				var ptrOffset = ptr;
-				fixed (X.Matrix* ptr2 = data)
-				{ 
-					var ptrOffset2 = ptr2;
-					for (int i = 0; i != count; ++i)
-					{
-						*ptrOffset2++ = *(X.Matrix*)(ptrOffset++);
-					}
+				var ptrOffset2 = ptr2;
+				for (int i = 0; i != count; ++i)
+				{
+					*ptrOffset2++ = *(X.Matrix*)(ptrOffset++);
 				}
 			}
 			parameter.SetValue(data);
@@ -385,15 +377,13 @@ namespace Reign.Video.XNA
 		{
 			var data = new X.Vector4[count];
 			fixed (Vector4* ptr = values)
+			fixed (X.Vector4* ptr2 = data)
 			{
 				var ptrOffset = ptr + offset;
-				fixed (X.Vector4* ptr2 = data)
-				{ 
-					var ptrOffset2 = ptr2;
-					for (int i = 0; i != count; ++i)
-					{
-						*ptrOffset2++ = *(X.Vector4*)(ptrOffset++);
-					}
+				var ptrOffset2 = ptr2;
+				for (int i = 0; i != count; ++i)
+				{
+					*ptrOffset2++ = *(X.Vector4*)(ptrOffset++);
 				}
 			}
 			parameter.SetValue(data);
@@ -420,15 +410,13 @@ namespace Reign.Video.XNA
 		{
 			var data = new X.Matrix[count];
 			fixed (Matrix4* ptr = values)
-			{
+			fixed (X.Matrix* ptr2 = data)
+			{ 
 				var ptrOffset = ptr + offset;
-				fixed (X.Matrix* ptr2 = data)
-				{ 
-					var ptrOffset2 = ptr2;
-					for (int i = 0; i != count; ++i)
-					{
-						*ptrOffset2++ = *(X.Matrix*)(ptrOffset++);
-					}
+				var ptrOffset2 = ptr2;
+				for (int i = 0; i != count; ++i)
+				{
+					*ptrOffset2++ = *(X.Matrix*)(ptrOffset++);
 				}
 			}
 			parameter.SetValue(data);

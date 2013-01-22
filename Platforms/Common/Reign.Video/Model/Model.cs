@@ -250,7 +250,7 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
-		#if METRO
+		#if METRO || WP8
 		public static async void Save(string fileName, bool compress, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals)
 		{
 			using (var file = await Streams.SaveFile(fileName, FolderLocations.Unknown))

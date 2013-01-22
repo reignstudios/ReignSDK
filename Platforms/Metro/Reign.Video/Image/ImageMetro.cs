@@ -11,7 +11,7 @@ using Windows.Foundation;
 
 namespace Reign.Video
 {
-	public class ImageMetro : Image
+	public abstract class ImageMetro : Image
 	{
 		#region Constructors
 		public ImageMetro(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback)

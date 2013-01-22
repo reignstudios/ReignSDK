@@ -54,7 +54,7 @@ namespace Reign.Video.D3D11
 			vertexShaderCom.Apply();
 		}
 
-		#if METRO
+		#if METRO || WP8
 		public override int Variable(string name)
 		{
 			for (int i = 0; i != shader.vsVariableNames.Count; ++i)

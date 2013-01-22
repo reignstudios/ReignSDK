@@ -17,7 +17,7 @@ using MonoTouch.Foundation;
 using System.Collections.Generic;
 #endif
 
-#if METRO
+#if METRO || WP8
 using Windows.Storage;
 using Windows.ApplicationModel;
 using System.Threading.Tasks;
@@ -61,7 +61,7 @@ namespace Reign.Core
 		#region Constructors
 		public StreamLoader(Stream stream, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			#if METRO
+			#if METRO || WP8
 			Loader.AddLoadable(this);
 			#endif
 			init(null, stream, loadedCallback);
@@ -69,13 +69,13 @@ namespace Reign.Core
 
 		public StreamLoader(string fileName, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			#if METRO
+			#if METRO || WP8
 			Loader.AddLoadable(this);
 			#endif
 			init(fileName, null, loadedCallback);
 		}
 
-		#if METRO
+		#if METRO || WP8
 		private async void init(string fileName, Stream stream, Loader.LoadedCallbackMethod loadedCallback)
 		#else
 		private void init(string fileName, Stream stream, Loader.LoadedCallbackMethod loadedCallback)
@@ -86,7 +86,7 @@ namespace Reign.Core
 				if (fileName != null)
 				{
 					fromFile = true;
-					#if METRO
+					#if METRO || WP8
 					LoadedStream = await Streams.OpenFile(fileName);
 					#elif NaCl
 					this.loadedCallback = loadedCallback;
@@ -198,7 +198,7 @@ namespace Reign.Core
 	
 	public static class Streams
 	{
-		#if METRO
+		#if METRO || WP8
 		private static PickerLocationId getFolderType(FolderLocations folderLocation)
 		{
 			PickerLocationId folder = PickerLocationId.Desktop;
@@ -215,13 +215,13 @@ namespace Reign.Core
 		}
 		#endif
 
-		#if METRO
+		#if METRO || WP8
 		public static async Task<Stream> OpenFileDialog(FolderLocations folderLocation, string[] fileTypes)
 		#else
 		public static Stream OpenFileDialog(FolderLocations folderLocation, string[] fileTypes)
 		#endif
 		{
-			#if METRO
+			#if METRO || WP8
 			var picker = new FileOpenPicker();
 			foreach (var fileType in fileTypes) picker.FileTypeFilter.Add(fileType);
 			picker.SuggestedStartLocation = getFolderType(folderLocation);
@@ -233,6 +233,7 @@ namespace Reign.Core
 			#endif
 		}
 
+		#if !WP8
 		#if METRO
 		public static async Task<Stream> SaveFileDialog(FolderLocations folderLocation, string[] fileTypes)
 		#else
@@ -250,6 +251,7 @@ namespace Reign.Core
 			throw new NotImplementedException();
 			#endif
 		}
+		#endif
 
 		#if NaCl
 		internal delegate void NaClFileLoadedCallbackMethod(NaClFile file);
@@ -298,7 +300,7 @@ namespace Reign.Core
 		}
 		#endif
 
-		#if METRO
+		#if METRO || WP8
 		public static async Task<Stream> OpenFile(string fileName)
 		{
 			return await OpenFile(fileName, FolderLocations.Application);
@@ -310,7 +312,7 @@ namespace Reign.Core
 		}
 		#endif
 
-		#if METRO
+		#if METRO || WP8
 		public static async Task<Stream> OpenFile(string fileName, FolderLocations folderLocation)
 		#else
 		public static Stream OpenFile(string fileName, FolderLocations folderLocation)
@@ -346,7 +348,7 @@ namespace Reign.Core
 			#elif NaCl
 			Debug.ThrowError("Streams", "Method not supported in NaCl. Use StreamLoader instead");
 			return null;
-			#elif METRO
+			#elif METRO || WP8
 			fileName = fileName.Replace('/', '\\');
 			switch (folderLocation)
 			{
@@ -393,7 +395,7 @@ namespace Reign.Core
 			#endif
 		}
 
-		#if METRO
+		#if METRO || WP8
 		public static async Task<Stream> SaveFile(string fileName)
 		{
 			return await SaveFile(fileName, FolderLocations.Storage);
@@ -405,7 +407,7 @@ namespace Reign.Core
 		}
 		#endif
 
-		#if METRO
+		#if METRO || WP8
 		public static async Task<Stream> SaveFile(string fileName, FolderLocations folderLocation)
 		#else
 		public static Stream SaveFile(string fileName, FolderLocations folderLocation)
@@ -417,7 +419,7 @@ namespace Reign.Core
 			throw new NotImplementedException();
 			#elif NaCl
 			throw new NotImplementedException();
-			#elif METRO
+			#elif METRO || WP8
 			fileName = fileName.Replace('/', '\\');
 			switch (folderLocation)
 			{
@@ -460,7 +462,7 @@ namespace Reign.Core
 			#endif
 		}
 
-		#if METRO
+		#if METRO || WP8
 		public static async Task<bool> FileExists(string fileName)
 		{
 			return await FileExists(fileName, FolderLocations.Storage);
@@ -472,7 +474,7 @@ namespace Reign.Core
 		}
 		#endif
 
-		#if METRO
+		#if METRO || WP8
 		public static async Task<bool> FileExists(string fileName, FolderLocations folderLocation)
 		#else
 		public static bool FileExists(string fileName, FolderLocations folderLocation)
@@ -484,7 +486,7 @@ namespace Reign.Core
 			throw new NotImplementedException();
 			#elif NaCl
 			throw new NotImplementedException();
-			#elif METRO
+			#elif METRO || WP8
 			fileName = fileName.Replace('/', '\\');
 			try
 			{
@@ -575,7 +577,7 @@ namespace Reign.Core
 				fileName = match.Value.Substring(0, match.Value.Length-1);
 			}
 
-			#if METRO || LINUX
+			#if METRO || WP8 || LINUX
 			return fileName + '\\';
 			#else
 			return fileName + '/';

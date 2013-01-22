@@ -29,8 +29,10 @@ namespace Reign.Video.D3D11
 
 		#if WINDOWS
 		private Window window;
-		#else
+		#elif METRO
 		private ApplicationI application;
+		#else
+		private Application application;
 		#endif
 
 		internal VideoCom com;
@@ -44,7 +46,7 @@ namespace Reign.Video.D3D11
 		{
 			init(parent, window, vSync);
 		}
-		#else
+		#elif METRO
 		public Video(DisposableI parent, Application application, bool vSync)
 		: base(parent)
 		{
@@ -56,12 +58,20 @@ namespace Reign.Video.D3D11
 		{
 			init(parent, application, vSync, application.SwapChainPanel);
 		}
+		#else
+		public Video(DisposableI parent, Application application, bool vSync)
+		: base(parent)
+		{
+			init(parent, application, vSync);
+		}
 		#endif
 
 		#if WINDOWS
 		private void init(DisposableI parent, Window window, bool vSync)
-		#else
+		#elif METRO
 		private void init(DisposableI parent, ApplicationI application, bool vSync, Windows.UI.Xaml.Controls.SwapChainBackgroundPanel swapChainBackgroundPanel)
+		#else
+		private void init(DisposableI parent, Application application, bool vSync)
 		#endif
 		{
 			#if WINDOWS
@@ -80,9 +90,12 @@ namespace Reign.Video.D3D11
 				#if WINDOWS
 				var frame = window.FrameSize;
 				var error = com.Init(window.Handle, vSync, frame.Width, frame.Height, false, out featureLevel);
-				#else
+				#elif METRO
 				var frame = application.Metro_FrameSize;
 				var error = com.Init(OS.CoreWindow, vSync, frame.Width, frame.Height, out featureLevel, swapChainBackgroundPanel);
+				#else
+				var frame = application.FrameSize;
+				var error = com.Init(vSync, frame.Width, frame.Height, out featureLevel);
 				#endif
 				BackBufferSize = frame;
 
@@ -90,12 +103,15 @@ namespace Reign.Video.D3D11
 				{
 					case (VideoError.DepthStencilTextureFailed): Debug.ThrowError("Video", "Failed to create DepthStencilTexture"); break;
 					case (VideoError.DepthStencilViewFailed): Debug.ThrowError("Video", "Failed to create DepthStencilView"); break;
-					case (VideoError.GetSwapChainFailed): Debug.ThrowError("Video", "Failed to get SwapChain"); break;
 					case (VideoError.RenderTargetViewFailed): Debug.ThrowError("Video", "Failed to create RenderTargetView"); break;
+					#if !WP8
+					case (VideoError.GetSwapChainFailed): Debug.ThrowError("Video", "Failed to get SwapChain"); break;
+					#endif
 					#if WINDOWS
 					case (VideoError.DeviceAndSwapChainFailed): Debug.ThrowError("Video", "Failed to create Device and SwapChain"); break;
 					#else
 					case (VideoError.DeviceFailed): Debug.ThrowError("Video", "Failed to create Device"); break;
+					#if !WP8
 					case (VideoError.SwapChainFailed): Debug.ThrowError("Video", "Failed to create SwapChain"); break;
 					case (VideoError.D2DFactoryFailed): Debug.ThrowError("Video", "Failed to create D2D Factory"); break;
 					case (VideoError.D2DDeviceFailed): Debug.ThrowError("Video", "Failed to create D2D Device"); break;
@@ -104,12 +120,15 @@ namespace Reign.Video.D3D11
 					case (VideoError.GetDXGIBackBufferFailed): Debug.ThrowError("Video", "Failed to create DXGI BackBuffer"); break;
 					case (VideoError.DXGISurfaceFailed): Debug.ThrowError("Video", "Failed to create DXGI Surface"); break;
 					case (VideoError.D2DBitmapFailed): Debug.ThrowError("Video", "Failed to create D2D Bitmap"); break;
+					#else
+					case (VideoError.RenderTextureFailed): Debug.ThrowError("Video", "Failed to create RenderTexture"); break;
+					#endif
 					#endif
 				}
 
 				switch (featureLevel)
 				{
-					#if METRO
+					#if METRO || WP8
 					case (REIGN_D3D_FEATURE_LEVEL.LEVEL_11_1):
 						Cap.MaxShaderVersion = ShaderVersions.HLSL_5_0;
 						Cap.FeatureLevel = FeatureLevels.D3D11_1;
@@ -171,8 +190,10 @@ namespace Reign.Video.D3D11
 		{
 			#if WINDOWS
 			var frame = window.FrameSize;
-			#else
+			#elif METRO
 			var frame = application.Metro_FrameSize;
+			#else
+			var frame = application.FrameSize;
 			#endif
 
 			if (frame.Width != 0 && frame.Height != 0) BackBufferSize = frame;

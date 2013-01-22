@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Buffers">
+      <UniqueIdentifier>{f71d81c4-abe3-42a1-959b-797308bf6fb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DepthStencil">
+      <UniqueIdentifier>{7ad70b21-c866-4f6a-969c-c3267fbd5ae6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{49054756-fd95-4211-a0cf-786ec184ada3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="States">
+      <UniqueIdentifier>{7affe03c-2229-4aa9-9e43-48adc2f8c1ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Textures">
+      <UniqueIdentifier>{12d13c22-8518-4887-98b7-070dcde09fc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ViewPort">
+      <UniqueIdentifier>{252d6530-1b96-4777-b5c8-456572a52230}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Video.cpp" />
+    <ClCompile Include="..\..\Common\CPP_CLR-CX_Helpers\Common.cpp" />
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\BufferLayout.cpp">
+      <Filter>Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\BufferLayoutDesc.cpp">
+      <Filter>Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\IndexBuffer.cpp">
+      <Filter>Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\VertexBuffer.cpp">
+      <Filter>Buffers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\DepthStencil\DepthStencil.cpp">
+      <Filter>DepthStencil</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\ViewPort\ViewPort.cpp">
+      <Filter>ViewPort</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Textures\RenderTarget.cpp">
+      <Filter>Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Textures\Texture2D.cpp">
+      <Filter>Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\BlendState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\BlendStateDesc.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\DepthStencilState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\DepthStencilStateDesc.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\RasterizerState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\RasterizerStateDesc.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\SamplerState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\States\SamplerStateDesc.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\PixelShader.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\ShaderModel.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\ShaderResource.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\ShaderVariable.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\VertexShader.cpp">
+      <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Direct3DContentProvider.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Video.h" />
+    <ClInclude Include="..\..\Common\CPP_CLR-CX_Helpers\Common.h" />
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\BufferLayout.h">
+      <Filter>Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\IndexBuffer.h">
+      <Filter>Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Buffers\VertexBuffer.h">
+      <Filter>Buffers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\DepthStencil\DepthStencil.h">
+      <Filter>DepthStencil</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\ViewPort\ViewPort.h">
+      <Filter>ViewPort</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Textures\RenderTarget.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Textures\Texture2D.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\States\BlendState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\States\DepthStencilState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\States\RasterizerState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\States\SamplerState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\PixelShader.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\ShaderModel.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\ShaderResource.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\ShaderVariable.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\Shaders\VertexShader.h">
+      <Filter>Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Direct3DContentProvider.h" />
+  </ItemGroup>
+</Project>

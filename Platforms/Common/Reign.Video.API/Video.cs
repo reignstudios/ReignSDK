@@ -16,12 +16,12 @@ namespace Reign.Video.API
 
 	public static class Video
 	{
-		#if METRO || XNA || iOS || ANDROID || VITA
+		#if METRO || WP8 || XNA || iOS || ANDROID || VITA
 		public static VideoI Init(VideoTypes typeFlags, out VideoTypes type, DisposableI parent, Application application, bool vSync)
 		{
 			try
 			{
-				#if METRO
+				#if METRO || WP8
 				type = VideoTypes.D3D11;
 				var video = new Reign.Video.D3D11.Video(parent, application, vSync);
 				initMethods(type);

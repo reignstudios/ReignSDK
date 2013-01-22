@@ -3,7 +3,7 @@ using Reign.Core;
 using System.Collections.Generic;
 using System.IO;
 
-#if METRO
+#if METRO || WP8
 using System.Threading.Tasks;
 #endif
 
@@ -18,7 +18,7 @@ namespace Reign.Video.D3D11
 
 		private List<ShaderVariable> variables;
 		private List<ShaderResource> resources;
-		#if METRO
+		#if METRO || WP8
 		internal int vsVariableBufferSize, vsResourceCount, psVariableBufferSize, psResourceCount;
 		internal List<string> vsVariableNames, vsResourceNames, psVariableNames, psResourceNames;
 		internal List<int> vsVariableByteOffsets, vsResourceIndices, psVariableByteOffsets, psResourceIndices;
@@ -39,7 +39,7 @@ namespace Reign.Video.D3D11
 		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
-			#if METRO
+			#if METRO || WP8
 			Loader.AddLoadable(this);
 			fileName = Streams.StripFileExt(fileName) + ".mrs";
 			#endif
@@ -62,7 +62,7 @@ namespace Reign.Video.D3D11
 		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
-			#if METRO
+			#if METRO || WP8
 			Loader.AddLoadable(this);
 			fileName = Streams.StripFileExt(fileName) + ".mrs";
 			#endif
@@ -82,7 +82,7 @@ namespace Reign.Video.D3D11
 			});
 		}
 
-		#if METRO
+		#if METRO || WP8
 		private async void init(string fileName, Stream stream, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		#else
 		private void init(string fileName, Stream stream, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
@@ -120,7 +120,7 @@ namespace Reign.Video.D3D11
 			if (loadedCallback != null) loadedCallback(this, true);
 		}
 
-		#if METRO
+		#if METRO || WP8
 		private async Task getReflections(string fileName)
 		{
 			vsVariableNames = new List<string>();

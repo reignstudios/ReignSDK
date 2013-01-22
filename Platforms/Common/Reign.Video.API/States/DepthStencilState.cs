@@ -10,7 +10,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D9) DepthStencilStateDescAPI.Init(Reign.Video.D3D9.DepthStencilStateDesc.New);
 			#endif
 
-			#if WINDOWS || METRO
+			#if WINDOWS || METRO || WP8
 			if (type == VideoTypes.D3D11) DepthStencilStateDescAPI.Init(Reign.Video.D3D11.DepthStencilStateDesc.New);
 			#endif
 
@@ -36,7 +36,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D9) DepthStencilStateAPI.Init(Reign.Video.D3D9.DepthStencilState.New);
 			#endif
 
-			#if WINDOWS || METRO
+			#if WINDOWS || METRO || WP8
 			if (type == VideoTypes.D3D11) DepthStencilStateAPI.Init(Reign.Video.D3D11.DepthStencilState.New);
 			#endif
 

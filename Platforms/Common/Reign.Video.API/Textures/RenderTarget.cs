@@ -10,7 +10,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D9) RenderTargetAPI.Init(Reign.Video.D3D9.RenderTarget.New, Reign.Video.D3D9.RenderTarget.New);
 			#endif
 
-			#if WINDOWS || METRO
+			#if WINDOWS || METRO || WP8
 			if (type == VideoTypes.D3D11) RenderTargetAPI.Init(Reign.Video.D3D11.RenderTarget.New, Reign.Video.D3D11.RenderTarget.New);
 			#endif
 

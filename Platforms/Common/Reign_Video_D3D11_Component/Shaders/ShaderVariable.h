@@ -1,7 +1,9 @@
 ﻿#pragma once
 #include "../Video.h"
-#include <d3d11shader.h>
 #include "ShaderModel.h"
+#if WINDOWS
+#include <d3d11shader.h>
+#endif
 
 namespace Reign_Video_D3D11_Component
 {
@@ -14,6 +16,9 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: ShaderVariableCom(ShaderModelCom^ vertexShader, ShaderModelCom^ pixelShader, int vertexOffset, int pixelOffset);
+		#if WP8
+		public: void GetDataPtrs(OutType(__int32) vertexBytes, OutType(__int32) pixelBytes, OutType(int) vertexOffset, OutType(int) pixelOffset);
+		#endif
 		#pragma endregion
 
 		#pragma region Methods

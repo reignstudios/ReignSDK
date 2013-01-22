@@ -3,6 +3,10 @@ using System;
 using Windows.UI.Popups;
 #endif
 
+#if WP8
+using System.Windows;
+#endif
+
 #if WINDOWS
 using System.Windows.Forms;
 #endif
@@ -31,7 +35,7 @@ namespace Reign.Core
 {
 	public static class Message
 	{
-		#if METRO
+		#if METRO || WP8
 		public static async void Show(string title, string message)
 		#else
 		public static void Show(string title, string message)
@@ -40,6 +44,10 @@ namespace Reign.Core
 			#if METRO
 			var msg = new MessageDialog(message, title);
 			await msg.ShowAsync();
+			#endif
+
+			#if WP8
+			MessageBox.Show(message, title, MessageBoxButton.OK);
 			#endif
 
 			#if WINDOWS

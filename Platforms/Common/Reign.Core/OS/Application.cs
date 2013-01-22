@@ -106,6 +106,8 @@ namespace Reign.Core
 	: XNAGame
 	#elif METRO
 	: MetroApplication, ApplicationI
+	#elif WP8
+	: XAMLApplication
 	#elif VITA
 	: VitaApplication
 	#endif
@@ -146,8 +148,9 @@ namespace Reign.Core
 		#elif ANDROID
 		public Application(ApplicationOrientations orientation, int fps, bool enableAds, string publisherID)
 		: base(enableAds, publisherID)
-		#elif METRO
+		#elif METRO || WP8
 		public Application(ApplicationOrientations orientation)
+		: base(orientation)
 		#elif SILVERLIGHT || VITA
 		public Application()
 		#elif XNA
@@ -162,7 +165,7 @@ namespace Reign.Core
 			theEvent = new ApplicationEvent();
 				
 			OS.CurrentApplication = this;
-			#if iOS || ANDROID || METRO || SILVERLIGHT
+			#if iOS || ANDROID || METRO || WP8 || SILVERLIGHT
 			setApplication(this);
 			#elif XNA
 			init(this, width, height);

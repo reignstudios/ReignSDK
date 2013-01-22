@@ -7,18 +7,21 @@ using System.Threading.Tasks;
 
 namespace Reign.Video
 {
+	public class ImagePNG
 	#if iOS
-	public class ImagePNG : ImageIOS
+	: ImageIOS
 	#elif ANDROID
-	public class ImagePNG : ImageAndroid
+	: ImageAndroid
 	#elif OSX
-	public class ImagePNG : ImageOSX
+	: ImageOSX
 	#elif METRO
-	public class ImagePNG : ImageMetro
+	: ImageMetro
+	#elif WP8
+	: ImageWP8
 	#elif SILVERLIGHT
-	public class ImagePNG : ImageSilverlight
+	: ImageSilverlight
 	#else
-	public class ImagePNG : ImageGDI
+	: ImageGDI
 	#endif
 	{
 		#region Construtors

@@ -3,6 +3,10 @@
 #include <d3d11_1.h>
 #include <d2d1_1.h>
 #include <windows.ui.xaml.media.dxinterop.h>
+#elif WP8
+#include <d3d11_1.h>
+#include <DrawingSurfaceNative.h>
+#include "Direct3DContentProvider.h"
 #else
 #include <d3d11.h>
 #endif
@@ -18,6 +22,7 @@ namespace Reign_Video_D3D11_Component
 		DeviceAndSwapChainFailed,
 		#else
 		DeviceFailed,
+		#if !WP8
 		SwapChainFailed,
 		D2DFactoryFailed,
 		D2DDeviceFailed,
@@ -26,8 +31,13 @@ namespace Reign_Video_D3D11_Component
 		GetDXGIBackBufferFailed,
 		DXGISurfaceFailed,
 		D2DBitmapFailed,
+		#else
+		RenderTextureFailed,
 		#endif
+		#endif
+		#if !WP8
 		GetSwapChainFailed,
+		#endif
 		RenderTargetViewFailed,
 		DepthStencilTextureFailed,
 		DepthStencilViewFailed
@@ -35,7 +45,7 @@ namespace Reign_Video_D3D11_Component
 
 	public enum class REIGN_D3D_FEATURE_LEVEL
 	{
-		#if METRO
+		#if METRO || WP8
 		LEVEL_11_1 = D3D_FEATURE_LEVEL_11_1,
 		#endif
 		LEVEL_11_0 = D3D_FEATURE_LEVEL_11_0,
@@ -86,10 +96,16 @@ namespace Reign_Video_D3D11_Component
 		internal: ID3D11Device* device;
 		internal: ID3D11DeviceContext* deviceContext;
 		#else
+		#if METRO
 		private: IDXGISwapChain1* swapChain;
+		#else
+		private: ComPtr<Direct3DContentProvider> contentProvider;
+		private: ID3D11Texture2D* renderTexture;
+		#endif
 		internal: ID3D11Device1* device;
 		internal: ID3D11DeviceContext1* deviceContext;
 		private: bool compositionMode;
+		#if !WP8
 		private: float dpi;
 		private: ID2D1Factory1* d2dFactory;
 		private: ID2D1Device* d2dDevice;
@@ -97,6 +113,7 @@ namespace Reign_Video_D3D11_Component
 		private: IDXGISurface2* dxgiSurface;
 		private: ID2D1Bitmap1* d2dRenderTarget;
 		private: ISwapChainBackgroundPanelNative* swapChainBackgroundPanelNative;
+		#endif
 		#endif
 		private: ID3D11RenderTargetView* renderTarget;
 		private: ID3D11DepthStencilView* depthStencil;
@@ -114,8 +131,10 @@ namespace Reign_Video_D3D11_Component
 		#pragma region Constructors
 		#if WINDOWS
 		public: VideoError Init(IntPtr handle, bool vSync, int width, int height, bool fullscreen, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel);
-		#else
+		#elif METRO
 		public: VideoError Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ swapChainBackgroundPanel);
+		#else
+		public: VideoError Init(bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel);
 		#endif
 		private: VideoError createViews(int width, int height);
 		public: virtual ~VideoCom();

@@ -37,7 +37,7 @@ namespace Reign.Core
 		#endregion
 
 		#region Constructors
-		public MetroApplication()
+		public MetroApplication(ApplicationOrientations orientation)
 		{
 			source = new MetroApplicationSource(this);
 		}

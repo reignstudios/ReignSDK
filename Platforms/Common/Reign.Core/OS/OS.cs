@@ -132,7 +132,7 @@ namespace Reign.Core
 		public static Application CurrentApplication;
 		#if METRO
 		public static Windows.UI.Core.CoreWindow CoreWindow;
-		public static XAMLApplication CurrentPageApplication;
+		public static XAMLApplication CurrentXAMLApplication;
 		#endif
 		#endif
 		
@@ -346,7 +346,7 @@ namespace Reign.Core
 		#if METRO
 		internal static void Init(XAMLApplication application)
 		{
-			CurrentPageApplication = application;
+			CurrentXAMLApplication = application;
 			time = new Time(0);
 			time.Start();
 		}
@@ -401,8 +401,8 @@ namespace Reign.Core
 			else
 			{
 				#if METRO
-				CurrentPageApplication.update(time);
-				CurrentPageApplication.render(time);
+				CurrentXAMLApplication.update(time);
+				CurrentXAMLApplication.render(time);
 				#endif
 			}
 		}

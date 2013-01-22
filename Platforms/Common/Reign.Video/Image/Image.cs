@@ -138,7 +138,9 @@ namespace Reign.Video
 				case (".bmpc"): return new ImageBMPC(fileName, flip, loadedCallback);
 				#endif
 				#if (!XNA && !NaCl && !VITA) || SILVERLIGHT
+				#if !WP8
 				case (".bmpc"): return new ImageBMPC(fileName, flip, loadedCallback);
+				#endif
 				case (".png"): return new ImagePNG(fileName, flip, loadedCallback);
 				case (".jpg"): return new ImageJPG(fileName, flip, loadedCallback);
 				case (".jpeg"): return new ImageJPG(fileName, flip, loadedCallback);
@@ -195,7 +197,7 @@ namespace Reign.Video
 		{
 			switch (imageFormat)
 			{
-				#if !NaCl && !XNA && !VITA
+				#if !NaCl && !XNA && !VITA && !WP8
 				case (ImageFormats.BMPC): ImageBMPC.Save(inData, width, height, outStream, imageSavedCallback); break;
 				#endif
 				#if METRO

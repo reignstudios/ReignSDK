@@ -12,6 +12,7 @@ Platforms
     Microsoft
     - Windows (D3D11, D3D9 and OpenGL supported)
     - Metro
+    - WP8
     - Xbox360
     - XNA
     - Silverlight

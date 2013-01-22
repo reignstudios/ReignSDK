@@ -3,6 +3,10 @@ using Reign.Core;
 using Reign.Video;
 using Reign_Video_D3D11_Component;
 
+#if WP8
+using System.Runtime.InteropServices;
+#endif
+
 namespace Reign.Video.D3D11
 {
 	public class ShaderVariable : ShaderVariableI
@@ -10,6 +14,11 @@ namespace Reign.Video.D3D11
 		#region Properties
 		private ShaderVariableCom com;
 		public string Name {get; private set;}
+
+		#if WP8
+		private int vertexOffset, pixelOffset;
+		private IntPtr vertexBytes, pixelBytes;
+		#endif
 		#endregion
 
 		#region Constructors
@@ -17,10 +26,265 @@ namespace Reign.Video.D3D11
 		{
 			Name = name;
 			com = new ShaderVariableCom(vertexShader, pixelShader, vertexOffset, pixelOffset);
+			#if WP8
+			int vsPtr, psPtr;
+			com.GetDataPtrs(out vsPtr, out psPtr, out vertexOffset, out pixelOffset);
+			vertexBytes = new IntPtr(vsPtr);
+			pixelBytes = new IntPtr(psPtr);
+			#endif
 		}
 		#endregion
 
 		#region Methods
+		#if WP8
+		public void Set(float value)
+		{
+			if (vertexOffset != -1) Marshal.StructureToPtr(value, vertexBytes + vertexOffset, false);
+			if (pixelOffset != -1) Marshal.StructureToPtr(value, pixelBytes + pixelOffset, false);
+		}
+
+		public void Set(float x, float y)
+		{
+			Vector2 vector;
+			vector.X = x;
+			vector.Y = y;
+			if (vertexOffset != -1) Marshal.StructureToPtr(vector, vertexBytes + vertexOffset, false);
+			if (pixelOffset != -1) Marshal.StructureToPtr(vector, pixelBytes + pixelOffset, false);
+		}
+
+		public void Set(float x, float y, float z)
+		{
+			Vector3 vector;
+			vector.X = x;
+			vector.Y = y;
+			vector.Z = z;
+			if (vertexOffset != -1) Marshal.StructureToPtr(vector, vertexBytes + vertexOffset, false);
+			if (pixelOffset != -1) Marshal.StructureToPtr(vector, pixelBytes + pixelOffset, false);
+		}
+
+		public void Set(float x, float y, float z, float w)
+		{
+			Vector4 vector;
+			vector.X = x;
+			vector.Y = y;
+			vector.Z = z;
+			vector.W = w;
+			if (vertexOffset != -1) Marshal.StructureToPtr(vector, vertexBytes + vertexOffset, false);
+			if (pixelOffset != -1) Marshal.StructureToPtr(vector, pixelBytes + pixelOffset, false);
+		}
+
+		public void Set(Vector2 value)
+		{
+			if (vertexOffset != -1) Marshal.StructureToPtr(value, vertexBytes + vertexOffset, false);
+			if (pixelOffset != -1) Marshal.StructureToPtr(value, pixelBytes + pixelOffset, false);
+		}
+
+		public void Set(Vector3 value)
+		{
+			if (vertexOffset != -1) Marshal.StructureToPtr(value, vertexBytes + vertexOffset, false);
+			if (pixelOffset != -1) Marshal.StructureToPtr(value, pixelBytes + pixelOffset, false);
+		}
+
+		public void Set(Vector4 value)
+		{
+			if (vertexOffset != -1) Marshal.StructureToPtr(value, vertexBytes + vertexOffset, false);
+			if (pixelOffset != -1) Marshal.StructureToPtr(value, pixelBytes + pixelOffset, false);
+		}
+
+		public void Set(Matrix2 value)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Matrix3 value)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Matrix4 value)
+		{
+			if (vertexOffset != -1) Marshal.StructureToPtr(value, vertexBytes + vertexOffset, false);
+			if (pixelOffset != -1) Marshal.StructureToPtr(value, pixelBytes + pixelOffset, false);
+		}
+
+		public void Set(float[] values)
+		{
+			if (vertexOffset != -1) Marshal.Copy(values, 0, vertexBytes + vertexOffset, values.Length);
+			if (pixelOffset != -1) Marshal.Copy(values, 0, pixelBytes + pixelOffset, values.Length);
+		}
+
+		public void Set(Vector2[] values)
+		{
+			int size = Marshal.SizeOf(values[0]);
+			if (vertexOffset != -1)
+			{
+				int offset = vertexOffset;
+				for (int i = 0; i != values.Length; ++i)
+				{
+					Marshal.StructureToPtr(values[i], vertexBytes + offset, false);
+					offset += size;
+				}
+			}
+			if (pixelOffset != -1)
+			{
+				int offset = pixelOffset;
+				for (int i = 0; i != values.Length; ++i)
+				{
+					Marshal.StructureToPtr(values[i], pixelBytes + offset, false);
+					offset += size;
+				}
+			}
+		}
+
+		public void Set(Vector3[] values)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Vector4[] values)
+		{
+			int size = Marshal.SizeOf(values[0]);
+			if (vertexOffset != -1)
+			{
+				int offset = vertexOffset;
+				for (int i = 0; i != values.Length; ++i)
+				{
+					Marshal.StructureToPtr(values[i], vertexBytes + offset, false);
+					offset += size;
+				}
+			}
+			if (pixelOffset != -1)
+			{
+				int offset = pixelOffset;
+				for (int i = 0; i != values.Length; ++i)
+				{
+					Marshal.StructureToPtr(values[i], pixelBytes + offset, false);
+					offset += size;
+				}
+			}
+		}
+
+		public void Set(Matrix2[] values)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Matrix3[] values)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Matrix4[] values)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(float[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Vector2[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Vector3[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Vector4[] values, int count)
+		{
+			int size = Marshal.SizeOf(values[0]);
+			if (vertexOffset != -1)
+			{
+				int offset = vertexOffset;
+				for (int i = 0; i != count; ++i)
+				{
+					Marshal.StructureToPtr(values[i], vertexBytes + offset, false);
+					offset += size;
+				}
+			}
+			if (pixelOffset != -1)
+			{
+				int offset = pixelOffset;
+				for (int i = 0; i != count; ++i)
+				{
+					Marshal.StructureToPtr(values[i], pixelBytes + offset, false);
+					offset += size;
+				}
+			}
+		}
+
+		public void Set(Matrix2[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Matrix3[] values, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Matrix4[] values, int count)
+		{
+			int size = Marshal.SizeOf(values[0]);
+			if (vertexOffset != -1)
+			{
+				int offset = vertexOffset;
+				for (int i = 0; i != count; ++i)
+				{
+					Marshal.StructureToPtr(values[i], vertexBytes + offset, false);
+					offset += size;
+				}
+			}
+			if (pixelOffset != -1)
+			{
+				int offset = pixelOffset;
+				for (int i = 0; i != count; ++i)
+				{
+					Marshal.StructureToPtr(values[i], pixelBytes + offset, false);
+					offset += size;
+				}
+			}
+		}
+
+		public void Set(float[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Vector2[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Vector3[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Vector4[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Matrix2[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Matrix3[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Set(Matrix4[] values, int offset, int count)
+		{
+			throw new NotImplementedException();
+		}
+		#else
 		public unsafe void Set(float value)
 		{
 			com.Set((int)&value, sizeof(float));
@@ -45,7 +309,11 @@ namespace Reign.Video.D3D11
 
 		public unsafe void Set(float x, float y, float z, float w)
 		{
-			var vector = new Vector4(x, y, z, w);
+			Vector4 vector;
+			vector.X = x;
+			vector.Y = y;
+			vector.Z = z;
+			vector.W = w;
 			com.Set((int)&vector, sizeof(Vector4));
 		}
 
@@ -64,12 +332,12 @@ namespace Reign.Video.D3D11
 			com.Set((int)&value, sizeof(Vector4));
 		}
 
-		public unsafe void Set(Matrix2 value)
+		public void Set(Matrix2 value)
 		{
 			throw new NotImplementedException();
 		}
 
-		public unsafe void Set(Matrix3 value)
+		public void Set(Matrix3 value)
 		{
 			throw new NotImplementedException();
 		}
@@ -89,7 +357,7 @@ namespace Reign.Video.D3D11
 			fixed (Vector2* data = values) com.Set((int)data, sizeof(Vector2), values.Length, 16);
 		}
 
-		public unsafe void Set(Vector3[] values)
+		public void Set(Vector3[] values)
 		{
 			throw new NotImplementedException();
 		}
@@ -99,17 +367,17 @@ namespace Reign.Video.D3D11
 			fixed (Vector4* data = values) com.Set((int)data, sizeof(Vector4) * values.Length);
 		}
 
-		public unsafe void Set(Matrix2[] values)
+		public void Set(Matrix2[] values)
 		{
 			throw new NotImplementedException();
 		}
 
-		public unsafe void Set(Matrix3[] values)
+		public void Set(Matrix3[] values)
 		{
 			throw new NotImplementedException();
 		}
 
-		public unsafe void Set(Matrix4[] values)
+		public void Set(Matrix4[] values)
 		{
 			throw new NotImplementedException();
 		}
@@ -134,12 +402,12 @@ namespace Reign.Video.D3D11
 			fixed (Vector4* data = values) com.Set((int)data, sizeof(Vector4) * count);
 		}
 
-		public unsafe void Set(Matrix2[] values, int count)
+		public void Set(Matrix2[] values, int count)
 		{
 			throw new NotImplementedException();
 		}
 
-		public unsafe void Set(Matrix3[] values, int count)
+		public void Set(Matrix3[] values, int count)
 		{
 			throw new NotImplementedException();
 		}
@@ -183,7 +451,7 @@ namespace Reign.Video.D3D11
 		{
 			throw new NotImplementedException();
 		}
-
+		#endif
 		#endregion
 	}
 }

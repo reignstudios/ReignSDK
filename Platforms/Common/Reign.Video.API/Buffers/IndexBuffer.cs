@@ -10,7 +10,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D9) IndexBufferAPI.Init(Reign.Video.D3D9.IndexBuffer.New, Reign.Video.D3D9.IndexBuffer.New);
 			#endif
 
-			#if WINDOWS || METRO
+			#if WINDOWS || METRO || WP8
 			if (type == VideoTypes.D3D11) IndexBufferAPI.Init(Reign.Video.D3D11.IndexBuffer.New, Reign.Video.D3D11.IndexBuffer.New);
 			#endif
 

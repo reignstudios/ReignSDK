@@ -92,6 +92,17 @@ namespace Reign.Video.D3D11
 			renderTargetCom.Enable(((DepthStencil)depthStencil).com);
 		}
 
+		#if WP8
+		public void ReadPixels(byte[] data)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void ReadPixels(Color4[] colors)
+		{
+			throw new NotImplementedException();
+		}
+		#else
 		public unsafe void ReadPixels(byte[] data)
 		{
 			fixed (byte* ptr = data)
@@ -107,6 +118,7 @@ namespace Reign.Video.D3D11
 				renderTargetCom.ReadPixels((int)ptr, colors.Length * 4);
 			}
 		}
+		#endif
 
 		public bool ReadPixel(Point2 position, out Color4 color)
 		{

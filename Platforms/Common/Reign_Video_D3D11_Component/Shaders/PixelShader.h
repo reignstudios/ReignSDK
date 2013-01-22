@@ -1,7 +1,9 @@
 ﻿#pragma once
 #include "../Video.h"
-#include <d3d11shader.h>
 #include "ShaderModel.h"
+#if WINDOWS
+#include <d3d11shader.h>
+#endif
 
 namespace Reign_Video_D3D11_Component
 {

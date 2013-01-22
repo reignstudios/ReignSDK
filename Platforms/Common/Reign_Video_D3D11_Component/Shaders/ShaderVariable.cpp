@@ -11,6 +11,16 @@ namespace Reign_Video_D3D11_Component
 		this->vertexOffset = vertexOffset;
 		this->pixelOffset = pixelOffset;
 	}
+
+	#if WP8
+	void ShaderVariableCom::GetDataPtrs(OutType(__int32) vertexBytes, OutType(__int32) pixelBytes, OutType(int) vertexOffset, OutType(int) pixelOffset)
+	{
+		*vertexBytes = (__int32)vertexBytes;
+		*pixelBytes = (__int32)pixelBytes;
+		*vertexOffset = this->vertexOffset;
+		*pixelOffset = this->pixelOffset;
+	}
+	#endif
 	#pragma endregion
 
 	#pragma region Methods

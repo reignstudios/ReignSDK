@@ -10,7 +10,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D9) ViewPortAPI.Init(Reign.Video.D3D9.ViewPort.New, Reign.Video.D3D9.ViewPort.New);
 			#endif
 
-			#if WINDOWS || METRO
+			#if WINDOWS || METRO || WP8
 			if (type == VideoTypes.D3D11) ViewPortAPI.Init(Reign.Video.D3D11.ViewPort.New, Reign.Video.D3D11.ViewPort.New);
 			#endif
 

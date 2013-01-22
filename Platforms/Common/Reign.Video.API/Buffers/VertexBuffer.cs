@@ -10,7 +10,7 @@ namespace Reign.Video.API
 			if (type == VideoTypes.D3D9) VertexBufferAPI.Init(Reign.Video.D3D9.VertexBuffer.New);
 			#endif
 
-			#if WINDOWS || METRO
+			#if WINDOWS || METRO || WP8
 			if (type == VideoTypes.D3D11) VertexBufferAPI.Init(Reign.Video.D3D11.VertexBuffer.New);
 			#endif
 
