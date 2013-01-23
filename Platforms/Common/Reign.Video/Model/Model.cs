@@ -23,6 +23,7 @@ namespace Reign.Video
 		public Model(DisposableI parent, string fileName, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
+			Loader.AddLoadable(this);
 			new StreamLoader(fileName,
 			delegate(object sender, bool succeeded)
 			{
@@ -42,6 +43,7 @@ namespace Reign.Video
 		public Model(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
+			Loader.AddLoadable(this);
 			new LoadWaiter(new LoadableI[]{softwareModel},
 			delegate(object sender, bool succeeeded)
 			{

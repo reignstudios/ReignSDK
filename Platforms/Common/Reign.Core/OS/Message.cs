@@ -47,7 +47,8 @@ namespace Reign.Core
 			#endif
 
 			#if WP8
-			MessageBox.Show(message, title, MessageBoxButton.OK);
+			System.Diagnostics.Debug.WriteLine(title + " - " + message);
+			//MessageBox.Show(message, title, MessageBoxButton.OK);
 			#endif
 
 			#if WINDOWS

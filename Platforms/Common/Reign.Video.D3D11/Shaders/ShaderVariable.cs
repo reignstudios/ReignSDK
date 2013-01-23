@@ -27,8 +27,10 @@ namespace Reign.Video.D3D11
 			Name = name;
 			com = new ShaderVariableCom(vertexShader, pixelShader, vertexOffset, pixelOffset);
 			#if WP8
+			this.vertexOffset = vertexOffset;
+			this.pixelOffset = pixelOffset;
 			int vsPtr, psPtr;
-			com.GetDataPtrs(out vsPtr, out psPtr, out vertexOffset, out pixelOffset);
+			com.GetDataPtrs(out vsPtr, out psPtr);
 			vertexBytes = new IntPtr(vsPtr);
 			pixelBytes = new IntPtr(psPtr);
 			#endif

@@ -27,6 +27,7 @@ namespace Reign.Core
 		protected ApplicationEvent theEvent;
 
 		public static PhoneApplicationFrame RootFrame { get; private set; }
+		public MainPage MainPage {get; internal set;}
 		private bool phoneApplicationInitialized;
 		#endregion
 
@@ -46,86 +47,47 @@ namespace Reign.Core
 
 			if (!phoneApplicationInitialized)
 			{
-				// Create the frame but don't set it as RootVisual yet; this allows the splash
-				// screen to remain active until the application is ready to render.
 				RootFrame = new PhoneApplicationFrame();
 				RootFrame.UriMapper = new MainPageUriMapper();// Override the main page loader
 				RootFrame.Navigated += CompleteInitializePhoneApplication;
 
-				// Handle navigation failures
 				RootFrame.NavigationFailed += RootFrame_NavigationFailed;
-
-				// Handle reset requests for clearing the backstack
 				RootFrame.Navigated += CheckForResetNavigation;
-
-				// Ensure we don't initialize again
 				phoneApplicationInitialized = true;
 			}
 
 			if (Debugger.IsAttached)
 			{
-				// Display the current frame rate counters.
 				Application.Current.Host.Settings.EnableFrameRateCounter = true;
-
-				// Show the areas of the app that are being redrawn in each frame.
-				//Application.Current.Host.Settings.EnableRedrawRegions = true;
-
-				// Enable non-production analysis visualization mode,
-				// which shows areas of a page that are handed off to GPU with a colored overlay.
-				//Application.Current.Host.Settings.EnableCacheVisualization = true;
-
-				// Prevent the screen from turning off while under the debugger by disabling
-				// the application's idle detection.
-				// Caution:- Use this under debug mode only. Application that disables user idle detection will continue to run
-				// and consume battery power when the user is not using the phone.
 				PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
 			}
 		}
 
 		private void CompleteInitializePhoneApplication(object sender, NavigationEventArgs e)
 		{
-			// Set the root visual to allow the application to render
-			if (RootVisual != RootFrame)
-				RootVisual = RootFrame;
-
-			// Remove this handler since it is no longer needed
+			if (RootVisual != RootFrame) RootVisual = RootFrame;
 			RootFrame.Navigated -= CompleteInitializePhoneApplication;
 		}
 
 		private void XAMLApplication_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
 		{
-			if (Debugger.IsAttached)
-			{
-				// An unhandled exception has occurred; break into the debugger
-				Debugger.Break();
-			}
+			if (Debugger.IsAttached) Debugger.Break();
 		}
 
 		private void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
 		{
-			if (Debugger.IsAttached)
-			{
-				// A navigation has failed; break into the debugger
-				Debugger.Break();
-			}
+			if (Debugger.IsAttached) Debugger.Break();
 		}
 
 		private void CheckForResetNavigation(object sender, NavigationEventArgs e)
 		{
-			// If the app has received a 'reset' navigation, then we need to check
-			// on the next navigation to see if the page stack should be reset
 			if (e.NavigationMode == NavigationMode.Reset) RootFrame.Navigated += ClearBackStackAfterReset;
 		}
 
 		private void ClearBackStackAfterReset(object sender, NavigationEventArgs e)
 		{
-			// Unregister the event so it doesn't get called again
 			RootFrame.Navigated -= ClearBackStackAfterReset;
-
-			// Only clear the stack for 'new' (forward) and 'refresh' navigations
 			if (e.NavigationMode != NavigationMode.New && e.NavigationMode != NavigationMode.Refresh) return;
-
-			// For UI consistency, clear the entire page stack
 			while (RootFrame.RemoveBackEntry() != null)
 			{
 				; // do nothing
@@ -139,26 +101,18 @@ namespace Reign.Core
 		#endregion
 
 		#region Methods
-		// Code to execute when the application is launching (eg, from Start)
-		// This code will not execute when the application is reactivated
 		private void Application_Launching(object sender, LaunchingEventArgs e)
 		{
 		}
 
-		// Code to execute when the application is activated (brought to foreground)
-		// This code will not execute when the application is first launched
 		private void Application_Activated(object sender, ActivatedEventArgs e)
 		{
 		}
 
-		// Code to execute when the application is deactivated (sent to background)
-		// This code will not execute when the application is closing
 		private void Application_Deactivated(object sender, DeactivatedEventArgs e)
 		{
 		}
 
-		// Code to execute when the application is closing (eg, user hit Back)
-		// This code will not execute when the application is deactivated
 		private void Application_Closing(object sender, ClosingEventArgs e)
 		{
 		}

@@ -7,11 +7,15 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using Windows.Phone.Graphics.Interop;
+using Windows.Phone.Input.Interop;
 
 namespace Reign.Core
 {
 	public partial class MainPage : PhoneApplicationPage
 	{
+		public DrawingSurface Surface {get{return surface;}}
+
 		public MainPage()
 		{
 			InitializeComponent();
@@ -23,18 +27,9 @@ namespace Reign.Core
 
 		private void drawingSurface_Loaded(object sender, RoutedEventArgs e)
 		{
-			//drawingSurface.SetContentProvider(provider);// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< NEXT STEP: make a way to call these !!!
-			//drawingSurface.SetManipulationHandler(handler);
-
-			//application.frameSize = new Size2((int)Surface.ActualWidth, (int)Surface.ActualHeight);
-			//application.shown();
-
-			//CompositionTarget.Rendering += rendering;
+			OS.CurrentApplication.MainPage = this;
+			OS.CurrentApplication.frameSize = new Size2((int)surface.ActualWidth, (int)surface.ActualHeight);
+			OS.CurrentApplication.shown();
 		}
-
-		/*private void rendering(object sender, object e)
-		{
-			OS.UpdateAndRender();
-		}*/
 	}
 }

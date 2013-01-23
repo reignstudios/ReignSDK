@@ -95,7 +95,7 @@ namespace Reign.Video.D3D11
 				var error = com.Init(OS.CoreWindow, vSync, frame.Width, frame.Height, out featureLevel, swapChainBackgroundPanel);
 				#else
 				var frame = application.FrameSize;
-				var error = com.Init(vSync, frame.Width, frame.Height, out featureLevel);
+				var error = com.Init(vSync, frame.Width, frame.Height, out featureLevel, OS.UpdateAndRender);
 				#endif
 				BackBufferSize = frame;
 
@@ -125,6 +125,10 @@ namespace Reign.Video.D3D11
 					#endif
 					#endif
 				}
+
+				#if WP8
+				((XAMLApplication)application).MainPage.Surface.SetContentProvider(com.GetProvider());
+				#endif
 
 				switch (featureLevel)
 				{

@@ -146,7 +146,7 @@ namespace Reign.Core
 		public Application(ApplicationOrientations orientation, bool enableAds)
 		: base(enableAds)
 		#elif ANDROID
-		public Application(ApplicationOrientations orientation, int fps, bool enableAds, string publisherID)
+		public Application(ApplicationOrientations orientation, bool enableAds, string publisherID)
 		: base(enableAds, publisherID)
 		#elif METRO || WP8
 		public Application(ApplicationOrientations orientation)
@@ -175,8 +175,8 @@ namespace Reign.Core
 			init(this, width, height, orientation);
 			#endif
 			
-			#if ANDROID
-			OS.time = new Time(fps);
+			#if ANDROID || WP8
+			OS.time = new Time(0);
 			OS.time.Start();
 			#endif
 		}

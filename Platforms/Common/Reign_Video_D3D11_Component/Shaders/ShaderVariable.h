@@ -17,7 +17,7 @@ namespace Reign_Video_D3D11_Component
 		#pragma region Constructors
 		public: ShaderVariableCom(ShaderModelCom^ vertexShader, ShaderModelCom^ pixelShader, int vertexOffset, int pixelOffset);
 		#if WP8
-		public: void GetDataPtrs(OutType(__int32) vertexBytes, OutType(__int32) pixelBytes, OutType(int) vertexOffset, OutType(int) pixelOffset);
+		public: void GetDataPtrs(OutType(__int32) vertexBytes, OutType(__int32) pixelBytes);
 		#endif
 		#pragma endregion
 

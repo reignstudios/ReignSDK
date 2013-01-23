@@ -18,6 +18,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		public: Direct3DContentProvider(ID3D11Texture2D* renderTexture);
+		public: void CreateSynchronizedTexture();
 		public: void ReleaseD3DResources();
 		#pragma endregion
 

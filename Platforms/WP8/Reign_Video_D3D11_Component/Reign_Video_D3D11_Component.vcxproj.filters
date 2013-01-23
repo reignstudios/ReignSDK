@@ -142,5 +142,6 @@
       <Filter>Shaders</Filter>
     </ClInclude>
     <ClInclude Include="Direct3DContentProvider.h" />
+    <ClInclude Include="RenderDelegateObject.h" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Direct3DContentProvider.h"
+#include "RenderDelegateObject.h"
 
 namespace Reign_Video_D3D11_Component
 {
@@ -8,15 +9,14 @@ namespace Reign_Video_D3D11_Component
 		this->renderTexture = renderTexture;
 	}
 
+	void Direct3DContentProvider::CreateSynchronizedTexture()
+	{
+		
+	}
+
 	HRESULT Direct3DContentProvider::Connect(_In_ IDrawingSurfaceRuntimeHostNative* host)
 	{
-		if (FAILED(Host->CreateSynchronizedTexture(renderTexture, &SynchronizedTexture)))
-		{
-			// Fail here !!!!
-		}
-
 		Host = host;
-		//host->RequestAdditionalFrame();
 		return S_OK;
 	}
 
@@ -29,18 +29,19 @@ namespace Reign_Video_D3D11_Component
 
 	HRESULT Direct3DContentProvider::PrepareResources(_In_ const LARGE_INTEGER* presentTargetTime, _Out_ BOOL* contentDirty)
 	{
-		//return m_controller->PrepareResources(presentTargetTime, contentDirty);
+		*contentDirty = true;
 		return S_OK;
 	}
 
 	HRESULT Direct3DContentProvider::GetTexture(_In_ const DrawingSurfaceSizeF* size, _Out_ IDrawingSurfaceSynchronizedTextureNative** synchronizedTexture, _Out_ DrawingSurfaceRectF* textureSubRectangle)
 	{
-		HRESULT hr = S_OK;
-
-		/*if (!m_synchronizedTexture)
+		if (this->SynchronizedTexture == nullptr)
 		{
-			hr = m_host->CreateSynchronizedTexture(m_controller->GetTexture(), &m_synchronizedTexture);
-		}*/
+			if (FAILED(Host->CreateSynchronizedTexture(renderTexture, &this->SynchronizedTexture)))
+			{
+				return S_FALSE;
+			}
+		}
 
 		// Set output parameters.
 		textureSubRectangle->left = 0.0f;
@@ -48,24 +49,13 @@ namespace Reign_Video_D3D11_Component
 		textureSubRectangle->right = static_cast<FLOAT>(size->width);
 		textureSubRectangle->bottom = static_cast<FLOAT>(size->height);
 
-		SynchronizedTexture.CopyTo(synchronizedTexture);
-
 		// Draw to the texture.
-		//if (SUCCEEDED(hr))
-		//{
-			hr = SynchronizedTexture->BeginDraw();
-		
-			if (SUCCEEDED(hr))
-			{
-				//hr = m_controller->GetTexture(size, synchronizedTexture, textureSubRectangle);
-				// RENDER HERE!!!
-			}
+		if (SUCCEEDED(SynchronizedTexture->BeginDraw())) RenderDelegateObject::Render();
+		SynchronizedTexture->EndDraw();
 
-			SynchronizedTexture->EndDraw();
-		//}
+		SynchronizedTexture.CopyTo(synchronizedTexture);
+		Host->RequestAdditionalFrame();
 
-		//Host->RequestAdditionalFrame();
-
-		return hr;
+		return S_OK;
 	}
 }

@@ -15,10 +15,14 @@ namespace Reign_Video_D3D11_Component
 	#elif METRO
 	VideoError VideoCom::Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ swapChainBackgroundPanel)
 	#else
-	VideoError VideoCom::Init(bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel)
+	VideoError VideoCom::Init(bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, RenderDelegate^ renderDelegate)
 	#endif
 	{
 		null();
+
+		#if WP8
+		RenderDelegateObject::render += renderDelegate;
+		#endif
 
 		#if METRO
 		compositionMode = swapChainBackgroundPanel != nullptr;
@@ -338,6 +342,13 @@ namespace Reign_Video_D3D11_Component
 
 		return VideoError::None;
 	}
+
+	#if WP8
+	Windows::Phone::Graphics::Interop::IDrawingSurfaceContentProvider^ VideoCom::GetProvider()
+	{
+		return reinterpret_cast<Windows::Phone::Graphics::Interop::IDrawingSurfaceContentProvider^>(contentProvider.Detach());
+	}
+	#endif
 
 	VideoCom::~VideoCom()
 	{

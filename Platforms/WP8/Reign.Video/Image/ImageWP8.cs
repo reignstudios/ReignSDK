@@ -23,6 +23,7 @@ namespace Reign.Video
 		#region Constructors
 		public ImageWP8(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
+			Loader.AddLoadable(this);
 			this.flip = flip;
 			this.loadedCallback = loadedCallback;
 
@@ -34,6 +35,7 @@ namespace Reign.Video
 
 		public ImageWP8(Stream stream, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
+			Loader.AddLoadable(this);
 			this.flip = flip;
 			this.loadedCallback = loadedCallback;
 

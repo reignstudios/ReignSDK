@@ -151,6 +151,7 @@
     <ClInclude Include="..\..\Common\Reign_Video_D3D11_Component\ViewPort\ViewPort.h" />
     <ClInclude Include="Direct3DContentProvider.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="RenderDelegateObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Common\CPP_CLR-CX_Helpers\Common.cpp" />
