@@ -6,12 +6,12 @@ namespace Reign.Video.API
 	[Flags]
 	public enum VideoTypes
 	{
-		None,
-		D3D11,
-		D3D9,
-		XNA,
-		Vita,
-		OpenGL
+		None = 0,
+		D3D11 = 1,
+		D3D9 = 4,
+		XNA = 8,
+		Vita = 16,
+		OpenGL = 32
 	}
 
 	public static class Video

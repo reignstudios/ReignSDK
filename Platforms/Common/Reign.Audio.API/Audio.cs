@@ -7,14 +7,14 @@ namespace Reign.Audio.API
 	[Flags]
 	public enum AudioTypes
 	{
-		None,
-		Dumby,
-		XAudio,
-		XNA,
-		Cocoa,
-		OpenAL,
-		Android,
-		NaCl
+		None = 0,
+		Dumby = 1,
+		XAudio = 2,
+		XNA = 4,
+		Cocoa = 8,
+		OpenAL = 16,
+		Android = 32,
+		NaCl = 64
 	}
 
 	public static class Audio

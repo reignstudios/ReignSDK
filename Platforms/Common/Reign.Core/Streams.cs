@@ -61,17 +61,13 @@ namespace Reign.Core
 		#region Constructors
 		public StreamLoader(Stream stream, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			#if METRO || WP8
 			Loader.AddLoadable(this);
-			#endif
 			init(null, stream, loadedCallback);
 		}
 
 		public StreamLoader(string fileName, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			#if METRO || WP8
 			Loader.AddLoadable(this);
-			#endif
 			init(fileName, null, loadedCallback);
 		}
 
