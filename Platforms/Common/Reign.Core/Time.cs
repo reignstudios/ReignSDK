@@ -15,7 +15,7 @@ namespace Reign.Core
 	public class Time
 	{
 		#region Properties
-		#if ANDROID || NaCl
+		#if ANDROID || NaCl || SILVERLIGHT
 		private long millisecond;
 		#else
 		private Stopwatch stopWatch;
@@ -39,7 +39,7 @@ namespace Reign.Core
 		{
 			this.fps = fps;
 			FPS = fps;
-			#if !ANDROID && !NaCl
+			#if !ANDROID && !NaCl && !SILVERLIGHT
 			stopWatch = new Stopwatch();
 			#endif
 		}
@@ -92,7 +92,7 @@ namespace Reign.Core
 		{
 			#if ANDROID
 			millisecond = JavaSystem.CurrentTimeMillis();
-			#elif NaCl
+			#elif NaCl || SILVERLIGHT
 			millisecond = DateTime.Now.Millisecond;
 			#else
 			stopWatch.Start();
@@ -105,7 +105,7 @@ namespace Reign.Core
 			long currentMilli = JavaSystem.CurrentTimeMillis();
 			if (millisecond <= currentMilli) Delta += (((currentMilli - millisecond) / 1000f) - Delta) * .1f;
 			millisecond = currentMilli;
-			#elif NaCl
+			#elif NaCl || SILVERLIGHT
 			long currentMilli = DateTime.Now.Millisecond;
 			if (millisecond <= currentMilli) Delta += (((currentMilli - millisecond) / 1000f) - Delta) * .1f;
 			millisecond = currentMilli;

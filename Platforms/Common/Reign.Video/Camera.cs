@@ -195,7 +195,7 @@ namespace Reign.Video
 			BillBoardMatrixTranspose = BillBoardMatrix.Transpose();
 		}
 	
-		public virtual void Apply()
+		public void Apply()
 		{
 			ViewMatrix = Matrix4.LookAt(Position, LookAtPosition, UpPosition-Position);
 			ProjectionMatrix = Matrix4.Perspective(Fov, float.IsNaN(Aspect) ? ViewPort.AspectRatio : Aspect, Near, Far);

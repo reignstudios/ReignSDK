@@ -9,6 +9,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Windows.Phone.Graphics.Interop;
 using Windows.Phone.Input.Interop;
+using System.Windows.Media;
 
 namespace Reign.Core
 {
@@ -20,9 +21,16 @@ namespace Reign.Core
 		{
 			InitializeComponent();
 
-			surface = new DrawingSurface();
-			surface.Loaded += drawingSurface_Loaded;
-			this.Content = surface;
+			if (OS.CurrentApplication.orientation == ApplicationOrientations.Landscape)
+			{
+				SupportedOrientations = SupportedPageOrientation.Landscape;
+				Orientation = PageOrientation.Landscape;
+			}
+			else
+			{
+				SupportedOrientations = SupportedPageOrientation.Portrait;
+				Orientation = PageOrientation.Portrait;
+			}
 		}
 
 		private void drawingSurface_Loaded(object sender, RoutedEventArgs e)

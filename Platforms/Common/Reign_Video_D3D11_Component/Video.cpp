@@ -60,8 +60,8 @@ namespace Reign_Video_D3D11_Component
 		ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC1));
 		swapChainDesc.Width = width;
 		swapChainDesc.Height = height;
-		swapChainDesc.Format = compositionMode ? DXGI_FORMAT_B8G8R8A8_UNORM : DXGI_FORMAT_R8G8B8A8_UNORM;
-		swapChainFromat = compositionMode ? DXGI_FORMAT_B8G8R8A8_UNORM : DXGI_FORMAT_R8G8B8A8_UNORM;
+		swapChainDesc.Format = compositionMode ? DXGI_FORMAT_B8G8R8X8_UNORM : DXGI_FORMAT_R8G8B8A8_UNORM;
+		swapChainFromat = compositionMode ? DXGI_FORMAT_B8G8R8X8_UNORM : DXGI_FORMAT_R8G8B8A8_UNORM;
 		swapChainDesc.Stereo = false;
 		swapChainDesc.Scaling = compositionMode ? DXGI_SCALING_STRETCH : DXGI_SCALING_NONE;
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
@@ -224,7 +224,7 @@ namespace Reign_Video_D3D11_Component
 		#if METRO
 		if (compositionMode)
 		{
-			CD3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc(D3D11_RTV_DIMENSION_TEXTURE2DARRAY, DXGI_FORMAT_B8G8R8A8_UNORM, 0, 0, 1);
+			CD3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc(D3D11_RTV_DIMENSION_TEXTURE2DARRAY, DXGI_FORMAT_B8G8R8X8_UNORM, 0, 0, 1);
 			if (FAILED(device->CreateRenderTargetView(backBuffer, &renderTargetViewDesc, &renderTargetTEMP)))
 			{
 				backBuffer->Release();
@@ -246,7 +246,7 @@ namespace Reign_Video_D3D11_Component
 		#else
 		CD3D11_TEXTURE2D_DESC renderTargetDesc
 		(
-			DXGI_FORMAT_B8G8R8A8_UNORM,
+			DXGI_FORMAT_B8G8R8X8_UNORM,
 			static_cast<UINT>(width),
 			static_cast<UINT>(height),
 			1,

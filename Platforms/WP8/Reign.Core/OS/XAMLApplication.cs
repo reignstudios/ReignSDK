@@ -29,11 +29,13 @@ namespace Reign.Core
 		public static PhoneApplicationFrame RootFrame { get; private set; }
 		public MainPage MainPage {get; internal set;}
 		private bool phoneApplicationInitialized;
+		internal ApplicationOrientations orientation;
 		#endregion
 
 		#region Constructors
 		public XAMLApplication(ApplicationOrientations orientation)
 		{
+			this.orientation = orientation;
 			UnhandledException += XAMLApplication_UnhandledException;
 
 			this.Resources.Add("LocalizedStrings", "clr-namespace:Demo_Windows");
