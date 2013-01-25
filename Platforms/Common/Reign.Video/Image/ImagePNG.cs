@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Reign.Core;
 
-#if METRO
+#if WINRT
 using System.Threading.Tasks;
 #endif
 
@@ -14,7 +14,7 @@ namespace Reign.Video
 	: ImageAndroid
 	#elif OSX
 	: ImageOSX
-	#elif METRO
+	#elif WINRT
 	: ImageMetro
 	#elif WP8
 	: ImageWP8
@@ -50,7 +50,7 @@ namespace Reign.Video
 		#region Methods
 		public static void Save(byte[] inData, int width, int height, Stream outStream, ImageSavedCallbackMethod imageSavedCallback)
 		{
-			#if METRO
+			#if WINRT
 			ImageMetro.save(inData, width, height, outStream, ImageFormats.PNG, imageSavedCallback);
 			#else
 			throw new System.NotImplementedException();

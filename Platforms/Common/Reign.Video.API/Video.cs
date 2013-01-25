@@ -16,12 +16,12 @@ namespace Reign.Video.API
 
 	public static class Video
 	{
-		#if METRO || WP8 || XNA || iOS || ANDROID || VITA
+		#if WINRT || WP8 || XNA || iOS || ANDROID || VITA
 		public static VideoI Init(VideoTypes typeFlags, out VideoTypes type, DisposableI parent, Application application, bool vSync)
 		{
 			try
 			{
-				#if METRO || WP8
+				#if WINRT || WP8
 				type = VideoTypes.D3D11;
 				var video = new Reign.Video.D3D11.Video(parent, application, vSync);
 				initMethods(type);
@@ -79,15 +79,15 @@ namespace Reign.Video.API
 		#else
 		public static VideoI Init(VideoTypes typeFlags, out VideoTypes type, DisposableI parent, Window window, bool vSync)
 		{
-			#if WINDOWS
+			#if WIN32
 			bool d3d11 = (typeFlags & VideoTypes.D3D11) != 0;
 			#endif
 
-			#if WINDOWS
+			#if WIN32
 			bool d3d9 = (typeFlags & VideoTypes.D3D9) != 0;
 			#endif
 
-			#if WINDOWS || OSX || LINUX || NaCl
+			#if WIN32 || OSX || LINUX || NaCl
 			bool gl = (typeFlags & VideoTypes.OpenGL) != 0;
 			#endif
 
@@ -98,7 +98,7 @@ namespace Reign.Video.API
 			{
 				try
 				{
-					#if WINDOWS || METRO
+					#if WIN32 || WINRT
 					if (d3d11)
 					{
 						d3d11 = false;
@@ -108,7 +108,7 @@ namespace Reign.Video.API
 					}
 					#endif
 
-					#if WINDOWS
+					#if WIN32
 					else if (d3d9)
 					{
 					    d3d9 = false;
@@ -118,7 +118,7 @@ namespace Reign.Video.API
 					}
 					#endif
 
-					#if WINDOWS || OSX || LINUX || NaCl
+					#if WIN32 || OSX || LINUX || NaCl
 					if (gl)
 					{
 						gl = false;

@@ -43,7 +43,7 @@ namespace Reign.Core
 	#endif
 
 	public class Window
-	#if WINDOWS
+	#if WIN32
 	: WinForm
 	#elif OSX
 	: NSWindowEx
@@ -64,7 +64,7 @@ namespace Reign.Core
 		{
 			get
 			{
-				#if WINDOWS
+				#if WIN32
 				return IsDisposed;
 				#endif
 				
@@ -81,7 +81,7 @@ namespace Reign.Core
 		{
 			get
 			{
-				#if WINDOWS
+				#if WIN32
 				var frame = ClientSize;
 				return new Size2(frame.Width, frame.Height);
 				#endif
@@ -103,7 +103,7 @@ namespace Reign.Core
 			}
 			set
 			{
-				#if WINDOWS
+				#if WIN32
 				ClientSize = new System.Drawing.Size(value.Width, value.Height);
 				#endif
 			}
@@ -113,7 +113,7 @@ namespace Reign.Core
 		{
 			get
 			{
-				#if WINDOWS
+				#if WIN32
 				var size = MinimumSize;
 				return new Size2(size.Width, size.Height);
 				#endif
@@ -124,7 +124,7 @@ namespace Reign.Core
 			}
 			set
 			{
-				#if WINDOWS
+				#if WIN32
 				MinimumSize = new System.Drawing.Size(value.Width, value.Height);
 				#endif
 			}
@@ -134,7 +134,7 @@ namespace Reign.Core
 		{
 			get
 			{
-				#if WINDOWS
+				#if WIN32
 				var size = MaximumSize;
 				return new Size2(size.Width, size.Height);
 				#endif
@@ -145,7 +145,7 @@ namespace Reign.Core
 			}
 			set
 			{
-				#if WINDOWS
+				#if WIN32
 				MaximumSize = new System.Drawing.Size(value.Width, value.Height);
 				#endif
 			}
@@ -207,7 +207,7 @@ namespace Reign.Core
 		
 		protected internal virtual void closing()
 		{
-			#if !WINDOWS
+			#if !WIN32
 			closed = true;
 			#endif
 		}
@@ -215,7 +215,7 @@ namespace Reign.Core
 		public override void Close()
 		{
 			if (Closed) return;
-			#if !WINDOWS
+			#if !WIN32
 			closed = true;
 			#endif
 			
@@ -224,14 +224,14 @@ namespace Reign.Core
 
 		public void HideCursor()
 		{
-			#if WINDOWS
+			#if WIN32
 			System.Windows.Forms.Cursor.Hide();
 			#endif
 		}
 
 		public void ShowCursor()
 		{
-			#if WINDOWS
+			#if WIN32
 			System.Windows.Forms.Cursor.Show();
 			#endif
 		}

@@ -27,9 +27,9 @@ namespace Reign.Video.D3D11
 		public string FileTag {get; private set;}
 		public Size2 BackBufferSize {get; private set;}
 
-		#if WINDOWS
+		#if WIN32
 		private Window window;
-		#elif METRO
+		#elif WINRT
 		private ApplicationI application;
 		#else
 		private Application application;
@@ -40,13 +40,13 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
-		#if WINDOWS
+		#if WIN32
 		public Video(DisposableI parent, Window window, bool vSync)
 		: base(parent)
 		{
 			init(parent, window, vSync);
 		}
-		#elif METRO
+		#elif WINRT
 		public Video(DisposableI parent, Application application, bool vSync)
 		: base(parent)
 		{
@@ -66,15 +66,15 @@ namespace Reign.Video.D3D11
 		}
 		#endif
 
-		#if WINDOWS
+		#if WIN32
 		private void init(DisposableI parent, Window window, bool vSync)
-		#elif METRO
+		#elif WINRT
 		private void init(DisposableI parent, ApplicationI application, bool vSync, Windows.UI.Xaml.Controls.SwapChainBackgroundPanel swapChainBackgroundPanel)
 		#else
 		private void init(DisposableI parent, Application application, bool vSync)
 		#endif
 		{
-			#if WINDOWS
+			#if WIN32
 			this.window = window;
 			#else
 			this.application = application;
@@ -87,10 +87,10 @@ namespace Reign.Video.D3D11
 
 				com = new VideoCom();
 				var featureLevel = REIGN_D3D_FEATURE_LEVEL.LEVEL_9_1;
-				#if WINDOWS
+				#if WIN32
 				var frame = window.FrameSize;
 				var error = com.Init(window.Handle, vSync, frame.Width, frame.Height, false, out featureLevel);
-				#elif METRO
+				#elif WINRT
 				var frame = application.Metro_FrameSize;
 				var error = com.Init(OS.CoreWindow, vSync, frame.Width, frame.Height, out featureLevel, swapChainBackgroundPanel);
 				#else
@@ -107,7 +107,7 @@ namespace Reign.Video.D3D11
 					#if !WP8
 					case (VideoError.GetSwapChainFailed): Debug.ThrowError("Video", "Failed to get SwapChain"); break;
 					#endif
-					#if WINDOWS
+					#if WIN32
 					case (VideoError.DeviceAndSwapChainFailed): Debug.ThrowError("Video", "Failed to create Device and SwapChain"); break;
 					#else
 					case (VideoError.DeviceFailed): Debug.ThrowError("Video", "Failed to create Device"); break;
@@ -132,7 +132,7 @@ namespace Reign.Video.D3D11
 
 				switch (featureLevel)
 				{
-					#if METRO || WP8
+					#if WINRT || WP8
 					case (REIGN_D3D_FEATURE_LEVEL.LEVEL_11_1):
 						Cap.MaxShaderVersion = ShaderVersions.HLSL_5_0;
 						Cap.FeatureLevel = FeatureLevels.D3D11_1;
@@ -192,9 +192,9 @@ namespace Reign.Video.D3D11
 		#region Methods
 		public void Update()
 		{
-			#if WINDOWS
+			#if WIN32
 			var frame = window.FrameSize;
-			#elif METRO
+			#elif WINRT
 			var frame = application.Metro_FrameSize;
 			#else
 			var frame = application.FrameSize;

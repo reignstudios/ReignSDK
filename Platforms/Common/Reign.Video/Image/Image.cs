@@ -2,7 +2,7 @@
 using System;
 using Reign.Core;
 
-#if METRO
+#if WINRT
 using System.Threading.Tasks;
 #endif
 
@@ -200,7 +200,7 @@ namespace Reign.Video
 				#if !NaCl && !XNA && !VITA && !WP8
 				case (ImageFormats.BMPC): ImageBMPC.Save(inData, width, height, outStream, imageSavedCallback); break;
 				#endif
-				#if METRO
+				#if WINRT
 				case (ImageFormats.PNG): ImagePNG.Save(inData, width, height, outStream, imageSavedCallback); break;
 				#endif
 				default: Debug.ThrowError("Image", string.Format("Unsuported format: ", imageFormat)); break;

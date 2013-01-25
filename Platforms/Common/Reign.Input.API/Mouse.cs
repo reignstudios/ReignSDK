@@ -6,12 +6,12 @@ namespace Reign.Input.API
 	{
 		public static void Init(InputTypes type)
 		{
-			#if WINDOWS
+			#if WIN32
 			if (type == InputTypes.WinForms) MouseAPI.Init(Reign.Input.WinForms.Mouse.New);
 			#endif
 
-			#if METRO
-			if (type == InputTypes.Metro) MouseAPI.Init(Reign.Input.Metro.Mouse.New);
+			#if WINRT
+			if (type == InputTypes.WinRT) MouseAPI.Init(Reign.Input.WinRT.Mouse.New);
 			#endif
 			
 			#if OSX

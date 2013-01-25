@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{24E3B179-18C8-4ECC-A100-4A2FA4EDC1FD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Reign.Audio.XAudio</RootNamespace>
+    <AssemblyName>Reign.Audio.XAudio</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WIN32</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>TRACE;WIN32</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Common\Reign.Audio.XAudio\Audio.cs">
+      <Link>Audio.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Audio.XAudio\SoundWAV.cs">
+      <Link>SoundWAV.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Audio\Reign.Audio.csproj">
+      <Project>{96C593BA-CA79-4DA1-A221-786398AF2425}</Project>
+      <Name>Reign.Audio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{4889BC73-F2D9-4F03-B9A9-316B83FD9063}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign_Audio_XAudio_Component\Reign_Audio_XAudio_Component.vcxproj">
+      <Project>{0F73F791-2B9D-4892-AE8A-87EE00A256A6}</Project>
+      <Name>Reign_Audio_XAudio_Component</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

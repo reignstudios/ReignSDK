@@ -12,7 +12,7 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
-		#if WINDOWS
+		#if WIN32
 		public VertexShader(Shader shader, string code, ShaderVersions shaderVersion)
 		: base(shader, code, ShaderTypes.VS, shaderVersion)
 		#else
@@ -54,7 +54,7 @@ namespace Reign.Video.D3D11
 			vertexShaderCom.Apply();
 		}
 
-		#if METRO || WP8
+		#if WINRT || WP8
 		public override int Variable(string name)
 		{
 			for (int i = 0; i != shader.vsVariableNames.Count; ++i)

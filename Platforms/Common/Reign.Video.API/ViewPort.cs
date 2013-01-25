@@ -6,15 +6,15 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
-			#if WINDOWS
+			#if WIN32
 			if (type == VideoTypes.D3D9) ViewPortAPI.Init(Reign.Video.D3D9.ViewPort.New, Reign.Video.D3D9.ViewPort.New);
 			#endif
 
-			#if WINDOWS || METRO || WP8
+			#if WIN32 || WINRT || WP8
 			if (type == VideoTypes.D3D11) ViewPortAPI.Init(Reign.Video.D3D11.ViewPort.New, Reign.Video.D3D11.ViewPort.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
+			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) ViewPortAPI.Init(Reign.Video.OpenGL.ViewPort.New, Reign.Video.OpenGL.ViewPort.New);
 			#endif
 

@@ -8,7 +8,7 @@
 
 inline unsigned long FtoDW(float pValue) {return *((unsigned long*)&pValue);}
 
-#if WINDOWS
+#if WIN32
 using namespace System;
 using namespace System::Runtime::InteropServices;
 #define byte System::Byte

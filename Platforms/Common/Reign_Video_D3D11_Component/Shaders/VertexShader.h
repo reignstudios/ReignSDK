@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "../Video.h"
 #include "ShaderModel.h"
-#if WINDOWS
+#if WIN32
 #include <d3d11shader.h>
 #endif
 

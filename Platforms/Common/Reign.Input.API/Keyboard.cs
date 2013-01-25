@@ -6,12 +6,12 @@ namespace Reign.Input.API
 	{
 		public static void Init(InputTypes type)
 		{
-			#if WINDOWS
+			#if WIN32
 			if (type == InputTypes.WinForms) KeyboardAPI.Init(Reign.Input.WinForms.Keyboard.New);
 			#endif
 
-			#if METRO
-			if (type == InputTypes.Metro) KeyboardAPI.Init(Reign.Input.Metro.Keyboard.New);
+			#if WINRT
+			if (type == InputTypes.WinRT) KeyboardAPI.Init(Reign.Input.WinRT.Keyboard.New);
 			#endif
 			
 			#if OSX

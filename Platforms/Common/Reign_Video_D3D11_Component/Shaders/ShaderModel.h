@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "../Video.h"
-#if WINDOWS
+#if WIN32
 #include <d3d11shader.h>
 #endif
 
@@ -9,7 +9,7 @@ namespace Reign_Video_D3D11_Component
 	public enum class ShaderModelErrors
 	{
 		None,
-		#if WINDOWS
+		#if WIN32
 		CompileCode,
 		#endif
 		VariableBuffer,
@@ -21,7 +21,7 @@ namespace Reign_Video_D3D11_Component
 		#pragma region Properties
 		private: VideoCom^ video;
 
-		#if WINDOWS
+		#if WIN32
 		internal: ID3DBlob* code;
 		private: ID3D11ShaderReflection* reflection;
 		private: ID3D11ShaderReflectionConstantBuffer* variables;
@@ -40,7 +40,7 @@ namespace Reign_Video_D3D11_Component
 		#pragma endregion
 
 		#pragma region Constructors
-		#if WINDOWS
+		#if WIN32
 		public: ShaderModelErrors Init(VideoCom^ video, string^ code, int codeSize, string^ shaderType, OutType(string^) errorText);
 		#else
 		public: ShaderModelErrors Init(VideoCom^ video, const array<byte>^ code, int codeSize, int variableBufferSize, int resourceCount);
@@ -51,7 +51,7 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Methods
 		public: void Apply();
-		#if WINDOWS
+		#if WIN32
 		public: int Variable(string^ name);
 		public: int Resource(string^ name);
 		public: static string^ Compile(string^ code, int codeSize, string^ shaderType, [Out] IntPtr% buffer, [Out] int% bufferSize);

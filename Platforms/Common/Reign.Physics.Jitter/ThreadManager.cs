@@ -47,7 +47,7 @@ namespace Jitter
         volatile List<Action<object>> tasks = new List<Action<object>>();
         volatile List<object> parameters = new List<object>();
 
-		#if METRO
+		#if WINRT
 		// TODO: Put Thread properties here...
 		#else
         private Thread[] threads;
@@ -90,7 +90,7 @@ namespace Jitter
             threadCount = System.Environment.ProcessorCount * ThreadsPerProcessor;
 			#endif
 
-			#if METRO
+			#if WINRT
 			// TODO: put thread code here...
 			#else
             threads = new Thread[threadCount];
@@ -102,7 +102,7 @@ namespace Jitter
 
             AutoResetEvent initWaitHandle = new AutoResetEvent(false);
 
-			#if METRO
+			#if WINRT
 			// TODO: put thread code here...
 			#else
             for (int i = 1; i < threads.Length; i++)
@@ -135,7 +135,7 @@ namespace Jitter
             currentWaitHandle.Set();
             PumpTasks();
 
-			#if METRO
+			#if WINRT
 			// TODO: put thread code here...
 			#else
             while (waitingThreadCount < threads.Length - 1) Thread.Sleep(0);

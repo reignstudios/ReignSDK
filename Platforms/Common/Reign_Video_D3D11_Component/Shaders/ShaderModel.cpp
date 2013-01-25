@@ -1,13 +1,13 @@
 ﻿#include "pch.h"
 #include "ShaderModel.h"
-#if WINDOWS
+#if WIN32
 #include <D3DCompiler.h>
 #endif
 
 namespace Reign_Video_D3D11_Component
 {
 	#pragma region Constructors
-	#if WINDOWS
+	#if WIN32
 	ShaderModelErrors ShaderModelCom::Init(VideoCom^ video, string^ code, int codeSize, string^ shaderType, OutType(string^) errorText)
 	#else
 	ShaderModelErrors ShaderModelCom::Init(VideoCom^ video, const array<byte>^ code, int codeSize, int variableBufferSize, int resourceCount)
@@ -17,7 +17,7 @@ namespace Reign_Video_D3D11_Component
 		this->video = video;
 		
 		// Code
-		#if WINDOWS
+		#if WIN32
 		char* shaderTypeName = StringToAscii(shaderType);
 		char* codeAscii = StringToAscii(code);
 		ID3DBlob *codeTEMP, *err = 0;
@@ -131,7 +131,7 @@ namespace Reign_Video_D3D11_Component
 		}
 		#endif
 
-		#if WINDOWS
+		#if WIN32
 		errorText = nullptr;
 		return ShaderModelErrors::None;
 		#endif
@@ -142,7 +142,7 @@ namespace Reign_Video_D3D11_Component
 		if (resources) delete resources;
 		if (variableBufferBytes) delete variableBufferBytes;
 		if (variableBuffer) variableBuffer->Release();
-		#if WINDOWS
+		#if WIN32
 		if (code) code->Release();
 		if (reflection) reflection->Release();
 		#else
@@ -159,7 +159,7 @@ namespace Reign_Video_D3D11_Component
 		resourceKnownCount = 0;
 		variableBufferBytes = 0;
 		variableBuffer = 0;
-		#if WINDOWS
+		#if WIN32
 		reflection = 0;
 		#endif
 	}
@@ -179,7 +179,7 @@ namespace Reign_Video_D3D11_Component
 		}
 	}
 
-	#if WINDOWS
+	#if WIN32
 	int ShaderModelCom::Variable(string^ name)
 	{
 		char* namePtr = StringToAscii(name);

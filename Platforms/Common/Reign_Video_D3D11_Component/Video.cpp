@@ -2,7 +2,7 @@
 #include "Video.h"
 #include "DepthStencil\DepthStencil.h"
 
-#if METRO || WP8
+#if WINRT || WP8
 #include <client.h>
 using namespace Microsoft::WRL;
 #endif
@@ -10,9 +10,9 @@ using namespace Microsoft::WRL;
 namespace Reign_Video_D3D11_Component
 {
 	#pragma region Constructors
-	#if WINDOWS
+	#if WIN32
 	VideoError VideoCom::Init(IntPtr handle, bool vSync, int width, int height, bool fullscreen, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel)
-	#elif METRO
+	#elif WINRT
 	VideoError VideoCom::Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ swapChainBackgroundPanel)
 	#else
 	VideoError VideoCom::Init(bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, RenderDelegate^ renderDelegate)
@@ -24,7 +24,7 @@ namespace Reign_Video_D3D11_Component
 		RenderDelegateObject::render += renderDelegate;
 		#endif
 
-		#if METRO
+		#if WINRT
 		compositionMode = swapChainBackgroundPanel != nullptr;
 		#endif
 		#if WP8
@@ -45,7 +45,7 @@ namespace Reign_Video_D3D11_Component
 		}
 
 		// Create Device and SwapShain
-		#if WINDOWS
+		#if WIN32
 		DXGI_SWAP_CHAIN_DESC swapChainDesc;
 		ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
 		swapChainDesc.BufferDesc.Width = width;
@@ -55,7 +55,7 @@ namespace Reign_Video_D3D11_Component
 		swapChainDesc.Windowed = !fullscreen;
 		swapChainDesc.OutputWindow = (HWND)handle.ToInt32();
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-		#elif METRO
+		#elif WINRT
 		DXGI_SWAP_CHAIN_DESC1 swapChainDesc;
 		ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC1));
 		swapChainDesc.Width = width;
@@ -66,21 +66,21 @@ namespace Reign_Video_D3D11_Component
 		swapChainDesc.Scaling = compositionMode ? DXGI_SCALING_STRETCH : DXGI_SCALING_NONE;
 		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
 		#endif
-		#if WINDOWS || METRO
+		#if WIN32 || WINRT
 		swapChainDesc.BufferCount = 2;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapChainDesc.SampleDesc.Count = 1;
 		swapChainDesc.SampleDesc.Quality = 0;
 		#endif
 
-		#if WINDOWS
+		#if WIN32
 		const int featureCount = 6;
 		#else
 		const int featureCount = 7;
 		#endif
 		D3D_FEATURE_LEVEL featureLevelTypes[featureCount] =
 		{
-			#if METRO || WP8
+			#if WINRT || WP8
 			D3D_FEATURE_LEVEL_11_1,
 			#endif
 			D3D_FEATURE_LEVEL_11_0,
@@ -97,7 +97,7 @@ namespace Reign_Video_D3D11_Component
 		flags = D3D11_CREATE_DEVICE_DEBUG;
 		#endif
 
-		#if WINDOWS
+		#if WIN32
 		// create device and swapchain
 		ID3D11Device* deviceTEMP;
 		ID3D11DeviceContext* deviceContextTEMP;
@@ -179,7 +179,7 @@ namespace Reign_Video_D3D11_Component
 		#endif
 
 		this->vSync = vSync ? 1 : 0;
-		#if WINDOWS
+		#if WIN32
 		featureLevel = (REIGN_D3D_FEATURE_LEVEL)featureLevelType;
 		#else
 		*featureLevel = (REIGN_D3D_FEATURE_LEVEL)featureLevelType;
@@ -192,7 +192,7 @@ namespace Reign_Video_D3D11_Component
 		// Apply Defaults
 		EnableRenderTarget();
 
-		#if METRO
+		#if WINRT
 		// get native swap chain panel
 		if (compositionMode)
 		{
@@ -221,7 +221,7 @@ namespace Reign_Video_D3D11_Component
 
 		ID3D11RenderTargetView* renderTargetTEMP = 0;
 		bool createNormalRenderView = true;
-		#if METRO
+		#if WINRT
 		if (compositionMode)
 		{
 			CD3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc(D3D11_RTV_DIMENSION_TEXTURE2DARRAY, DXGI_FORMAT_B8G8R8X8_UNORM, 0, 0, 1);
@@ -302,7 +302,7 @@ namespace Reign_Video_D3D11_Component
 		}
 		depthStencil = depthStencilTEMP;
 
-		#if METRO
+		#if WINRT
 		// D2D renderTarget
 		if (compositionMode)
 		{
@@ -352,7 +352,7 @@ namespace Reign_Video_D3D11_Component
 
 	VideoCom::~VideoCom()
 	{
-		#if METRO
+		#if WINRT
 		if (swapChainBackgroundPanelNative) swapChainBackgroundPanelNative->Release();
 		if (d2dFactory) d2dFactory->Release();
 		if (dxgiSurface) dxgiSurface->Release();
@@ -398,7 +398,7 @@ namespace Reign_Video_D3D11_Component
 		device = 0;
 		deviceContext = 0;
 
-		#if METRO
+		#if WINRT
 		d2dFactory = 0;
 		d2dDevice = 0;
 		d2dDeviceContext = 0;
@@ -412,7 +412,7 @@ namespace Reign_Video_D3D11_Component
 	#pragma region Methods
 	void VideoCom::Update(int width, int height)
 	{
-		#if METRO
+		#if WINRT
 		if (compositionMode && dpi != Windows::Graphics::Display::DisplayProperties::LogicalDpi)
 		{
 			dpi = Windows::Graphics::Display::DisplayProperties::LogicalDpi;
@@ -425,7 +425,7 @@ namespace Reign_Video_D3D11_Component
 			renderTarget->Release();
 			depthStencil->Release();
 			depthTexture->Release();
-			#if METRO
+			#if WINRT
 			if (dxgiSurface) dxgiSurface->Release();
 			if (d2dRenderTarget) d2dRenderTarget->Release();
 			#endif
@@ -445,7 +445,7 @@ namespace Reign_Video_D3D11_Component
 		currentRenderTarget = renderTarget;
 		currentDepthStencil = depthStencil;
 
-		#if METRO
+		#if WINRT
 		if (compositionMode) d2dDeviceContext->SetTarget(d2dRenderTarget);
 		#endif
 	}
@@ -465,16 +465,16 @@ namespace Reign_Video_D3D11_Component
 			deviceContext->OMSetRenderTargets(1, &renderTargetTEMP, 0);
 		}
 
-		#if METRO
+		#if WINRT
 		if (compositionMode) d2dDeviceContext->SetTarget(d2dRenderTarget);
 		#endif
 	}
 
 	void VideoCom::Present()
 	{
-		#if WINDOWS
+		#if WIN32
 		HRESULT error = swapChain->Present(vSync, 0);
-		#elif METRO
+		#elif WINRT
 		DXGI_PRESENT_PARAMETERS parameters = {0};
 		parameters.DirtyRectsCount = 0;
 		parameters.pDirtyRects = nullptr;
@@ -486,7 +486,7 @@ namespace Reign_Video_D3D11_Component
 		deviceContext->DiscardView(depthStencil);
 		#endif
 
-		#if WINDOWS || METRO
+		#if WIN32 || WINRT
 		if (error == DXGI_ERROR_DEVICE_REMOVED)
 		{
 			// TODO: Handle lost device...

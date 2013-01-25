@@ -22,7 +22,7 @@ bool AsciiMatch(char* value, char* value2)
 
 char* StringToAscii(string^ value)
 {
-	#if WINDOWS
+	#if WIN32
 	char* ascii = new char[value->Length+1];
 	for (uint i = 0; i != value->Length; ++i)
 	{

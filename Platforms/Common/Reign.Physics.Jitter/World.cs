@@ -532,7 +532,7 @@ namespace Jitter
         /// integrate the world. This is faster on multicore CPUs.</param>
         public void Step(float timestep, bool multithread)
         {
-			#if METRO
+			#if WINRT
 			if (multithread) throw new NotImplementedException("Multithreading is not supported in Metro...Yet!");
 			#endif
 
@@ -619,7 +619,7 @@ namespace Jitter
         /// to keep up with the given totalTime.</param>
         public void Step(float totalTime, bool multithread, float timestep, int maxSteps)
         {
-			#if METRO
+			#if WINRT
 			if (multithread) throw new NotImplementedException("Multithreading is not supported in Metro...Yet!");
 			#endif
 

@@ -195,7 +195,7 @@ namespace Reign.Video
 			{
 				if (binder.MaterialName == material.Name && values.Contains(binder.ID))
 				{
-					#if METRO
+					#if WINRT
 					var materialField = materialType.GetTypeInfo().GetDeclaredField(binder.ShaderMaterialFieldName);
 					#else
 					var materialField = materialType.GetField(binder.ShaderMaterialFieldName);
@@ -252,7 +252,7 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
-		#if METRO || WP8
+		#if WINRT || WP8
 		public static async void Save(string fileName, bool compress, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals)
 		{
 			using (var file = await Streams.SaveFile(fileName, FolderLocations.Unknown))

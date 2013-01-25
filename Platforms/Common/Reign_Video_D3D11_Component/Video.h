@@ -1,5 +1,5 @@
 ﻿#pragma once
-#if METRO
+#if WINRT
 #include <d3d11_1.h>
 #include <d2d1_1.h>
 #include <windows.ui.xaml.media.dxinterop.h>
@@ -12,6 +12,9 @@
 #include <d3d11.h>
 #endif
 
+#ifdef WINRT && WIN32
+#undef WIN32
+#endif
 #include "../CPP_CLR-CX_Helpers/Common.h"
 
 namespace Reign_Video_D3D11_Component
@@ -19,7 +22,7 @@ namespace Reign_Video_D3D11_Component
 	public enum class VideoError
 	{
 		None,
-		#if WINDOWS
+		#if WIN32
 		DeviceAndSwapChainFailed,
 		#else
 		DeviceFailed,
@@ -46,7 +49,7 @@ namespace Reign_Video_D3D11_Component
 
 	public enum class REIGN_D3D_FEATURE_LEVEL
 	{
-		#if METRO || WP8
+		#if WINRT || WP8
 		LEVEL_11_1 = D3D_FEATURE_LEVEL_11_1,
 		#endif
 		LEVEL_11_0 = D3D_FEATURE_LEVEL_11_0,
@@ -92,12 +95,12 @@ namespace Reign_Video_D3D11_Component
 	{
 		#pragma region Properties
 		private: DXGI_FORMAT swapChainFromat;
-		#if WINDOWS
+		#if WIN32
 		private: IDXGISwapChain* swapChain;
 		internal: ID3D11Device* device;
 		internal: ID3D11DeviceContext* deviceContext;
 		#else
-		#if METRO
+		#if WINRT
 		private: IDXGISwapChain1* swapChain;
 		#else
 		private: ComPtr<Direct3DContentProvider> contentProvider;
@@ -130,9 +133,9 @@ namespace Reign_Video_D3D11_Component
 		#pragma endregion
 
 		#pragma region Constructors
-		#if WINDOWS
+		#if WIN32
 		public: VideoError Init(IntPtr handle, bool vSync, int width, int height, bool fullscreen, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel);
-		#elif METRO
+		#elif WINRT
 		public: VideoError Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ swapChainBackgroundPanel);
 		#else
 		public: VideoError Init(bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, RenderDelegate^ renderDelegate);

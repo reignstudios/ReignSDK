@@ -6,7 +6,7 @@ namespace Reign.Audio.API
 	{
 		public static void Init(AudioTypes type)
 		{
-			#if WINDOWS || METRO
+			#if WIN32 || WINRT
 			if (type == AudioTypes.XAudio) SoundWAVAPI.Init(Reign.Audio.XAudio.SoundWAV.New);
 			#endif
 

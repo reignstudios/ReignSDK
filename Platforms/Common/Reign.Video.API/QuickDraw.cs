@@ -6,15 +6,15 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
-			#if WINDOWS
+			#if WIN32
 			if (type == VideoTypes.D3D9) QuickDrawAPI.Init(Reign.Video.D3D9.QuickDraw.New);
 			#endif
 
-			#if WINDOWS || METRO || WP8
+			#if WIN32 || WINRT || WP8
 			if (type == VideoTypes.D3D11) QuickDrawAPI.Init(Reign.Video.D3D11.QuickDraw.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
+			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) QuickDrawAPI.Init(Reign.Video.OpenGL.QuickDraw.New);
 			#endif
 

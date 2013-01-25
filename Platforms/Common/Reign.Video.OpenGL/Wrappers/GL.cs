@@ -24,7 +24,7 @@ namespace Reign.Video.OpenGL
 {
 	public class GL
 	{
-		#if WINDOWS
+		#if WIN32
 		public const string DLL = "opengl32";
 		[DllImport(DLL, EntryPoint = "wglGetProcAddress", ExactSpelling = true)]
 		private static extern IntPtr getProcAddress(string procedureName);
@@ -75,7 +75,7 @@ namespace Reign.Video.OpenGL
 		public const string DLL = "__Internal";
 		#endif
 
-		#if WINDOWS || (LINUX && !RPI)
+		#if WIN32 || (LINUX && !RPI)
 		public static IntPtr GetProcAddress(string procedureName)
 		{
 			IntPtr ptr = getProcAddress(procedureName);
@@ -87,7 +87,7 @@ namespace Reign.Video.OpenGL
 		//Ext Methods
 		public static void Init()
 		{
-			#if WINDOWS || (LINUX && !RPI)
+			#if WIN32 || (LINUX && !RPI)
 			init_Shaders();
 			init_Buffers();
 			init_SurfaceBuffers();
@@ -95,7 +95,7 @@ namespace Reign.Video.OpenGL
 		}
 
 		#region Shaders
-		#if WINDOWS || (LINUX && !RPI)
+		#if WIN32 || (LINUX && !RPI)
 		private static void init_Shaders()
 		{
 			GenerateMipmap = (GenerateMipmapFunc)Marshal.GetDelegateForFunctionPointer(GetProcAddress("glGenerateMipmap"), typeof(GenerateMipmapFunc));
@@ -389,7 +389,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Buffers
-		#if WINDOWS || (LINUX && !RPI)
+		#if WIN32 || (LINUX && !RPI)
 		private static void init_Buffers()
 		{
 			DrawArraysInstanced = (DrawArraysInstancedFunc)Marshal.GetDelegateForFunctionPointer(GetProcAddress("glDrawArraysInstanced"), typeof(DrawArraysInstancedFunc));
@@ -572,7 +572,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 		
 		#region SurfaceBuffers
-		#if WINDOWS || (LINUX && !RPI)
+		#if WIN32 || (LINUX && !RPI)
 		private static void init_SurfaceBuffers()
 		{
 			BlendEquation = (BlendEquationFunc)Marshal.GetDelegateForFunctionPointer(GetProcAddress("glBlendEquation"), typeof(BlendEquationFunc));

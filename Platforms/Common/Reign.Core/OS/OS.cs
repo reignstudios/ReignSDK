@@ -1,4 +1,4 @@
-#if WINDOWS
+#if WIN32
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -24,7 +24,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 #endif
 
-#if METRO
+#if WINRT
 using System.Reflection;
 using Windows.ApplicationModel.Core;
 #endif
@@ -73,7 +73,7 @@ namespace Reign.Core
 	public static class OS
 	{
 		#region Properites
-		#if WINDOWS || OSX || LINUX || NaCl || iOS || ANDROID
+		#if WIN32 || OSX || LINUX || NaCl || iOS || ANDROID
 		public static bool AutoDisposedGL {get; internal set;}
 		#endif
 
@@ -82,12 +82,12 @@ namespace Reign.Core
 		internal static Time renderTime;
 		#endif
 
-		#if WINDOWS || OSX || LINUX || NaCl
+		#if WIN32 || OSX || LINUX || NaCl
 		public static Size2 ScreenSize
 		{
 			get
 			{
-				#if WINDOWS
+				#if WIN32
 				var screen = System.Windows.Forms.Screen.PrimaryScreen;
 				return new Size2(screen.Bounds.Width, screen.Bounds.Height);
 				#endif
@@ -130,7 +130,7 @@ namespace Reign.Core
 		public static Window CurrentWindow;
 		#else
 		public static Application CurrentApplication;
-		#if METRO
+		#if WINRT
 		public static Windows.UI.Core.CoreWindow CoreWindow;
 		public static XAMLApplication CurrentXAMLApplication;
 		#endif
@@ -166,7 +166,7 @@ namespace Reign.Core
 		
 		public static object InvokeStaticMethod(Type type, string methodName, params object[] args)
 		{
-			#if METRO
+			#if WINRT
 			var types = new Type[args.Length];
 			for (int i = 0; i != args.Length; ++i) types[i] = args[i].GetType();
 			return type.GetRuntimeMethod(methodName, types).Invoke(null, args);
@@ -180,7 +180,7 @@ namespace Reign.Core
 			var type = GetType(libName, nameSpace, className);
 			if (type == null) Debug.ThrowError("OS", string.Format("Could not find static method of type: {0}:{1}", className, methodName));
 
-			#if METRO
+			#if WINRT
 			var types = new Type[args.Length];
 			for (int i = 0; i != args.Length; ++i) types[i] = args[i].GetType();
 			return type.GetRuntimeMethod(methodName, types).Invoke(null, args);
@@ -237,7 +237,7 @@ namespace Reign.Core
 		}
 		#endif
 		
-		#if WINDOWS || OSX || LINUX || NaCl
+		#if WIN32 || OSX || LINUX || NaCl
 		public static void Run(Window window, int fps)
 		{
 			CurrentWindow = window;
@@ -248,7 +248,7 @@ namespace Reign.Core
 			time = new Time(fps);
 			time.Start();
 
-			#if WINDOWS
+			#if WIN32
 			Time.OptimizedMode();
 			window.Show();
 			Application.Idle += mainLoop;
@@ -297,7 +297,7 @@ namespace Reign.Core
 		}
 		#endif
 		
-		#if (iOS || XNA || METRO || VITA) && !SILVERLIGHT
+		#if (iOS || XNA || WINRT || VITA) && !SILVERLIGHT
 		public static void Run(Application application, int fps)
 		{
 			CurrentApplication = application;
@@ -308,7 +308,7 @@ namespace Reign.Core
 			time = new Time(fps);
 			time.Start();
 
-			#if METRO
+			#if WINRT
 			CoreApplication.Run(application.source);
 			#endif
 
@@ -343,7 +343,7 @@ namespace Reign.Core
 		}
 		#endif
 
-		#if METRO
+		#if WINRT
 		internal static void Init(XAMLApplication application)
 		{
 			CurrentXAMLApplication = application;
@@ -352,7 +352,7 @@ namespace Reign.Core
 		}
 		#endif
 
-		#if WINDOWS
+		#if WIN32
 		[StructLayout(LayoutKind.Sequential)]
 		private struct Message
 		{
@@ -379,7 +379,7 @@ namespace Reign.Core
 		}
 		#endif
 
-		#if WINDOWS || OSX || LINUX || NaCl
+		#if WIN32 || OSX || LINUX || NaCl
 		public static void UpdateAndRender()
 		{
 			if (time.FPSGoal != 0) time.Sleep();
@@ -400,7 +400,7 @@ namespace Reign.Core
 			}
 			else
 			{
-				#if METRO
+				#if WINRT
 				CurrentXAMLApplication.update(time);
 				CurrentXAMLApplication.render(time);
 				#endif

@@ -8,14 +8,14 @@ namespace Reign.Video.D3D11
 	public abstract class ShaderModel : Disposable
 	{
 		#region Properties
-		#if METRO || WP8
+		#if WINRT || WP8
 		protected Shader shader;
 		#endif
 		internal ShaderModelCom com;
 		#endregion
 
 		#region Constructors
-		#if WINDOWS
+		#if WIN32
 		public ShaderModel(Shader shader, string code, ShaderTypes shaderType, ShaderVersions shaderVersion)
 		#else
 		public ShaderModel(Shader shader, byte[] code, ShaderTypes shaderType)
@@ -24,13 +24,13 @@ namespace Reign.Video.D3D11
 		{
 			try
 			{
-				#if METRO || WP8
+				#if WINRT || WP8
 				this.shader = shader;
 				#endif
 				var video = shader.FindParentOrSelfWithException<Video>();
 				com = new ShaderModelCom();
 
-				#if WINDOWS
+				#if WIN32
 				string shaderLvl = "";
 				switch (shaderVersion)
 				{
@@ -56,7 +56,7 @@ namespace Reign.Video.D3D11
 
 				switch (error)
 				{
-					#if WINDOWS
+					#if WIN32
 					case (ShaderModelErrors.CompileCode): Debug.ThrowError("ShaderModel", "Shader compiler error: " + errorText); break;
 					#endif
 					case (ShaderModelErrors.VariableBuffer): Debug.ThrowError("ShaderModel", "Failed to create VariableBuffer"); break;
@@ -84,7 +84,7 @@ namespace Reign.Video.D3D11
 			com.Apply();
 		}
 
-		#if WINDOWS
+		#if WIN32
 		public int Variable(string name)
 		{
 			return com.Variable(name);

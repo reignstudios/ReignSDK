@@ -32,7 +32,7 @@ using System.Collections.ObjectModel;
 
 namespace Jitter.Dynamics
 {
-	#if METRO
+	#if WINRT
 	static class ListExtensions
 	{
 		public static ReadOnlyCollection<T> AsReadOnly<T>(this List<T> value)

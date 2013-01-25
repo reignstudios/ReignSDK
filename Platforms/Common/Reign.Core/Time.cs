@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 
-#if WINDOWS || (XNA && !XBOX360)
+#if WIN32 || (XNA && !XBOX360)
 using System.Runtime.InteropServices;
 #endif
 
@@ -46,7 +46,7 @@ namespace Reign.Core
 		#endregion
 
 		#region Methods
-		#if WINDOWS || (XNA && !XBOX360)
+		#if WIN32 || (XNA && !XBOX360)
 		[StructLayout(LayoutKind.Sequential)]
 		public struct TimeCaps
 		{
@@ -157,7 +157,7 @@ namespace Reign.Core
 			#if !iOS && !ANDROID && !NaCl && !SILVERLIGHT && !VITA
 			int sleepTime = (int)System.Math.Max((1000/fps) - stopWatch.ElapsedMilliseconds, 0);
 
-			#if METRO
+			#if WINRT
 			new ManualResetEvent(false).WaitOne(sleepTime);
 			#else
 			Thread.Sleep(sleepTime);

@@ -146,7 +146,7 @@ namespace Reign.Video
 					using (var compressedStream = new GZipStream(compressedDataStream, CompressionMode.Compress))
 					{
 						dataStream.CopyTo(compressedStream);
-						#if !METRO
+						#if !WINRT
 						compressedStream.Close();
 						#endif
 

@@ -6,15 +6,15 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
-			#if WINDOWS
+			#if WIN32
 			if (type == VideoTypes.D3D9) BlendStateDescAPI.Init(Reign.Video.D3D9.BlendStateDesc.New);
 			#endif
 
-			#if WINDOWS || METRO || WP8
+			#if WIN32 || WINRT || WP8
 			if (type == VideoTypes.D3D11) BlendStateDescAPI.Init(Reign.Video.D3D11.BlendStateDesc.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
+			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) BlendStateDescAPI.Init(Reign.Video.OpenGL.BlendStateDesc.New);
 			#endif
 
@@ -32,15 +32,15 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
-			#if WINDOWS
+			#if WIN32
 			if (type == VideoTypes.D3D9) BlendStateAPI.Init(Reign.Video.D3D9.BlendState.New);
 			#endif
 
-			#if WINDOWS || METRO || WP8
+			#if WIN32 || WINRT || WP8
 			if (type == VideoTypes.D3D11) BlendStateAPI.Init(Reign.Video.D3D11.BlendState.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
+			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) BlendStateAPI.Init(Reign.Video.OpenGL.BlendState.New);
 			#endif
 

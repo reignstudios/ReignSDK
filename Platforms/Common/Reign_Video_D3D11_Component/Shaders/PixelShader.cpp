@@ -13,7 +13,7 @@ namespace Reign_Video_D3D11_Component
 		resourceKnownCount = shaderModel->resourceKnownCount;
 
 		ID3D11PixelShader* shaderTEMP;
-		#if WINDOWS
+		#if WIN32
 		ID3DBlob* codeBlob = shaderModel->code;
 		if (FAILED(video->device->CreatePixelShader(codeBlob->GetBufferPointer(), codeBlob->GetBufferSize(), NULL, &shaderTEMP)))
 		#else

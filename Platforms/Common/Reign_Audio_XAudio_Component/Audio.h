@@ -1,5 +1,9 @@
 #pragma once
 #include <xaudio2.h>
+
+#ifdef WINRT && WIN32
+#undef WIN32
+#endif
 #include "../CPP_CLR-CX_Helpers/Common.h"
 
 namespace Reign_Audio_XAudio_Component

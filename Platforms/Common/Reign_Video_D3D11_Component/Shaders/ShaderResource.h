@@ -2,7 +2,7 @@
 #include "../Video.h"
 #include "ShaderModel.h"
 #include "../Textures/Texture2D.h"
-#if WINDOWS
+#if WIN32
 #include <d3d11shader.h>
 #endif
 

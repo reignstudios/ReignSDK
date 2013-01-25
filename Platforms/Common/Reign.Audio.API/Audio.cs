@@ -23,7 +23,7 @@ namespace Reign.Audio.API
 		{
 			bool dumby = (typeFlags & AudioTypes.Dumby) != 0;
 
-			#if WINDOWS || METRO
+			#if WIN32 || WINRT
 			bool xAudio = (typeFlags & AudioTypes.XAudio) != 0;
 			#endif
 
@@ -54,7 +54,7 @@ namespace Reign.Audio.API
 			{
 				try
 				{
-					#if WINDOWS || METRO
+					#if WIN32 || WINRT
 					if (xAudio)
 					{
 						xAudio = false;

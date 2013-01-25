@@ -46,7 +46,7 @@ namespace Reign.Video.OpenGL
 		public string FileTag {get; private set;}
 		public Size2 BackBufferSize {get; private set;}
 
-		#if WINDOWS || OSX || LINUX || NaCl
+		#if WIN32 || OSX || LINUX || NaCl
 		private Window window;
 		#else
 		private Application application;
@@ -62,7 +62,7 @@ namespace Reign.Video.OpenGL
 		private IntPtr ctx, dc;
 		uint frameBuffer;
 
-		#if WINDOWS || LINUX
+		#if WIN32 || LINUX
 		private IntPtr handle;
 		#endif
 		
@@ -83,7 +83,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		#if WINDOWS || OSX || LINUX || NaCl
+		#if WIN32 || OSX || LINUX || NaCl
 		public Video(DisposableI parent, Window window, bool vSync)
 		#elif iOS || ANDROID
 		public Video(DisposableI parent, Application application)
@@ -98,7 +98,7 @@ namespace Reign.Video.OpenGL
 				currentVertexTextures = new Texture2D[8];
 				currentSamplerStates = new SamplerState[8];
 
-				#if WINDOWS || OSX || LINUX || NaCl
+				#if WIN32 || OSX || LINUX || NaCl
 				BackBufferSize = window.FrameSize;
 				this.window = window;
 				#else
@@ -106,7 +106,7 @@ namespace Reign.Video.OpenGL
 				this.application = application;
 				#endif
 				
-				#if WINDOWS
+				#if WIN32
 				//Get DC
 				handle = window.Handle;
 				dc = WGL.GetDC(handle);
@@ -533,7 +533,7 @@ namespace Reign.Video.OpenGL
 				DisableContext();
 			}
 
-			#if WINDOWS
+			#if WIN32
 			if (dc != IntPtr.Zero)
 			{
 				if (ctx != IntPtr.Zero)
@@ -599,7 +599,7 @@ namespace Reign.Video.OpenGL
 		#region Methods
 		public void DisableContext()
 		{
-			#if WINDOWS
+			#if WIN32
 			WGL.MakeCurrent(dc, IntPtr.Zero);
 			#endif
 			
@@ -619,7 +619,7 @@ namespace Reign.Video.OpenGL
 		public void Update()
 		{
 			#if !RPI
-			#if WINDOWS || OSX || LINUX || NaCl
+			#if WIN32 || OSX || LINUX || NaCl
 			var frame = window.FrameSize;
 			#else
 			var frame = application.FrameSize;
@@ -627,7 +627,7 @@ namespace Reign.Video.OpenGL
 			if (frame.Width != 0 && frame.Height != 0) BackBufferSize = frame;
 			#endif
 
-			#if WINDOWS
+			#if WIN32
 			WGL.MakeCurrent(dc, ctx);
 			#endif
 			
@@ -780,7 +780,7 @@ namespace Reign.Video.OpenGL
 
 		public void Present()
 		{
-			#if WINDOWS
+			#if WIN32
 			WGL.SwapBuffers(dc);
 			#endif
 			

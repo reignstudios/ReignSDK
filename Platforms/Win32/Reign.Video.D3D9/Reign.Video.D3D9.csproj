@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1458BC70-3FF0-41C2-9AD6-93B466D40509}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Reign.Video.D3D9</RootNamespace>
+    <AssemblyName>Reign.Video.D3D9</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WIN32</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Lib\</OutputPath>
+    <DefineConstants>TRACE;WIN32</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Buffers\BufferLayout.cs" />
+    <Compile Include="Buffers\BufferLayoutDesc.cs" />
+    <Compile Include="Buffers\IndexBuffer.cs" />
+    <Compile Include="Buffers\VertexBuffer.cs" />
+    <Compile Include="DepthStencil.cs" />
+    <Compile Include="QuickDraw.cs" />
+    <Compile Include="Shaders\PixelShader.cs" />
+    <Compile Include="Shaders\Shader.cs" />
+    <Compile Include="Shaders\ShaderModel.cs" />
+    <Compile Include="Shaders\ShaderResource.cs" />
+    <Compile Include="Shaders\ShaderVariable.cs" />
+    <Compile Include="Shaders\VertexShader.cs" />
+    <Compile Include="States\BlendState.cs" />
+    <Compile Include="States\BlendStateDesc.cs" />
+    <Compile Include="States\DepthStencilState.cs" />
+    <Compile Include="States\DepthStencilStateDesc.cs" />
+    <Compile Include="States\RasterizerState.cs" />
+    <Compile Include="States\RasterizerStateDesc.cs" />
+    <Compile Include="States\SamplerState.cs" />
+    <Compile Include="States\SamplerStateDesc.cs" />
+    <Compile Include="Textures\RenderTarget.cs" />
+    <Compile Include="Textures\Texture2D.cs" />
+    <Compile Include="Video.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewPort.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
+      <Project>{4889BC73-F2D9-4F03-B9A9-316B83FD9063}</Project>
+      <Name>Reign.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign.Video\Reign.Video.csproj">
+      <Project>{2E74C4E8-20F5-4EED-821C-FEA6DBF98532}</Project>
+      <Name>Reign.Video</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Reign_Video_D3D9_Component\Reign_Video_D3D9_Component.vcxproj">
+      <Project>{AF208116-8078-4FF3-8D85-8299313D19A7}</Project>
+      <Name>Reign_Video_D3D9_Component</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

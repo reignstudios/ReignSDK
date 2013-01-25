@@ -10,7 +10,7 @@ namespace Reign_Video_D3D11_Component
 		this->video = video;
 
 		ID3D11InputLayout* layoutTEMP;
-		#if WINDOWS
+		#if WIN32
 		if (FAILED(video->device->CreateInputLayout(desc->desc, desc->elementCount, vertexShader->code->GetBufferPointer(), vertexShader->code->GetBufferSize(), &layoutTEMP)))
 		#else
 		if (FAILED(video->device->CreateInputLayout(desc->desc, desc->elementCount, vertexShader->code, vertexShader->codeSize, &layoutTEMP)))

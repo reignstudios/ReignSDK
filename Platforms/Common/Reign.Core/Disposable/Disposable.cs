@@ -109,7 +109,7 @@ namespace Reign.Core
 		        types[i] = constructorParameters[i].Type;
 		    }
 			
-			#if METRO
+			#if WINRT
 			ConstructorInfo constructor = null;
 			foreach (var c in type.GetTypeInfo().DeclaredConstructors)
 			{
@@ -162,7 +162,7 @@ namespace Reign.Core
 			    types[i] = methodParameters[i].Type;
 			}
 
-			#if METRO
+			#if WINRT
 			var methodInfo = type.GetRuntimeMethod(methodName, types);
 			#else
 			var methodInfo = type.GetMethod(methodName, types);

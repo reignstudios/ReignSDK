@@ -10,7 +10,7 @@ namespace Reign.Video
 	: ImageAndroid
 	#elif OSX
 	: ImageOSX
-	#elif METRO
+	#elif WINRT
 	: ImageMetro
 	#elif WP8
 	: ImageWP8

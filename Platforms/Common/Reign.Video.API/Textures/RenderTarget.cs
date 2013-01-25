@@ -6,15 +6,15 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
-			#if WINDOWS
+			#if WIN32
 			if (type == VideoTypes.D3D9) RenderTargetAPI.Init(Reign.Video.D3D9.RenderTarget.New, Reign.Video.D3D9.RenderTarget.New);
 			#endif
 
-			#if WINDOWS || METRO || WP8
+			#if WIN32 || WINRT || WP8
 			if (type == VideoTypes.D3D11) RenderTargetAPI.Init(Reign.Video.D3D11.RenderTarget.New, Reign.Video.D3D11.RenderTarget.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
+			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) RenderTargetAPI.Init(Reign.Video.OpenGL.RenderTarget.New, Reign.Video.OpenGL.RenderTarget.New);
 			#endif
 

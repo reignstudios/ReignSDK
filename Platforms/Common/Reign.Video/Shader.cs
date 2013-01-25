@@ -16,7 +16,7 @@ namespace Reign.Video
 	{
 		Unknown,
 		Max,
-		#if WINDOWS || METRO || WP8
+		#if WIN32 || WINRT || WP8
 		HLSL_2_0,
 		HLSL_2_a,
 		HLSL_3_0,
@@ -24,7 +24,7 @@ namespace Reign.Video
 		HLSL_4_1,
 		HLSL_5_0,
 		#endif
-		#if WINDOWS || OSX || LINUX
+		#if WIN32 || OSX || LINUX
 		GLSL_1_10,
 		GLSL_1_20,
 		GLSL_1_30,
@@ -110,7 +110,7 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
-		#if METRO || WP8 || SILVERLIGHT
+		#if WINRT || WP8 || SILVERLIGHT
 		protected byte[][] getShaders(Stream stream)
 		{
 			var code = new byte[2][];

@@ -6,15 +6,15 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
-			#if WINDOWS
+			#if WIN32
 			if (type == VideoTypes.D3D9) DepthStencilStateDescAPI.Init(Reign.Video.D3D9.DepthStencilStateDesc.New);
 			#endif
 
-			#if WINDOWS || METRO || WP8
+			#if WIN32 || WINRT || WP8
 			if (type == VideoTypes.D3D11) DepthStencilStateDescAPI.Init(Reign.Video.D3D11.DepthStencilStateDesc.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
+			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) DepthStencilStateDescAPI.Init(Reign.Video.OpenGL.DepthStencilStateDesc.New);
 			#endif
 
@@ -32,15 +32,15 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
-			#if WINDOWS
+			#if WIN32
 			if (type == VideoTypes.D3D9) DepthStencilStateAPI.Init(Reign.Video.D3D9.DepthStencilState.New);
 			#endif
 
-			#if WINDOWS || METRO || WP8
+			#if WIN32 || WINRT || WP8
 			if (type == VideoTypes.D3D11) DepthStencilStateAPI.Init(Reign.Video.D3D11.DepthStencilState.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
+			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) DepthStencilStateAPI.Init(Reign.Video.OpenGL.DepthStencilState.New);
 			#endif
 

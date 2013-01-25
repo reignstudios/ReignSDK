@@ -6,15 +6,15 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
-			#if WINDOWS
+			#if WIN32
 			if (type == VideoTypes.D3D9) RasterizerStateDescAPI.Init(Reign.Video.D3D9.RasterizerStateDesc.New);
 			#endif
 
-			#if WINDOWS || METRO || WP8
+			#if WIN32 || WINRT || WP8
 			if (type == VideoTypes.D3D11) RasterizerStateDescAPI.Init(Reign.Video.D3D11.RasterizerStateDesc.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
+			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) RasterizerStateDescAPI.Init(Reign.Video.OpenGL.RasterizerStateDesc.New);
 			#endif
 
@@ -32,15 +32,15 @@ namespace Reign.Video.API
 	{
 		public static void Init(VideoTypes type)
 		{
-			#if WINDOWS
+			#if WIN32
 			if (type == VideoTypes.D3D9) RasterizerStateAPI.Init(Reign.Video.D3D9.RasterizerState.New);
 			#endif
 
-			#if WINDOWS || METRO || WP8
+			#if WIN32 || WINRT || WP8
 			if (type == VideoTypes.D3D11) RasterizerStateAPI.Init(Reign.Video.D3D11.RasterizerState.New);
 			#endif
 
-			#if WINDOWS || OSX || LINUX || iOS || ANDROID || NaCl
+			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) RasterizerStateAPI.Init(Reign.Video.OpenGL.RasterizerState.New);
 			#endif
 

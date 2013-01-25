@@ -9,7 +9,7 @@ namespace Reign.Input.API
 	{
 		None = 0,
 		WinForms = 1,
-		Metro = 2,
+		WinRT = 2,
 		XNA = 4,
 		Cocoa = 8,
 		X11 = 16,
@@ -19,11 +19,11 @@ namespace Reign.Input.API
 
 	public static class Input
 	{
-		#if METRO || XNA || iOS || ANDROID
+		#if WINRT || XNA || iOS || ANDROID
 		public static InputI Init(InputTypes typeFlags, out InputTypes type, DisposableI parent, Application application)
 		{
-			#if METRO
-			bool metro = (typeFlags & InputTypes.Metro) != 0;
+			#if WINRT
+			bool metro = (typeFlags & InputTypes.WinRT) != 0;
 			#endif
 
 			#if XNA
@@ -45,12 +45,12 @@ namespace Reign.Input.API
 			{
 				try
 				{
-					#if METRO
+					#if WINRT
 					if (metro)
 					{
 						metro = false;
-						type = InputTypes.Metro;
-						input = new Reign.Input.Metro.Input(parent, application);
+						type = InputTypes.WinRT;
+						input = new Reign.Input.WinRT.Input(parent, application);
 						break;
 					}
 					#endif
@@ -102,7 +102,7 @@ namespace Reign.Input.API
 			}
 
 			// init api methods
-			#if METRO
+			#if WINRT
 			Keyboard.Init(type);
 			Mouse.Init(type);
 			#endif
@@ -120,7 +120,7 @@ namespace Reign.Input.API
 		#else
 		public static InputI Init(InputTypes typeFlags, out InputTypes type, DisposableI parent, Window window)
 		{
-			#if WINDOWS
+			#if WIN32
 			bool winForms = (typeFlags & InputTypes.WinForms) != 0;
 			#endif
 
@@ -143,7 +143,7 @@ namespace Reign.Input.API
 			{
 				try
 				{
-					#if WINDOWS
+					#if WIN32
 					if (winForms)
 					{
 						winForms = false;

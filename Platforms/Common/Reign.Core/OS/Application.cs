@@ -7,7 +7,7 @@ namespace Reign.Core
 		Unkown,
 		Closed,
 		Touch,
-		#if METRO
+		#if WINRT
 		KeyDown,
 		KeyUp,
 		MouseMove,
@@ -27,7 +27,7 @@ namespace Reign.Core
 		public const int TouchCount = 10;
 		public bool[] TouchesOn;
 		public Vector2[] TouchLocations;
-		#if METRO
+		#if WINRT
 		public int KeyCode;
 		public float ScrollWheelVelocity;
 		public Point2 CursorLocation;
@@ -55,7 +55,7 @@ namespace Reign.Core
 		Top
 		#endif
 
-		#if ANDROID || METRO
+		#if ANDROID || WINRT
 		BottomLeft,
 		BottomRight,
 		BottomCenter,
@@ -67,7 +67,7 @@ namespace Reign.Core
 
 	public enum ApplicationAdSize
 	{
-		#if METRO
+		#if WINRT
 		Sqaure_250x250,
 		Rect_728x90,
 		Rect_500x130,
@@ -87,7 +87,7 @@ namespace Reign.Core
 		#endif
 	}
 
-	#if METRO
+	#if WINRT
 	public interface ApplicationI
 	{
 		Size2 Metro_FrameSize {get; set;}
@@ -104,7 +104,7 @@ namespace Reign.Core
 	: SilverlightApplication
 	#elif XNA
 	: XNAGame
-	#elif METRO
+	#elif WINRT
 	: MetroApplication, ApplicationI
 	#elif WP8
 	: XAMLApplication
@@ -123,7 +123,7 @@ namespace Reign.Core
 			get {return frameSize;}
 		}
 
-		#if METRO
+		#if WINRT
 		public Size2 Metro_FrameSize
 		{
 			get {return frameSize;}
@@ -148,7 +148,7 @@ namespace Reign.Core
 		#elif ANDROID
 		public Application(ApplicationOrientations orientation, bool enableAds, string publisherID)
 		: base(enableAds, publisherID)
-		#elif METRO || WP8
+		#elif WINRT || WP8
 		public Application(ApplicationOrientations orientation)
 		: base(orientation)
 		#elif SILVERLIGHT || VITA
@@ -165,7 +165,7 @@ namespace Reign.Core
 			theEvent = new ApplicationEvent();
 				
 			OS.CurrentApplication = this;
-			#if iOS || ANDROID || METRO || WP8 || SILVERLIGHT
+			#if iOS || ANDROID || WINRT || WP8 || SILVERLIGHT
 			setApplication(this);
 			#elif XNA
 			init(this, width, height);
@@ -190,7 +190,7 @@ namespace Reign.Core
 		
 		protected internal virtual void closing()
 		{
-			#if METRO
+			#if WINRT
 			deferral.Complete();
 			#endif
 		}
@@ -207,7 +207,7 @@ namespace Reign.Core
 			if (HandleEvent != null) HandleEvent(theEvent);
 		}
 
-		#if METRO
+		#if WINRT
 		public void Metro_HandleEvent(ApplicationEvent theEvent)
 		{
 			handleEvent(theEvent);
@@ -224,7 +224,7 @@ namespace Reign.Core
 			
 		}
 		
-		#if iOS || ANDROID || METRO
+		#if iOS || ANDROID || WINRT
 		protected internal virtual void pause()
 		{
 			if (PauseCallback != null) PauseCallback();

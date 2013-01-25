@@ -1,4 +1,4 @@
-#if METRO
+#if WINRT
 using System;
 using Windows.UI.Popups;
 #endif
@@ -7,7 +7,7 @@ using Windows.UI.Popups;
 using System.Windows;
 #endif
 
-#if WINDOWS
+#if WIN32
 using System.Windows.Forms;
 #endif
 
@@ -35,13 +35,13 @@ namespace Reign.Core
 {
 	public static class Message
 	{
-		#if METRO || WP8
+		#if WINRT || WP8
 		public static async void Show(string title, string message)
 		#else
 		public static void Show(string title, string message)
 		#endif
 		{
-			#if METRO
+			#if WINRT
 			var msg = new MessageDialog(message, title);
 			await msg.ShowAsync();
 			#endif
@@ -51,7 +51,7 @@ namespace Reign.Core
 			//MessageBox.Show(message, title, MessageBoxButton.OK);
 			#endif
 
-			#if WINDOWS
+			#if WIN32
 			MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			#endif
 

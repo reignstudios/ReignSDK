@@ -147,7 +147,7 @@ namespace Reign.Physics
 			}
 		}
 
-		#if METRO
+		#if WINRT
 		public static async void Save(SoftwareMesh mesh, string fileName) {
 			using (var file = await Streams.SaveFile(fileName, FolderLocations.Unknown))
 		#else
