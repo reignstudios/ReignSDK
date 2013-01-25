@@ -21,25 +21,41 @@ namespace Reign_Video_D3D9_Component
 				return TextureError::Texture;
 			}
 			texture = textureTEMP;
-
-			IDirect3DTexture9* systemTexture = 0;
-			if (FAILED(video->device->CreateTexture(width, height, mipmaps->Length, 0, nativeFormat, D3DPOOL_SYSTEMMEM, &systemTexture, 0)))
+			
+			if (nativePool == D3DPOOL_MANAGED)
 			{
-				return TextureError::SystemTexture;
-			}
+				for (int i = 0; i != mipmaps->Length; ++i)
+				{
+					array<byte>^ mipmapData = mipmaps[i];
 
-			for (int i = 0; i != mipmaps->Length; ++i)
+					D3DLOCKED_RECT rect;
+					textureTEMP->LockRect(i, &rect, NULL, D3DLOCK_DISCARD);
+					pin_ptr<byte> srcData = &mipmapData[0];
+					memcpy(rect.pBits, srcData, mipmapData->Length);
+					textureTEMP->UnlockRect(i);
+				}
+			}
+			else
 			{
-				array<byte>^ mipmapData = mipmaps[i];
+				IDirect3DTexture9* systemTexture = 0;
+				if (FAILED(video->device->CreateTexture(width, height, mipmaps->Length, 0, nativeFormat, D3DPOOL_SYSTEMMEM, &systemTexture, 0)))
+				{
+					return TextureError::SystemTexture;
+				}
 
-				D3DLOCKED_RECT rect;
-				systemTexture->LockRect(i, &rect, NULL, D3DLOCK_DISCARD);
-				pin_ptr<byte> srcData = &mipmapData[0];
-				memcpy(rect.pBits, srcData, mipmapData->Length);
-				systemTexture->UnlockRect(i);
+				for (int i = 0; i != mipmaps->Length; ++i)
+				{
+					array<byte>^ mipmapData = mipmaps[i];
+
+					D3DLOCKED_RECT rect;
+					systemTexture->LockRect(i, &rect, NULL, D3DLOCK_DISCARD);
+					pin_ptr<byte> srcData = &mipmapData[0];
+					memcpy(rect.pBits, srcData, mipmapData->Length);
+					systemTexture->UnlockRect(i);
+				}
+				video->device->UpdateTexture(systemTexture, textureTEMP);
+				systemTexture->Release();
 			}
-			video->device->UpdateTexture(systemTexture, textureTEMP);
-			systemTexture->Release();
 		}
 		else
 		{
