@@ -147,14 +147,14 @@
     <Compile Include="..\..\Common\Reign.Core\OS\OS.cs">
       <Link>OS\OS.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\OS\Window.cs">
-      <Link>OS\Window.cs</Link>
+    <Compile Include="..\..\Common\Reign.Core\OS\Application.cs">
+      <Link>OS\Application.cs</Link>
     </Compile>
-    <Compile Include="..\..\Linux\Reign.Core\OS\X11.cs">
+    <Compile Include="..\..\Common\Reign.Core\OS\X11.cs">
       <Link>OS\X11.cs</Link>
     </Compile>
-    <Compile Include="..\..\Linux\Reign.Core\OS\XWindow.cs">
-      <Link>OS\XWindow.cs</Link>
+    <Compile Include="..\..\Common\Reign.Core\OS\X11Application.cs">
+      <Link>OS\X11Application.cs</Link>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

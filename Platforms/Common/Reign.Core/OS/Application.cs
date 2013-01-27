@@ -125,6 +125,10 @@ namespace Reign.Core
 		#if WIN32
 		IntPtr Handle {get;}
 		#endif
+		#if LINUX
+		IntPtr Handle {get;}
+		IntPtr DC {get;}
+		#endif
 		#if WINRT
 		Windows.UI.Core.CoreWindow CoreWindow {get;}
 		bool IsSnapped {get;}

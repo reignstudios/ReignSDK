@@ -269,10 +269,11 @@ namespace Reign.Core
 			#endif
 			
 			#if LINUX
-			window.Show();
-			while (!window.Closed)
+			var x11App = (X11Application)application;
+			x11App.show();
+			while (!x11App.Closed)
 			{
-				window.updateWindowEvents();
+				x11App.updateWindowEvents();
 				UpdateAndRender();
 			}
 			#endif

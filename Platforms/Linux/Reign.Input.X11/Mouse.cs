@@ -54,20 +54,20 @@ namespace Reign.Input.X11
 		#endregion
 		
 		#region Methods
-		public void UpdateEvent(WindowEvent theEvent)
+		public void UpdateEvent(ApplicationEvent theEvent)
 		{
 			switch (theEvent.Type)
 			{
-				case (WindowEventTypes.LeftMouseDown): leftOn = true; break;
-				case (WindowEventTypes.LeftMouseUp): leftOn = false; break;
+				case (ApplicationEventTypes.LeftMouseDown): leftOn = true; break;
+				case (ApplicationEventTypes.LeftMouseUp): leftOn = false; break;
 				
-				case (WindowEventTypes.MiddleMouseDown): middleOn = true; break;
-				case (WindowEventTypes.MiddleMouseUp): middleOn = false; break;
+				case (ApplicationEventTypes.MiddleMouseDown): middleOn = true; break;
+				case (ApplicationEventTypes.MiddleMouseUp): middleOn = false; break;
 				
-				case (WindowEventTypes.RightMouseDown): rightOn = true; break;
-				case (WindowEventTypes.RightMouseUp): rightOn = false; break;
+				case (ApplicationEventTypes.RightMouseDown): rightOn = true; break;
+				case (ApplicationEventTypes.RightMouseUp): rightOn = false; break;
 				
-				case (WindowEventTypes.ScrollWheel):
+				case (ApplicationEventTypes.ScrollWheel):
 					scrollWheelVelocity = theEvent.ScrollWheelVelocity;
 					scollWheelChanged = true;
 					break;
@@ -93,10 +93,10 @@ namespace Reign.Input.X11
 			IntPtr w2, w3;
 			int x, y, x2, y2;
 			uint mask;
-			Reign.Core.X11.XQueryPointer(input.window.DC, input.window.Handle, out w2, out w3, out x, out y, out x2, out y2, out mask);
+			Reign.Core.X11.XQueryPointer(input.application.DC, input.application.Handle, out w2, out w3, out x, out y, out x2, out y2, out mask);
 			
 			lastPosition = Position;
-			Position = new Point2(x2, input.window.FrameSize.Height - y2);
+			Position = new Point2(x2, input.application.FrameSize.Height - y2);
 			PositionVector = Position.ToVector2();
 
 			Velocity = Position - lastPosition;

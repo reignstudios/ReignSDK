@@ -125,7 +125,6 @@ namespace Reign.Video.OpenGL
 				WGL.SwapInterval(vSync ? 1 : 0);
 				#endif
 				
-				#if LINUX
 				#if RPI
 				unsafe
 				{
@@ -172,7 +171,7 @@ namespace Reign.Video.OpenGL
 					RaspberryPi.vc_dispmanx_update_submit_sync(dispman_update);
 					
 					// Init EGL
-					handle = window.Handle;
+					handle = application.Handle;
 					GL.GetError();//NOTE: THIS MUST BE HERE SO THAT libGLES LOADS BEFORE libEGL
 					dc = EGL.GetDisplay(IntPtr.Zero);
 					
@@ -230,9 +229,9 @@ namespace Reign.Video.OpenGL
 					//if (EGL.SwapInterval(dc, vSync ? 1 : 0) == 0) Debug.ThrowError("Video", "Failed to set vSync");
 					checkForEGLError();
 				}
-				#else
+				#elif LINUX
 				//Get DC
-				handle = window.Handle;
+				handle = application.Handle;
 				dc = X11.XOpenDisplay(IntPtr.Zero);
 				int screen = X11.XDefaultScreen(dc);
 		
@@ -264,7 +263,6 @@ namespace Reign.Video.OpenGL
 					GLX.Init();
 					GLX.SwapIntervalMesa(vSync ? 1 : 0);
 				}
-				#endif
 				#endif
 				
 				#if OSX
@@ -541,7 +539,6 @@ namespace Reign.Video.OpenGL
 			}
 			#endif
 			
-			#if LINUX
 			#if RPI
 			if (dc != IntPtr.Zero)
 			{
@@ -553,7 +550,7 @@ namespace Reign.Video.OpenGL
 			
 			RaspberryPi.bcm_host_deinit();
 			windowHandle.Free();
-			#else
+			#elif LINUX
 			if (dc != IntPtr.Zero)
 			{
 				if (ctx != IntPtr.Zero)
@@ -565,7 +562,6 @@ namespace Reign.Video.OpenGL
 				X11.XCloseDisplay(dc);
 				dc = IntPtr.Zero;
 			}
-			#endif
 			#endif
 			
 			#if OSX
@@ -616,7 +612,9 @@ namespace Reign.Video.OpenGL
 			WGL.MakeCurrent(dc, ctx);
 			#endif
 			
-			#if LINUX
+			#if RPI
+			EGL.MakeCurrent(dc, surface, surface, ctx);
+			#elif LINUX
 			GLX.MakeCurrent(dc, handle, ctx);
 			#endif
 			
@@ -626,10 +624,6 @@ namespace Reign.Video.OpenGL
 			
 			#if NaCl
 			PPAPI.SetCurrentContextPPAPI(context);
-			#endif
-
-			#if RPI
-			EGL.MakeCurrent(dc, surface, surface, ctx);
 			#endif
 
 			#if DEBUG

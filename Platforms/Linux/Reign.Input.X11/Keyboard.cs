@@ -132,15 +132,15 @@ namespace Reign.Input.X11
 		#endregion
 		
 		#region Methods
-		public void UpdateEvent(WindowEvent theEvent)
+		public void UpdateEvent(ApplicationEvent theEvent)
 		{
 			switch (theEvent.Type)
 			{
-				case (WindowEventTypes.KeyDown):
+				case (ApplicationEventTypes.KeyDown):
 					keys[theEvent.KeyCode] = true;
 					break;
 				
-				case (WindowEventTypes.KeyUp):
+				case (ApplicationEventTypes.KeyUp):
 					keys[theEvent.KeyCode] = false;
 					break;
 			}

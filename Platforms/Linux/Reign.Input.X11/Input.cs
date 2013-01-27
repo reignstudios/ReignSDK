@@ -9,30 +9,30 @@ namespace Reign.Input.X11
 		internal delegate void UpdateCallbackMethod();
 		internal UpdateCallbackMethod UpdateCallback;
 		
-		internal delegate void UpdateEventCallbackMethod(WindowEvent theEvent);
+		internal delegate void UpdateEventCallbackMethod(ApplicationEvent theEvent);
 		internal UpdateEventCallbackMethod UpdateEventCallback;
 		
-		internal Window window;
+		internal ApplicationI application;
 		#endregion
 	
 		#region Constructors
-		public Input(DisposableI parent, Window window)
+		public Input(DisposableI parent, ApplicationI window)
 		: base(parent)
 		{
-			this.window = window;
+			this.application = window;
 			window.HandleEvent += updateEvent;
 		}
 		
 		public override void Dispose()
 		{
 			disposeChilderen();
-			window.HandleEvent -= updateEvent;
+			application.HandleEvent -= updateEvent;
 			base.Dispose();
 		}
 		#endregion
 		
 		#region Methods
-		private void updateEvent(WindowEvent theEvent)
+		private void updateEvent(ApplicationEvent theEvent)
 		{
 			if (theEvent == null) return;
 			if (UpdateEventCallback != null) UpdateEventCallback(theEvent);
