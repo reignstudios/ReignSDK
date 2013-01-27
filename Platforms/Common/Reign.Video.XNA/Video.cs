@@ -11,6 +11,7 @@ namespace Reign.Video.XNA
 	public class Video : Disposable, VideoI
 	{
 		#region Properties
+		private ApplicationI application;
 		public GraphicsDevice Device {get; private set;}
 		public string FileTag {get; private set;}
 		public Size2 BackBufferSize {get; private set;}
@@ -18,9 +19,10 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
-		public Video(DisposableI parent, Application application)
+		public Video(DisposableI parent, ApplicationI application, bool vSync)
 		: base(parent)
 		{
+			this.application = application;
 			Device = application.GraphicsDevice;
 			defualtStates();
 
@@ -58,8 +60,7 @@ namespace Reign.Video.XNA
 		#region Methods
 		public void Update()
 		{
-			// XNA handles lost device.
-			// This is a place holder...
+			BackBufferSize = application.FrameSize;
 		}
 
 		public void Present()

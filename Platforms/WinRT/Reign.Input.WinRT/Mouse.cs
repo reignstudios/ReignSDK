@@ -60,42 +60,42 @@ namespace Reign.Input.WinRT
 			{
 				case (ApplicationEventTypes.LeftMouseDown):
 					leftOn = true;
-					currentPosition = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorPosition;
 					break;
 
 				case (ApplicationEventTypes.LeftMouseUp):
 					leftOn = false;
-					currentPosition = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorPosition;
 					break;
 
 				case (ApplicationEventTypes.MiddleMouseDown):
 					middleOn = true;
-					currentPosition = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorPosition;
 					break;
 
 				case (ApplicationEventTypes.MiddleMouseUp):
 					middleOn = false;
-					currentPosition = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorPosition;
 					break;
 
 				case (ApplicationEventTypes.RightMouseDown):
 					rightOn = true;
-					currentPosition = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorPosition;
 					break;
 
 				case (ApplicationEventTypes.RightMouseUp):
 					rightOn = false;
-					currentPosition = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorPosition;
 					break;
 
 				case (ApplicationEventTypes.MouseMove):
-					currentPosition = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorPosition;
 					break;
 				
 				case (ApplicationEventTypes.ScrollWheel):
 					scrollWheelVelocity = theEvent.ScrollWheelVelocity;
 					scollWheelChanged = true;
-					currentPosition = theEvent.CursorLocation;
+					currentPosition = theEvent.CursorPosition;
 					break;
 			}
 		}
@@ -117,7 +117,7 @@ namespace Reign.Input.WinRT
 			Right.Update(rightOn);
 			
 			lastLocation = Position;
-			Position = new Point2(currentPosition.X, input.applicationI.Metro_FrameSize.Height - currentPosition.Y);
+			Position = new Point2(currentPosition.X, input.applicationI.FrameSize.Height - currentPosition.Y);
 			PositionVector = Position.ToVector2();
 
 			Velocity = Position - lastLocation;

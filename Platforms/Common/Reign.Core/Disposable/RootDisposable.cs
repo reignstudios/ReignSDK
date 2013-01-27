@@ -19,7 +19,7 @@ namespace Reign.Core
 		: base(null)
 		{
 			#if XNA && !SILVERLIGHT
-			init(OS.CurrentApplication.Content);
+			init(((XNAApplication)OS.CurrentApplication).Content);
 			#endif
 		}
 

@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Reign.Core
 {
-	public class ApplicationPage : Page
+	class ApplicationPage : Page
 	{
 		private SwapChainBackgroundPanel swapChainPanel;
 		private AdControl adControl;
@@ -85,7 +85,7 @@ namespace Reign.Core
 			}
 
 			base.Content = swapChainPanel;
-			OS.CurrentXAMLApplication.SwapChainPanel = swapChainPanel;
+			((XAMLApplication)OS.CurrentApplication).SwapChainPanel = swapChainPanel;
 		}
 
 		public void EnableAds()
@@ -107,121 +107,54 @@ namespace Reign.Core
 		}
 	}
 
-	public class XAMLApplication : Windows.UI.Xaml.Application, ApplicationI
+	public abstract class XAMLApplication : Application, ApplicationI
 	{
 		#region Properties
 		public SwapChainBackgroundPanel SwapChainPanel {get; internal set;}
-		private ApplicationEvent theEvent;
-		internal ApplicationOrientations orientation;
-		
-		internal Size2 frameSize;
-		public Size2 FrameSize
-		{
-			get {return frameSize;}
-		}
-
-		public Size2 Metro_FrameSize
-		{
-			get {return frameSize;}
-			set {frameSize = value;}
-		}
-
-		public delegate void ApplicationEventMethod();
-		public ApplicationEventMethod Closing;
-
-		public delegate void HandleEventMethod(ApplicationEvent theEvent);
-		public HandleEventMethod HandleEvent;
-
-		public delegate void StateMethod();
-		public static StateMethod PauseCallback, ResumeCallback;
-		#endregion
-
-		#region Constructors
-		public XAMLApplication(ApplicationOrientations orientation, string applicationID, string unitID, ApplicationAdSize adSize, ApplicationAdGravity adGravity, bool supportAds)
-		: this(applicationID, unitID, adSize, adGravity, supportAds)
-		{
-			this.orientation = orientation;
-			theEvent = new ApplicationEvent();
-			OS.Init(this);
-		}
-		#endregion
-
-		#region Methods
-		protected internal virtual void shown()
-		{
-			
-		}
-		
-		protected internal virtual void closing()
-		{
-			deferral.Complete();
-		}
-		
-		protected internal virtual void handleEvent(ApplicationEvent theEvent)
-		{
-			if (HandleEvent != null) HandleEvent(theEvent);
-		}
-
-		public void Metro_HandleEvent(ApplicationEvent theEvent)
-		{
-			handleEvent(theEvent);
-		}
-		
-		protected internal virtual void update(Time time)
-		{
-			
-		}
-
-		protected internal virtual void render(Time time)
-		{
-			
-		}
-		
-		protected internal virtual void pause()
-		{
-			if (PauseCallback != null) PauseCallback();
-		}
-		
-		protected internal virtual void resume()
-		{
-			if (ResumeCallback != null) ResumeCallback();
-		}
-		#endregion
-
-
-		#region Base
 		public delegate void BuyAppCallbackMethod(bool succeeded);
 		public BuyAppCallbackMethod BuyAppCallback;
 
 		private CoreMetroWindow coreMetroWindow;
 		private bool running, visible;
 		private SuspendingDeferral deferral;
-		private string applicationID, unitID;
-		private ApplicationAdSize adSize;
-		private ApplicationAdGravity adGravity;
-		private bool supportAds;
+		private ApplicationDesc desc;
+		
+		public bool IsSnapped {get; private set;}
+		public Windows.UI.Core.CoreWindow CoreWindow {get; private set;}
+		public ApplicationOrientations Orientation {get; private set;}
+		public Size2 FrameSize {get; private set;}
+		public new bool Closed {get; private set;}
 
-		private XAMLApplication(string applicationID, string unitID, ApplicationAdSize adSize, ApplicationAdGravity adGravity, bool supportAds)
-        {
-            this.Suspending += onSuspending;
+		public event ApplicationHandleEventMethod HandleEvent;
+		public event ApplicationStateMethod PauseCallback, ResumeCallback;
+
+		private ApplicationEvent theEvent;
+		#endregion
+
+		#region Constructors
+		public void Init(ApplicationDesc desc)
+		{
+			OS.CurrentApplication = this;
+			OS.time = new Time(0);
+			OS.time.Start();
+
+			this.desc = desc;
+			theEvent = new ApplicationEvent();
+			this.Suspending += onSuspending;
 			this.Resuming += onResuming;
+		}
+		#endregion
 
-			this.applicationID = applicationID;
-			this.unitID = unitID;
-			this.adSize = adSize;
-			this.adGravity = adGravity;
-			this.supportAds = supportAds;
-        }
-
+		#region Method Events
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
 			var window = Window.Current.CoreWindow;
-			if (OS.CoreWindow != window) window.VisibilityChanged += visibilityChanged;
-			OS.CoreWindow = window;
+			if (CoreWindow != window) window.VisibilityChanged += visibilityChanged;
+			CoreWindow = window;
 
 			if (coreMetroWindow != null) coreMetroWindow.Dispose();
-			coreMetroWindow = new CoreMetroWindow(this, Window.Current.CoreWindow, theEvent);
-			frameSize = new Size2(coreMetroWindow.ConvertDipsToPixels(window.Bounds.Width), coreMetroWindow.ConvertDipsToPixels(window.Bounds.Height));
+			coreMetroWindow = new CoreMetroWindow(this, Window.Current.CoreWindow, theEvent, false);
+			FrameSize = new Size2(coreMetroWindow.ConvertDipsToPixels(window.Bounds.Width), coreMetroWindow.ConvertDipsToPixels(window.Bounds.Height));
 
 			if (Window.Current.Content as ApplicationPage == null)
             {
@@ -230,8 +163,8 @@ namespace Reign.Core
                     //TODO: Load state from previously suspended application
                 }*/
 				
-				Window.Current.Content = new ApplicationPage(applicationID, unitID, adSize, adGravity, supportAds);
-				shown();
+				Window.Current.Content = new ApplicationPage(desc.ApplicationID, desc.UnitID, desc.AdSize, desc.AdGravity, desc.UseAds);
+				Shown();
             }
 			
             Window.Current.Activate();
@@ -251,13 +184,13 @@ namespace Reign.Core
 			{
 				if (visible)
 				{
-					resume();
+					Resume();
 					CompositionTarget.Rendering += rendering;
 				}
 				else
 				{
 					CompositionTarget.Rendering -= rendering;
-					pause();
+					Pause();
 				}
 			}
 		}
@@ -266,23 +199,13 @@ namespace Reign.Core
         {
 			running = false;
             deferral = e.SuspendingOperation.GetDeferral();
-			closing();
+			this.Closing();
         }
 
 		private void onResuming(object sender, object e)
 		{
-			shown();
+			Shown();
 			running = true;
-		}
-
-		public void ShowCursor()
-		{
-			coreMetroWindow.ShowCursor();
-		}
-
-		public void HideCursor()
-		{
-			coreMetroWindow.HideCursor();
 		}
 
 		public void EnableAds()
@@ -311,6 +234,64 @@ namespace Reign.Core
 		{
 			if (BuyAppCallback != null) BuyAppCallback(await coreMetroWindow.BuyInAppItem(appID));
 			else Debug.ThrowError("XAMLApplication", "BuyAppCallback method cannot be null");
+		}
+
+		internal void updateFrameSize(Size2 size, bool isSnapped)
+		{
+			FrameSize = size;
+			IsSnapped = isSnapped;
+		}
+
+		internal void handleEvent(ApplicationEvent theEvent)
+		{
+			if (HandleEvent != null) HandleEvent(theEvent);
+		}
+		#endregion
+
+		#region Methods
+		public virtual void Shown()
+		{
+			
+		}
+
+		public virtual void Closing()
+		{
+			
+		}
+
+		public void Close()
+		{
+			
+		}
+
+		public virtual void Update(Time time)
+		{
+			
+		}
+
+		public virtual void Render(Time time)
+		{
+			
+		}
+
+		public virtual void Pause()
+		{
+			if (PauseCallback != null) PauseCallback();
+		}
+
+		public virtual void Resume()
+		{
+			if (ResumeCallback != null) ResumeCallback();
+		}
+
+		public void ShowCursor()
+		{
+			coreMetroWindow.ShowCursor();
+		}
+
+		public void HideCursor()
+		{
+			coreMetroWindow.HideCursor();
 		}
 		#endregion
 	}

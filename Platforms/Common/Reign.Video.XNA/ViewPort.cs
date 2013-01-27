@@ -35,6 +35,9 @@ namespace Reign.Video.XNA
 		#region Methods
 		public override void Apply()
 		{
+			#if SILVERLIGHT
+			try {
+			#endif
 			var viewPort = new Microsoft.Xna.Framework.Graphics.Viewport()
 			{
 				X = Location.X,
@@ -45,10 +48,16 @@ namespace Reign.Video.XNA
 				MaxDepth = 1
 			};
 			video.Device.Viewport = viewPort;
+			#if SILVERLIGHT
+			} catch {}
+			#endif
 		}
 
 		public override void Apply(RenderTargetI renderTarget)
 		{
+			#if SILVERLIGHT
+			try {
+			#endif
 			var viewPort = new Microsoft.Xna.Framework.Graphics.Viewport()
 			{
 				X = Location.X,
@@ -59,6 +68,9 @@ namespace Reign.Video.XNA
 				MaxDepth = 1
 			};
 			video.Device.Viewport = viewPort;
+			#if SILVERLIGHT
+			} catch {}
+			#endif
 		}
 		#endregion
 	}

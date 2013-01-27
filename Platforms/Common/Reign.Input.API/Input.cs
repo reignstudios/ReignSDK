@@ -19,24 +19,15 @@ namespace Reign.Input.API
 
 	public static class Input
 	{
-		#if WINRT || XNA || iOS || ANDROID
-		public static InputI Init(InputTypes typeFlags, out InputTypes type, DisposableI parent, Application application)
+		public static InputI Init(InputTypes typeFlags, out InputTypes type, DisposableI parent, ApplicationI application)
 		{
-			#if WINRT
-			bool metro = (typeFlags & InputTypes.WinRT) != 0;
-			#endif
-
-			#if XNA
-			bool xna = (typeFlags & InputTypes.XNA) != 0;
-			#endif
-
-			#if iOS
+			bool winForms = (typeFlags & InputTypes.WinForms) != 0;
 			bool cocoa = (typeFlags & InputTypes.Cocoa) != 0;
-			#endif
-
-			#if ANDROID
+			bool x11 = (typeFlags & InputTypes.X11) != 0;
+			bool nacl = (typeFlags & InputTypes.NaCl) != 0;
+			bool metro = (typeFlags & InputTypes.WinRT) != 0;
+			bool xna = (typeFlags & InputTypes.XNA) != 0;
 			bool android = (typeFlags & InputTypes.Android) != 0;
-			#endif
 
 			type = InputTypes.None;
 			Exception lastException = null;
@@ -45,6 +36,46 @@ namespace Reign.Input.API
 			{
 				try
 				{
+					#if WIN32
+					if (winForms)
+					{
+						winForms = false;
+						type = InputTypes.WinForms;
+						input = new Reign.Input.WinForms.Input(parent, application);
+						break;
+					}
+					#endif
+					
+					#if OSX
+					if (cocoa)
+					{
+						cocoa = false;
+						type = InputTypes.Cocoa;
+						input = new Reign.Input.Cocoa.Input(parent, window);
+						break;
+					}
+					#endif
+					
+					#if LINUX
+					if (x11)
+					{
+						x11 = false;
+						type = InputTypes.X11;
+						input = new Reign.Input.X11.Input(parent, window);
+						break;
+					}
+					#endif
+					
+					#if NaCl
+					if (nacl)
+					{
+						nacl = false;
+						type = InputTypes.NaCl;
+						input = new Reign.Input.NaCl.Input(parent, window);
+						break;
+					}
+					#endif
+
 					#if WINRT
 					if (metro)
 					{
@@ -102,109 +133,12 @@ namespace Reign.Input.API
 			}
 
 			// init api methods
-			#if WINRT
 			Keyboard.Init(type);
 			Mouse.Init(type);
-			#endif
-
-			#if XNA
 			GamePad.Init(type);
-			#endif
-			
-			#if iOS || ANDROID
 			TouchScreen.Init(type);
-			#endif
 
 			return input;
 		}
-		#else
-		public static InputI Init(InputTypes typeFlags, out InputTypes type, DisposableI parent, Window window)
-		{
-			#if WIN32
-			bool winForms = (typeFlags & InputTypes.WinForms) != 0;
-			#endif
-
-			#if OSX
-			bool cocoa = (typeFlags & InputTypes.Cocoa) != 0;
-			#endif
-
-			#if LINUX
-			bool x11 = (typeFlags & InputTypes.X11) != 0;
-			#endif
-			
-			#if NaCl
-			bool nacl = (typeFlags & InputTypes.NaCl) != 0;
-			#endif
-
-			type = InputTypes.None;
-			Exception lastException = null;
-			InputI input = null;
-			while (true)
-			{
-				try
-				{
-					#if WIN32
-					if (winForms)
-					{
-						winForms = false;
-						type = InputTypes.WinForms;
-						input = new Reign.Input.WinForms.Input(parent, window);
-						break;
-					}
-					#endif
-					
-					#if OSX
-					if (cocoa)
-					{
-						cocoa = false;
-						type = InputTypes.Cocoa;
-						input = new Reign.Input.Cocoa.Input(parent, window);
-						break;
-					}
-					#endif
-					
-					#if LINUX
-					if (x11)
-					{
-						x11 = false;
-						type = InputTypes.X11;
-						input = new Reign.Input.X11.Input(parent, window);
-						break;
-					}
-					#endif
-					
-					#if NaCl
-					if (nacl)
-					{
-						nacl = false;
-						type = InputTypes.NaCl;
-						input = new Reign.Input.NaCl.Input(parent, window);
-						break;
-					}
-					#endif
-
-					else break;
-				}
-				catch (Exception e)
-				{
-					lastException = e;
-				}
-			}
-
-			// check for error
-			if (lastException != null)
-			{
-				string ex = lastException == null ? "" : " - Exception: " + lastException.Message;
-				Debug.ThrowError("Input", "Failed to create Input API" + ex);
-				type = InputTypes.None;
-			}
-
-			// init api methods
-			Keyboard.Init(type);
-			Mouse.Init(type);
-
-			return input;
-		}
-		#endif
 	}
 }

@@ -33,6 +33,10 @@ using Windows.ApplicationModel.Core;
 using Sce.PlayStation.Core.Environment;
 #endif
 
+#if XNA
+using Microsoft.Xna.Framework.Graphics;
+#endif
+
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -82,7 +86,6 @@ namespace Reign.Core
 		internal static Time renderTime;
 		#endif
 
-		#if WIN32 || OSX || LINUX || NaCl
 		public static Size2 ScreenSize
 		{
 			get
@@ -90,15 +93,14 @@ namespace Reign.Core
 				#if WIN32
 				var screen = System.Windows.Forms.Screen.PrimaryScreen;
 				return new Size2(screen.Bounds.Width, screen.Bounds.Height);
-				#endif
-				
-				#if OSX
+				#elif XNA && !SILVERLIGHT
+				var display = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
+				return new Size2(display.Width, display.Height);
+				#elif OSX
 				var screen = NSScreen.Screens[0];
 				var frame = screen.VisibleFrame;
 				return new Size2((int)frame.Width, (int)frame.Height);
-				#endif
-				
-				#if LINUX
+				#elif LINUX
 				unsafe
 				{
 					int screenWidth = 0, screenHeight = 0;
@@ -119,22 +121,15 @@ namespace Reign.Core
 					
 					return new Size2(screenWidth, screenHeight);
 				}
-				#endif
-				
-				#if NaCl
+				#elif NaCl
 				return new Size2(512, 512);
+				#else
+				return new Size2();
 				#endif
 			}
 		}
 
-		public static Window CurrentWindow;
-		#else
-		public static Application CurrentApplication;
-		#if WINRT
-		public static Windows.UI.Core.CoreWindow CoreWindow;
-		public static XAMLApplication CurrentXAMLApplication;
-		#endif
-		#endif
+		public static ApplicationI CurrentApplication;
 		
 		#if OSX
 		private static NSAutoreleasePool pool;
@@ -237,22 +232,22 @@ namespace Reign.Core
 		}
 		#endif
 		
-		#if WIN32 || OSX || LINUX || NaCl
-		public static void Run(Window window, int fps)
+		public static void Run(ApplicationI application, int fps)
 		{
-			CurrentWindow = window;
-			
-			#if NaCl
+			CurrentApplication = application;
+
+			#if iOS || ANDROID || XNA || VITA || NaCl
 			fps = 0;
 			#endif
 			time = new Time(fps);
 			time.Start();
 
 			#if WIN32
+			var form = (Form)application;
 			Time.OptimizedMode();
-			window.Show();
+			form.Show();
 			Application.Idle += mainLoop;
-			Application.Run(window);
+			Application.Run(form);
 			Time.EndOptimizedMode();
 			#endif
 			
@@ -294,35 +289,22 @@ namespace Reign.Core
 			finishedRunning = true;
 			while (!closed) Thread.Sleep(1);
 			#endif
-		}
-		#endif
-		
-		#if (iOS || XNA || WINRT || VITA) && !SILVERLIGHT
-		public static void Run(Application application, int fps)
-		{
-			CurrentApplication = application;
-
-			#if iOS || ANDROID || XNA || VITA
-			fps = 0;
-			#endif
-			time = new Time(fps);
-			time.Start();
 
 			#if WINRT
-			CoreApplication.Run(application.source);
+			CoreApplication.Run(((CoreWindowApplication)application).source);
 			#endif
 
 			#if iOS
 			UIApplication.Main(new string[0], null, "AppDelegate");
 			#endif
 
-			#if XNA
+			#if XNA && !SILVERLIGHT
 			renderTime = new Time(fps);
 			renderTime.Start();
 			#if !XBOX360
 			Time.OptimizedMode();
 			#endif
-			using (var game = application)
+			using (var game = (XNAApplication)application)
 			{
 				game.Run();
 			}
@@ -332,25 +314,13 @@ namespace Reign.Core
 			#endif
 			
 			#if VITA
-			//application.shown();
 			while (true)
 			{
 				SystemEvents.CheckEvents ();
 				UpdateAndRender();
 			}
-			//application.closing();// Application never has you handle closing
 			#endif
 		}
-		#endif
-
-		#if WINRT
-		internal static void Init(XAMLApplication application)
-		{
-			CurrentXAMLApplication = application;
-			time = new Time(0);
-			time.Start();
-		}
-		#endif
 
 		#if WIN32
 		[StructLayout(LayoutKind.Sequential)]
@@ -379,34 +349,14 @@ namespace Reign.Core
 		}
 		#endif
 
-		#if WIN32 || OSX || LINUX || NaCl
 		public static void UpdateAndRender()
 		{
 			if (time.FPSGoal != 0) time.Sleep();
 			time.Update();
 
-			CurrentWindow.update(time);
-			CurrentWindow.render(time);
+			CurrentApplication.Update(time);
+			CurrentApplication.Render(time);
 		}
-		#else
-		public static void UpdateAndRender()
-		{
-			if (time.FPSGoal != 0) time.Sleep();
-			time.Update();
-			if (CurrentApplication != null)
-			{
-				CurrentApplication.update(time);
-				CurrentApplication.render(time);
-			}
-			else
-			{
-				#if WINRT
-				CurrentXAMLApplication.update(time);
-				CurrentXAMLApplication.render(time);
-				#endif
-			}
-		}
-		#endif
 		#endregion
 	}
 }

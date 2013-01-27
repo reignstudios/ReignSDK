@@ -164,8 +164,8 @@
     <Compile Include="..\..\Common\Reign.Core\OS\OS.cs">
       <Link>OS\OS.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\OS\XNAGame.cs">
-      <Link>OS\XNAGame.cs</Link>
+    <Compile Include="..\..\Common\Reign.Core\OS\XNAApplication.cs">
+      <Link>OS\XNAApplication.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Random.cs">
       <Link>Random.cs</Link>

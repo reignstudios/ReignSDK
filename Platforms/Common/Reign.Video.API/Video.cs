@@ -16,80 +16,13 @@ namespace Reign.Video.API
 
 	public static class Video
 	{
-		#if WINRT || WP8 || XNA || iOS || ANDROID || VITA
-		public static VideoI Init(VideoTypes typeFlags, out VideoTypes type, DisposableI parent, Application application, bool vSync)
+		public static VideoI Init(VideoTypes typeFlags, out VideoTypes type, DisposableI parent, ApplicationI application, bool vSync)
 		{
-			try
-			{
-				#if WINRT || WP8
-				type = VideoTypes.D3D11;
-				var video = new Reign.Video.D3D11.Video(parent, application, vSync);
-				initMethods(type);
-				return video;
-				#endif
-
-				#if XNA
-				type = VideoTypes.XNA;
-				var video = new Reign.Video.XNA.Video(parent, application);
-				initMethods(type);
-				return video;
-				#endif
-				
-				#if VITA
-				type = VideoTypes.Vita;
-				var video = new Reign.Video.Vita.Video(parent, application);
-				initMethods(type);
-				return video;
-				#endif
-
-				#if iOS || ANDROID
-				type = VideoTypes.OpenGL;
-				var video = new Reign.Video.OpenGL.Video(parent, application);
-				initMethods(type);
-				return video;
-				#endif
-			}
-			catch (Exception e)
-			{
-				throw e;
-			}
-		}
-
-		private static void initMethods(VideoTypes type)
-		{
-			ViewPort.Init(type);
-			Shader.Init(type);
-			QuickDraw.Init(type);
-			DepthStencil.Init(type);
-			Texture2D.Init(type);
-			RenderTarget.Init(type);
-			BlendState.Init(type);
-			BlendStateDesc.Init(type);
-			DepthStencilState.Init(type);
-			DepthStencilStateDesc.Init(type);
-			RasterizerState.Init(type);
-			RasterizerStateDesc.Init(type);
-			SamplerState.Init(type);
-			SamplerStateDesc.Init(type);
-			BufferLayout.Init(type);
-			BufferLayoutDesc.Init(type);
-			IndexBuffer.Init(type);
-			VertexBuffer.Init(type);
-		}
-		#else
-		public static VideoI Init(VideoTypes typeFlags, out VideoTypes type, DisposableI parent, Window window, bool vSync)
-		{
-			#if WIN32
 			bool d3d11 = (typeFlags & VideoTypes.D3D11) != 0;
-			#endif
-
-			#if WIN32
 			bool d3d9 = (typeFlags & VideoTypes.D3D9) != 0;
-			#endif
-
-			#if WIN32 || OSX || LINUX || NaCl
 			bool gl = (typeFlags & VideoTypes.OpenGL) != 0;
-			#endif
+			bool xna = (typeFlags & VideoTypes.XNA) != 0;
+			bool vita = (typeFlags & VideoTypes.Vita) != 0;
 
 			type = VideoTypes.None;
 			Exception lastException = null;
@@ -98,12 +31,12 @@ namespace Reign.Video.API
 			{
 				try
 				{
-					#if WIN32 || WINRT
+					#if WIN32 || WINRT || WP8
 					if (d3d11)
 					{
 						d3d11 = false;
 						type = VideoTypes.D3D11;
-						video = new Reign.Video.D3D11.Video(parent, window, vSync);
+						video = new Reign.Video.D3D11.Video(parent, application, vSync);
 						break;
 					}
 					#endif
@@ -113,7 +46,7 @@ namespace Reign.Video.API
 					{
 					    d3d9 = false;
 					    type = VideoTypes.D3D9;
-					    video = new Reign.Video.D3D9.Video(parent, window, vSync);
+					    video = new Reign.Video.D3D9.Video(parent, application, vSync);
 						break;
 					}
 					#endif
@@ -123,7 +56,27 @@ namespace Reign.Video.API
 					{
 						gl = false;
 						type = VideoTypes.OpenGL;
-						video = new Reign.Video.OpenGL.Video(parent, window, vSync);
+						video = new Reign.Video.OpenGL.Video(parent, application, vSync);
+						break;
+					}
+					#endif
+
+					#if XNA
+					if (xna)
+					{
+						xna = false;
+						type = VideoTypes.XNA;
+						video = new Reign.Video.XNA.Video(parent, application, vSync);
+						break;
+					}
+					#endif
+				
+					#if VITA
+					if (vita)
+					{
+						vita = false;
+						type = VideoTypes.Vita;
+						video = new Reign.Video.Vita.Video(parent, application, vSync);
 						break;
 					}
 					#endif
@@ -166,6 +119,5 @@ namespace Reign.Video.API
 
 			return video;
 		}
-		#endif
 	}
 }

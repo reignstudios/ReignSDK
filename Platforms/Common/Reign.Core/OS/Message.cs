@@ -35,7 +35,7 @@ namespace Reign.Core
 {
 	public static class Message
 	{
-		#if WINRT || WP8
+		#if WINRT
 		public static async void Show(string title, string message)
 		#else
 		public static void Show(string title, string message)
@@ -56,7 +56,7 @@ namespace Reign.Core
 			#endif
 
 			#if SILVERLIGHT
-			OS.CurrentApplication.MainUserControl.Dispatcher.BeginInvoke( delegate { MessageBox.Show(message, title, MessageBoxButton.OK); });
+			((SilverlightApplication)OS.CurrentApplication).MainUserControl.Dispatcher.BeginInvoke(delegate {MessageBox.Show(message, title, MessageBoxButton.OK);});
 			#elif XNA
 			var options = new List<string>();
 			options.Add("OK");

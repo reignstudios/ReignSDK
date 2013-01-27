@@ -8,6 +8,7 @@ namespace Reign.Video.Vita
 	public class Video : Disposable, VideoI
 	{
 		#region Properties
+		private ApplicationI application;
 		internal GraphicsContext context;
 		internal FrameBuffer currentFrameBuffer;
 		internal Texture2D[] currentPixelTextures;
@@ -19,11 +20,12 @@ namespace Reign.Video.Vita
 		#endregion
 		
 		#region Constructors
-		public Video(DisposableI parent, Application application)
+		public Video(DisposableI parent, ApplicationI application, bool vSync)
 		: base(parent)
 		{
 			try
 			{
+				this.application = application;
 				FileTag = "Vita_";
 				currentPixelTextures = new Texture2D[4];
 				currentSamplerStates = new SamplerState[4];
@@ -58,7 +60,7 @@ namespace Reign.Video.Vita
 		#region Methods
 		public void Update()
 		{
-			// Do nothing...
+			BackBufferSize = application.FrameSize;
 		}
 		
 		public void EnableRenderTarget()

@@ -208,7 +208,7 @@
       <Link>Time.cs</Link>
     </Compile>
     <Compile Include="OS\CoreMetroWindow.cs" />
-    <Compile Include="OS\MetroApplication.cs" />
+    <Compile Include="OS\CoreWindowApplication.cs" />
     <Compile Include="OS\XAMLApplication.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

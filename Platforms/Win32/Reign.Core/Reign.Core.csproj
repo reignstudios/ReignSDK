@@ -142,15 +142,14 @@
     <Compile Include="..\..\Common\Reign.Core\Math\Vector4.cs">
       <Link>Math\Vector4.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Core\OS\Application.cs">
+      <Link>OS\Application.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.Core\OS\Message.cs">
       <Link>OS\Message.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\OS\OS.cs">
       <Link>OS\OS.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Core\OS\Window.cs">
-      <Link>OS\Window.cs</Link>
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Random.cs">
       <Link>Random.cs</Link>
@@ -161,7 +160,7 @@
     <Compile Include="..\..\Common\Reign.Core\Time.cs">
       <Link>Time.cs</Link>
     </Compile>
-    <Compile Include="OS\WinForm.cs">
+    <Compile Include="OS\WinFormApplication.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

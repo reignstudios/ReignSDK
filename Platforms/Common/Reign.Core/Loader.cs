@@ -13,13 +13,16 @@ namespace Reign.Core
 
 	public class LoadWaiter : LoadableI
 	{
+		#region Properties
 		public bool Loaded {get; private set;}
 		public bool FailedToLoad {get; private set;}
 		public Loader.LoadedCallbackMethod LoadedCallback {get; private set;}
 
 		private LoadableI[] loadables;
 		public LoadableI[] Loadables {get{return loadables;}}
+		#endregion
 
+		#region Constructors
 		public LoadWaiter(LoadableI[] loadables, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			this.loadables = loadables;
@@ -59,10 +62,12 @@ namespace Reign.Core
 		{
 			LoadedCallback = null;
 		}
+		#endregion
 	}
 
 	public static class Loader
 	{
+		#region Properties
 		public delegate void LoadedCallbackMethod(object sender, bool succeeded);
 
 		public static int ItemsRemainingToLoad {get{return loadables.Count;}}
@@ -70,14 +75,18 @@ namespace Reign.Core
 		private static List<Exception> loadableExceptions;
 		private static Exception asyncLoadingExeception;
 		private static bool aysncLoadDone;
+		#endregion
 
+		#region Constructors
 		static Loader()
 		{
 			loadables = new List<LoadableI>();
 			loadableExceptions = new List<Exception>();
 			aysncLoadDone = true;
 		}
+		#endregion
 
+		#region Methods
 		public static void AddLoadable(LoadableI loadable)
 		{
 			lock (loadables) if (!loadables.Contains(loadable)) loadables.Add(loadable);
@@ -149,5 +158,6 @@ namespace Reign.Core
 			loadables.Clear();
 			loadableExceptions.Clear();
 		}
+		#endregion
 	}
 }

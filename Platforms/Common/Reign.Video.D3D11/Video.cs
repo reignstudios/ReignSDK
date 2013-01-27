@@ -26,59 +26,31 @@ namespace Reign.Video.D3D11
 		#region Properties
 		public string FileTag {get; private set;}
 		public Size2 BackBufferSize {get; private set;}
-
-		#if WIN32
-		private Window window;
-		#elif WINRT
 		private ApplicationI application;
-		#else
-		private Application application;
-		#endif
 
 		internal VideoCom com;
 		public Caps Cap {get; private set;}
 		#endregion
 
 		#region Constructors
-		#if WIN32
-		public Video(DisposableI parent, Window window, bool vSync)
+		public Video(DisposableI parent, ApplicationI application, bool vSync)
 		: base(parent)
 		{
-			init(parent, window, vSync);
-		}
-		#elif WINRT
-		public Video(DisposableI parent, Application application, bool vSync)
-		: base(parent)
-		{
-			init(parent, application, vSync, null);
-		}
-
-		public Video(DisposableI parent, XAMLApplication application, bool vSync)
-		: base(parent)
-		{
-			init(parent, application, vSync, application.SwapChainPanel);
-		}
-		#else
-		public Video(DisposableI parent, Application application, bool vSync)
-		: base(parent)
-		{
+			#if WINRT
+			var xamlApp = application as XAMLApplication;
+			init(parent, application, vSync, xamlApp != null ? ((XAMLApplication)application).SwapChainPanel : null);
+			#else
 			init(parent, application, vSync);
+			#endif
 		}
-		#endif
 
-		#if WIN32
-		private void init(DisposableI parent, Window window, bool vSync)
-		#elif WINRT
+		#if WINRT
 		private void init(DisposableI parent, ApplicationI application, bool vSync, Windows.UI.Xaml.Controls.SwapChainBackgroundPanel swapChainBackgroundPanel)
 		#else
-		private void init(DisposableI parent, Application application, bool vSync)
+		private void init(DisposableI parent, ApplicationI application, bool vSync)
 		#endif
 		{
-			#if WIN32
-			this.window = window;
-			#else
 			this.application = application;
-			#endif
 			
 			try
 			{
@@ -87,14 +59,12 @@ namespace Reign.Video.D3D11
 
 				com = new VideoCom();
 				var featureLevel = REIGN_D3D_FEATURE_LEVEL.LEVEL_9_1;
-				#if WIN32
-				var frame = window.FrameSize;
-				var error = com.Init(window.Handle, vSync, frame.Width, frame.Height, false, out featureLevel);
-				#elif WINRT
-				var frame = application.Metro_FrameSize;
-				var error = com.Init(OS.CoreWindow, vSync, frame.Width, frame.Height, out featureLevel, swapChainBackgroundPanel);
-				#else
 				var frame = application.FrameSize;
+				#if WIN32
+				var error = com.Init(application.Handle, vSync, frame.Width, frame.Height, false, out featureLevel);
+				#elif WINRT
+				var error = com.Init(application.CoreWindow, vSync, frame.Width, frame.Height, out featureLevel, swapChainBackgroundPanel);
+				#else
 				var error = com.Init(vSync, frame.Width, frame.Height, out featureLevel, OS.UpdateAndRender);
 				#endif
 				BackBufferSize = frame;
@@ -192,14 +162,7 @@ namespace Reign.Video.D3D11
 		#region Methods
 		public void Update()
 		{
-			#if WIN32
-			var frame = window.FrameSize;
-			#elif WINRT
-			var frame = application.Metro_FrameSize;
-			#else
 			var frame = application.FrameSize;
-			#endif
-
 			if (frame.Width != 0 && frame.Height != 0) BackBufferSize = frame;
 			com.Update(frame.Width, frame.Height);
 		}

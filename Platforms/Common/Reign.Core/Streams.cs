@@ -26,6 +26,10 @@ using Windows.Storage.Streams;
 using Windows.Foundation;
 #endif
 
+#if SILVERLIGHT
+using System.Windows;
+#endif
+
 namespace Reign.Core
 {
 	#if NaCl

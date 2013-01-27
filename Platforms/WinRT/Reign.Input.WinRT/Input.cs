@@ -13,12 +13,12 @@ namespace Reign.Input.WinRT
 		internal UpdateEventCallbackMethod UpdateEventCallback;
 
 		internal ApplicationI applicationI;
-		private Application application;
+		private ApplicationI application;
 		private XAMLApplication pageApplication;
 		#endregion
 
 		#region Constructors
-		public Input(DisposableI parent, Application application)
+		public Input(DisposableI parent, ApplicationI application)
 		: base(parent)
 		{
 			this.applicationI = application;

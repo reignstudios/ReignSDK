@@ -16,12 +16,14 @@ namespace Reign.Core
 	public partial class MainPage : PhoneApplicationPage
 	{
 		public DrawingSurface Surface {get{return surface;}}
+		private XAMLApplication application;
 
 		public MainPage()
 		{
 			InitializeComponent();
 
-			if (OS.CurrentApplication.orientation == ApplicationOrientations.Landscape)
+			application = (XAMLApplication)OS.CurrentApplication;
+			if (application.Orientation == ApplicationOrientations.Landscape)
 			{
 				SupportedOrientations = SupportedPageOrientation.Landscape;
 				Orientation = PageOrientation.Landscape;
@@ -35,9 +37,9 @@ namespace Reign.Core
 
 		private void drawingSurface_Loaded(object sender, RoutedEventArgs e)
 		{
-			OS.CurrentApplication.MainPage = this;
-			OS.CurrentApplication.frameSize = new Size2((int)surface.ActualWidth, (int)surface.ActualHeight);
-			OS.CurrentApplication.shown();
+			application.MainPage = this;
+			application.FrameSize = new Size2((int)surface.ActualWidth, (int)surface.ActualHeight);
+			application.Shown();
 		}
 	}
 }

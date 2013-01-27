@@ -19,7 +19,7 @@ namespace Reign.Video.D3D9
 	{
 		#region Properties
 		internal VideoCom com;
-		private Window window;
+		private ApplicationI application;
 		internal Texture2D[] currentVertexTextures, currentPixelTextures;
 		public Size2 BackBufferSize {get; private set;}
 
@@ -32,21 +32,21 @@ namespace Reign.Video.D3D9
 		#endregion
 
 		#region Constructors
-		public Video(DisposableI parent, Window window, bool vSync)
+		public Video(DisposableI parent, ApplicationI application, bool vSync)
 		: base(parent)
 		{
 			try
 			{
-				this.window = window;
+				this.application = application;
 				FileTag = "D3D9_";
 				currentVertexTextures = new Texture2D[4];
 				currentPixelTextures = new Texture2D[8];
 
 				com = new VideoCom();
-				var frame = window.FrameSize;
+				var frame = application.FrameSize;
 				BackBufferSize = frame;
 				ComponentCaps componentCaps;
-				var error = com.Init(window.Handle, vSync, frame.Width, frame.Height, false, false, out componentCaps);
+				var error = com.Init(application.Handle, vSync, frame.Width, frame.Height, false, false, out componentCaps);
 
 				switch (error)
 				{
@@ -101,7 +101,7 @@ namespace Reign.Video.D3D9
 		#region Methods
 		public void Update()
 		{
-			var frame = window.FrameSize;
+			var frame = application.FrameSize;
 			if (frame.Width != 0 && frame.Height != 0) BackBufferSize = frame;
 			com.Update(frame.Width, frame.Height);
 		}

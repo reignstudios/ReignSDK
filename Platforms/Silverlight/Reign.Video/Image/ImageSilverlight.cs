@@ -49,7 +49,7 @@ namespace Reign.Video
 			this.flip = flip;
 			this.loadedCallback = loadedCallback;
 
-			OS.CurrentApplication.MainUserControl.Dispatcher.BeginInvoke(delegate
+			((SilverlightApplication)OS.CurrentApplication).MainUserControl.Dispatcher.BeginInvoke(delegate
 			{
 				var image = new BitmapImage();
 				image.ImageOpened += bs_ImageOpened;

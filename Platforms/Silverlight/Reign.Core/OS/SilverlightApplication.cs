@@ -15,11 +15,11 @@ namespace Reign.Core
 {
 	public class SilverlightUserControl : UserControl
 	{
-		private Application application;
+		private SilverlightApplication application;
 		private DrawingSurface surface;
 		private bool shown;
 
-		public SilverlightUserControl(Application application)
+		public SilverlightUserControl(SilverlightApplication application)
 		{
 			this.application = application;
 
@@ -31,7 +31,7 @@ namespace Reign.Core
 
 		private void sizeChanged(object sender, SizeChangedEventArgs e)
 		{
-			application.frameSize = new Size2((int)e.NewSize.Width, (int)e.NewSize.Height);
+			application.FrameSize = new Size2((int)e.NewSize.Width, (int)e.NewSize.Height);
 		}
 
 		private void updateAndRender(object sender, DrawEventArgs e)
@@ -41,30 +41,38 @@ namespace Reign.Core
 				shown = true;
 				OS.time = new Time(0);
 				application.GraphicsDevice = GraphicsDeviceManager.Current.GraphicsDevice;
-				application.shown();
+				application.Shown();
 			}
 
 			OS.time.ManualUpdate(e.DeltaTime.Milliseconds / 1000f);
-			application.update(OS.time);
-			application.render(OS.time);
+			application.Update(OS.time);
+			application.Render(OS.time);
 			e.InvalidateSurface();
 		}
 	}
 	
-	public abstract class SilverlightApplication : System.Windows.Application
+	public abstract class SilverlightApplication : Application, ApplicationI
 	{
 		#region Properties
-		private Application application;
-		protected ApplicationEvent theEvent;
-
 		public SilverlightUserControl MainUserControl {get; private set;}
 		public GraphicsDevice GraphicsDevice {get; internal set;}
 		private bool failedToStart;
+
+		public ApplicationOrientations Orientation {get; private set;}
+		public Size2 FrameSize {get; internal set;}
+		public new bool Closed {get; private set;}
+
+		public event ApplicationHandleEventMethod HandleEvent;
+		public event ApplicationStateMethod PauseCallback, ResumeCallback;
+
+		private ApplicationEvent theEvent;
 		#endregion
 
 		#region Constructors
-		public SilverlightApplication()
+		public void Init(ApplicationDesc desc)
 		{
+			OS.CurrentApplication = this;
+
 			if (GraphicsDeviceManager.Current.RenderMode != RenderMode.Hardware)
 			{
 				string message;
@@ -101,7 +109,7 @@ namespace Reign.Core
 						break;
 				}
 
-				MessageBox.Show(message,"3D Content Blocked", MessageBoxButton.OK);
+				MessageBox.Show(message, "3D Content Blocked", MessageBoxButton.OK);
 				failedToStart = true;
 				return;
 			}
@@ -111,34 +119,29 @@ namespace Reign.Core
 			this.UnhandledException += this.Application_UnhandledException;
 		}
 
-		protected void setApplication(Application application)
-		{
-			this.application = application;
-		}
-
 		private void Application_Startup(object sender, StartupEventArgs e)
 		{
 			if (failedToStart) return;
 
-			MainUserControl = new SilverlightUserControl(application);
+			MainUserControl = new SilverlightUserControl(this);
 			this.RootVisual = MainUserControl;
 		}
 
 		private void Application_Exit(object sender, EventArgs e)
 		{
 			if (failedToStart) return;
-			application.closing();
+			Closing();
 		}
 
 		private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
 		{
 			if (!System.Diagnostics.Debugger.IsAttached)
 			{
-				application.closing();
+				Closing();
 				Message.Show("UnhandledException", e.ExceptionObject.Message);
 
 				e.Handled = true;
-				Deployment.Current.Dispatcher.BeginInvoke(delegate { ReportErrorToDOM(e); });
+				Deployment.Current.Dispatcher.BeginInvoke(delegate {ReportErrorToDOM(e);});
 			}
 		}
 
@@ -154,6 +157,53 @@ namespace Reign.Core
 			catch (Exception)
 			{
 			}
+		}
+		#endregion
+
+		#region Methods
+		public virtual void Shown()
+		{
+			
+		}
+
+		public virtual void Closing()
+		{
+			
+		}
+
+		public void Close()
+		{
+			
+		}
+
+		public virtual void Update(Time time)
+		{
+			
+		}
+
+		public virtual void Render(Time time)
+		{
+			
+		}
+
+		public virtual void Pause()
+		{
+			if (PauseCallback != null) PauseCallback();
+		}
+
+		public virtual void Resume()
+		{
+			if (ResumeCallback != null) ResumeCallback();
+		}
+
+		public void ShowCursor()
+		{
+			
+		}
+
+		public void HideCursor()
+		{
+			
 		}
 		#endregion
 	}

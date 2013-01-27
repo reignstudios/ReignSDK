@@ -20,22 +20,31 @@ namespace Reign.Core
         }
     }
 
-	public class XAMLApplication : System.Windows.Application
+	public class XAMLApplication : Application, ApplicationI
 	{
 		#region Properties
-		private Application application;
-		protected ApplicationEvent theEvent;
-
 		public static PhoneApplicationFrame RootFrame { get; private set; }
 		public MainPage MainPage {get; internal set;}
 		private bool phoneApplicationInitialized;
-		internal ApplicationOrientations orientation;
+		
+		public ApplicationOrientations Orientation {get; private set;}
+		public Size2 FrameSize {get; internal set;}
+		public new bool Closed {get; private set;}
+
+		public event ApplicationHandleEventMethod HandleEvent;
+		public event ApplicationStateMethod PauseCallback, ResumeCallback;
+
+		private ApplicationEvent theEvent;
 		#endregion
 
 		#region Constructors
-		public XAMLApplication(ApplicationOrientations orientation)
+		public void Init(ApplicationDesc desc)
 		{
-			this.orientation = orientation;
+			OS.CurrentApplication = this;
+			OS.time = new Time(0);
+			OS.time.Start();
+
+			Orientation = desc.Orientation;
 			UnhandledException += XAMLApplication_UnhandledException;
 
 			this.Resources.Add("LocalizedStrings", "clr-namespace:Demo_Windows");
@@ -95,14 +104,9 @@ namespace Reign.Core
 				; // do nothing
 			}
 		}
-
-		protected void setApplication(Application application)
-		{
-			this.application = application;
-		}
 		#endregion
 
-		#region Methods
+		#region Method Events
 		private void Application_Launching(object sender, LaunchingEventArgs e)
 		{
 		}
@@ -117,6 +121,53 @@ namespace Reign.Core
 
 		private void Application_Closing(object sender, ClosingEventArgs e)
 		{
+		}
+		#endregion
+
+		#region Methods
+		public virtual void Shown()
+		{
+			
+		}
+
+		public virtual void Closing()
+		{
+			
+		}
+
+		public void Close()
+		{
+			
+		}
+
+		public virtual void Update(Time time)
+		{
+			
+		}
+
+		public virtual void Render(Time time)
+		{
+			
+		}
+
+		public virtual void Pause()
+		{
+			if (PauseCallback != null) PauseCallback();
+		}
+
+		public virtual void Resume()
+		{
+			if (ResumeCallback != null) ResumeCallback();
+		}
+
+		public void ShowCursor()
+		{
+			
+		}
+
+		public void HideCursor()
+		{
+			
 		}
 		#endregion
 	}

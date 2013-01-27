@@ -22,30 +22,12 @@ namespace Reign.Audio.API
 		public static AudioI Init(AudioTypes typeFlags, out AudioTypes type, DisposableI parent)
 		{
 			bool dumby = (typeFlags & AudioTypes.Dumby) != 0;
-
-			#if WIN32 || WINRT
 			bool xAudio = (typeFlags & AudioTypes.XAudio) != 0;
-			#endif
-
-			#if XNA
 			bool xna = (typeFlags & AudioTypes.XNA) != 0;
-			#endif
-
-			#if OSX || iOS
 			bool cocoa = (typeFlags & AudioTypes.Cocoa) != 0;
-			#endif
-
-			#if LINUX
 			bool openAL = (typeFlags & AudioTypes.OpenAL) != 0;
-			#endif
-
-			#if ANDROID
 			bool android = (typeFlags & AudioTypes.Android) != 0;
-			#endif
-			
-			#if NaCl
 			bool nacl = (typeFlags & AudioTypes.NaCl) != 0;
-			#endif
 
 			type = AudioTypes.None;
 			Exception lastException = null;

@@ -45,12 +45,7 @@ namespace Reign.Video.OpenGL
 		#region Properties
 		public string FileTag {get; private set;}
 		public Size2 BackBufferSize {get; private set;}
-
-		#if WIN32 || OSX || LINUX || NaCl
-		private Window window;
-		#else
-		private Application application;
-		#endif
+		private ApplicationI application;
 
 		public Caps Caps;
 		private bool disposed;
@@ -83,13 +78,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		#if WIN32 || OSX || LINUX || NaCl
-		public Video(DisposableI parent, Window window, bool vSync)
-		#elif iOS || ANDROID
-		public Video(DisposableI parent, Application application)
-		#else
-		public Video(DisposableI parent, Application application, bool vSync)
-		#endif
+		public Video(DisposableI parent, ApplicationI application, bool vSync)
 		: base(parent)
 		{
 			try
@@ -99,8 +88,8 @@ namespace Reign.Video.OpenGL
 				currentSamplerStates = new SamplerState[8];
 
 				#if WIN32 || OSX || LINUX || NaCl
-				BackBufferSize = window.FrameSize;
-				this.window = window;
+				BackBufferSize = application.FrameSize;
+				this.application = application;
 				#else
 				BackBufferSize = application.FrameSize;
 				this.application = application;
@@ -108,7 +97,7 @@ namespace Reign.Video.OpenGL
 				
 				#if WIN32
 				//Get DC
-				handle = window.Handle;
+				handle = application.Handle;
 				dc = WGL.GetDC(handle);
 				WGL.SwapBuffers(dc);
 
@@ -619,11 +608,7 @@ namespace Reign.Video.OpenGL
 		public void Update()
 		{
 			#if !RPI
-			#if WIN32 || OSX || LINUX || NaCl
-			var frame = window.FrameSize;
-			#else
 			var frame = application.FrameSize;
-			#endif
 			if (frame.Width != 0 && frame.Height != 0) BackBufferSize = frame;
 			#endif
 
@@ -632,11 +617,7 @@ namespace Reign.Video.OpenGL
 			#endif
 			
 			#if LINUX
-			#if RPI
-			EGL.MakeCurrent(dc, surface, surface, ctx);
-			#else
 			GLX.MakeCurrent(dc, handle, ctx);
-			#endif
 			#endif
 			
 			#if OSX
@@ -645,6 +626,10 @@ namespace Reign.Video.OpenGL
 			
 			#if NaCl
 			PPAPI.SetCurrentContextPPAPI(context);
+			#endif
+
+			#if RPI
+			EGL.MakeCurrent(dc, surface, surface, ctx);
 			#endif
 
 			#if DEBUG

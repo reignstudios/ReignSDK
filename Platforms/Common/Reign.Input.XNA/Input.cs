@@ -11,11 +11,11 @@ namespace Reign.Input.XNA
 		#region Properties
 		internal delegate void UpdateCallbackMethod();
 		internal UpdateCallbackMethod UpdateCallback;
-		internal Application application;
+		internal ApplicationI application;
 		#endregion
 
 		#region Constructors
-		public Input(DisposableI parent, Application application)
+		public Input(DisposableI parent, ApplicationI application)
 		: base(parent)
 		{
 			this.application = application;

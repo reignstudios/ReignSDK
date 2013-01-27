@@ -7,11 +7,11 @@ using Windows.UI.Core;
 
 namespace Reign.Core
 {
-	class MetroApplicationSource : IFrameworkViewSource
+	class CoreWindowApplicationSource : IFrameworkViewSource
 	{
-		private MetroApplication application;
+		private CoreWindowApplication application;
 
-		public MetroApplicationSource(MetroApplication application)
+		public CoreWindowApplicationSource(CoreWindowApplication application)
 		{
 			this.application = application;
 		}
@@ -22,29 +22,34 @@ namespace Reign.Core
 		}
 	}
 
-	public abstract class MetroApplication : IFrameworkView
+	public abstract class CoreWindowApplication : IFrameworkView, ApplicationI
     {
 		#region Properties
 		public delegate void BuyAppCallbackMethod(bool succeeded);
 		public BuyAppCallbackMethod BuyAppCallback;
 
 		private CoreMetroWindow coreMetroWindow;
-		internal MetroApplicationSource source;
-		private Application application;
-		protected ApplicationEvent theEvent;
+		internal CoreWindowApplicationSource source;
 		private bool running, visible;
-		protected SuspendingDeferral deferral;
+		private SuspendingDeferral deferral;
+
+		public bool IsSnapped {get; private set;}
+		public Windows.UI.Core.CoreWindow CoreWindow {get; private set;}
+		public ApplicationOrientations Orientation {get; private set;}
+		public Size2 FrameSize {get; private set;}
+		public new bool Closed {get; private set;}
+
+		public event ApplicationHandleEventMethod HandleEvent ;
+		public event ApplicationStateMethod PauseCallback, ResumeCallback;
+
+		private ApplicationEvent theEvent;
 		#endregion
 
 		#region Constructors
-		public MetroApplication(ApplicationOrientations orientation)
+		public void Init(ApplicationDesc desc)
 		{
-			source = new MetroApplicationSource(this);
-		}
-
-		protected void setApplication(Application application)
-		{
-			this.application = application;
+			theEvent = new ApplicationEvent();
+			source = new CoreWindowApplicationSource(this);
 		}
 
 		public void Initialize(CoreApplicationView applicationView)
@@ -60,14 +65,14 @@ namespace Reign.Core
 		}
 		#endregion
 
-		#region Methods
+		#region Methods Events
 		public void SetWindow(CoreWindow window)
 		{
-			if (OS.CoreWindow != window) window.VisibilityChanged += visibilityChanged;
+			if (CoreWindow != window) window.VisibilityChanged += visibilityChanged;
 
-			OS.CoreWindow = window;
+			CoreWindow = window;
 			if (coreMetroWindow != null) coreMetroWindow.Dispose();
-			coreMetroWindow = new CoreMetroWindow((ApplicationI)this, window, theEvent);
+			coreMetroWindow = new CoreMetroWindow(this, window, theEvent, true);
 		}
 
 		public void Load(string entryPoint)
@@ -78,8 +83,8 @@ namespace Reign.Core
 		public void Run()
 		{
 			var coreWindow = CoreWindow.GetForCurrentThread();
-			application.frameSize = new Size2(coreMetroWindow.ConvertDipsToPixels(coreWindow.Bounds.Width), coreMetroWindow.ConvertDipsToPixels(coreWindow.Bounds.Height));
-			application.shown();
+			FrameSize = new Size2(coreMetroWindow.ConvertDipsToPixels(coreWindow.Bounds.Width), coreMetroWindow.ConvertDipsToPixels(coreWindow.Bounds.Height));
+			Shown();
 
 			running = true;
 			while (running)
@@ -102,8 +107,8 @@ namespace Reign.Core
 
 			if (running)
 			{
-				if (visible) application.resume();
-				else application.pause();
+				if (visible) Resume();
+				else Pause();
 			}
 		}
 
@@ -116,23 +121,13 @@ namespace Reign.Core
 		{
 			running = false;
 			deferral = e.SuspendingOperation.GetDeferral();
-			application.closing();
+			Closing();
 		}
 
 		private void resuming(object sender, object e)
 		{
-			application.shown();
+			Shown();
 			running = true;
-		}
-
-		public void ShowCursor()
-		{
-			coreMetroWindow.ShowCursor();
-		}
-
-		public void HideCursor()
-		{
-			coreMetroWindow.HideCursor();
 		}
 
 		public bool IsTrial()
@@ -149,6 +144,64 @@ namespace Reign.Core
 		{
 			if (BuyAppCallback != null) BuyAppCallback(await coreMetroWindow.BuyInAppItem(appID));
 			else Debug.ThrowError("MetroApplication", "BuyAppCallback method cannot be null");
+		}
+
+		internal void updateFrameSize(Size2 size, bool isSnapped)
+		{
+			FrameSize = size;
+			IsSnapped = isSnapped;
+		}
+
+		internal void handleEvent(ApplicationEvent theEvent)
+		{
+			if (HandleEvent != null) HandleEvent(theEvent);
+		}
+		#endregion
+
+		#region Methods
+		public virtual void Shown()
+		{
+			
+		}
+
+		public virtual void Closing()
+		{
+			
+		}
+
+		public void Close()
+		{
+			
+		}
+
+		public virtual void Update(Time time)
+		{
+			
+		}
+
+		public virtual void Render(Time time)
+		{
+			
+		}
+
+		public virtual void Pause()
+		{
+			if (PauseCallback != null) PauseCallback();
+		}
+
+		public virtual void Resume()
+		{
+			if (ResumeCallback != null) ResumeCallback();
+		}
+
+		public void ShowCursor()
+		{
+			coreMetroWindow.ShowCursor();
+		}
+
+		public void HideCursor()
+		{
+			coreMetroWindow.HideCursor();
 		}
 		#endregion
     }

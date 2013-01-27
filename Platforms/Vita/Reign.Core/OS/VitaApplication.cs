@@ -3,25 +3,78 @@ using Sce.PlayStation.Core;
 
 namespace Reign.Core
 {
-	public abstract class VitaApplication
+	public abstract class VitaApplication : ApplicationI
 	{
 		#region Properties
-		private Application application;
-		protected ApplicationEvent theEvent;
+		public ApplicationOrientations Orientation {get; private set;}
+
+		public Size2 FrameSize {get; private set;}
+		public bool Closed {get; private set;}
+
+		public event ApplicationHandleEventMethod HandleEvent;
+		public event ApplicationStateMethod PauseCallback, ResumeCallback;
+
+		private ApplicationEvent theEvent;
 		#endregion
 	
 		#region Constructors
-		protected void init(Application application)
+		public void Init(ApplicationDesc desc)
 		{
-			this.application = application;
-			application.shown();
+			Shown();
+		}
+		#endregion
+		
+		#region Method Events
+		public void Vita_SetFrameSize(int width, int height)
+		{
+			FrameSize = new Size2(width, height);
 		}
 		#endregion
 		
 		#region Methods
-		public void Vita_SetFrameSize(int width, int height)
+		public virtual void Shown()
 		{
-			application.frameSize = new Size2(width, height);
+			
+		}
+
+		public virtual void Closing()
+		{
+			Closed = true;
+		}
+
+		public void Close()
+		{
+			
+		}
+
+		public virtual void Update(Time time)
+		{
+			
+		}
+
+		public virtual void Render(Time time)
+		{
+			
+		}
+
+		public virtual void Pause()
+		{
+			if (PauseCallback != null) PauseCallback();
+		}
+
+		public virtual void Resume()
+		{
+			if (ResumeCallback != null) ResumeCallback();
+		}
+
+		public void ShowCursor()
+		{
+			
+		}
+
+		public void HideCursor()
+		{
+			
 		}
 		#endregion
 	}

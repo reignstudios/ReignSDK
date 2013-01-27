@@ -15,6 +15,9 @@
 #ifdef WINRT && WIN32
 #undef WIN32
 #endif
+#ifdef WP8 && WIN32
+#undef WIN32
+#endif
 #include "../CPP_CLR-CX_Helpers/Common.h"
 
 namespace Reign_Video_D3D11_Component

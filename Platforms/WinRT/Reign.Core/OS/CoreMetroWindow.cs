@@ -3,21 +3,27 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.Store;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 
 namespace Reign.Core
 {
 	class CoreMetroWindow
 	{
+		#region Properties
 		private CoreWindow window;
 		private ApplicationI application;
 		private ApplicationEvent theEvent;
 		private bool leftPointerOn, middlePointerOn, rightPointerOn;
+		private bool coreApp;
+		#endregion
 
-		public CoreMetroWindow(ApplicationI application, CoreWindow window, ApplicationEvent theEvent)
+		#region Constructors
+		public CoreMetroWindow(ApplicationI application, CoreWindow window, ApplicationEvent theEvent, bool coreApp)
 		{
 			this.window = window;
 			this.application = application;
 			this.theEvent = theEvent;
+			this.coreApp = coreApp;
 
 			window.SizeChanged += sizeChanged;
 			
@@ -41,6 +47,14 @@ namespace Reign.Core
 			window.KeyDown -= keyDown;
 			window.KeyUp -= keyUp;
 		}
+		#endregion
+
+		#region Methods
+		private void handleEvent(ApplicationEvent theEvent)
+		{
+			if (coreApp) ((CoreWindowApplication)application).handleEvent(theEvent);
+			else ((XAMLApplication)application).handleEvent(theEvent);
+		}
 
 		public void ShowCursor()
 		{
@@ -56,8 +70,8 @@ namespace Reign.Core
 		{
 			theEvent.Type = ApplicationEventTypes.MouseMove;
 			var loc = e.CurrentPoint.RawPosition;
-			theEvent.CursorLocation = new Point2((int)loc.X, (int)loc.Y);
-			application.Metro_HandleEvent(theEvent);
+			theEvent.CursorPosition = new Point2((int)loc.X, (int)loc.Y);
+			handleEvent(theEvent);
 		}
 
 		private void pointerPressed(CoreWindow sender, PointerEventArgs e)
@@ -79,8 +93,8 @@ namespace Reign.Core
 			}
 			
 			var loc = e.CurrentPoint.RawPosition;
-			theEvent.CursorLocation = new Point2((int)loc.X, (int)loc.Y);
-			application.Metro_HandleEvent(theEvent);
+			theEvent.CursorPosition = new Point2((int)loc.X, (int)loc.Y);
+			handleEvent(theEvent);
 		}
 
 		private void pointerReleased(CoreWindow sender, PointerEventArgs e)
@@ -93,30 +107,30 @@ namespace Reign.Core
 			rightPointerOn = false;
 
 			var loc = e.CurrentPoint.RawPosition;
-			theEvent.CursorLocation = new Point2((int)loc.X, (int)loc.Y);
-			application.Metro_HandleEvent(theEvent);
+			theEvent.CursorPosition = new Point2((int)loc.X, (int)loc.Y);
+			handleEvent(theEvent);
 		}
 
 		private void pointerWheelChanged(CoreWindow sender, PointerEventArgs e)
 		{
 			theEvent.Type = ApplicationEventTypes.ScrollWheel;
 			var loc = e.CurrentPoint.RawPosition;
-			theEvent.CursorLocation = new Point2((int)loc.X, (int)loc.Y);
-			application.Metro_HandleEvent(theEvent);
+			theEvent.CursorPosition = new Point2((int)loc.X, (int)loc.Y);
+			handleEvent(theEvent);
 		}
 
 		private void keyDown(CoreWindow sender, KeyEventArgs e)
 		{
 			theEvent.Type = ApplicationEventTypes.KeyDown;
 			theEvent.KeyCode = (int)e.VirtualKey;
-			application.Metro_HandleEvent(theEvent);
+			handleEvent(theEvent);
 		}
 
 		private void keyUp(CoreWindow sender, KeyEventArgs e)
 		{
 			theEvent.Type = ApplicationEventTypes.KeyUp;
 			theEvent.KeyCode = (int)e.VirtualKey;
-			application.Metro_HandleEvent(theEvent);
+			handleEvent(theEvent);
 		}
 
 		public int ConvertDipsToPixels(double dips)
@@ -126,7 +140,8 @@ namespace Reign.Core
 
 		private void sizeChanged(CoreWindow sender, WindowSizeChangedEventArgs args)
 		{
-			application.Metro_FrameSize = new Size2(ConvertDipsToPixels(args.Size.Width), ConvertDipsToPixels(args.Size.Height));
+			if (coreApp) ((CoreWindowApplication)application).updateFrameSize(new Size2(ConvertDipsToPixels(args.Size.Width), ConvertDipsToPixels(args.Size.Height)), ApplicationView.Value == ApplicationViewState.Snapped);
+			else ((XAMLApplication)application).updateFrameSize(new Size2(ConvertDipsToPixels(args.Size.Width), ConvertDipsToPixels(args.Size.Height)), ApplicationView.Value == ApplicationViewState.Snapped);
 		}
 
 		public bool IsTrial()
@@ -157,5 +172,6 @@ namespace Reign.Core
 			return CurrentApp.LicenseInformation.ProductLicenses[appID].IsActive;
 			#endif
 		}
+		#endregion
 	}
 }

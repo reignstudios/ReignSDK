@@ -7,7 +7,6 @@ namespace Reign.Core
 		Unkown,
 		Closed,
 		Touch,
-		#if WINRT
 		KeyDown,
 		KeyUp,
 		MouseMove,
@@ -18,20 +17,19 @@ namespace Reign.Core
 		RightMouseDown,
 		RightMouseUp,
 		ScrollWheel
-		#endif
 	}
 
 	public class ApplicationEvent
 	{
 		public ApplicationEventTypes Type;
+
 		public const int TouchCount = 10;
 		public bool[] TouchesOn;
 		public Vector2[] TouchLocations;
-		#if WINRT
+
 		public int KeyCode;
 		public float ScrollWheelVelocity;
-		public Point2 CursorLocation;
-		#endif
+		public Point2 CursorPosition;
 		
 		public ApplicationEvent()
 		{
@@ -39,23 +37,32 @@ namespace Reign.Core
 			TouchLocations = new Vector2[TouchCount];
 		}
 	}
+
+	public enum ApplicationTypes
+	{
+		Box,
+		Frame,
+		FrameSizable
+	}
+
+	public enum ApplicationStartPositions
+	{
+		Default,
+		CenterCurrentScreen
+	}
 	
-	#if !XNA && !VITA
 	public enum ApplicationOrientations
 	{
 		Landscape,
 		Portrait
 	}
-	#endif
 	
 	public enum ApplicationAdGravity
 	{
-		#if iOS
 		Bottom,
-		Top
-		#endif
+		Top,
 
-		#if ANDROID || WINRT
+		#if ANDROID || WINRT || WP8
 		BottomLeft,
 		BottomRight,
 		BottomCenter,
@@ -67,6 +74,8 @@ namespace Reign.Core
 
 	public enum ApplicationAdSize
 	{
+		Default,
+
 		#if WINRT
 		Sqaure_250x250,
 		Rect_728x90,
@@ -87,154 +96,61 @@ namespace Reign.Core
 		#endif
 	}
 
-	#if WINRT
+	public class ApplicationDesc
+	{
+		public string Name = "Reign Application";
+		public ApplicationTypes Type = ApplicationTypes.Frame;
+		public ApplicationStartPositions StartPosition = ApplicationStartPositions.CenterCurrentScreen;
+		public ApplicationOrientations Orientation = ApplicationOrientations.Landscape;
+		public Size2 FrameSize, MinFrameSize, MaxFrameSize;
+
+		public bool UseAds = false;
+		public ApplicationAdGravity AdGravity = ApplicationAdGravity.Bottom;
+		public ApplicationAdSize AdSize = ApplicationAdSize.Default;
+		#if WINRT
+		public string ApplicationID, UnitID;
+		#endif
+	}
+
+	public delegate void ApplicationEventMethod();
+	public delegate void ApplicationHandleEventMethod(ApplicationEvent applicationEvent);
+	public delegate void ApplicationStateMethod();
+
 	public interface ApplicationI
 	{
-		Size2 Metro_FrameSize {get; set;}
-		void Metro_HandleEvent(ApplicationEvent theEvent);
-	}
-	#endif
-
-	public class Application
-	#if iOS
-	: GLController
-	#elif ANDROID
-	: RootActivity
-	#elif SILVERLIGHT
-	: SilverlightApplication
-	#elif XNA
-	: XNAGame
-	#elif WINRT
-	: MetroApplication, ApplicationI
-	#elif WP8
-	: XAMLApplication
-	#elif VITA
-	: VitaApplication
-	#endif
-	{
 		#region Properties
-		#if !XNA && !VITA
-		internal ApplicationOrientations orientation;
+		#if WIN32
+		IntPtr Handle {get;}
 		#endif
-		
-		internal Size2 frameSize;
-		public Size2 FrameSize
-		{
-			get {return frameSize;}
-		}
-
 		#if WINRT
-		public Size2 Metro_FrameSize
-		{
-			get {return frameSize;}
-			set {frameSize = value;}
-		}
+		Windows.UI.Core.CoreWindow CoreWindow {get;}
+		bool IsSnapped {get;}
 		#endif
-
-		public delegate void ApplicationEventMethod();
-		public ApplicationEventMethod Closing;
-
-		public delegate void HandleEventMethod(ApplicationEvent theEvent);
-		public HandleEventMethod HandleEvent;
-
-		public delegate void StateMethod();
-		public static StateMethod PauseCallback, ResumeCallback;
+		#if XNA
+		Microsoft.Xna.Framework.Graphics.GraphicsDevice GraphicsDevice {get;}
+		#endif
+		ApplicationOrientations Orientation {get;}
+		Size2 FrameSize {get;}
+		bool Closed {get;}
+		event ApplicationHandleEventMethod HandleEvent;
+		event ApplicationStateMethod PauseCallback;
+		event ApplicationStateMethod ResumeCallback;
 		#endregion
 
 		#region Constructors
-		#if iOS
-		public Application(ApplicationOrientations orientation, bool enableAds)
-		: base(enableAds)
-		#elif ANDROID
-		public Application(ApplicationOrientations orientation, bool enableAds, string publisherID)
-		: base(enableAds, publisherID)
-		#elif WINRT || WP8
-		public Application(ApplicationOrientations orientation)
-		: base(orientation)
-		#elif SILVERLIGHT || VITA
-		public Application()
-		#elif XNA
-		public Application(int width, int height)
-		#else
-		public Application(int width, int height, ApplicationOrientations orientation)
-		#endif
-		{
-			#if !XNA && !VITA
-			this.orientation = orientation;
-			#endif
-			theEvent = new ApplicationEvent();
-				
-			OS.CurrentApplication = this;
-			#if iOS || ANDROID || WINRT || WP8 || SILVERLIGHT
-			setApplication(this);
-			#elif XNA
-			init(this, width, height);
-			#elif VITA
-			init(this);
-			#else
-			init(this, width, height, orientation);
-			#endif
-			
-			#if ANDROID || WP8
-			OS.time = new Time(0);
-			OS.time.Start();
-			#endif
-		}
+		void Init(ApplicationDesc desc);
 		#endregion
 
 		#region Methods
-		protected internal virtual void shown()
-		{
-			
-		}
-		
-		protected internal virtual void closing()
-		{
-			#if WINRT
-			deferral.Complete();
-			#endif
-		}
-
-		#if XNA && !SILVERLIGHT
-		public void Close()
-		{
-			Exit();
-		}
-		#endif
-		
-		protected internal virtual void handleEvent(ApplicationEvent theEvent)
-		{
-			if (HandleEvent != null) HandleEvent(theEvent);
-		}
-
-		#if WINRT
-		public void Metro_HandleEvent(ApplicationEvent theEvent)
-		{
-			handleEvent(theEvent);
-		}
-		#endif
-		
-		protected internal virtual void update(Time time)
-		{
-			
-		}
-
-		protected internal virtual void render(Time time)
-		{
-			
-		}
-		
-		#if iOS || ANDROID || WINRT
-		protected internal virtual void pause()
-		{
-			if (PauseCallback != null) PauseCallback();
-		}
-		
-		protected internal virtual void resume()
-		{
-			if (ResumeCallback != null) ResumeCallback();
-		}
-		#endif
+		void Shown();
+		void Closing();
+		void Close();
+		void Update(Time time);
+		void Render(Time time);
+		void Pause();
+		void Resume();
+		void HideCursor();
+		void ShowCursor();
 		#endregion
 	}
 }
