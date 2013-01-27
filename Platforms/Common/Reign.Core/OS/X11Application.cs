@@ -116,7 +116,7 @@ namespace Reign.Core
 						break;
 						
 					case (X11.ClientMessage):
-					theEvent.Type = ApplicationEventTypes.Closed;
+						theEvent.Type = ApplicationEventTypes.Closed;
 						Close();
 						return;
 						

@@ -239,7 +239,7 @@ namespace Reign.Video.OpenGL
 				int[] attrbs =
 				{
 					GLX.RGBA,
-					GLX.DOUBLEBUFFER, 1,
+					GLX.DOUBLEBUFFER,// 1,
 					//GLX.RED_SIZE, 8,
 					//GLX.GREEN_SIZE, 8,
 					//GLX.BLUE_SIZE, 8,
@@ -588,12 +588,10 @@ namespace Reign.Video.OpenGL
 			WGL.MakeCurrent(dc, IntPtr.Zero);
 			#endif
 			
-			#if LINUX
 			#if RPI
 			EGL.MakeCurrent(dc, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
-			#else
+			#elif LINUX
 			GLX.MakeCurrent(dc, IntPtr.Zero, IntPtr.Zero);
-			#endif
 			#endif
 			
 			#if OSX
@@ -763,10 +761,9 @@ namespace Reign.Video.OpenGL
 			WGL.SwapBuffers(dc);
 			#endif
 			
-			#if LINUX
 			#if RPI
 			EGL.SwapBuffers(dc, surface);
-			#else
+			#elif LINUX
 			/*unsafe
 			{
 				if (vSync)
@@ -777,7 +774,6 @@ namespace Reign.Video.OpenGL
 				}
 			}*/
 			GLX.SwapBuffers(dc, handle);
-			#endif
 			#endif
 			
 			#if OSX
