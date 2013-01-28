@@ -63,5 +63,11 @@
     <Compile Include="..\..\Common\Reign.Input.API\Mouse.cs">
       <Link>Mouse.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Input.API\GamePad.cs">
+      <Link>GamePad.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Input.API\TouchScreen.cs">
+      <Link>TouchScreen.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>

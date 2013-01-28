@@ -205,14 +205,14 @@ namespace Reign.Core
 		
 		private static void init()
 		{
-			CurrentWindow.Show();
+			NaClApplication.CurrentApplication.show();
 		}
 		
 		private static void exit()
 		{
-			if (CurrentWindow == null) return;
+			if (NaClApplication.CurrentApplication == null) return;
 			
-			CurrentWindow.Close();
+			NaClApplication.CurrentApplication.dispose();
 			running = false;
 			while (!finishedRunning) Thread.Sleep(1);
 			closed = true;
@@ -283,7 +283,7 @@ namespace Reign.Core
 			Mono_InvokeMethodOnMainThread("Reign.Core", "Reign.Core.OS:init");
 			while (running)
 			{
-				CurrentWindow.monoThreadUpdate();
+				NaClApplication.CurrentApplication.monoThreadUpdate();
 				Thread.Sleep(1);
 			}
 			finishedRunning = true;

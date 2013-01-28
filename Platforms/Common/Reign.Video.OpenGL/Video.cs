@@ -332,7 +332,7 @@ namespace Reign.Video.OpenGL
 				#endif
 				
 				#if NaCl
-				var frame = window.FrameSize;
+				var frame = application.FrameSize;
 				int[] attribs =
 				{
 			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 8,

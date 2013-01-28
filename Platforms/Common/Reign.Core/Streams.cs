@@ -90,7 +90,6 @@ namespace Reign.Core
 					LoadedStream = await Streams.OpenFile(fileName);
 					#elif NaCl
 					this.loadedCallback = loadedCallback;
-					this.failedToLoadCallback = failedToLoadCallback;
 					
 					fileName = fileName.Replace('\\', '/');
 					file = new NaClFile(fileName);
@@ -133,7 +132,7 @@ namespace Reign.Core
 				{
 					FailedToLoad = true;
 					if (loadedCallback != null) loadedCallback(this, false);
-					failedToLoadCallback = null;
+					loadedCallback = null;
 					Dispose();
 					return;
 				}
@@ -148,7 +147,7 @@ namespace Reign.Core
 					FailedToLoad = true;
 					Loader.AddLoadableException(e);
 					if (loadedCallback != null) loadedCallback(this, false);
-					failedToLoadCallback = null;
+					loadedCallback = null;
 					Dispose();
 					return;
 				}

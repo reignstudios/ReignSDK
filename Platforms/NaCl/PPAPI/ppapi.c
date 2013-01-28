@@ -76,13 +76,13 @@ static PP_Bool HandleInputEvent(PP_Instance instance, PP_Resource input_event)
 {
 	if (monoMethod_MouseMoveEvent == 0)
 	{
-		monoMethod_MouseMoveEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClWindow:naclHandleMouseMoveEvent", true);
-		monoMethod_LeftMouseDownEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClWindow:naclHandleLeftMouseDownEvent", true);
-		monoMethod_MiddleMouseDownEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClWindow:naclHandleMiddleMouseDownEvent", true);
-		monoMethod_RightMouseDownEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClWindow:naclHandleRightMouseDownEvent", true);
-		monoMethod_LeftMouseUpEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClWindow:naclHandleLeftMouseUpEvent", true);
-		monoMethod_MiddleMouseUpEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClWindow:naclHandleMiddleMouseUpEvent", true);
-		monoMethod_RightMouseUpEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClWindow:naclHandleRightMouseUpEvent", true);
+		monoMethod_MouseMoveEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClApplication:naclHandleMouseMoveEvent", true);
+		monoMethod_LeftMouseDownEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClApplication:naclHandleLeftMouseDownEvent", true);
+		monoMethod_MiddleMouseDownEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClApplication:naclHandleMiddleMouseDownEvent", true);
+		monoMethod_RightMouseDownEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClApplication:naclHandleRightMouseDownEvent", true);
+		monoMethod_LeftMouseUpEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClApplication:naclHandleLeftMouseUpEvent", true);
+		monoMethod_MiddleMouseUpEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClApplication:naclHandleMiddleMouseUpEvent", true);
+		monoMethod_RightMouseUpEvent = Mono_FindMethod("Reign.Core", "Reign.Core.NaClApplication:naclHandleRightMouseUpEvent", true);
 	}
 
 	if (mouseEvent->IsMouseInputEvent(input_event))
