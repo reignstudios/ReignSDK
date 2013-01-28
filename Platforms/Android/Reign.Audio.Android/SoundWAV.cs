@@ -40,15 +40,15 @@ namespace Reign.Audio.Android
 			State = SoundStates.Stopped;
 			volume = 1;
 			
-			Application.PauseCallback += Pause;
-			Application.ResumeCallback += resume;
+			OS.CurrentApplication.PauseCallback += Pause;
+			OS.CurrentApplication.ResumeCallback += resume;
 		}
 
 		public override void Dispose()
 		{
 			disposeChilderen();
-			Application.PauseCallback -= Pause;
-			Application.ResumeCallback -= resume;
+			OS.CurrentApplication.PauseCallback -= Pause;
+			OS.CurrentApplication.ResumeCallback -= resume;
 			if (instance != null) Stop();
 			base.Dispose();
 		}
@@ -130,30 +130,33 @@ namespace Reign.Audio.Android
 		#endregion
 
 		#region Constructors
-		public static new SoundWAV New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public static new SoundWAV New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return new SoundWAV(parent, fileName, instanceCount, looped, loadedCallback, failedToLoadCallback);
+			return new SoundWAV(parent, fileName, instanceCount, looped, loadedCallback);
 		}
 		
-		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			new StreamLoader(fileName,
-			delegate(object sender)
+			delegate(object sender, bool succeeded)
 			{
-				init(parent, ((StreamLoader)sender).LoadedStream, instanceCount, looped, loadedCallback, failedToLoadCallback);
-			},
-			delegate
-			{
-				FailedToLoad = true;
-				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (succeeded)
+				{
+					init(parent, ((StreamLoader)sender).LoadedStream, instanceCount, looped, loadedCallback);
+				}
+				else
+				{
+					FailedToLoad = true;
+					Dispose();
+					if (loadedCallback != null) loadedCallback(this, false);
+				}
 			});
 		}
 		
-		protected override void init(DisposableI parent, System.IO.Stream stream, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback, Loader.FailedToLoadCallbackMethod failedToLoadCallback)
+		protected override void init(DisposableI parent, System.IO.Stream stream, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			base.init(parent, stream, instanceCount, looped, loadedCallback, failedToLoadCallback);
+			base.init(parent, stream, instanceCount, looped, loadedCallback);
 		
 			try
 			{
@@ -174,12 +177,12 @@ namespace Reign.Audio.Android
 				FailedToLoad = true;
 				Loader.AddLoadableException(e);
 				Dispose();
-				if (failedToLoadCallback != null) failedToLoadCallback();
+				if (loadedCallback != null) loadedCallback(this, false);
 				return;
 			}
 			
 			Loaded = true;
-			if (loadedCallback != null) loadedCallback(this);
+			if (loadedCallback != null) loadedCallback(this, true);
 		}
 
 		public override void Dispose()

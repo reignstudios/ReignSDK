@@ -110,6 +110,9 @@ namespace Reign.Core
 		#if WINRT
 		public string ApplicationID, UnitID;
 		#endif
+		#if ANDROID
+		public string PublisherID;
+		#endif
 	}
 
 	public delegate void ApplicationEventMethod();

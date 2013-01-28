@@ -91,7 +91,7 @@ namespace Reign.Core
 			#if ANDROID
 			AndroidMessage.Title = title;
 			AndroidMessage.Message = message;
-			OS.CurrentApplication.RunOnUiThread(new AndroidMessage());
+			((AndroidApplication)OS.CurrentApplication).RunOnUiThread(new AndroidMessage());
 			#endif
 			
 			#if NaCl
@@ -111,7 +111,7 @@ namespace Reign.Core
 		
 		public void Run()
 		{
-			using (var alertDialog = new AlertDialog.Builder(OS.CurrentApplication).Create())
+			using (var alertDialog = new AlertDialog.Builder((AndroidApplication)OS.CurrentApplication).Create())
 			{
 				alertDialog.SetTitle(Title);
 				alertDialog.SetMessage(Message);

@@ -12,11 +12,11 @@ namespace Reign.Input.Android
 		internal delegate void UpdateEventCallbackMethod(ApplicationEvent theEvent);
 		internal UpdateEventCallbackMethod UpdateEventCallback;
 		
-		internal Application application;
+		internal ApplicationI application;
 		#endregion
 	
 		#region Constructors
-		public Input(DisposableI parent, Application application)
+		public Input(DisposableI parent, ApplicationI application)
 		: base(parent)
 		{
 			this.application = application;

@@ -70,6 +70,7 @@ namespace Reign.Core
 		public void Init(ApplicationDesc desc)
 		{
 			this.desc = desc;
+			theEvent = new ApplicationEvent();
 		}
 		
 		public override void ViewDidLoad ()

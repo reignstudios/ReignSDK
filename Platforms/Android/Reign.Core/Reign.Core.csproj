@@ -100,7 +100,6 @@
     <Compile Include="..\..\Common\Reign.Core\OS\OS.cs">
       <Link>OS\OS.cs</Link>
     </Compile>
-    <Compile Include="OS\RootActivity.cs" />
     <Compile Include="AdMob\AdMobWrapper.cs" />
     <Compile Include="..\..\Common\Reign.Core\Time.cs">
       <Link>Time.cs</Link>
@@ -159,6 +158,7 @@
     <Compile Include="..\..\Common\Reign.Core\Math\Triangle3.cs">
       <Link>Math\Triangle3.cs</Link>
     </Compile>
+    <Compile Include="OS\AndroidApplication.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Disposable\" />

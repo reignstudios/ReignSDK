@@ -335,7 +335,7 @@ namespace Reign.Core
 			try
 			{
 				fileName = fileName.Replace('\\', '/');
-				using (var stream = OS.CurrentApplication.Assets.Open(fileName))
+				using (var stream = ((AndroidApplication)OS.CurrentApplication).Assets.Open(fileName))
 				{
 					return CopyToMemoryStream(stream);
 				}
