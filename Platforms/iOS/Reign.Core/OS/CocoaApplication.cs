@@ -10,12 +10,11 @@ using System.Runtime.InteropServices;
 
 namespace Reign.Core
 {
-	public class GLController : GLKViewController
+	public abstract class CocoaApplication : GLKViewController, ApplicationI
 	{
 		class GLRenderer : GLKViewControllerDelegate
 		{
-			private GLController glController;
-			private Application application;
+			private CocoaApplication application;
 			private bool shown;
 			
 			private const uint RENDERBUFFER = 0x8D41u;
@@ -24,9 +23,8 @@ namespace Reign.Core
 			[DllImport("/System/Library/Frameworks/OpenGLES.framework/OpenGLES", EntryPoint = "glGetRenderbufferParameteriv", ExactSpelling = true)]
 			private unsafe static extern void GetRenderbufferParameteriv(uint target, uint pname, int* @params);
 		
-			public GLRenderer(GLController glController, Application application)
+			public GLRenderer(CocoaApplication application)
 			{
-				this.glController = glController;
 				this.application = application;
 			}
 			
@@ -39,10 +37,10 @@ namespace Reign.Core
 						int width = 0, height = 0;
 						GetRenderbufferParameteriv(RENDERBUFFER, RENDERBUFFER_WIDTH, &width);
 						GetRenderbufferParameteriv(RENDERBUFFER, RENDERBUFFER_HEIGHT, &height);
-						application.frameSize = new Size2(width, height);
-						glController.frameVector = application.frameSize.ToVector2() / glController.frameVector;
+						application.FrameSize = new Size2(width, height);
+						application.frameVector = application.FrameSize.ToVector2() / application.frameVector;
 					}
-					application.shown();
+					application.Shown();
 					shown = true;
 				}
 				OS.UpdateAndRender();
@@ -50,74 +48,70 @@ namespace Reign.Core
 		}
 	
 		#region Properties
-		private Application application;
-		protected ApplicationEvent theEvent;
 		private EAGLContext context;
 		private GLRenderer renderer;
 		private Vector2 frameVector;
 		private bool enableAds;
 		private ADBannerView iAdView;
+		
+		private ApplicationDesc desc;
+		public ApplicationOrientations Orientation {get; private set;}
+		
+		public Size2 FrameSize {get; internal set;}
+		public bool Closed {get; private set;}
+		
+		public event ApplicationHandleEventMethod HandleEvent;
+		public event ApplicationStateMethod PauseCallback, ResumeCallback;
+		
+		private ApplicationEvent theEvent;
 		#endregion
 		
 		#region Constructors
-		public GLController(bool enableAds)
+		public void Init(ApplicationDesc desc)
 		{
-			this.enableAds = enableAds;
-		}
-	
-		protected void setApplication(Application application)
-		{
-			this.application = application;
+			this.desc = desc;
 		}
 		
 		public override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
 			
-			try
+			View.MultipleTouchEnabled = true;
+		
+			// set up GL
+			PreferredFramesPerSecond = 60;
+			context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
+			var view = (GLKView)this.View;
+			view.Context = context;
+			view.DrawableDepthFormat = GLKViewDrawableDepthFormat.Format16;
+			EAGLContext.SetCurrentContext(context);
+		
+			renderer = new GLRenderer(this);
+			Delegate = renderer;
+			
+			// set view stuff
+			View.MultipleTouchEnabled = true;
+			if (desc.Orientation == ApplicationOrientations.Landscape) frameVector = new Vector2(view.Frame.Height, view.Frame.Width);
+			else frameVector = new Vector2(view.Frame.Width, view.Frame.Height);
+		
+			// iAd
+			if (enableAds)
 			{
-				View.MultipleTouchEnabled = true;
-			
-				// set up GL
-				PreferredFramesPerSecond = 60;
-				context = new EAGLContext(EAGLRenderingAPI.OpenGLES2);
-				var view = (GLKView)this.View;
-				view.Context = context;
-				view.DrawableDepthFormat = GLKViewDrawableDepthFormat.Format16;
-				EAGLContext.SetCurrentContext(context);
-			
-				renderer = new GLRenderer(this, application);
-				Delegate = renderer;
-				
-				// set view stuff
-				View.MultipleTouchEnabled = true;
-				if (application.orientation == ApplicationOrientations.Landscape) frameVector = new Vector2(view.Frame.Height, view.Frame.Width);
-				else frameVector = new Vector2(view.Frame.Width, view.Frame.Height);
-			
-				// iAd
-				if (enableAds)
-				{
-					iAdView = new ADBannerView();
-					iAdView.AdLoaded += new EventHandler(iAdLoaded);
-					iAdView.FailedToReceiveAd += new EventHandler<AdErrorEventArgs>(iAdFailedToReceiveAd);
-					var adSize = iAdView.SizeThatFits(new SizeF(frameVector.X, frameVector.Y));
-					iAdView.Frame = new RectangleF(0, frameVector.Y-adSize.Height, 1, 1);
-					View.AddSubview(iAdView);
-					iAdView.Hidden = true;
-				}
-			}
-			catch (Exception e)
-			{
-				application.closing();
-				throw e;
+				iAdView = new ADBannerView();
+				iAdView.AdLoaded += new EventHandler(iAdLoaded);
+				iAdView.FailedToReceiveAd += new EventHandler<AdErrorEventArgs>(iAdFailedToReceiveAd);
+				var adSize = iAdView.SizeThatFits(new SizeF(frameVector.X, frameVector.Y));
+				iAdView.Frame = new RectangleF(0, frameVector.Y-adSize.Height, 1, 1);
+				View.AddSubview(iAdView);
+				iAdView.Hidden = true;
 			}
 		}
 		#endregion
 		
-		#region Methods
+		#region Method Events
 		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations ()
 		{
-			return (application.orientation == ApplicationOrientations.Landscape) ? UIInterfaceOrientationMask.LandscapeRight : UIInterfaceOrientationMask.Portrait;
+			return (desc.Orientation == ApplicationOrientations.Landscape) ? UIInterfaceOrientationMask.LandscapeRight : UIInterfaceOrientationMask.Portrait;
 		}
 		
 		private void iAdLoaded(object sender, EventArgs e)
@@ -130,10 +124,15 @@ namespace Reign.Core
 			iAdView.Hidden = true;
 		}
 		
+		private void handleEvent(ApplicationEvent applicationEvent)
+		{
+			if (HandleEvent != null) HandleEvent(applicationEvent);
+		}
+		
 		public override void DidReceiveMemoryWarning ()
 		{
 			EAGLContext.SetCurrentContext(context);
-			application.closing();
+			Closing();
 			EAGLContext.SetCurrentContext(null);
 			base.DidReceiveMemoryWarning ();
 		}
@@ -141,12 +140,12 @@ namespace Reign.Core
 		public override void ViewDidAppear (bool animated)
 		{
 			base.ViewDidAppear (animated);
-			application.resume();
+			Resume();
 		}
 		
 		public override void ViewDidDisappear (bool animated)
 		{
-			application.pause();
+			Pause();
 			base.ViewDidDisappear (animated);
 		}
 		
@@ -168,7 +167,7 @@ namespace Reign.Core
 			}
 			
 			theEvent.Type = ApplicationEventTypes.Touch;
-			application.handleEvent(theEvent);
+			handleEvent(theEvent);
 		}
 		
 		public override void TouchesBegan (NSSet touches, UIEvent evt)
@@ -189,6 +188,53 @@ namespace Reign.Core
 		public override void TouchesMoved (NSSet touches, UIEvent evt)
 		{
 			manageTouches(touches, evt, false);
+		}
+		#endregion
+		
+		#region Methods
+		public virtual void Shown()
+		{
+			
+		}
+		
+		public virtual void Closing()
+		{
+			
+		}
+		
+		public new virtual void Close()
+		{
+			
+		}
+		
+		public virtual void Update(Time time)
+		{
+			
+		}
+		
+		public virtual void Render(Time time)
+		{
+			
+		}
+		
+		public virtual void Pause()
+		{
+			if (PauseCallback != null) PauseCallback();
+		}
+		
+		public virtual void Resume()
+		{
+			if (ResumeCallback != null) ResumeCallback();
+		}
+		
+		public void ShowCursor()
+		{
+			
+		}
+		
+		public void HideCursor()
+		{
+			
 		}
 		#endregion
 	}

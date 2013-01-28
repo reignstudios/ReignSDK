@@ -97,7 +97,6 @@
     <Compile Include="..\..\Common\Reign.Core\OS\OS.cs">
       <Link>OS\OS.cs</Link>
     </Compile>
-    <Compile Include="OS\GLController.cs" />
     <Compile Include="..\..\Common\Reign.Core\Time.cs">
       <Link>Time.cs</Link>
     </Compile>
@@ -155,6 +154,7 @@
     <Compile Include="..\..\Common\Reign.Core\Math\Triangle3.cs">
       <Link>Math\Triangle3.cs</Link>
     </Compile>
+    <Compile Include="OS\CocoaApplication.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Disposable\" />

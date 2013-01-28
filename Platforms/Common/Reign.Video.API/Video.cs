@@ -51,7 +51,7 @@ namespace Reign.Video.API
 					}
 					#endif
 
-					#if WIN32 || OSX || LINUX || NaCl
+					#if WIN32 || OSX || LINUX || NaCl || iOS || ANDROID
 					if (gl)
 					{
 						gl = false;

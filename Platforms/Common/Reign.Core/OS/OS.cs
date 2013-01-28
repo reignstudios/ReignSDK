@@ -55,7 +55,7 @@ namespace Reign.Core
 			app.IdleTimerDisabled = true;
 			
 			window = new UIWindow (UIScreen.MainScreen.Bounds);
-			window.RootViewController = OS.CurrentApplication;
+			window.RootViewController = (CocoaApplication)OS.CurrentApplication;
 			window.MakeKeyAndVisible();
 			
 			return true;

@@ -67,8 +67,8 @@ namespace Reign.Audio.Cocoa
 			instance.Initialize();
 			
 			#if iOS
-			Application.PauseCallback += Pause;
-			Application.ResumeCallback += resume;
+			OS.CurrentApplication.PauseCallback += Pause;
+			OS.CurrentApplication.ResumeCallback += resume;
 			#endif
 		}
 
@@ -76,8 +76,8 @@ namespace Reign.Audio.Cocoa
 		{
 			disposeChilderen();
 			#if iOS
-			Application.PauseCallback -= Pause;
-			Application.ResumeCallback -= resume;
+			OS.CurrentApplication.PauseCallback -= Pause;
+			OS.CurrentApplication.ResumeCallback -= resume;
 			#endif
 			if (instance != null)
 			{

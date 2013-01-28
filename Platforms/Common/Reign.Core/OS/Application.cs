@@ -132,6 +132,9 @@ namespace Reign.Core
 		#if OSX
 		MonoMac.AppKit.NSView View {get;}
 		#endif
+		#if iOS
+		MonoTouch.UIKit.UIView View {get;}
+		#endif
 		ApplicationOrientations Orientation {get;}
 		Size2 FrameSize {get;}
 		bool Closed {get;}
