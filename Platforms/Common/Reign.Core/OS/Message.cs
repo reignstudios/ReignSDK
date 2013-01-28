@@ -69,7 +69,7 @@ namespace Reign.Core
 			alert.MessageText = title;
 			alert.InformativeText = message;
 			
-			alert.BeginSheet(OS.CurrentWindow, delegate
+			alert.BeginSheet((CocoaApplication)OS.CurrentApplication, delegate
 			{
 			    alert.Dispose();
 			});

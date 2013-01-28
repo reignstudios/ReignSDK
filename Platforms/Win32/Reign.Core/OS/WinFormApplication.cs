@@ -34,15 +34,8 @@ namespace Reign.Core
 			base.Name = desc.Name;
 			base.Text = desc.Name;
 			var frame = desc.FrameSize;
-			if (frame.Width == 0 || frame.Height == 0)
-			{
-				frame = (OS.ScreenSize.ToVector2() / 1.5f).ToSize();
-				base.ClientSize = new System.Drawing.Size(frame.Width, frame.Height);
-			}
-			else
-			{
-				base.ClientSize = new System.Drawing.Size(frame.Width, frame.Height);
-			}
+			if (frame.Width == 0 || frame.Height == 0) frame = (OS.ScreenSize.ToVector2() / 1.5f).ToSize();
+			base.ClientSize = new System.Drawing.Size(frame.Width, frame.Height);
 	
 			switch (desc.StartPosition)
 			{

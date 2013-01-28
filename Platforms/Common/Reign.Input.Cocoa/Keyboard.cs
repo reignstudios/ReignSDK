@@ -133,19 +133,19 @@ namespace Reign.Input.Cocoa
 		#endregion
 		
 		#region Methods
-		private void updateEvent(WindowEvent theEvent)
+		private void updateEvent(ApplicationEvent theEvent)
 		{
 			switch (theEvent.Type)
 			{
-				case (WindowEventTypes.KeyDown):
+				case (ApplicationEventTypes.KeyDown):
 					keys[theEvent.KeyCode] = true;
 					break;
 				
-				case (WindowEventTypes.KeyUp):
+				case (ApplicationEventTypes.KeyUp):
 					keys[theEvent.KeyCode] = false;
 					break;
 					
-				case (WindowEventTypes.Unkown):
+				case (ApplicationEventTypes.Unkown):
 					keys[theEvent.KeyCode] = !keys[theEvent.KeyCode];
 					break;
 			}

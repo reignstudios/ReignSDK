@@ -92,10 +92,6 @@
     <Compile Include="..\..\Common\Reign.Core\OS\OS.cs">
       <Link>OS\OS.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\OS\Window.cs">
-      <Link>OS\Window.cs</Link>
-    </Compile>
-    <Compile Include="OS\NSWindowEx.cs" />
     <Compile Include="..\..\Common\Reign.Core\Time.cs">
       <Link>Time.cs</Link>
     </Compile>
@@ -147,6 +143,10 @@
     <Compile Include="..\..\Common\Reign.Core\Loader.cs">
       <Link>Loader.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Core\OS\Application.cs">
+      <Link>OS\Application.cs</Link>
+    </Compile>
+    <Compile Include="OS\CocoaApplication.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

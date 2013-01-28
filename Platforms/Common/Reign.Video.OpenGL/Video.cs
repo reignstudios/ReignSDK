@@ -286,7 +286,7 @@ namespace Reign.Video.OpenGL
 				if (NSContext == null) Debug.ThrowError("Video", "Failed to create GL context");
 				NSContext.MakeCurrentContext();
 				NSContext.SwapInterval = vSync;
-				NSContext.View = window.View;
+				NSContext.View = application.View;
 				ctx = NSContext.CGLContext.Handle;
 				OS.NSContext = NSContext;
 				

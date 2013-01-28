@@ -252,7 +252,7 @@ namespace Reign.Core
 			#endif
 			
 			#if OSX
-			window.Show();
+			((CocoaApplication)application).show();
 			pool.Dispose();
 			pool = null;
 			NSTimer.CreateRepeatingScheduledTimer(0, delegate

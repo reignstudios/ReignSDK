@@ -51,7 +51,7 @@ namespace Reign.Input.API
 					{
 						cocoa = false;
 						type = InputTypes.Cocoa;
-						input = new Reign.Input.Cocoa.Input(parent, window);
+						input = new Reign.Input.Cocoa.Input(parent, application);
 						break;
 					}
 					#endif
@@ -61,7 +61,7 @@ namespace Reign.Input.API
 					{
 						x11 = false;
 						type = InputTypes.X11;
-						input = new Reign.Input.X11.Input(parent, window);
+						input = new Reign.Input.X11.Input(parent, application);
 						break;
 					}
 					#endif
@@ -71,7 +71,7 @@ namespace Reign.Input.API
 					{
 						nacl = false;
 						type = InputTypes.NaCl;
-						input = new Reign.Input.NaCl.Input(parent, window);
+						input = new Reign.Input.NaCl.Input(parent, application);
 						break;
 					}
 					#endif

@@ -129,6 +129,9 @@ namespace Reign.Core
 		#if XNA
 		Microsoft.Xna.Framework.Graphics.GraphicsDevice GraphicsDevice {get;}
 		#endif
+		#if OSX
+		MonoMac.AppKit.NSView View {get;}
+		#endif
 		ApplicationOrientations Orientation {get;}
 		Size2 FrameSize {get;}
 		bool Closed {get;}

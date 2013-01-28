@@ -49,6 +49,9 @@
     <Compile Include="..\..\Common\Reign.Input.API\Mouse.cs">
       <Link>Mouse.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Input.API\TouchScreen.cs">
+      <Link>TouchScreen.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

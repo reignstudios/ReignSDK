@@ -54,45 +54,45 @@ namespace Reign.Input.Cocoa
 		#endregion
 		
 		#region Methods
-		public void updateEvent(WindowEvent theEvent)
+		public void updateEvent(ApplicationEvent theEvent)
 		{
 			switch (theEvent.Type)
 			{
-				case (WindowEventTypes.LeftMouseDown):
+				case (ApplicationEventTypes.LeftMouseDown):
 					leftOn = true;
 					currentPosition = theEvent.CursorPosition;
 					break;
 
-				case (WindowEventTypes.LeftMouseUp):
+				case (ApplicationEventTypes.LeftMouseUp):
 					leftOn = false;
 					currentPosition = theEvent.CursorPosition;
 					break;
 				
-				case (WindowEventTypes.MiddleMouseDown):
+				case (ApplicationEventTypes.MiddleMouseDown):
 					 middleOn = true;
 					 currentPosition = theEvent.CursorPosition;
 					 break;
 
-				case (WindowEventTypes.MiddleMouseUp):
+				case (ApplicationEventTypes.MiddleMouseUp):
 					middleOn = false;
 					currentPosition = theEvent.CursorPosition;
 					break;
 				
-				case (WindowEventTypes.RightMouseDown):
+				case (ApplicationEventTypes.RightMouseDown):
 					rightOn = true;
 					currentPosition = theEvent.CursorPosition;
 					break;
 
-				case (WindowEventTypes.RightMouseUp):
+				case (ApplicationEventTypes.RightMouseUp):
 					rightOn = false;
 					currentPosition = theEvent.CursorPosition;
 					break;
 
-				case (WindowEventTypes.MouseMove):
+				case (ApplicationEventTypes.MouseMove):
 					currentPosition = theEvent.CursorPosition;
 					break;
 				
-				case (WindowEventTypes.ScrollWheel):
+				case (ApplicationEventTypes.ScrollWheel):
 					scrollWheelVelocity = theEvent.ScrollWheelVelocity;
 					scollWheelChanged = true;
 					currentPosition = theEvent.CursorPosition;
