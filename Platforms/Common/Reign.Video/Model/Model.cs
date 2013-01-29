@@ -190,6 +190,8 @@ namespace Reign.Video
 		private delegate void FoundBinderMethod(MaterialI material, FieldInfo materialField, IDictionary values, MaterialFieldBinder binder, string contentDirectory, Dictionary<string,string> fileExtOverrides);
 		private void bindTypes(MaterialI material, IDictionary values, List<MaterialFieldBinder> binders, string contentDirectory, Dictionary<string,string> fileExtOverrides, FoundBinderMethod handleFoundBinder)
 		{
+			if (binders == null) return;
+
 			var materialType = material.GetType();
 			foreach (var binder in binders)
 			{

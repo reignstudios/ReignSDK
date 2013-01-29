@@ -34,38 +34,52 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Reign.Core">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Core.dll</HintPath>
+    <Reference Include="Reign.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Reign.Input">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Input.dll</HintPath>
+    <Reference Include="Reign.Input, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign.Input.dll</HintPath>
     </Reference>
-    <Reference Include="Reign.Input.API">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Input.API.dll</HintPath>
+    <Reference Include="Reign.Input.API, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign.Input.API.dll</HintPath>
     </Reference>
-    <Reference Include="Reign.Input.WinForms">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Input.WinForms.dll</HintPath>
+    <Reference Include="Reign.Input.WinForms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign.Input.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="Reign.Physics">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Physics.dll</HintPath>
+    <Reference Include="Reign.Physics, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign.Physics.dll</HintPath>
     </Reference>
-    <Reference Include="Reign.Video">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Video.dll</HintPath>
+    <Reference Include="Reign.Video, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign.Video.dll</HintPath>
     </Reference>
-    <Reference Include="Reign.Video.API">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Video.API.dll</HintPath>
+    <Reference Include="Reign.Video.API, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign.Video.API.dll</HintPath>
     </Reference>
-    <Reference Include="Reign.Video.D3D11">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Video.D3D11.dll</HintPath>
+    <Reference Include="Reign.Video.D3D11, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign.Video.D3D11.dll</HintPath>
     </Reference>
-    <Reference Include="Reign.Video.D3D9">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Video.D3D9.dll</HintPath>
+    <Reference Include="Reign.Video.D3D9, Version=1.0.4683.9228, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign.Video.D3D9.dll</HintPath>
     </Reference>
-    <Reference Include="Reign.Video.OpenGL">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Video.OpenGL.dll</HintPath>
+    <Reference Include="Reign.Video.OpenGL, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign.Video.OpenGL.dll</HintPath>
     </Reference>
-    <Reference Include="Reign_Video_D3D11_Component">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign_Video_D3D11_Component.dll</HintPath>
+    <Reference Include="Reign_Video_D3D11_Component, Version=1.0.4670.2404, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign_Video_D3D11_Component.dll</HintPath>
+    </Reference>
+    <Reference Include="Reign_Video_D3D9_Component">
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign_Video_D3D9_Component.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

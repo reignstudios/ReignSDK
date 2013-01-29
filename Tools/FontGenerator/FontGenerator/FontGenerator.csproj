@@ -35,10 +35,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Reign.Core">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Core.dll</HintPath>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign.Core.dll</HintPath>
     </Reference>
     <Reference Include="Reign.Video">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Video.dll</HintPath>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign.Video.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

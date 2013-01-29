@@ -126,8 +126,9 @@ namespace Reign.Video
 			try
 			{
 				using (var dataStream = new MemoryStream(data))
-				using (var writer = new BinaryWriter(outStream))
 				{
+					var writer = new BinaryWriter(outStream);
+
 					// File Type
 					int type = Streams.MakeFourCC('b', 'm', 'p', 'c');
 					writer.Write(type);

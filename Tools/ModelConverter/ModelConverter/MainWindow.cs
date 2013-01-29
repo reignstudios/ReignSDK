@@ -10,7 +10,7 @@ using Reign.Physics;
 
 namespace ModelConverter
 {
-	public class MainWindow : Window
+	public class MainWindow : WinFormApplication
 	{
 		ToolWindow toolWindow;
 		bool loaded;
@@ -26,39 +26,43 @@ namespace ModelConverter
 
 		bool loadingSoftwareModelDone = true;
 		SoftwareModel softwareModel;
-		ModelI model;
+		Model model;
 
 		InputI input;
 		MouseI mouse;
 
 		public MainWindow()
-		: base("Model Converter", 512, 512, WindowStartPositions.CenterCurrentScreen, WindowTypes.FrameSizable)
 		{
-			
+			var desc = new ApplicationDesc()
+			{
+				FrameSize = new Size2(512, 512),
+				Name = "Model Converter"
+			};
+			Init(desc);
 		}
 
-		protected override void shown()
+		public override void Shown()
 		{
 			try
 			{
 				root = new RootDisposable();
-				video = Video.Create(VideoTypes.D3D11 | VideoTypes.D3D9 | VideoTypes.OpenGL, out videoType, root, this, true);
-				rasterizerState = RasterizerState.Create(videoType, video, RasterizerStateDesc.Create(videoType, RasterizerStateTypes.Solid_CullNone));
-				depthStencilState = DepthStencilState.Create(videoType, video, DepthStencilStateDesc.Create(videoType, DepthStencilStateTypes.ReadWrite_Less));
-				blendState = BlendState.Create(videoType, video, BlendStateDesc.Create(videoType, BlendStateTypes.None));
-				samplerState = SamplerState.Create(videoType, video, SamplerStateDesc.Create(videoType, SamplerStateTypes.Linear_Wrap));
+				video = Video.Init(VideoTypes.D3D11 | VideoTypes.D3D9 | VideoTypes.OpenGL, out videoType, root, this, true);
+				rasterizerState = RasterizerStateAPI.New(video, RasterizerStateDescAPI.New(RasterizerStateTypes.Solid_CullNone));
+				depthStencilState = DepthStencilStateAPI.New(video, DepthStencilStateDescAPI.New(DepthStencilStateTypes.ReadWrite_Less));
+				blendState = BlendStateAPI.New(video, BlendStateDescAPI.New(BlendStateTypes.None));
+				samplerState = SamplerStateAPI.New(video, SamplerStateDescAPI.New(SamplerStateTypes.Linear_Wrap));
 
 				var frame = FrameSize;
-				viewPort = ViewPort.Create(videoType, video, 0, 0, frame.Width, frame.Height);
+				viewPort = ViewPortAPI.New(video, 0, 0, frame.Width, frame.Height);
 				camera = new Camera(viewPort, new Vector3(10, 10, 10), new Vector3(), new Vector3(10, 11, 10));
 
-				DiffuseTextureMaterial.Init(videoType, video, "Materials\\", video.FileTag, ShaderVersions.Max);
+				DiffuseTextureMaterial.Init(video, "Materials\\", video.FileTag, ShaderVersions.Max, null);
 				DiffuseTextureMaterial.ApplyGlobalConstantsCallback = diffuseTextureGlobalApply;
 				DiffuseTextureMaterial.ApplyInstanceConstantsCallback = diffuseTextureInstanceApply;
 
 				InputTypes inputType;
-				input = Input.Create(InputTypes.WinForms, out inputType, root, this);
-				mouse = Mouse.Create(inputType, input);
+				input = Input.Init(InputTypes.WinForms, out inputType, root, this);
+				mouse = MouseAPI.New(input);
 
 				toolWindow = new ToolWindow(this);
 				toolWindow.Show(this);
@@ -81,7 +85,7 @@ namespace ModelConverter
 			}
 		}
 
-		protected override void closing()
+		public override void Closing()
 		{
 			if (toolWindow != null)
 			{
@@ -100,13 +104,13 @@ namespace ModelConverter
 		public void Convert(string contentPath, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> materialFieldTypes)
 		{
 			if (model != null) model.Dispose();
-			model = Model.Create(videoType, video, softwareModel, MeshVertexSizes.Float3, false, true, true, contentPath, materialTypes, null, null, null, null, materialFieldTypes, null, 0);
+			model = new Model(video, softwareModel, MeshVertexSizes.Float3, false, true, true, contentPath, materialTypes, null, null, null, null, materialFieldTypes, null, 0, null);
 		}
 
 		public void Save(string fileName, bool saveColors, bool saveUVs, bool saveNormals)
 		{
 			if (softwareModel == null) return;
-			ModelI.Save(fileName, false, softwareModel, MeshVertexSizes.Float3, saveColors, saveUVs, saveNormals);
+			Model.Save(fileName, false, softwareModel, MeshVertexSizes.Float3, saveColors, saveUVs, saveNormals);
 		}
 
 		public void SaveTriangleMesh(string fileName)
@@ -115,7 +119,7 @@ namespace ModelConverter
 			TriangleMesh.Save(softwareModel.Meshes[0], fileName);
 		}
 
-		protected override void update(Time time)
+		public override void Update(Time time)
 		{
 			if (!loaded) return;
 
@@ -135,24 +139,24 @@ namespace ModelConverter
 			}
 		}
 
-		void diffuseTextureGlobalApply(DiffuseTextureMaterial material, MeshI mesh)
+		void diffuseTextureGlobalApply(DiffuseTextureMaterial material, Mesh mesh)
 		{
 			DiffuseTextureMaterial.Camera = camera.TransformMatrix;
 			DiffuseTextureMaterial.LightDirection = -camera.Position.Normalize();
 			DiffuseTextureMaterial.LightColor = new Vector4(1);
 		}
 
-		void diffuseTextureInstanceApply(DiffuseTextureMaterial material, MeshI mesh)
+		void diffuseTextureInstanceApply(DiffuseTextureMaterial material, Mesh mesh)
 		{
 			material.Transform = Matrix4.FromAffineTransform(Matrix3.FromEuler(mesh.Rotation), mesh.Scale, mesh.Position);
 		}
 
-		protected override void render(Time time)
+		public override void Render(Time time)
 		{
 			if (!loaded) return;
 
 			video.Update();
-			var e = Streams.TryLoad();
+			var e = Loader.UpdateLoad();
 			if (e != null)
 			{
 				Message.Show("Error", e.Message);
@@ -163,7 +167,7 @@ namespace ModelConverter
 				Close();
 				return;
 			}
-			if (Streams.ItemsRemainingToLoad != 0) return;
+			if (Loader.ItemsRemainingToLoad != 0) return;
 
 			if (!loadingSoftwareModelDone)
 			{

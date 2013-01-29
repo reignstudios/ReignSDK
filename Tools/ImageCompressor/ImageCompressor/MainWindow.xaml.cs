@@ -37,7 +37,7 @@ namespace ImageCompressor
 				{
 					if (new FileInfo(dlg.FileName).Extension.ToLower() == ".bmpc")
 					{
-						var image = new ImageBMPC(dlg.FileName, false);
+						var image = new ImageBMPC(dlg.FileName, false, null);
 						var writable = new WriteableBitmap(image.Size.Width, image.Size.Height, 96, 96, PixelFormats.Bgra32, null);
 						int stride = (image.Size.Width * 32 + 7) / 8;
 
@@ -122,9 +122,11 @@ namespace ImageCompressor
 						data[i2+2] = c;
 					}
 
-					using (var stream = ImageBMPC.Save(data, width, height))
+					using (var stream = new MemoryStream())
 					using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
 					{
+						ImageBMPC.Save(data, width, height, stream, null);
+						stream.Position = 0;
 						stream.CopyTo(file);
 					}
 				}
