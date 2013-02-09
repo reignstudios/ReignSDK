@@ -7,19 +7,19 @@ varying vec2 UV_VSPS;
 attribute vec2 Position0;
 
 uniform mat4 Camera;
-uniform vec2 Location;
+uniform vec2 Position;
 uniform vec2 Size;
-uniform vec2 LocationUV;
+uniform vec2 PositionUV;
 uniform vec2 SizeUV;
 uniform vec2 TexelOffset;
 
 void main()
 {
-	vec3 loc = vec3((Position0 * Size) + Location, 0);
+	vec3 loc = vec3((Position0 * Size) + Position, 0);
 	gl_Position = Position_VSPS = ( vec4(loc, 1.0) * Camera);
 
 	vec2 uv = Position0 + TexelOffset;
-	UV_VSPS = ( vec2(uv.x, 1.0-uv.y) * SizeUV) + LocationUV;
+	UV_VSPS = ( vec2(uv.x, 1.0-uv.y) * SizeUV) + PositionUV;
 }
 #END
 

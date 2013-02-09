@@ -13,8 +13,6 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Linq;
-using System.Xml.Serialization;
 using System.IO;
 
 namespace FontGenerator
@@ -42,7 +40,7 @@ namespace FontGenerator
 		RenderTargetBitmap finalRenderTarget, testRenderTarget;
 		Color fontColor, shadowColor, glowColor, bgColor;
 		double fontSize;
-		Reign.Video.FontMetrics.Character[] xmlCharacters;
+		Reign.Video.FontMetrics.Character[] tempCharacters;
 
 		public MainWindow()
 		{
@@ -112,7 +110,7 @@ namespace FontGenerator
 			if (generateFinalImage.IsChecked == true)
 			{
 				double textureSize = (double)textureSizeComboBox.SelectedValue;
-				xmlCharacters = renderImage(finalImage, ref finalRenderTarget, textureSize, textureSize, generateCharacters(), false);
+				tempCharacters = renderImage(finalImage, ref finalRenderTarget, textureSize, textureSize, generateCharacters(), false);
 			}
 		}
 
@@ -436,7 +434,7 @@ namespace FontGenerator
 
 		private void saveButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (generateFinalImage.IsChecked != true || xmlCharacters == null) return;
+			if (generateFinalImage.IsChecked != true || tempCharacters == null) return;
 
 			var dlg = new Microsoft.Win32.SaveFileDialog();
 			if (dlg.ShowDialog() == true)
@@ -445,12 +443,11 @@ namespace FontGenerator
 				{
 					// save xml
 					var fontMetrics = new Reign.Video.FontMetrics();
-					fontMetrics.Characters = xmlCharacters;
+					fontMetrics.Characters = tempCharacters;
 
-					var xml = new XmlSerializer(typeof(Reign.Video.FontMetrics));
-					using (var file = new FileStream(dlg.FileName + ".xml", FileMode.Create, FileAccess.Write))
+					using (var file = new FileStream(dlg.FileName + ".font", FileMode.Create, FileAccess.Write))
 					{
-						xml.Serialize(file, fontMetrics);
+						fontMetrics.Save(file);
 					}
 
 					// save image

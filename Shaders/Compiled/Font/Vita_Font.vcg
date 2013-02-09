@@ -1,7 +1,7 @@
 uniform float4x4 Camera;
-uniform float2 Location;
+uniform float2 Position;
 uniform float2 Size;
-uniform float2 LocationUV;
+uniform float2 PositionUV;
 uniform float2 SizeUV;
 uniform float2 TexelOffset;
 
@@ -10,9 +10,9 @@ float2 in Position_VS : POSITION,
 float4 out Position_VSPS : POSITION,
 float2 out UV_VSPS : TEXCOORD0)
 {
-	float3 loc = float3((Position_VS * Size) + Location, 0);
+	float3 loc = float3((Position_VS * Size) + Position, 0);
 	Position_VSPS = mul( float4(loc, 1.0), Camera);
 
 	float2 uv = Position_VS + TexelOffset;
-	UV_VSPS = ( float2(uv.x, 1.0-uv.y) * SizeUV) + LocationUV;
+	UV_VSPS = ( float2(uv.x, 1.0-uv.y) * SizeUV) + PositionUV;
 }

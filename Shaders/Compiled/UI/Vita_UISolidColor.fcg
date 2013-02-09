@@ -1,0 +1,8 @@
+uniform float4 Color;
+
+void main(
+float4 in Position_VSPS : POSITION,
+float4 out Color_PS : COLOR)
+{
+	Color_PS = Color;
+}

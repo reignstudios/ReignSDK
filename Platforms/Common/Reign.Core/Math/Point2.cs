@@ -169,6 +169,16 @@ namespace Reign.Core
 		{
 			result = X >= rect.Left && X <= rect.Right && Y >= rect.Bottom && Y <= rect.Top;
 		}
+
+		public bool Intersects(BoundingBox2 boundingBox)
+		{
+			return X >= boundingBox.Left && X <= boundingBox.Right && Y >= boundingBox.Bottom && Y <= boundingBox.Top;
+		}
+
+		public void Intersects(BoundingBox2 boundingBox, out bool result)
+		{
+			result = X >= boundingBox.Left && X <= boundingBox.Right && Y >= boundingBox.Bottom && Y <= boundingBox.Top;
+		}
 		#endregion
 	}
 }

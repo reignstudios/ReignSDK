@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Reign.Core;
+using Reign.Video;
+using System;
 
 namespace Reign.UI
 {
@@ -10,6 +12,7 @@ namespace Reign.UI
 
 	public interface VisualI : ShapeI
 	{
-		
+		void Update(Rect2 elementRect);
+		void Render(Camera camera);
 	}
 }

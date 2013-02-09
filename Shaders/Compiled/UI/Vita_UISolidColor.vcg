@@ -1,0 +1,11 @@
+uniform float4x4 Camera;
+uniform float2 Position;
+uniform float2 Size;
+
+void main(
+float2 in Position_VS : POSITION,
+float4 out Position_VSPS : POSITION)
+{
+	float3 loc = float3((Position_VS * Size) + Position, 0);
+	Position_VSPS = mul( float4(loc, 1.0), Camera);
+}

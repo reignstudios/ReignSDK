@@ -4,6 +4,6 @@ namespace Reign.UI
 {
 	public interface ShapeI
 	{
-		BoundingBox2 BoundingBox {get;}
+		Rect2 Rect {get;}
 	}
 }

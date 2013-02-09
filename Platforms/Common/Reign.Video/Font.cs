@@ -1,6 +1,5 @@
 ﻿using Reign.Core;
 using System.IO;
-using System.Xml.Serialization;
 using System;
 using System.Collections.Generic;
 
@@ -30,29 +29,47 @@ namespace Reign.Video
 		}
 	}
 
-	[XmlRoot("FontMetrics")]
 	public class FontMetrics
 	{
-		public class Character
+		public struct Character
 		{
-			[XmlAttribute("Key")]
 			public char Key;
-
-			[XmlElement("X")]
-			public int X;
-
-			[XmlElement("Y")]
-			public int Y;
-				
-			[XmlElement("Width")]
-			public int Width;
-				
-			[XmlElement("Height")]
-			public int Height;
+			public int X, Y, Width, Height;
 		}
 
-		[XmlElement("Character")]
 		public Character[] Characters;
+
+		public void Load(Stream stream)
+		{
+			var reader = new BinaryReader(stream);
+			int characterCount = reader.ReadInt32();
+			Characters = new Character[characterCount];
+			for (int i = 0; i != characterCount; ++i)
+			{
+				Characters[i] = new Character()
+				{
+					Key = reader.ReadChar(),
+					X = reader.ReadInt32(),
+					Y = reader.ReadInt32(),
+					Width = reader.ReadInt32(),
+					Height = reader.ReadInt32(),
+				};
+			}
+		}
+
+		public void Save(Stream stream)
+		{
+			var writer = new BinaryWriter(stream);
+			writer.Write(Characters.Length);
+			foreach (var character in Characters)
+			{
+				writer.Write(character.Key);
+				writer.Write(character.X);
+				writer.Write(character.Y);
+				writer.Write(character.Width);
+				writer.Write(character.Height);
+			}
+		}
 	}
 
 	public class Font : Disposable, LoadableI
@@ -62,7 +79,7 @@ namespace Reign.Video
 		public bool FailedToLoad {get; protected set;}
 
 		private ShaderI shader;
-		private ShaderVariableI shaderCamera, shaderLocation, shaderSize, shaderLocationUV, shaderSizeUV, texelOffset, shaderColor;
+		private ShaderVariableI shaderCamera, shaderPosition, shaderSize, shaderPositionUV, shaderSizeUV, texelOffset, shaderColor;
 		private ShaderResourceI shaderTexture;
 		private Texture2DI texture;
 		private BufferLayoutI layout;
@@ -112,9 +129,8 @@ namespace Reign.Video
 			try
 			{
 				// load characters
-				var xml = new XmlSerializer(typeof(FontMetrics));
-				var metrics = xml.Deserialize(stream) as FontMetrics;
-				if (metrics == null) Debug.ThrowError("FontI", "Failed to deserialize font metrics: " + metricsFileName);
+				var metrics = new FontMetrics();
+				metrics.Load(stream);
 
 				Characters = new Character[metrics.Characters.Length];
 				for (int i = 0; i != metrics.Characters.Length; ++i)
@@ -127,9 +143,9 @@ namespace Reign.Video
 				this.texture = texture;
 				this.shader = shader;
 				shaderCamera = shader.Variable("Camera");
-				shaderLocation = shader.Variable("Location");
+				shaderPosition = shader.Variable("Position");
 				shaderSize = shader.Variable("Size");
-				shaderLocationUV = shader.Variable("LocationUV");
+				shaderPositionUV = shader.Variable("PositionUV");
 				shaderSizeUV = shader.Variable("SizeUV");
 				texelOffset = shader.Variable("TexelOffset");
 				shaderColor = shader.Variable("Color");
@@ -192,7 +208,7 @@ namespace Reign.Video
 			instancing = false;
 		}
 
-		public void Draw(string text, Vector2 location, Vector4 color, float size, bool centeredX, bool centeredY)
+		public void Draw(string text, Vector2 position, Vector4 color, float size, bool centeredX, bool centeredY)
 		{
 			if (instancing)
 			{
@@ -200,11 +216,11 @@ namespace Reign.Video
 			}
 			else
 			{
-				draw(text, texture.SizeF, location, color, size, centeredX, centeredY);
+				draw(text, texture.SizeF, position, color, size, centeredX, centeredY);
 			}
 		}
 
-		private void draw(string text, Vector2 textureSize, Vector2 location, Vector4 color, float size, bool centeredX, bool centeredY)
+		private void draw(string text, Vector2 textureSize, Vector2 position, Vector4 color, float size, bool centeredX, bool centeredY)
 		{
 			if (string.IsNullOrEmpty(text)) return;
 
@@ -229,17 +245,17 @@ namespace Reign.Video
 			{
 				var c = FindCharacter(text[i]);
 				var sizeScaled = c.SizeRatio * size;
-				drawCharacter(offset + location - centeredLoc, sizeScaled, c.Offset / textureSize, c.Size / textureSize, color);
+				drawCharacter(offset + position - centeredLoc, sizeScaled, c.Offset / textureSize, c.Size / textureSize, color);
 
 				offset.X += sizeScaled.X;
 			}
 		}
 
-		private void drawCharacter(Vector2 location, Vector2 size, Vector2 locationUV, Vector2 sizeUV, Vector4 color)
+		private void drawCharacter(Vector2 position, Vector2 size, Vector2 positionUV, Vector2 sizeUV, Vector4 color)
 		{
-			shaderLocation.Set(location);
+			shaderPosition.Set(position);
 			shaderSize.Set(size);
-			shaderLocationUV.Set(locationUV);
+			shaderPositionUV.Set(positionUV);
 			shaderSizeUV.Set(sizeUV);
 			shaderColor.Set(color);
 			shader.Apply();

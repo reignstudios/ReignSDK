@@ -6,7 +6,7 @@ using Reign.Video;
 
 namespace ShaderMaterials.Shaders
 {
-	public class FontMaterial : MaterialI
+	public class UISolidColorMaterial : MaterialI
 	{
 		#region Static Properties
 		public static bool Loaded {get; private set;}
@@ -15,20 +15,20 @@ namespace ShaderMaterials.Shaders
 		public static ShaderI Shader {get; private set;}
 		public static BufferLayoutDescI BufferLayoutDesc {get; private set;}
 		public static BufferLayoutI BufferLayout {get; private set;}
-		public static ShaderVariableI CameraConstant {get; private set;}public static ShaderVariableI PositionConstant {get; private set;}public static ShaderVariableI SizeConstant {get; private set;}public static ShaderVariableI PositionUVConstant {get; private set;}public static ShaderVariableI SizeUVConstant {get; private set;}public static ShaderVariableI TexelOffsetConstant {get; private set;}public static ShaderVariableI ColorConstant {get; private set;}public static ShaderResourceI DiffuseTextureConstant {get; private set;}
+		public static ShaderVariableI CameraConstant {get; private set;}public static ShaderVariableI PositionConstant {get; private set;}public static ShaderVariableI SizeConstant {get; private set;}public static ShaderVariableI ColorConstant {get; private set;}
 		#endregion
 
 		#region Instance Properties
 		public string Name {get; set;}
-		public delegate void ApplyCallbackMethod(FontMaterial material, Mesh mesh);
+		public delegate void ApplyCallbackMethod(UISolidColorMaterial material, Mesh mesh);
 		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
-		[MaterialField(MaterialFieldUsages.Global)] public static Matrix4 Camera;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 Position;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 Size;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 PositionUV;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 SizeUV;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 TexelOffset;[MaterialField(MaterialFieldUsages.Instance)] public Vector4 Color;[MaterialField(MaterialFieldUsages.Instance)] public Texture2DI DiffuseTexture;
+		[MaterialField(MaterialFieldUsages.Global)] public static Matrix4 Camera;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 Position;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 Size;[MaterialField(MaterialFieldUsages.Instance)] public Vector4 Color;
 		#endregion
 
 		#region Constructors
 		public static void Init(DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			Shader = ShaderAPI.New(parent, contentPath + tag + "Font.rs", shaderVersion,
+			Shader = ShaderAPI.New(parent, contentPath + tag + "UISolidColor.rs", shaderVersion,
 			delegate(object sender, bool succeeded)
 			{
 				if (succeeded)
@@ -45,7 +45,7 @@ namespace ShaderMaterials.Shaders
 
 		public static void Init(DisposableI parent, string contentPath, string tag, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			Shader = ShaderAPI.New(parent, contentPath + tag + "Font.rs", shaderVersion, vsQuality, psQuality,
+			Shader = ShaderAPI.New(parent, contentPath + tag + "UISolidColor.rs", shaderVersion, vsQuality, psQuality,
 			delegate(object sender, bool succeeded)
 			{
 				if (succeeded)
@@ -64,7 +64,7 @@ namespace ShaderMaterials.Shaders
 		{
 			try
 			{
-				CameraConstant = shader.Variable("Camera");PositionConstant = shader.Variable("Position");SizeConstant = shader.Variable("Size");PositionUVConstant = shader.Variable("PositionUV");SizeUVConstant = shader.Variable("SizeUV");TexelOffsetConstant = shader.Variable("TexelOffset");ColorConstant = shader.Variable("Color");DiffuseTextureConstant = shader.Resource("DiffuseTexture");
+				CameraConstant = shader.Variable("Camera");PositionConstant = shader.Variable("Position");SizeConstant = shader.Variable("Size");ColorConstant = shader.Variable("Color");
 				var elements = new List<BufferLayoutElement>();
 				elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.Position, 0, 0, 0));
 				BufferLayoutDesc = BufferLayoutDescAPI.New(elements);
@@ -105,7 +105,7 @@ namespace ShaderMaterials.Shaders
 		public void ApplyInstanceContants(Mesh mesh)
 		{
 			if (ApplyInstanceConstantsCallback != null) ApplyInstanceConstantsCallback(this, mesh);
-			PositionConstant.Set(Position);SizeConstant.Set(Size);PositionUVConstant.Set(PositionUV);SizeUVConstant.Set(SizeUV);TexelOffsetConstant.Set(TexelOffset);ColorConstant.Set(Color);DiffuseTextureConstant.Set(DiffuseTexture);
+			PositionConstant.Set(Position);SizeConstant.Set(Size);ColorConstant.Set(Color);
 		}
 
 		public void ApplyInstancingContants(Mesh mesh)
@@ -129,7 +129,7 @@ namespace ShaderMaterials.Shaders
 
 		public void ApplyInstanceContants()
 		{
-			PositionConstant.Set(Position);SizeConstant.Set(Size);PositionUVConstant.Set(PositionUV);SizeUVConstant.Set(SizeUV);TexelOffsetConstant.Set(TexelOffset);ColorConstant.Set(Color);DiffuseTextureConstant.Set(DiffuseTexture);
+			PositionConstant.Set(Position);SizeConstant.Set(Size);ColorConstant.Set(Color);
 		}
 
 		public static void ApplyInstancingContants()

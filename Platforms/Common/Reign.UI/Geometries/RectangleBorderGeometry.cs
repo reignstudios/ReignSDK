@@ -22,7 +22,8 @@ namespace Reign.UI
 		#region Methods
 		public void Render()
 		{
-			
+			vertexBuffer.Enable(indexBuffer);
+			vertexBuffer.Draw();
 		}
 		#endregion
 	}
