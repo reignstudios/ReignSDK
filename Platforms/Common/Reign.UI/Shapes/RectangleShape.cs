@@ -18,7 +18,11 @@ namespace Reign.UI
 		}
 
 		protected Rect2 rect;
-		public Rect2 Rect {get{return rect;}}
+		public Rect2 Rect
+		{
+			get {return rect;}
+			set {rect = value;}
+		}
 		#endregion
 
 		#region Constructors
@@ -30,6 +34,13 @@ namespace Reign.UI
 		public RectangleShape(Point2 position, Size2 size)
 		{
 			rect = new Rect2(position, size);
+		}
+		#endregion
+
+		#region Methods
+		public bool Intersects(Point2 point)
+		{
+			return point.Intersects(rect);
 		}
 		#endregion
 	}

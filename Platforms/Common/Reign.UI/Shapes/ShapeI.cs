@@ -4,6 +4,8 @@ namespace Reign.UI
 {
 	public interface ShapeI
 	{
-		Rect2 Rect {get;}
+		Rect2 Rect {get; set;}
+
+		bool Intersects(Point2 point);
 	}
 }

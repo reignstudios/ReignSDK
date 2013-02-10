@@ -40,6 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Common\Reign.UI\Effects\ColorFadeEffect.cs">
+      <Link>Effects\ColorFadeEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.UI\Effects\Effect.cs">
+      <Link>Effects\Effect.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.UI\Elements\Button.cs">
       <Link>Elements\Button.cs</Link>
     </Compile>
@@ -69,6 +75,9 @@
     </Compile>
     <Compile Include="..\..\Common\Reign.UI\Visuals\VisualRectangle.cs">
       <Link>Visuals\VisualRectangle.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.UI\Visuals\VisualText.cs">
+      <Link>Visuals\VisualText.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

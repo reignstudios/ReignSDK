@@ -10,9 +10,10 @@ namespace Reign.UI
 	public enum ElementStates
 	{
 		None,
-		MouseEnter,
-		MouseExit,
-		MouseOver
+		Enter,
+		Exit,
+		Over,
+		Pressed
 	}
 
 	public enum HorizontalAlignments
@@ -29,10 +30,16 @@ namespace Reign.UI
 		Center
 	}
 
+	public class ElementEventArgs
+	{
+		public Point2 MousePosition;
+	}
+
 	public abstract class Element
 	{
 		#region Properties
 		protected UI ui;
+		public EffectI Effect;
 		public bool Enabled;
 		private ElementStates currentState, lastState;
 
@@ -48,28 +55,29 @@ namespace Reign.UI
 
 		public Point2 Position
 		{
-			get {return rect.Position;}
-			set {rect.Position = value;}
+			get {return RolloverShape.Rect.Position;}
+			set {RolloverShape.Rect = new Rect2(value, RolloverShape.Rect.Size);}
 		}
 
 		public Size2 Size
 		{
-			get {return rect.Size;}
-			set {rect.Size = value;}
+			get {return RolloverShape.Rect.Size;}
+			set {RolloverShape.Rect = new Rect2(RolloverShape.Rect.Position, value);}
 		}
-
-		private Rect2 rect;
-		public Rect2 Rect {get {return rect;}}
 
 		private Rect2 visualRect;
 		public Rect2 VisualRect {get {return visualRect;}}
+
+		public delegate void MouseEventCallBack(Element sender, ElementEventArgs args);
+		public event MouseEventCallBack OnEnter, OnExit, OnPressed, OnOver;
+		private ElementEventArgs eventArgs;
 		#endregion
 
 		#region Constructors
-		public Element(UI ui, int x, int y, int width, int height)
+		public Element(UI ui)
 		{
 			this.ui = ui;
-			rect = new Rect2(x, y, width, height);
+			eventArgs = new ElementEventArgs();
 
 			Enabled = true;
 			HorizontalAlignment = HorizontalAlignments.Left;
@@ -96,20 +104,39 @@ namespace Reign.UI
 			}
 
 			// get mouse state
+			eventArgs.MousePosition = mouse.Position;
 			currentState = ElementStates.None;
-			if (mouse.Position.Intersects(rect) && childState == ElementStates.None)
+			if (RolloverShape.Intersects(mouse.Position) && childState == ElementStates.None)
 			{
-				if (lastState == ElementStates.None) currentState = ElementStates.MouseEnter;
-				else if (lastState == ElementStates.MouseEnter) currentState = ElementStates.MouseOver;
+				if (lastState == ElementStates.None)
+				{
+					currentState = ElementStates.Enter;
+					if (OnEnter != null) OnEnter(this, eventArgs);
+				}
+				else if (lastState == ElementStates.Enter || lastState == ElementStates.Over)
+				{
+					if (mouse.Left.On)
+					{
+						currentState = ElementStates.Pressed;
+						if (OnPressed != null) OnPressed(this, eventArgs);
+					}
+					else
+					{
+						currentState = ElementStates.Over;
+						if (OnOver != null) OnOver(this, eventArgs);
+					}
+				}
 			}
-			else
+			else if (lastState == ElementStates.Enter || lastState == ElementStates.Over)
 			{
-				if (lastState == ElementStates.MouseEnter || lastState == ElementStates.MouseOver) currentState = ElementStates.MouseExit;
+				 currentState = ElementStates.Exit;
+				 if (OnExit != null) OnExit(this, eventArgs);
 			}
 			lastState = currentState;
 
-			// calculate visual rect
-			visualRect = rect;
+			// calculate visual effects
+			if (Effect != null) Effect.Update(RolloverShape.Rect, Visuals, currentState, out visualRect);
+			else visualRect = RolloverShape.Rect;
 
 			// update visuals
 			foreach (var visual in Visuals) visual.Update(visualRect);

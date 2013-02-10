@@ -23,13 +23,14 @@ namespace Reign.UI
 		private BlendStateI blendState;
 		private SamplerStateI samplerState;
 
-		public Color4 BackgroundColor, ForgroundColor, BorderColor;
+		public Vector4 BackgroundColorIdle, BackgroundColorRollover, BackgroundColorPressed, ForegroundColorIdle, ForegroundColorRollover, ForegroundColorPressed, BorderColorIdle, BorderColorRollover, BorderColorPressed;
 		internal ShaderI solidColorShader, textureShader;
 		internal Font font;
+		internal float fontSize;
 		#endregion
 
 		#region Constructors
-		public UI(DisposableI parent, VideoI video, ShaderI solidColorShader, ShaderI textureShader, Font font, MouseI mouse)
+		public UI(DisposableI parent, VideoI video, ShaderI solidColorShader, ShaderI textureShader, Font font, float fontSize, MouseI mouse)
 		: base(parent)
 		{
 			try
@@ -47,12 +48,22 @@ namespace Reign.UI
 				blendState = BlendStateAPI.New(video, BlendStateDescAPI.New(BlendStateTypes.Alpha));
 				samplerState = SamplerStateAPI.New(video, SamplerStateDescAPI.New(SamplerStateTypes.Linear_Wrap));
 
-				BackgroundColor = new Color4(0, 112, 159, 255);
-				ForgroundColor = new Color4(255, 255, 255, 255);
-				BorderColor = new Color4(0, 255, 0, 255);
+				BackgroundColorIdle = new Color4(0, 112, 159, 255).ToVector4();
+				BackgroundColorRollover = new Color4(255, 0, 0, 255).ToVector4();
+				BackgroundColorPressed = new Color4(0, 255, 0, 255).ToVector4();
+
+				ForegroundColorIdle = new Color4(255, 255, 255, 255).ToVector4();
+				ForegroundColorRollover = new Color4(0, 255, 0, 255).ToVector4();
+				ForegroundColorPressed = new Color4(0, 0, 255, 255).ToVector4();
+
+				BorderColorIdle = new Color4(0, 255, 0, 255).ToVector4();
+				BorderColorRollover = new Color4(0, 255, 0, 255).ToVector4();
+				BorderColorPressed = new Color4(0, 255, 0, 255).ToVector4();
+
 				this.solidColorShader = solidColorShader;
 				this.textureShader = textureShader;
 				this.font = font;
+				this.fontSize = fontSize;
 			}
 			catch (Exception e)
 			{

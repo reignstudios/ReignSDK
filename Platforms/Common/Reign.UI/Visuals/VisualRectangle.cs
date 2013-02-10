@@ -7,7 +7,8 @@ namespace Reign.UI
 	public class VisualRectangle : RectangleShape, VisualI
 	{
 		#region Properties
-		public Color4 Color;
+		public VisualLayers Layout {get; private set;}
+		public Vector4 Color {get; set;}
 		Texture2DI Texture;
 
 		private GeometryI geometry;
@@ -17,8 +18,9 @@ namespace Reign.UI
 		#endregion
 
 		#region Constructors
-		public VisualRectangle(UI ui, Color4 color, Texture2DI texture, VisualFillModes fillMode)
+		public VisualRectangle(UI ui, Vector4 color, Texture2DI texture, VisualLayers layer, VisualFillModes fillMode)
 		{
+			Layout = layer;
 			Color = color;
 			Texture = texture;
 
@@ -53,7 +55,7 @@ namespace Reign.UI
 			shaderCamera.Set(camera.TransformMatrix);
 			shaderPosition.Set(Position.ToVector2());
 			shaderSize.Set(Size.ToVector2());
-			shaderColor.Set(Color.ToVector4());
+			shaderColor.Set(Color);
 			if (Texture != null) shaderTexture.Set(Texture);
 			shader.Apply();
 			geometry.Render();
