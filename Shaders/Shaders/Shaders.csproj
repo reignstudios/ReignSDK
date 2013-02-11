@@ -50,6 +50,9 @@
     <Compile Include="QuickDraw\QuickDraw3Color.cs" />
     <Compile Include="QuickDraw\QuickDraw3ColorUV.cs" />
     <Compile Include="UI\UISolidColor.cs" />
+    <Compile Include="UI\UISolidTexture.cs" />
+    <Compile Include="UI\UISolidTexture2.cs" />
+    <Compile Include="UI\UISolidTexture3.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

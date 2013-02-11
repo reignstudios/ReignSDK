@@ -1,0 +1,12 @@
+uniform float4 Color;
+uniform sampler2D MainTexture;
+uniform sampler2D MainTexture2;
+uniform sampler2D MainTexture3;
+
+void main(
+float4 in Position_VSPS : POSITION,
+float2 in UV_VSPS : TEXCOORD0,
+float4 out Color_PS : COLOR)
+{
+	Color_PS = tex2D(MainTexture, UV_VSPS) * tex2D(MainTexture2, UV_VSPS) * tex2D(MainTexture3, UV_VSPS) * Color;
+}

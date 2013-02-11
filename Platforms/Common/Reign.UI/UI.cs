@@ -24,13 +24,13 @@ namespace Reign.UI
 		private SamplerStateI samplerState;
 
 		public Vector4 BackgroundColorIdle, BackgroundColorRollover, BackgroundColorPressed, ForegroundColorIdle, ForegroundColorRollover, ForegroundColorPressed, BorderColorIdle, BorderColorRollover, BorderColorPressed;
-		internal ShaderI solidColorShader, textureShader;
+		internal ShaderI solidColorShader, textureShader, textureShader2, textureShader3;
 		internal Font font;
 		internal float fontSize;
 		#endregion
 
 		#region Constructors
-		public UI(DisposableI parent, VideoI video, ShaderI solidColorShader, ShaderI textureShader, Font font, float fontSize, MouseI mouse)
+		public UI(DisposableI parent, VideoI video, ShaderI solidColorShader, ShaderI textureShader, ShaderI textureShader2, ShaderI textureShader3, Font font, float fontSize, MouseI mouse)
 		: base(parent)
 		{
 			try
@@ -46,22 +46,24 @@ namespace Reign.UI
 				rasterizerState = RasterizerStateAPI.New(video, RasterizerStateDescAPI.New(RasterizerStateTypes.Solid_CullNone));
 				depthStencilState = DepthStencilStateAPI.New(video, DepthStencilStateDescAPI.New(DepthStencilStateTypes.None));
 				blendState = BlendStateAPI.New(video, BlendStateDescAPI.New(BlendStateTypes.Alpha));
-				samplerState = SamplerStateAPI.New(video, SamplerStateDescAPI.New(SamplerStateTypes.Linear_Wrap));
+				samplerState = SamplerStateAPI.New(video, SamplerStateDescAPI.New(SamplerStateTypes.Linear_Clamp));
 
-				BackgroundColorIdle = new Color4(0, 112, 159, 255).ToVector4();
-				BackgroundColorRollover = new Color4(255, 0, 0, 255).ToVector4();
-				BackgroundColorPressed = new Color4(0, 255, 0, 255).ToVector4();
+				BackgroundColorIdle = new Color4(240, 240, 240, 255).ToVector4();
+				BackgroundColorRollover = new Color4(164, 216, 221, 255).ToVector4();
+				BackgroundColorPressed = new Color4(102, 188, 198, 255).ToVector4();
 
-				ForegroundColorIdle = new Color4(255, 255, 255, 255).ToVector4();
-				ForegroundColorRollover = new Color4(0, 255, 0, 255).ToVector4();
-				ForegroundColorPressed = new Color4(0, 0, 255, 255).ToVector4();
+				ForegroundColorIdle = new Color4(0, 0, 0, 255).ToVector4();
+				ForegroundColorRollover = new Color4(0, 0, 0, 255).ToVector4();
+				ForegroundColorPressed = new Color4(0, 0, 0, 255).ToVector4();
 
-				BorderColorIdle = new Color4(0, 255, 0, 255).ToVector4();
-				BorderColorRollover = new Color4(0, 255, 0, 255).ToVector4();
-				BorderColorPressed = new Color4(0, 255, 0, 255).ToVector4();
+				BorderColorIdle = new Color4(115, 115, 115, 255).ToVector4();
+				BorderColorRollover = new Color4(74, 147, 155, 255).ToVector4();
+				BorderColorPressed = new Color4(57, 113, 119, 255).ToVector4();
 
 				this.solidColorShader = solidColorShader;
 				this.textureShader = textureShader;
+				this.textureShader2 = textureShader2;
+				this.textureShader3 = textureShader3;
 				this.font = font;
 				this.fontSize = fontSize;
 			}

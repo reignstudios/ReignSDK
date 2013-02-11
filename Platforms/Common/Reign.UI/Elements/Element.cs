@@ -113,7 +113,7 @@ namespace Reign.UI
 					currentState = ElementStates.Enter;
 					if (OnEnter != null) OnEnter(this, eventArgs);
 				}
-				else if (lastState == ElementStates.Enter || lastState == ElementStates.Over)
+				else if (lastState == ElementStates.Enter || lastState == ElementStates.Over || lastState == ElementStates.Pressed)
 				{
 					if (mouse.Left.On)
 					{

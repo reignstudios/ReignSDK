@@ -1,0 +1,6 @@
+vsVar Camera 0 64
+vsVar Position 64 8
+vsVar Size 72 8
+psVar Color 0 16
+psRes MainTexture 0
+psRes MainTexture2 1

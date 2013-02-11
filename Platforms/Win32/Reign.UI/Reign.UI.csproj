@@ -49,6 +49,9 @@
     <Compile Include="..\..\Common\Reign.UI\Elements\Button.cs">
       <Link>Elements\Button.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.UI\Elements\ButtonImage.cs">
+      <Link>Elements\ButtonImage.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.UI\Elements\Element.cs">
       <Link>Elements\Element.cs</Link>
     </Compile>

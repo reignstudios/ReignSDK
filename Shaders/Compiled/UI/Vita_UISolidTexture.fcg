@@ -1,0 +1,10 @@
+uniform float4 Color;
+uniform sampler2D MainTexture;
+
+void main(
+float4 in Position_VSPS : POSITION,
+float2 in UV_VSPS : TEXCOORD0,
+float4 out Color_PS : COLOR)
+{
+	Color_PS = tex2D(MainTexture, UV_VSPS) * Color;
+}

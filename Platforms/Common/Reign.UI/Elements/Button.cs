@@ -25,6 +25,7 @@ namespace Reign.UI
 			var visuals = new VisualI[]
 			{
 				new VisualRectangle(ui, ui.BackgroundColorIdle, null, VisualLayers.Background, VisualFillModes.Solid),
+				new VisualRectangle(ui, ui.BorderColorIdle, null, VisualLayers.Border, VisualFillModes.Border),
 				visualText
 			};
 
