@@ -16,6 +16,7 @@ namespace Reign.UI
 		public Texture2DI Texture3 {get; set;}
 
 		private GeometryI geometry;
+		BufferLayoutI layout;
 		private ShaderI shader;
 		private ShaderVariableI shaderCamera, shaderPosition, shaderSize, shaderColor, shaderFade, shaderFade2, shaderTexelOffset;
 		private ShaderResourceI shaderTexture, shaderTexture2, shaderTexture3;
@@ -56,7 +57,7 @@ namespace Reign.UI
 				shaderTexture3 = shader.Resource("MainTexture3");
 				shaderFade2 = shader.Variable(texture2 == null ? "Fade" : "Fade2");
 			}
-
+			layout = ui.shaderLayout;
 			switch (fillMode)
 			{
 				case (VisualFillModes.Solid):
@@ -98,6 +99,7 @@ namespace Reign.UI
 				shaderFade2.Set(Fade2);
 			}
 
+			layout.Enable();
 			shader.Apply();
 			geometry.Render();
 		}

@@ -25,6 +25,7 @@ namespace Reign.UI
 
 		public Vector4 BackgroundColorIdle, BackgroundColorRollover, BackgroundColorPressed, ForegroundColorIdle, ForegroundColorRollover, ForegroundColorPressed, BorderColorIdle, BorderColorRollover, BorderColorPressed;
 		internal ShaderI solidColorShader, textureShader, textureShader2, textureShader3;
+		internal BufferLayoutI shaderLayout;
 		internal Font font;
 		internal float fontSize;
 		#endregion
@@ -66,12 +67,26 @@ namespace Reign.UI
 				this.textureShader3 = textureShader3;
 				this.font = font;
 				this.fontSize = fontSize;
+
+				shaderLayout = BufferLayoutAPI.New(video, solidColorShader, BufferLayoutDescAPI.New(BufferLayoutTypes.Position2));
 			}
 			catch (Exception e)
 			{
 				Dispose();
 				throw e;
 			}
+		}
+
+		public override void Dispose()
+		{
+			disposeChilderen();
+			if (rasterizerState != null) rasterizerState.Dispose();
+			if (depthStencilState != null) depthStencilState.Dispose();
+			if (blendState != null) blendState.Dispose();
+			if (samplerState != null) samplerState.Dispose();
+
+			if (shaderLayout != null) shaderLayout.Dispose();
+			base.Dispose();
 		}
 		#endregion
 
@@ -103,7 +118,7 @@ namespace Reign.UI
 			depthStencilState.Enable();
 			blendState.Enable();
 			samplerState.Enable(0);
-
+			
 			viewPort.Size = video.BackBufferSize;
 			viewPort.Apply();
 			camera.ApplyOrthographic();

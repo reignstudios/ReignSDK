@@ -30,7 +30,7 @@ namespace Reign.Video.OpenGL
 				case (DepthStencilStateTypes.None):
 					depthReadEnable = false;
 					depthWriteEnable = false;
-					depthFunc = GL.LESS;
+					depthFunc = GL.ALWAYS;
 
 					stencilEnable = false;
 					stencilFunc = GL.NEVER;

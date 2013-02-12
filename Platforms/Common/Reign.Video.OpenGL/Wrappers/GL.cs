@@ -692,7 +692,7 @@ namespace Reign.Video.OpenGL
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(DLL, EntryPoint = "glDepthFunc", ExactSpelling = true)]
 		public static extern void DepthFunc(GLenum func);
-		
+
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(DLL, EntryPoint = "glStencilFunc", ExactSpelling = true)]
 		public static extern void StencilFunc(GLenum func, GLint refx, GLuint mask);
