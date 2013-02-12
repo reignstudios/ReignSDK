@@ -13,6 +13,7 @@ struct VSIn
 float4x4 Camera;
 float2 Position;
 float2 Size;
+float2 TexelOffset;
 
 VSOutPSIn mainVS(VSIn In)
 {
@@ -20,7 +21,7 @@ VSOutPSIn mainVS(VSIn In)
 
 	float3 loc = float3((In.Position_VS * Size) + Position, 0);
 	Out.Position_VSPS = mul(Camera,  float4(loc, 1.0));
-	Out.UV_VSPS = float2(In.Position_VS.x, 1.0-In.Position_VS.y);
+	Out.UV_VSPS = float2(In.Position_VS.x, 1.0-In.Position_VS.y) + TexelOffset;
 
 	return Out;
 }
@@ -32,6 +33,8 @@ struct PSOut
 };
 
 float4 Color;
+float Fade;
+float Fade2;
 texture2D MainTexture;
 sampler2D MainTexture_S : register(s0) = sampler_state {Texture = <MainTexture>;};
 texture2D MainTexture2;
@@ -43,7 +46,11 @@ PSOut mainPS(VSOutPSIn In)
 {
 	PSOut Out;
 
-	Out.Color_PS = tex2D(MainTexture_S, In.UV_VSPS) * tex2D(MainTexture2_S, In.UV_VSPS) * tex2D(MainTexture3_S, In.UV_VSPS) * Color;
+	float4 outColor = tex2D(MainTexture_S, In.UV_VSPS);
+	outColor += (tex2D(MainTexture2_S, In.UV_VSPS) - outColor) * Fade;
+	outColor += (tex2D(MainTexture3_S, In.UV_VSPS) - outColor) * Fade2;
+
+	Out.Color_PS = outColor * Color;
 
 	return Out;
 }

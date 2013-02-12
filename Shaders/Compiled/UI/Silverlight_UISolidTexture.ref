@@ -1,5 +1,6 @@
 vsVar Camera 0 4
 vsVar Position 4 1
 vsVar Size 5 1
+vsVar TexelOffset 6 1
 psVar Color 0 1
 psRes MainTexture 0

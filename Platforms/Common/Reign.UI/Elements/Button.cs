@@ -19,13 +19,14 @@ namespace Reign.UI
 		public Button(UI ui, string caption, int x, int y, int width, int height)
 		: base(ui)
 		{
-			Effect = new ColorFadeEffect(ui.BackgroundColorIdle, ui.BackgroundColorRollover, ui.BackgroundColorPressed, ui.ForegroundColorIdle, ui.ForegroundColorRollover, ui.ForegroundColorPressed, ui.BorderColorIdle, ui.BorderColorRollover, ui.BorderColorPressed);
+			Effects = new EffectI[1];
+			Effects[0] = new ColorFadeEffect(ui.BackgroundColorIdle, ui.BackgroundColorRollover, ui.BackgroundColorPressed, ui.ForegroundColorIdle, ui.ForegroundColorRollover, ui.ForegroundColorPressed, ui.BorderColorIdle, ui.BorderColorRollover, ui.BorderColorPressed);
 
 			visualText = new VisualText(ui.font, ui.fontSize, ui.ForegroundColorIdle, caption, VisualLayers.Forground);
 			var visuals = new VisualI[]
 			{
-				new VisualRectangle(ui, ui.BackgroundColorIdle, null, VisualLayers.Background, VisualFillModes.Solid),
-				new VisualRectangle(ui, ui.BorderColorIdle, null, VisualLayers.Border, VisualFillModes.Border),
+				new VisualRectangle(ui, ui.BackgroundColorIdle, null, null, null, VisualLayers.Background, VisualFillModes.Solid),
+				new VisualRectangle(ui, ui.BorderColorIdle, null, null, null, VisualLayers.Border, VisualFillModes.Border),
 				visualText
 			};
 

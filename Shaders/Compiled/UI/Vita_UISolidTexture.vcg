@@ -1,6 +1,7 @@
 uniform float4x4 Camera;
 uniform float2 Position;
 uniform float2 Size;
+uniform float2 TexelOffset;
 
 void main(
 float2 in Position_VS : POSITION,
@@ -9,5 +10,5 @@ float2 out UV_VSPS : TEXCOORD0)
 {
 	float3 loc = float3((Position_VS * Size) + Position, 0);
 	Position_VSPS = mul( float4(loc, 1.0), Camera);
-	UV_VSPS = float2(Position_VS.x, 1.0-Position_VS.y);
+	UV_VSPS = float2(Position_VS.x, 1.0-Position_VS.y) + TexelOffset;
 }

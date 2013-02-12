@@ -1,7 +1,10 @@
 vsVar Camera 0 64
 vsVar Position 64 8
 vsVar Size 72 8
+vsVar TexelOffset 80 8
 psVar Color 0 16
+psVar Fade 16 4
+psVar Fade2 20 4
 psRes MainTexture 0
 psRes MainTexture2 1
 psRes MainTexture3 2

@@ -16,6 +16,7 @@ struct VSIn
 float4x4 Camera;
 float2 Position;
 float2 Size;
+float2 TexelOffset;
 
 VSOutPSIn main(VSIn In)
 {
@@ -23,7 +24,7 @@ VSOutPSIn main(VSIn In)
 
 	float3 loc = float3((In.Position_VS * Size) + Position, 0);
 	Out.Position_VSPS = mul(Camera,  float4(loc, 1.0));
-	Out.UV_VSPS = float2(In.Position_VS.x, 1.0-In.Position_VS.y);
+	Out.UV_VSPS = float2(In.Position_VS.x, 1.0-In.Position_VS.y) + TexelOffset;
 
 	return Out;
 }

@@ -6,33 +6,33 @@ namespace Reign.UI
 	public class ColorFadeEffect : EffectI
 	{
 		#region Properties
-		public float BackgroundColorSpeed, ForegroundColorSpeed, BorderColorSpeed;
+		public float IdleSpeed, RolloverSpeed, PressedSpeed;
 		public Vector4 BackgroundColor, BackgroundColorIdle, BackgroundColorRollover, BackgroundColorPressed;
 		public Vector4 ForegroundColor, ForegroundColorIdle, ForegroundColorRollover, ForegroundColorPressed;
 		public Vector4 BorderColor, BorderColorIdle, BorderColorRollover, BorderColorPressed;
 		#endregion
 
 		#region Constructors
-		public ColorFadeEffect(Vector4 BackgroundColorIdle, Vector4 BackgroundColorRollover, Vector4 BackgroundColorPressed, Vector4 ForegroundColorIdle, Vector4 ForegroundColorRollover, Vector4 ForegroundColorPressed, Vector4 BorderColorIdle, Vector4 BorderColorRollover, Vector4 BorderColorPressed)
+		public ColorFadeEffect(Vector4 backgroundColorIdle, Vector4 backgroundColorRollover, Vector4 backgroundColorPressed, Vector4 foregroundColorIdle, Vector4 foregroundColorRollover, Vector4 foregroundColorPressed, Vector4 borderColorIdle, Vector4 borderColorRollover, Vector4 borderColorPressed)
 		{
-			BackgroundColorSpeed = .1f;
-			ForegroundColorSpeed = .1f;
-			BorderColorSpeed = .1f;
+			IdleSpeed = .1f;
+			RolloverSpeed = .1f;
+			PressedSpeed = .1f;
 
-			this.BackgroundColor = BackgroundColorIdle;
-			this.BackgroundColorIdle = BackgroundColorIdle;
-			this.BackgroundColorRollover = BackgroundColorRollover;
-			this.BackgroundColorPressed = BackgroundColorPressed;
+			this.BackgroundColor = backgroundColorIdle;
+			this.BackgroundColorIdle = backgroundColorIdle;
+			this.BackgroundColorRollover = backgroundColorRollover;
+			this.BackgroundColorPressed = backgroundColorPressed;
 
-			this.ForegroundColor = ForegroundColorIdle;
-			this.ForegroundColorIdle = ForegroundColorIdle;
-			this.ForegroundColorRollover = ForegroundColorRollover;
-			this.ForegroundColorPressed = ForegroundColorPressed;
+			this.ForegroundColor = foregroundColorIdle;
+			this.ForegroundColorIdle = foregroundColorIdle;
+			this.ForegroundColorRollover = foregroundColorRollover;
+			this.ForegroundColorPressed = foregroundColorPressed;
 
-			this.BorderColor = BorderColorIdle;
-			this.BorderColorIdle = BorderColorIdle;
-			this.BorderColorRollover = BorderColorRollover;
-			this.BorderColorPressed = BorderColorPressed;
+			this.BorderColor = borderColorIdle;
+			this.BorderColorIdle = borderColorIdle;
+			this.BorderColorRollover = borderColorRollover;
+			this.BorderColorPressed = borderColorPressed;
 		}
 		#endregion
 
@@ -42,21 +42,21 @@ namespace Reign.UI
 			switch (state)
 			{
 				case ElementStates.None:
-					BackgroundColor += (BackgroundColorIdle - BackgroundColor) * BackgroundColorSpeed;
-					ForegroundColor += (ForegroundColorIdle - ForegroundColor) * ForegroundColorSpeed;
-					BorderColor += (BorderColorIdle - BorderColor) * BorderColorSpeed;
+					BackgroundColor += (BackgroundColorIdle - BackgroundColor) * IdleSpeed;
+					ForegroundColor += (ForegroundColorIdle - ForegroundColor) * IdleSpeed;
+					BorderColor += (BorderColorIdle - BorderColor) * IdleSpeed;
 					break;
 
 				case ElementStates.Over:
-					BackgroundColor += (BackgroundColorRollover - BackgroundColor) * BackgroundColorSpeed;
-					ForegroundColor += (ForegroundColorRollover - ForegroundColor) * ForegroundColorSpeed;
-					BorderColor += (BorderColorRollover - BorderColor) * BorderColorSpeed;
+					BackgroundColor += (BackgroundColorRollover - BackgroundColor) * RolloverSpeed;
+					ForegroundColor += (ForegroundColorRollover - ForegroundColor) * RolloverSpeed;
+					BorderColor += (BorderColorRollover - BorderColor) * RolloverSpeed;
 					break;
 
 				case ElementStates.Pressed:
-					BackgroundColor += (BackgroundColorPressed - BackgroundColor) * BackgroundColorSpeed;
-					ForegroundColor += (ForegroundColorPressed - ForegroundColor) * ForegroundColorSpeed;
-					BorderColor += (BorderColorPressed - BorderColor) * BorderColorSpeed;
+					BackgroundColor += (BackgroundColorPressed - BackgroundColor) * PressedSpeed;
+					ForegroundColor += (ForegroundColorPressed - ForegroundColor) * PressedSpeed;
+					BorderColor += (BorderColorPressed - BorderColor) * PressedSpeed;
 					break;
 			}
 

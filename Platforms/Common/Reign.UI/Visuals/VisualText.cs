@@ -9,6 +9,11 @@ namespace Reign.UI
 		#region Properties
 		public VisualLayers Layout {get; private set;}
 		public Vector4 Color {get; set;}
+		public float Fade {get; set;}
+		public float Fade2 {get; set;}
+		public Texture2DI Texture {get; set;}
+		public Texture2DI Texture2 {get; set;}
+		public Texture2DI Texture3 {get; set;}
 
 		private Font font;
 		private float fontSize;

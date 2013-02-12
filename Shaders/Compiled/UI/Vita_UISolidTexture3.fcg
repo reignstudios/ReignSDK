@@ -1,4 +1,6 @@
 uniform float4 Color;
+uniform float Fade;
+uniform float Fade2;
 uniform sampler2D MainTexture;
 uniform sampler2D MainTexture2;
 uniform sampler2D MainTexture3;
@@ -8,5 +10,9 @@ float4 in Position_VSPS : POSITION,
 float2 in UV_VSPS : TEXCOORD0,
 float4 out Color_PS : COLOR)
 {
-	Color_PS = tex2D(MainTexture, UV_VSPS) * tex2D(MainTexture2, UV_VSPS) * tex2D(MainTexture3, UV_VSPS) * Color;
+	float4 outColor = tex2D(MainTexture, UV_VSPS);
+	outColor += (tex2D(MainTexture2, UV_VSPS) - outColor) * Fade;
+	outColor += (tex2D(MainTexture3, UV_VSPS) - outColor) * Fade2;
+
+	Color_PS = outColor * Color;
 }

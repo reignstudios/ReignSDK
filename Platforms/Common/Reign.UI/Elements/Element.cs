@@ -39,7 +39,7 @@ namespace Reign.UI
 	{
 		#region Properties
 		protected UI ui;
-		public EffectI Effect;
+		public EffectI[] Effects;
 		public bool Enabled;
 		private ElementStates currentState, lastState;
 
@@ -135,8 +135,14 @@ namespace Reign.UI
 			lastState = currentState;
 
 			// calculate visual effects
-			if (Effect != null) Effect.Update(RolloverShape.Rect, Visuals, currentState, out visualRect);
-			else visualRect = RolloverShape.Rect;
+			if (Effects != null)
+			{
+				foreach (var effect in Effects) effect.Update(RolloverShape.Rect, Visuals, currentState, out visualRect);
+			}
+			else
+			{
+				visualRect = RolloverShape.Rect;
+			}
 
 			// update visuals
 			foreach (var visual in Visuals) visual.Update(visualRect);

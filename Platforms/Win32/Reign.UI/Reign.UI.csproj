@@ -46,6 +46,9 @@
     <Compile Include="..\..\Common\Reign.UI\Effects\Effect.cs">
       <Link>Effects\Effect.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.UI\Effects\ImageFadeEffect.cs">
+      <Link>Effects\ImageFadeEffect.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.UI\Elements\Button.cs">
       <Link>Elements\Button.cs</Link>
     </Compile>

@@ -13,8 +13,9 @@ namespace Shaders
 		
 		[FieldUsage(FieldUsageTypes.VS, MaterialUsages.Global)] public Matrix4 Camera;
 		[FieldUsage(FieldUsageTypes.VS, MaterialUsages.Instance)] public Vector2 Position;
-		[FieldUsage(FieldUsageTypes.VS, MaterialUsages.Instance)] public Vector2 Size;
+		[FieldUsage(FieldUsageTypes.VS, MaterialUsages.Instance)] public Vector2 Size, TexelOffset;
 		[FieldUsage(FieldUsageTypes.PS, MaterialUsages.Instance)] public Vector4 Color;
+		[FieldUsage(FieldUsageTypes.PS, MaterialUsages.Instance)] public double Fade, Fade2;
 		[FieldUsage(FieldUsageTypes.PS, MaterialUsages.Instance)] public Texture2D MainTexture, MainTexture2, MainTexture3;
 		
 		[ShaderMethod(ShaderMethodTypes.VS)]
@@ -22,13 +23,17 @@ namespace Shaders
 		{
 			Vector3 loc = new Vector3((Position_VS * Size) + Position, 0);
 			Position_VSPS = Camera.Multiply(new Vector4(loc, 1.0));
-			UV_VSPS = new Vector2(Position_VS.x, 1.0-Position_VS.y);
+			UV_VSPS = new Vector2(Position_VS.x, 1.0-Position_VS.y) + TexelOffset;
 		}
 		
 		[ShaderMethod(ShaderMethodTypes.PS)]
 		public void MainPS()
 		{
-			Color_PS = MainTexture.Sample(UV_VSPS) * MainTexture2.Sample(UV_VSPS) * MainTexture3.Sample(UV_VSPS) * Color;
+			Vector4 outColor = MainTexture.Sample(UV_VSPS);
+			outColor += (MainTexture2.Sample(UV_VSPS) - outColor) * Fade;
+			outColor += (MainTexture3.Sample(UV_VSPS) - outColor) * Fade2;
+			
+			Color_PS = outColor * Color;
 		}
 	}
 }

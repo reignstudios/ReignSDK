@@ -16,6 +16,7 @@ struct VSIn
 float4x4 Camera;
 float2 Position;
 float2 Size;
+float2 TexelOffset;
 
 VSOutPSIn main(VSIn In)
 {
@@ -23,7 +24,7 @@ VSOutPSIn main(VSIn In)
 
 	float3 loc = float3((In.Position_VS * Size) + Position, 0);
 	Out.Position_VSPS = mul( float4(loc, 1.0), Camera);
-	Out.UV_VSPS = float2(In.Position_VS.x, 1.0-In.Position_VS.y);
+	Out.UV_VSPS = float2(In.Position_VS.x, 1.0-In.Position_VS.y) + TexelOffset;
 
 	return Out;
 }
@@ -38,6 +39,7 @@ struct PSOut
 
 sampler Samplers[2];
 float4 Color;
+float Fade;
 texture2D MainTexture;
 texture2D MainTexture2;
 
@@ -45,7 +47,10 @@ PSOut main(VSOutPSIn In)
 {
 	PSOut Out;
 
-	Out.Color_PS = MainTexture.Sample(Samplers[0], In.UV_VSPS) * MainTexture2.Sample(Samplers[1], In.UV_VSPS) * Color;
+	float4 outColor = MainTexture.Sample(Samplers[0], In.UV_VSPS);
+	outColor += (MainTexture2.Sample(Samplers[1], In.UV_VSPS) - outColor) * Fade;
+
+	Out.Color_PS = outColor * Color;
 
 	return Out;
 }

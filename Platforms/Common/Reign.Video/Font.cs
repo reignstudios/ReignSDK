@@ -88,20 +88,6 @@ namespace Reign.Video
 		private bool instancing;
 
 		public Character[] Characters {get; private set;}
-
-		public static int[] Indices = new int[6]
-		{
-			0, 1, 2,
-			0, 2, 3
-		};
-
-		public static float[] Vertices = new float[8]
-		{
-			0, 0,
-			0, 1,
-			1, 1,
-			1, 0,
-		};
 		#endregion
 
 		#region Constructors
@@ -154,6 +140,20 @@ namespace Reign.Video
 				// create buffers
 				var layoutDesc = BufferLayoutDescAPI.New(BufferLayoutTypes.Position2);
 				layout = BufferLayoutAPI.New(this, shader, layoutDesc);
+
+				var Indices = new int[6]
+				{
+					0, 1, 2,
+					0, 2, 3
+				};
+
+				var Vertices = new float[8]
+				{
+					0, 0,
+					0, 1,
+					1, 1,
+					1, 0,
+				};
 
 				indexBuffer = IndexBufferAPI.New(this, BufferUsages.Default, Indices);
 				vertexBuffer = VertexBufferAPI.New(this, layoutDesc, BufferUsages.Default, VertexBufferTopologys.Triangle, Vertices);

@@ -21,6 +21,11 @@ namespace Reign.UI
 	{
 		VisualLayers Layout {get;}
 		Vector4 Color {get; set;}
+		float Fade {get; set;}
+		float Fade2 {get; set;}
+		Texture2DI Texture {get; set;}
+		Texture2DI Texture2 {get; set;}
+		Texture2DI Texture3 {get; set;}
 
 		void Update(Rect2 elementRect);
 		void Render(Camera camera);
