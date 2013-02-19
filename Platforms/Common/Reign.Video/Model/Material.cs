@@ -24,12 +24,12 @@ namespace Reign.Video
 
 	public class MaterialFieldBinder
 	{
-		public string MaterialName, ID, ShaderMaterialFieldName;
+		public string MaterialName, InputID, ShaderMaterialFieldName;
 
-		public MaterialFieldBinder(string materialName, string id, string shaderMaterialFieldName)
+		public MaterialFieldBinder(string materialName, string inputID, string shaderMaterialFieldName)
 		{
 			MaterialName = materialName;
-			ID = id;
+			InputID = inputID;
 			ShaderMaterialFieldName = shaderMaterialFieldName;
 		}
 	}

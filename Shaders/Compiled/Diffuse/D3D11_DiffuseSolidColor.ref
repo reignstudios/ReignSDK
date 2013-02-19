@@ -1,0 +1,5 @@
+vsVar Camera 0 64
+vsVar Transform 64 64
+psVar LightDirection 0 12
+psVar LightColor 16 16
+psVar Diffuse 32 16

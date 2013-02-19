@@ -40,10 +40,10 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public SoftwareMesh(SoftwareModel model, ColladaModel_Geometry geometry)
+		public SoftwareMesh(SoftwareModel model, RMX_Mesh mesh, string name)
 		{
 			Model = model;
-			Name = geometry.Name;
+			Name = name;
 
 			Verticies = new List<SoftwareVertex>();
 			Triangles = new List<SoftwareTriangle>();
@@ -56,165 +56,177 @@ namespace Reign.Video
 			TriangleComponentKeys = new Dictionary<TriangleComponentKeyTypes,int>();
 			EdgeComponentKeys = new Dictionary<EdgeComponentKeyTypes,int>();
 
-			// verticies
-			var vertInputs = geometry.Mesh.Vertices.Inputs;
-			for (int i = 0; i != vertInputs.Length; ++i)
+			// transform
+			foreach (var input in mesh.RMXObject.Transform.Inputs)
 			{
-				var source = geometry.Mesh.FindSource(vertInputs[i].Source);
-				if (source == null) Debug.ThrowError("SoftwareMesh", "Failed to find vertex source position data: " + vertInputs[i].Source);
-
-				var vertexPostions = new Vector3[source.FloatArray.Count / 3];
-				var positions = source.FloatArray.Values;
-				int i2 = 0;
-				for (int i3 = 0; i3 != vertexPostions.Length; ++i3)
+				switch (input.Type)
 				{
-					Verticies.Add(new SoftwareVertex(i3));
-					vertexPostions[i3] = new Vector3(positions[i2], positions[i2+1], positions[i2+2]);
-					i2 += 3;
+					case "EulerRotation": Rotation = new Vector3(input.Values[0], input.Values[1], input.Values[2]); break;
+					case "Scale": Scale = new Vector3(input.Values[0], input.Values[1], input.Values[2]); break;
+					case "Position": Position = new Vector3(input.Values[0], input.Values[1], input.Values[2]); break;
+					default: Debug.ThrowError("SoftwareMesh", "Unsuported Transform Type: " + input.Type); break;
 				}
-				VetexComponents.Add(vertexPostions);
+			}
+
+			// material
+			if (!string.IsNullOrEmpty(mesh.Material))
+			{
+				foreach (var material in model.Materials)
+				{
+					if (material.Name == mesh.Material) this.Material = material;
+				}
+			}
+
+			// verticies
+			var channels = mesh.Verticies.Channels;
+			int positionStep = 0;
+			for (int i = 0; i != channels.Length; ++i)
+			{
+				var channel = channels[i];
+				if (channel.ID != "Position") continue;
+
+				positionStep = channel.Step;
+				if (channel.Step == 3)
+				{
+					var vertexPostions = new Vector3[channel.Values.Length / 3];
+					var positions = channel.Values;
+					int i2 = 0;
+					for (int i3 = 0; i3 != vertexPostions.Length; ++i3)
+					{
+						Verticies.Add(new SoftwareVertex(i3));
+						vertexPostions[i3] = new Vector3(positions[i2], positions[i2+1], positions[i2+2]);
+						i2 += 3;
+					}
+
+					VetexComponents.Add(vertexPostions);
+				}
+				else if (channel.Step == 2)
+				{
+					var vertexPostions = new Vector2[channel.Values.Length / 2];
+					var positions = channel.Values;
+					int i2 = 0;
+					for (int i3 = 0; i3 != vertexPostions.Length; ++i3)
+					{
+						Verticies.Add(new SoftwareVertex(i3));
+						vertexPostions[i3] = new Vector2(positions[i2], positions[i2+1]);
+						i2 += 2;
+					}
+
+					VetexComponents.Add(vertexPostions);
+				}
+				else
+				{
+					Debug.ThrowError("SoftwareMesh", "Unsupotred position step count");
+				}
+
 				VertexComponentKeys.Add(VertexComponentKeyTypes.Positions, i);
 			}
 
 			// triangles
-			var indexData = geometry.Mesh.Polylist.IndexData;
-			int posIndex = -1, colorIndex = -1, normalIndex = -1, uvIndex = -1;
-			var inputs = geometry.Mesh.Polylist.Inputs;
-			for (int i = 0; i != inputs.Length; ++i)
+			bool hasPositionData = false;
+			float[] colors = null, normals = null, uvs = null;
+			foreach (var channel in channels)
 			{
-				switch (inputs[i].Semantic)
+				switch (channel.ID)
 				{
-					case ("VERTEX"): posIndex = inputs[i].Offset; break;
-					case ("COLOR"): colorIndex = inputs[i].Offset; break;
-					case ("NORMAL"): normalIndex = inputs[i].Offset; break;
-					case ("TEXCOORD"): uvIndex = inputs[i].Offset; break;
+					case ("Position"): hasPositionData = true; break;
+					case ("Color"): colors = channel.Values; break;
+					case ("Normal"): normals = channel.Values; break;
+					case ("UV"): uvs = channel.Values; break;
 				}
 			}
-			if (posIndex == -1) Debug.ThrowError("SoftwareMesh", "Polylist missing vertex data");
+			if (!hasPositionData) Debug.ThrowError("SoftwareMesh", "Vertices missing position data");
 
-			float[] colors = null;
-			if (colorIndex != -1)
+			int[] positionIndices = null, colorIndices = null, normalIndices = null, uvIndices = null;
+			foreach (var index in mesh.Faces.Indices)
 			{
-				var input = geometry.Mesh.Polylist.Inputs[colorIndex];
-				var source = geometry.Mesh.FindSource(input.Source);
-				if (source == null) Debug.ThrowError("SoftwareMesh", "Failed to find color source data: " + input.Source);
-
-				colors = source.FloatArray.Values;
+				switch (index.ID)
+				{
+					case ("Position"): positionIndices = index.Values; break;
+					case ("Color"): colorIndices = index.Values; break;
+					case ("Normal"): normalIndices = index.Values; break;
+					case ("UV"): uvIndices = index.Values; break;
+				}
 			}
+			if (positionIndices == null) Debug.ThrowError("SoftwareMesh", "Faces missing position data");
 
-			float[] normals = null;
-			if (normalIndex != -1)
-			{
-				var input = geometry.Mesh.Polylist.Inputs[normalIndex];
-				var source = geometry.Mesh.FindSource(input.Source);
-				if (source == null) Debug.ThrowError("SoftwareMesh", "Failed to find normal source data: " + input.Source);
-
-				normals = source.FloatArray.Values;
-			}
-
-			float[] uvs = null;
-			if (uvIndex != -1)
-			{
-				var input = geometry.Mesh.Polylist.Inputs[uvIndex];
-				var source = geometry.Mesh.FindSource(input.Source);
-				if (source == null) Debug.ThrowError("SoftwareMesh", "Failed to find uv source data: " + input.Source);
-
-				uvs = source.FloatArray.Values;
-			}
-
-			int vertOffset = geometry.Mesh.Polylist.Inputs.Length;
-			int polyOffset = 0;
-			var indices = geometry.Mesh.Polylist.IndexData;
 			var triangleColors = new List<TriangleColorComponent>();
 			var triangleNormals = new List<TriangleNormalComponent>();
 			var triangleUVs = new List<TriangleUVComponent>();
-			int ti = 0;
-			for (int i = 0; i != geometry.Mesh.Polylist.Count; ++i)
+			int ti = 0, vi = 0;
+			if (positionStep == 3)
 			{
-				int vi = posIndex + polyOffset;
-				int vi2 = vi + vertOffset;
-				int vi3 = vi + (vertOffset * 2);
-
-				int ci = colorIndex + polyOffset;
-				int ci2 = ci + vertOffset;
-				int ci3 = ci + (vertOffset * 2);
-
-				int ni = normalIndex + polyOffset;
-				int ni2 = ni + vertOffset;
-				int ni3 = ni + (vertOffset * 2);
-
-				int ui = uvIndex + polyOffset;
-				int ui2 = ui + vertOffset;
-				int ui3 = ui + (vertOffset * 2);
-
-				int loop = geometry.Mesh.Polylist.VertexCounts[i] - 2;
-				for (int i2 = 0; i2 != loop; ++i2)
+				foreach (int step in mesh.Faces.Steps.Values)
 				{
-					var triangle = new SoftwareTriangle(ti, Verticies[indices[vi]], Verticies[indices[vi2]], Verticies[indices[vi3]]);
-					++ti;
-					Triangles.Add(triangle);
-					vi2 += vertOffset;
-				    vi3 += vertOffset;
-
-					if (colorIndex != -1)
+					int loop = step - 2;
+					int vi2 = vi + 1, vi3 = vi + 2;
+					for (int i2 = 0; i2 != loop; ++i2)
 					{
-						int cii = indices[ci] * 3, cii2 = indices[ci2] * 3, cii3 = indices[ci3] * 3;
-						triangleColors.Add(new TriangleColorComponent
-						(
-							new Vector4(colors[cii], colors[cii+1], colors[cii+2], colors[cii+3]),
-							new Vector4(colors[cii2], colors[cii2+1], colors[cii2+2], colors[cii2+3]),
-							new Vector4(colors[cii3], colors[cii3+1], colors[cii3+2], colors[cii3+3]))
-						);
-						ci2 += vertOffset;
-						ci3 += vertOffset;
+						var triangle = new SoftwareTriangle(ti, Verticies[positionIndices[vi]], Verticies[positionIndices[vi2]], Verticies[positionIndices[vi3]]);
+						Triangles.Add(triangle);
+
+						if (colorIndices != null)
+						{
+							int cii = colorIndices[vi] * 3, cii2 = colorIndices[vi2] * 3, cii3 = colorIndices[vi3] * 3;
+							triangleColors.Add(new TriangleColorComponent
+							(
+								new Vector4(colors[cii], colors[cii+1], colors[cii+2], colors[cii+3]),
+								new Vector4(colors[cii2], colors[cii2+1], colors[cii2+2], colors[cii2+3]),
+								new Vector4(colors[cii3], colors[cii3+1], colors[cii3+2], colors[cii3+3]))
+							);
+						}
+
+						if (normalIndices != null)
+						{
+							int nii = normalIndices[vi] * 3, nii2 = normalIndices[vi2] * 3, nii3 = normalIndices[vi3] * 3;
+							triangleNormals.Add(new TriangleNormalComponent
+							(
+								new Vector3(normals[nii], normals[nii+1], normals[nii+2]),
+								new Vector3(normals[nii2], normals[nii2+1], normals[nii2+2]),
+								new Vector3(normals[nii3], normals[nii3+1], normals[nii3+2]))
+							);
+						}
+
+						if (uvIndices != null)
+						{
+							int uii = uvIndices[vi] * 2, uii2 = uvIndices[vi2] * 2, uii3 = uvIndices[vi3] * 2;
+							triangleUVs.Add(new TriangleUVComponent
+							(
+								new Vector2(uvs[uii], uvs[uii+1]),
+								new Vector2(uvs[uii2], uvs[uii2+1]),
+								new Vector2(uvs[uii3], uvs[uii3+1]))
+							);
+						}
+
+						++ti;
+						++vi2;
+						++vi3;
 					}
 
-					if (normalIndex != -1)
-					{
-						int nii = indices[ni] * 3, nii2 = indices[ni2] * 3, nii3 = indices[ni3] * 3;
-						triangleNormals.Add(new TriangleNormalComponent
-						(
-							new Vector3(normals[nii], normals[nii+1], normals[nii+2]),
-							new Vector3(normals[nii2], normals[nii2+1], normals[nii2+2]),
-							new Vector3(normals[nii3], normals[nii3+1], normals[nii3+2]))
-						);
-						ni2 += vertOffset;
-						ni3 += vertOffset;
-					}
-
-					if (uvIndex != -1)
-					{
-						int uii = indices[ui] * 2, uii2 = indices[ui2] * 2, uii3 = indices[ui3] * 2;
-						triangleUVs.Add(new TriangleUVComponent
-						(
-							new Vector2(uvs[uii], uvs[uii+1]),
-							new Vector2(uvs[uii2], uvs[uii2+1]),
-							new Vector2(uvs[uii3], uvs[uii3+1]))
-						);
-						ui2 += vertOffset;
-						ui3 += vertOffset;
-					}
+					vi += step;
 				}
-
-				polyOffset += geometry.Mesh.Polylist.VertexCounts[i] * vertOffset;
 			}
-
+			else
+			{
+				Debug.ThrowError("SoftwareMesh", "Position step not implemented yet: Step value = " + positionStep);
+			}
+			
 			int componentIndex = 0;
-			if (colorIndex != -1)
+			if (colors != null)
 			{
 				TriangleComponents.Add(triangleColors.ToArray());
 				TriangleComponentKeys.Add(TriangleComponentKeyTypes.ColorComponents, componentIndex);
 				++componentIndex;
 			}
 
-			if (normalIndex != -1)
+			if (normals != null)
 			{
 				TriangleComponents.Add(triangleNormals.ToArray());
 				TriangleComponentKeys.Add(TriangleComponentKeyTypes.NormalComponents, componentIndex);
 				++componentIndex;
 			}
 
-			if (uvIndex != -1)
+			if (uvs != null)
 			{
 				TriangleComponents.Add(triangleUVs.ToArray());
 				TriangleComponentKeys.Add(TriangleComponentKeyTypes.UVComponents, componentIndex);

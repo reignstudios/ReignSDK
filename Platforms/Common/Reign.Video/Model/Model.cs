@@ -195,7 +195,7 @@ namespace Reign.Video
 			var materialType = material.GetType();
 			foreach (var binder in binders)
 			{
-				if (binder.MaterialName == material.Name && values.Contains(binder.ID))
+				if (binder.MaterialName == material.Name && values.Contains(binder.InputID))
 				{
 					#if WINRT
 					var materialField = materialType.GetTypeInfo().GetDeclaredField(binder.ShaderMaterialFieldName);
@@ -211,12 +211,12 @@ namespace Reign.Video
 
 		private void handleFoundValueBinder(MaterialI material, FieldInfo materialField, IDictionary values, MaterialFieldBinder binder, string contentDirectory, Dictionary<string,string> fileExtOverrides)
 		{
-			materialField.SetValue(material, values[binder.ID]);
+			materialField.SetValue(material, values[binder.InputID]);
 		}
 
 		private void handleFoundTextureBinder(MaterialI material, FieldInfo materialField, IDictionary values, MaterialFieldBinder binder, string contentDirectory, Dictionary<string,string> fileExtOverrides)
 		{
-			var textureFileName = ((Dictionary<string,string>)values)[binder.ID];
+			var textureFileName = ((Dictionary<string,string>)values)[binder.InputID];
 			if (fileExtOverrides != null)
 			{
 				string ext = Streams.GetFileExt(textureFileName);
