@@ -32,19 +32,19 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
     <Reference Include="Reign.Core">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Core.dll</HintPath>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign.Core.dll</HintPath>
     </Reference>
     <Reference Include="Reign.Video">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign.Video.dll</HintPath>
-    </Reference>
-    <Reference Include="Reign_Video_D3D11_Component">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign_Video_D3D11_Component.dll</HintPath>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign.Video.dll</HintPath>
     </Reference>
     <Reference Include="Reign_Video_D3D9_Component">
-      <HintPath>..\..\..\Platforms\Windows\Lib\Reign_Video_D3D9_Component.dll</HintPath>
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign_Video_D3D9_Component.dll</HintPath>
     </Reference>
-    <Reference Include="System.Core" />
+    <Reference Include="Reign_Video_D3D11_Component">
+      <HintPath>..\..\..\Platforms\Win32\Lib\Reign_Video_D3D11_Component.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
