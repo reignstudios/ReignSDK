@@ -6,6 +6,7 @@ namespace Reign.Video
 	public class RMX_MeshVertexChannel
 	{
 		[XmlAttribute("ID")] public string ID;
+		[XmlAttribute("Index")] public int Index;
 		[XmlAttribute("Step")] public int Step;
 		[XmlText] public string Content;
 		public float[] Values;

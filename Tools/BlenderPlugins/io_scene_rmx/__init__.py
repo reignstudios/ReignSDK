@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Export: Reign Model-XML Format",
     "author": "Andrew and Philip Witte <zezba9000@gmail.com>",
-    "blender": (2, 5, 8),
+    "blender": (2, 66, 0),
     "location": "File > Import-Export",
     "description": "Export RMX: Mesh, Material, Textures, & Animation.",
     "warning": "",

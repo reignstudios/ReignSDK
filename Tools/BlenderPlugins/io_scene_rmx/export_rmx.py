@@ -28,8 +28,10 @@ def save(operator, context, filepath="", path_mode='AUTO'):
     file.write("\t<Materials>\n")
 
     file.write("\t\t<Material Name=\"TestMat\">\n")
-    file.write("\t\t\t<Input ID=\"Diffuse\" Type=\"Value\">")
-    file.write("1 0 0 1")
+    #file.write("\t\t\t<Input ID=\"Diffuse\" Type=\"Value\">")
+    #file.write("1 0 0 1")
+    file.write("\t\t\t<Input ID=\"Diffuse\" Type=\"Texture\">")
+    file.write("Roxy.png")
     file.write("</Input>\n")
     file.write("\t\t</Material>\n")
 
@@ -69,13 +71,13 @@ def save(operator, context, filepath="", path_mode='AUTO'):
             file.write("\t\t\t<Vertices>\n")
 
             # --positions
-            file.write("\t\t\t\t<Channel ID=\"Position\" Step=\"3\">")
+            file.write("\t\t\t\t<Channel ID=\"Position\" Index=\"0\" Step=\"3\">")
             for vert in mesh.vertices:
                 file.write("%.6f %.6f %.6f " % vert.co[:])
             file.write("</Channel>\n")
 
             # --normals
-            file.write("\t\t\t\t<Channel ID=\"Normal\" Step=\"3\">")
+            file.write("\t\t\t\t<Channel ID=\"Normal\" Index=\"0\" Step=\"3\">")
             for face in mesh.tessfaces:
                 if face.use_smooth:
                     for i in face.vertices:
@@ -83,6 +85,20 @@ def save(operator, context, filepath="", path_mode='AUTO'):
                 else:
                     file.write("%.6f %.6f %.6f " % face.normal[:])
             file.write("</Channel>\n")
+
+            # --uv
+            hasUVs = len(mesh.uv_textures) > 0
+            if hasUVs:
+                index = 0
+                for face in mesh.tessface_uv_textures:
+                    file.write("\t\t\t\t<Channel ID=\"UV\" Index=\"%d\" Step=\"2\">" % index)
+                    #for uvData in mesh.tessface_uv_textures.active.data: # Use if you only want to use one UV set
+                    for uvData in face.data:
+                        for uv in uvData.uv:
+                            file.write("%.6f %.6f " % uv[:])
+
+                    index += 1
+                    file.write("</Channel>\n")
 
             file.write("\t\t\t</Vertices>\n")
             
@@ -119,6 +135,18 @@ def save(operator, context, filepath="", path_mode='AUTO'):
 
                     i2 = i2 + 1
             file.write("</Indices>\n")
+
+            # write face uv indices
+            if hasUVs:
+                file.write("\t\t\t\t<Indices ID=\"UV\">")
+                i2 = 0
+                for face in mesh.tessfaces:
+                    vertLength = len(face.vertices)
+                    for i in range(vertLength):
+                        file.write("%d " % (i2 + i))
+
+                    i2 = i2 + vertLength
+                file.write("</Indices>\n")
                 
             file.write("\t\t\t</Faces>\n")
             
