@@ -82,5 +82,12 @@ namespace Reign.Video
 			return Loaded;
 		}
 		#endregion
+
+		#region Methods
+		public void Rotate(float x, float y, float z)
+		{
+			foreach (var mesh in Meshes) mesh.Rotate(x, y, z);
+		}
+		#endregion
 	}
 }

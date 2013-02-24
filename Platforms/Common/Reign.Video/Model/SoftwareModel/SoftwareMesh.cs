@@ -259,10 +259,6 @@ namespace Reign.Video
 			var mat = Matrix3.FromEuler(x, y, z);
 			Position = Position.Transform(mat);
 
-			//var rotMat = Matrix3.FromEuler(Rotation.X, Rotation.Y, Rotation.Z);
-			//rotMat = rotMat.Multiply(mat);
-			//Rotation = rotMat.Euler();
-
 			// rotate positions
 			foreach (var key in VertexComponentKeys)
 			{

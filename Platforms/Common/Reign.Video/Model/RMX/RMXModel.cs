@@ -195,6 +195,8 @@ namespace Reign.Video
 
 		public static float[] ConvertToFloatArray(string content)
 		{
+			if (string.IsNullOrEmpty(content)) return null;
+
 			var charData = content.Trim().Split(' ');
 			var data = new float[charData.Length];
 			for (int i = 0; i != charData.Length; ++i)
@@ -207,6 +209,8 @@ namespace Reign.Video
 
 		public static int[] ConvertToIntArray(string content)
 		{
+			if (string.IsNullOrEmpty(content)) return null;
+
 			var charData = content.Trim().Split(' ');
 			var data = new int[charData.Length];
 			for (int i = 0; i != charData.Length; ++i)

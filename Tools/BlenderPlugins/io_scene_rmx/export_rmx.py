@@ -23,21 +23,9 @@ def save(operator, context, filepath="", path_mode='AUTO'):
     file.write("<!-- Reign Model-XML Format -->\n")
     file.write("<!-- www.reign-studios.com -->\n")
     file.write("<Scene Version=\"1.0\">\n")
-
-    # write materials
-    file.write("\t<Materials>\n")
-
-    file.write("\t\t<Material Name=\"TestMat\">\n")
-    #file.write("\t\t\t<Input ID=\"Diffuse\" Type=\"Value\">")
-    #file.write("1 0 0 1")
-    file.write("\t\t\t<Input ID=\"Diffuse\" Type=\"Texture\">")
-    file.write("Roxy.png")
-    file.write("</Input>\n")
-    file.write("\t\t</Material>\n")
-
-    file.write("\t</Materials>\n")
     
     # for each object in scene
+    materialList = list()
     for obj in objects:
 		
 		# begin object
@@ -46,15 +34,21 @@ def save(operator, context, filepath="", path_mode='AUTO'):
         # write transform
         file.write("\t\t<Transform>\n")
         file.write("\t\t\t<Input Type=\"EulerRotation\">")
-        file.write("0 0 0")
+        file.write("%.6f " % obj.rotation_euler.x)
+        file.write("%.6f " % obj.rotation_euler.y)
+        file.write("%.6f" % obj.rotation_euler.z)
         file.write("</Input>\n")
 
         file.write("\t\t\t<Input Type=\"Scale\">")
-        file.write("1 1 1")
+        file.write("%.6f " % obj.scale.x)
+        file.write("%.6f " % obj.scale.y)
+        file.write("%.6f" % obj.scale.z)
         file.write("</Input>\n")
 
         file.write("\t\t\t<Input Type=\"Position\">")
-        file.write("0 0 0")
+        file.write("%.6f " % obj.location.x)
+        file.write("%.6f " % obj.location.y)
+        file.write("%.6f" % obj.location.z)
         file.write("</Input>\n")
         file.write("\t\t</Transform>\n")
         
@@ -64,10 +58,20 @@ def save(operator, context, filepath="", path_mode='AUTO'):
             mesh = None
         
         if mesh is not None and (len(mesh.vertices) + len(mesh.tessfaces)) > 0:
+
+            # add material to list if needed
+            materialName = str()
+            if len(mesh.materials) > 0:
+                materialName = mesh.materials[0].name
+                if mesh.materials[0] not in materialList:
+                    materialList.append(mesh.materials[0])
+
 		    # begin mesh
-            file.write("\t\t<Mesh Material=\"TestMat\">\n")
+            file.write("\t\t<Mesh Material=\"%s\">\n" % materialName)
                 
-            # write vertices
+            # -------------------------------------
+            # write vertices ----------------------
+            # -------------------------------------
             file.write("\t\t\t<Vertices>\n")
 
             # --positions
@@ -102,7 +106,9 @@ def save(operator, context, filepath="", path_mode='AUTO'):
 
             file.write("\t\t\t</Vertices>\n")
             
-            # write faces
+            # -------------------------------------
+            # write faces -------------------------
+            # -------------------------------------
             file.write("\t\t\t<Faces>\n")
             
             # write face steps
@@ -155,6 +161,46 @@ def save(operator, context, filepath="", path_mode='AUTO'):
         
         # end object
         file.write("\t</Object>\n")
+
+    # -------------------------------------
+    # write materials ---------------------
+    # -------------------------------------
+    file.write("\t<Materials>\n")
+
+    # Reference http://www.blender.org/documentation/blender_python_api_2_66_release/bpy.types.Material.html#bpy.types.Material
+    for mtl in materialList:
+        file.write("\t\t<Material Name=\"%s\">\n" % mtl.name)
+
+        file.write("\t\t\t<Input ID=\"Alpha\" Type=\"Value\">")
+        file.write("%.6f" % mtl.alpha)
+        file.write("</Input>\n")
+
+        file.write("\t\t\t<Input ID=\"Diffuse\" Type=\"Value\">")
+        file.write("%.6f %.6f %.6f" % mtl.diffuse_color[:])
+        file.write("</Input>\n")
+
+        file.write("\t\t\t<Input ID=\"Specular\" Type=\"Value\">")
+        file.write("%.6f %.6f %.6f" % mtl.specular_color[:])
+        file.write("</Input>\n")
+
+        file.write("\t\t\t<Input ID=\"SpecularSharpness\" Type=\"Value\">")
+        file.write("%.6f" % mtl.specular_hardness)
+        file.write("</Input>\n")
+
+        file.write("\t\t\t<Input ID=\"SpecularIntensity\" Type=\"Value\">")
+        file.write("%.6f" % mtl.specular_intensity)
+        file.write("</Input>\n")
+
+        for materialTextureSlot in mtl.texture_slots:
+            if materialTextureSlot is not None and issubclass(type(materialTextureSlot.texture), bpy.types.ImageTexture):
+                file.write("\t\t\t<Input ID=\"Diffuse\" Type=\"Texture\">")
+                texture = bpy.types.ImageTexture(materialTextureSlot.texture)
+                file.write(texture.image.filepath)
+                file.write("</Input>\n")
+
+        file.write("\t\t</Material>\n")
+
+    file.write("\t</Materials>\n")
     
     # end writing scene and file
     file.write("</Scene>\n")

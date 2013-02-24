@@ -75,15 +75,14 @@ namespace Reign.Video
 				IndexBuffer = IndexBufferAPI.New(this, BufferUsages.Default, indices, indices.Length > ushort.MaxValue);
 
 				// create instancing buffers
-				var intancingElements = new List<BufferLayoutElement>();
-				foreach (var element in elements) intancingElements.Add(element);
-				intancingElements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Float, BufferLayoutElementUsages.IndexClassic, 0, 0, LayoutDesc.FloatCount));
-				InstancingLayoutDesc = BufferLayoutDescAPI.New(intancingElements);
-
-				// create vertex buffer
 				ClassicInstanceCount = classicInstanceCount;
 				if (classicInstanceCount > 0)
 				{
+					var intancingElements = new List<BufferLayoutElement>();
+					foreach (var element in elements) intancingElements.Add(element);
+					intancingElements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Float, BufferLayoutElementUsages.IndexClassic, 0, 0, LayoutDesc.FloatCount));
+					InstancingLayoutDesc = BufferLayoutDescAPI.New(intancingElements);
+
 					int instanceVertexFloatCount = (vertexFloatCount * classicInstanceCount) + (VertexBuffer.VertexCount * classicInstanceCount);
 					var instancingVertices = new float[instanceVertexFloatCount];
 					int vi = 0;

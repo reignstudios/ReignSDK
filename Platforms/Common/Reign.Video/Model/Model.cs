@@ -211,7 +211,52 @@ namespace Reign.Video
 
 		private void handleFoundValueBinder(MaterialI material, FieldInfo materialField, IDictionary values, MaterialFieldBinder binder, string contentDirectory, Dictionary<string,string> fileExtOverrides)
 		{
-			materialField.SetValue(material, values[binder.InputID]);
+			var value = values[binder.InputID];
+			var valueType = value.GetType();
+			var materialType = materialField.FieldType;
+			if (materialType == valueType)
+			{
+				materialField.SetValue(material, values[binder.InputID]);
+			}
+			else if (materialType == typeof(Vector2))
+			{
+				if (valueType == typeof(Vector3))
+				{
+					var vector = (Vector3)value;
+					materialField.SetValue(material, new Vector2(vector.X, vector.Y));
+				}
+				else if (valueType == typeof(Vector4))
+				{
+					var vector = (Vector4)value;
+					materialField.SetValue(material, new Vector2(vector.X, vector.Y));
+				}
+			}
+			else if (materialType == typeof(Vector3))
+			{
+				if (valueType == typeof(Vector2))
+				{
+					var vector = (Vector2)value;
+					materialField.SetValue(material, new Vector3(vector.X, vector.Y, 0));
+				}
+				else if (valueType == typeof(Vector4))
+				{
+					var vector = (Vector4)value;
+					materialField.SetValue(material, new Vector3(vector.X, vector.Y, vector.Z));
+				}
+			}
+			else if (materialType == typeof(Vector4))
+			{
+				if (valueType == typeof(Vector2))
+				{
+					var vector = (Vector2)value;
+					materialField.SetValue(material, new Vector4(vector.X, vector.Y, 0, 0));
+				}
+				else if (valueType == typeof(Vector3))
+				{
+					var vector = (Vector3)value;
+					materialField.SetValue(material, new Vector4(vector.X, vector.Y, vector.Z, 0));
+				}
+			}
 		}
 
 		private void handleFoundTextureBinder(MaterialI material, FieldInfo materialField, IDictionary values, MaterialFieldBinder binder, string contentDirectory, Dictionary<string,string> fileExtOverrides)
