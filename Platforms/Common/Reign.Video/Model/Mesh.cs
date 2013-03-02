@@ -5,12 +5,6 @@ using System.IO;
 
 namespace Reign.Video
 {
-	public enum MeshVertexSizes
-	{
-		Float2,
-		Float3
-	}
-
 	public class Mesh : Disposable
 	{
 		#region Properties
@@ -127,18 +121,18 @@ namespace Reign.Video
 			}
 		}
 
-		private static void initData(SoftwareMesh softwareMesh, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, out List<BufferLayoutElement> elements, out float[] vertices, out int[] indices)
+		private static void initData(SoftwareMesh softwareMesh, bool loadColors, bool loadUVs, bool loadNormals, out List<BufferLayoutElement> elements, out float[] vertices, out int[] indices)
 		{
 			// get position float size
 			int posFloatCount = 0;
 			var posElementType = BufferLayoutElementTypes.Vector3;
-			switch (positionSize)
+			switch (softwareMesh.Dimensions)
 			{
-				case (MeshVertexSizes.Float2):
+				case (2):
 					posElementType = BufferLayoutElementTypes.Vector2;
 					posFloatCount = 2;
 					break;
-				case (MeshVertexSizes.Float3):
+				case (3):
 					posElementType = BufferLayoutElementTypes.Vector3;
 					posFloatCount = 3;
 					break;
@@ -259,12 +253,12 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
-		public static void Write(BinaryWriter writer, SoftwareModel softwareModel, SoftwareMesh softwareMesh, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals)
+		public static void Write(BinaryWriter writer, SoftwareModel softwareModel, SoftwareMesh softwareMesh, bool loadColors, bool loadUVs, bool loadNormals)
 		{
 			List<BufferLayoutElement> elements;
 			float[] vertices;
 			int[] indices;
-			initData(softwareMesh, positionSize, loadColors, loadUVs, loadNormals, out elements, out vertices, out indices);
+			initData(softwareMesh, loadColors, loadUVs, loadNormals, out elements, out vertices, out indices);
 
 			// material
 			int materialIndex = -1;

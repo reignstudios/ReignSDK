@@ -120,7 +120,24 @@ namespace Reign.Video
 			{
 				switch (key.Key)
 				{
-					case (VertexComponentKeyTypes.Positions): positions.Add((Vector3[])mesh.VetexComponents[key.Value]); break;
+					case (VertexComponentKeyTypes.Positions):
+						var vertexComponents = mesh.VetexComponents[key.Value];
+						if (vertexComponents.GetType() == typeof(Vector3[]))
+						{
+							positions.Add((Vector3[])vertexComponents);
+						}
+						else if (vertexComponents.GetType() == typeof(Vector2[]))
+						{
+							var verts = (Vector2[])vertexComponents;
+							var newVerts = new Vector3[verts.Length];
+							for (int i = 0; i != verts.Length; ++i) newVerts[i] = new Vector3(verts[i].X, verts[i].Y, 0);
+							positions.Add(newVerts);
+						}
+						else
+						{
+							Debug.ThrowError("HardwareMeshProcessor", "Unsuported VectorComponent type");
+						}
+						break;
 				}
 			}
 

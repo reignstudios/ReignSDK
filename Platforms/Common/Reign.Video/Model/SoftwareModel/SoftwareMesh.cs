@@ -26,6 +26,7 @@ namespace Reign.Video
 		#region Properties
 		public SoftwareModel Model;
 		public string Name;
+		public int Dimensions {get; private set;}
 		public Vector3 Position, Rotation, Scale;
 		public SoftwareMaterial Material;
 
@@ -85,6 +86,7 @@ namespace Reign.Video
 				var channel = channels[i];
 				if (channel.ID != "Position") continue;
 
+				Dimensions = channel.Step;
 				positionStep = channel.Step;
 				if (channel.Step == 3)
 				{

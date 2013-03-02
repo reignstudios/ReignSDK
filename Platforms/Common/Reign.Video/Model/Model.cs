@@ -40,7 +40,7 @@ namespace Reign.Video
 			});
 		}
 
-		public Model(DisposableI parent, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount, Loader.LoadedCallbackMethod loadedCallback)
+		public Model(DisposableI parent, SoftwareModel softwareModel, bool loadColors, bool loadUVs, bool loadNormals, string contentDirectory, Dictionary<string,Type> materialTypes, List<MaterialFieldBinder> value1BinderTypes, List<MaterialFieldBinder> value2BinderTypes, List<MaterialFieldBinder> value3BinderTypes, List<MaterialFieldBinder> value4BinderTypes, List<MaterialFieldBinder> textureBinderTypes, Dictionary<string,string> fileExtOverrides, int classicInstanceCount, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			Loader.AddLoadable(this);
@@ -53,7 +53,7 @@ namespace Reign.Video
 					{
 						try
 						{
-							Model.Save(stream, false, softwareModel, positionSize, loadColors, loadUVs, loadNormals);
+							Model.Save(stream, false, softwareModel, loadColors, loadUVs, loadNormals);
 							stream.Position = 0;
 						}
 						catch (Exception e)
@@ -63,7 +63,7 @@ namespace Reign.Video
 							if (loadedCallback != null) loadedCallback(this, false);
 						}
 
-						init(null, stream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, classicInstanceCount, loadedCallback);
+						if (!FailedToLoad) init(null, stream, contentDirectory, materialTypes, value1BinderTypes, value2BinderTypes, value3BinderTypes, value4BinderTypes, textureBinderTypes, fileExtOverrides, classicInstanceCount, loadedCallback);
 					}
 				}
 				else
@@ -304,19 +304,19 @@ namespace Reign.Video
 		{
 			using (var file = await Streams.SaveFile(fileName, FolderLocations.Unknown))
 		#else
-		public static void Save(string fileName, bool compress, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals)
+		public static void Save(string fileName, bool compress, SoftwareModel softwareModel, bool loadColors, bool loadUVs, bool loadNormals)
 		{
 			using (var file = Streams.SaveFile(fileName, FolderLocations.Unknown))
 		#endif
 			{
-				Save(file, compress, softwareModel, positionSize, loadColors, loadUVs, loadNormals);
+				Save(file, compress, softwareModel, loadColors, loadUVs, loadNormals);
 			}
 		}
 
-		public static void Save(Stream stream, bool compress, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals)
+		public static void Save(Stream stream, bool compress, SoftwareModel softwareModel, bool loadColors, bool loadUVs, bool loadNormals)
 		{
 			var writer = new BinaryWriter(stream);
-
+			
 			// meta data
 			writer.Write(Streams.MakeFourCC('R', 'M', 'F', 'T'));// tag
 			writer.Write(1.0f);// version
@@ -373,7 +373,7 @@ namespace Reign.Video
 			writer.Write(softwareModel.Meshes.Count);
 			foreach (var mesh in softwareModel.Meshes)
 			{
-				Mesh.Write(writer, softwareModel, mesh, positionSize, loadColors, loadUVs, loadNormals);
+				Mesh.Write(writer, softwareModel, mesh, loadColors, loadUVs, loadNormals);
 			}
 		}
 
