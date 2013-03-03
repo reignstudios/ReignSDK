@@ -213,6 +213,9 @@
     <Compile Include="..\..\Common\Reign.Physics.Jitter\LinearMath\JVector.cs">
       <Link>LinearMath\JVector.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Joints\LimitedHingeJoint.cs">
+      <Link>Dynamics\Joints\LimitedHingeJoint.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Collision\" />
