@@ -274,6 +274,7 @@ namespace Jitter.Collision
                 }
                 else if (speculative)
                 {
+					// NOTE to Self:  This if block was commented out in a changeset (idk if it should be [so leaving it allone for now])
                     JVector hit1, hit2;
 
                     if (GJKCollide.ClosestPoints(body1.Shape, body2.Shape, ref body1.orientation, ref body2.orientation,

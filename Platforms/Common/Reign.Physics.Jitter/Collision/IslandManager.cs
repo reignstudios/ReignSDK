@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Jitter.Dynamics;
 using Jitter.Dynamics.Constraints;
@@ -87,6 +86,9 @@ namespace Jitter.Collision
 
         public void MakeBodyStatic(RigidBody body)
         {
+			foreach (RigidBody b in body.connections) rmStackRb.Push(b);
+			while (rmStackRb.Count > 0) RemoveConnection(body,rmStackRb.Pop());
+
             // A static body doesn't have any connections.
             body.connections.Clear();
 
@@ -104,6 +106,7 @@ namespace Jitter.Collision
             body.island = null;
         }
 
+		private Stack<RigidBody> rmStackRb = new Stack<RigidBody>();
         private Stack<Arbiter> rmStackArb = new Stack<Arbiter>();
         private Stack<Constraint> rmStackCstr = new Stack<Constraint>();
 
