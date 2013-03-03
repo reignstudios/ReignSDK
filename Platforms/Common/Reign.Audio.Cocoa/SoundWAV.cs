@@ -50,8 +50,8 @@ namespace Reign.Audio.Cocoa
 			{
 				switch (sound.bitDepth)
 				{
-					case (8): instance.RenderCallback += render2Channel8BitCallback; break;
-					case (16): instance.RenderCallback += render2Channel16BitCallback; break;
+					case 8: instance.RenderCallback += render2Channel8BitCallback; break;
+					case 16: instance.RenderCallback += render2Channel16BitCallback; break;
 					default: Debug.ThrowError("SoundWAVInstance", "Unsuported WAV bit depth"); break;
 				}
 			}
@@ -59,8 +59,8 @@ namespace Reign.Audio.Cocoa
 			{
 				switch (sound.bitDepth)
 				{
-					case (8): instance.RenderCallback += render1Channel8BitCallback; break;
-					case (16): instance.RenderCallback += render1Channel16BitCallback; break;
+					case 8: instance.RenderCallback += render1Channel8BitCallback; break;
+					case 16: instance.RenderCallback += render1Channel16BitCallback; break;
 					default: Debug.ThrowError("SoundWAVInstance", "Unsuported WAV bit depth"); break;
 				}
 			}

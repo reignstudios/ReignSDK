@@ -5,10 +5,10 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../../../../../../../Applications/MonoDevelop.app/Contents/MacOS/lib/monodevelop/bin/MonoDevelop.Ide.dll" />
-    <widget-library name="../../../../../../../../Applications/MonoDevelop.app/Contents/MacOS/lib/monodevelop/AddIns/BackendBindings/MonoDevelop.CSharpBinding.dll" />
-    <widget-library name="../../../../../../../../Applications/MonoDevelop.app/Contents/MacOS/lib/monodevelop/AddIns/MonoDevelop.DesignerSupport/MonoDevelop.DesignerSupport.dll" />
     <widget-library name="../bin/Release/MonoDevelop.MonoNaCl.dll" internal="true" />
+    <widget-library name="../../../../../../../../Applications/Xamarin Studio.app/Contents/MacOS/lib/monodevelop/bin/MonoDevelop.Ide.dll" />
+    <widget-library name="../../../../../../../../Applications/Xamarin Studio.app/Contents/MacOS/lib/monodevelop/AddIns/BackendBindings/MonoDevelop.CSharpBinding.dll" />
+    <widget-library name="../../../../../../../../Applications/Xamarin Studio.app/Contents/MacOS/lib/monodevelop/AddIns/MonoDevelop.DesignerSupport/MonoDevelop.DesignerSupport.dll" />
   </import>
   <widget class="Gtk.Bin" id="MonoDevelop.MonoNaCl.MonoNaClGlobalOptions" design-size="453 409">
     <property name="MemberName" />

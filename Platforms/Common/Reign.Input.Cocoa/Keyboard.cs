@@ -137,15 +137,15 @@ namespace Reign.Input.Cocoa
 		{
 			switch (theEvent.Type)
 			{
-				case (ApplicationEventTypes.KeyDown):
+				case ApplicationEventTypes.KeyDown:
 					keys[theEvent.KeyCode] = true;
 					break;
 				
-				case (ApplicationEventTypes.KeyUp):
+				case ApplicationEventTypes.KeyUp:
 					keys[theEvent.KeyCode] = false;
 					break;
 					
-				case (ApplicationEventTypes.Unkown):
+				case ApplicationEventTypes.Unkown:
 					keys[theEvent.KeyCode] = !keys[theEvent.KeyCode];
 					break;
 			}
