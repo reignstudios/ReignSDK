@@ -120,7 +120,7 @@ namespace Reign.Video
 			{
 				switch (key.Key)
 				{
-					case (VertexComponentKeyTypes.Positions):
+					case VertexComponentKeyTypes.Positions:
 						var vertexComponents = mesh.VetexComponents[key.Value];
 						if (vertexComponents.GetType() == typeof(Vector3[]))
 						{
@@ -149,15 +149,15 @@ namespace Reign.Video
 			{
 				switch (key.Key)
 				{
-					case (TriangleComponentKeyTypes.ColorComponents):
+					case TriangleComponentKeyTypes.ColorComponents:
 						if (loadColors) colorComponents.Add((TriangleColorComponent[])mesh.TriangleComponents[key.Value]);
 						break;
 
-					case (TriangleComponentKeyTypes.NormalComponents):
+					case TriangleComponentKeyTypes.NormalComponents:
 						if (loadNormals) normalComponents.Add((TriangleNormalComponent[])mesh.TriangleComponents[key.Value]);
 						break;
 
-					case (TriangleComponentKeyTypes.UVComponents):
+					case TriangleComponentKeyTypes.UVComponents:
 						if (loadUVs) uvComponents.Add((TriangleUVComponent[])mesh.TriangleComponents[key.Value]);
 						break;
 				}

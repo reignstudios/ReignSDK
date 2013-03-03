@@ -25,7 +25,7 @@ namespace Reign.Video.D3D9
 
 			switch (type)
 			{
-				case (BlendStateTypes.None):
+				case BlendStateTypes.None:
 					blendEnable = false;
 					blendOp = REIGN_D3DBLENDOP.ADD;
 					srcBlend = REIGN_D3DBLEND.ONE;
@@ -37,7 +37,7 @@ namespace Reign.Video.D3D9
 					dstBlendAlpha = REIGN_D3DBLEND.ZERO;
 					break;
 
-				case (BlendStateTypes.Add):
+				case BlendStateTypes.Add:
 					blendEnable = true;
 					blendOp = REIGN_D3DBLENDOP.ADD;
 					srcBlend = REIGN_D3DBLEND.ONE;
@@ -49,7 +49,7 @@ namespace Reign.Video.D3D9
 					dstBlendAlpha = REIGN_D3DBLEND.ONE;
 					break;
 
-				case (BlendStateTypes.Subtract):
+				case BlendStateTypes.Subtract:
 					blendEnable = true;
 					blendOp = REIGN_D3DBLENDOP.SUBTRACT;
 					srcBlend = REIGN_D3DBLEND.ONE;
@@ -61,7 +61,7 @@ namespace Reign.Video.D3D9
 					dstBlendAlpha = REIGN_D3DBLEND.ONE;
 					break;
 
-				case (BlendStateTypes.RevSubtract):
+				case BlendStateTypes.RevSubtract:
 					blendEnable = true;
 					blendOp = REIGN_D3DBLENDOP.REVSUBTRACT;
 					srcBlend = REIGN_D3DBLEND.ONE;
@@ -73,7 +73,7 @@ namespace Reign.Video.D3D9
 					dstBlendAlpha = REIGN_D3DBLEND.ONE;
 					break;
 
-				case (BlendStateTypes.Alpha):
+				case BlendStateTypes.Alpha:
 					blendEnable = true;
 					blendOp = REIGN_D3DBLENDOP.ADD;
 					srcBlend = REIGN_D3DBLEND.SRCALPHA;

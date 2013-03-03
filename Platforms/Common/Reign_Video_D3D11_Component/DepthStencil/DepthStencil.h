@@ -18,7 +18,7 @@ namespace Reign_Video_D3D11_Component
 		#pragma endregion
 		
 		#pragma region Constructors
-		public: DepthStencilErrors Init(VideoCom^ video, int width, int height);
+		public: DepthStencilErrors Init(VideoCom^ video, int width, int height, int depthBit, int stencilBit);
 		public: virtual ~DepthStencilCom();
 		private: void null();
 		#pragma endregion

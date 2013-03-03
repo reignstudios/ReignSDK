@@ -27,7 +27,7 @@ namespace Reign.Video.Vita
 		{
 			switch (type)
 			{
-				case (SamplerStateTypes.Point_Wrap):
+				case SamplerStateTypes.Point_Wrap:
 					filterMin = TextureFilterMode.Nearest;
 					filterMinMiped = TextureFilterMode.Nearest;
 					filterMag = TextureFilterMode.Nearest;
@@ -36,7 +36,7 @@ namespace Reign.Video.Vita
 					addressW = TextureWrapMode.Repeat;
 					break;
 
-				case (SamplerStateTypes.Point_Clamp):
+				case SamplerStateTypes.Point_Clamp:
 					filterMin = TextureFilterMode.Nearest;
 					filterMinMiped = TextureFilterMode.Nearest;
 					filterMag = TextureFilterMode.Nearest;
@@ -45,7 +45,7 @@ namespace Reign.Video.Vita
 					addressW = TextureWrapMode.ClampToEdge;
 					break;
 
-				case (SamplerStateTypes.Linear_Wrap):
+				case SamplerStateTypes.Linear_Wrap:
 					filterMin = TextureFilterMode.Linear;
 					filterMinMiped = TextureFilterMode.Linear;
 					filterMag = TextureFilterMode.Linear;
@@ -54,7 +54,7 @@ namespace Reign.Video.Vita
 					addressW = TextureWrapMode.Repeat;
 					break;
 
-				case (SamplerStateTypes.Linear_Clamp):
+				case SamplerStateTypes.Linear_Clamp:
 					filterMin = TextureFilterMode.Linear;
 					filterMinMiped = TextureFilterMode.Linear;
 					filterMag = TextureFilterMode.Linear;

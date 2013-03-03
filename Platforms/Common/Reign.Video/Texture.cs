@@ -13,6 +13,7 @@ namespace Reign.Video
 
 	public enum SurfaceFormats
 	{
+		Defualt,
 		Unknown,
 		DXT1,
 		DXT3,

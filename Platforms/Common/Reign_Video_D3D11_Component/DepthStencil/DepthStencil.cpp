@@ -4,7 +4,7 @@
 namespace Reign_Video_D3D11_Component
 {
 	#pragma region Constructors
-	DepthStencilErrors DepthStencilCom::Init(VideoCom^ video, int width, int height)
+	DepthStencilErrors DepthStencilCom::Init(VideoCom^ video, int width, int height, int depthBit, int stencilBit)
 	{
 		null();
 
@@ -15,7 +15,12 @@ namespace Reign_Video_D3D11_Component
 		descDepth.Height = height;
 		descDepth.MipLevels = 1;
 		descDepth.ArraySize = 1;
-		descDepth.Format = DXGI_FORMAT_D16_UNORM;//DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+		descDepth.Format = DXGI_FORMAT_R16_UINT;
+		if (depthBit == 24 && (stencilBit == 8 || stencilBit == 0)) descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		else if (depthBit == 16 && stencilBit == 0) descDepth.Format = DXGI_FORMAT_D16_UNORM;
+		else if (depthBit == 32 && stencilBit == 0) descDepth.Format = DXGI_FORMAT_D32_FLOAT;
+
 		descDepth.SampleDesc.Count = 1;
 		descDepth.SampleDesc.Quality = 0;
 		descDepth.Usage = D3D11_USAGE_DEFAULT;

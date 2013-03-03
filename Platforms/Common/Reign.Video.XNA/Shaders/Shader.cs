@@ -143,20 +143,20 @@ namespace Reign.Video.XNA
 					bool vsVar = false, psVar = false, vsRes = false, psRes = false;
 					switch (values[0])
 					{
-						case ("gVar"):
+						case "gVar":
 							vsVar = true;
 							psVar = true;
 							break;
 
-						case ("gRes"):
+						case "gRes":
 							vsRes = true;
 							psRes = true;
 							break;
 
-						case ("vsVar"): vsVar = true; break;
-						case ("psVar"): psVar = true; break;
-						case ("vsRes"): vsRes = true; break;
-						case ("psRes"): psRes = true; break;
+						case "vsVar": vsVar = true; break;
+						case "psVar": psVar = true; break;
+						case "vsRes": vsRes = true; break;
+						case "psRes": psRes = true; break;
 					}
 
 					if (vsVar)

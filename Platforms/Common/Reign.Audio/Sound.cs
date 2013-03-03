@@ -35,7 +35,7 @@ namespace Reign.Audio
 			string ext = Streams.GetFileExt(fileName);
 			switch (ext.ToLower())
 			{
-				case (".wav"): return SoundWAVAPI.New(parent, fileName, instanceCount, looped, loadedCallback);
+				case ".wav": return SoundWAVAPI.New(parent, fileName, instanceCount, looped, loadedCallback);
 				default:
 					Debug.ThrowError("SoundI", string.Format("File 'ext' {0} not supported.", ext));
 					return null;

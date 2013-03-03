@@ -133,11 +133,11 @@ namespace Reign.Video.XNA
 						#endif
 						switch (texture.Format)
 						{
-							case (X.SurfaceFormat.Color): surfaceFormat = SurfaceFormats.RGBAx8; break;
+							case X.SurfaceFormat.Color: surfaceFormat = SurfaceFormats.RGBAx8; break;
 							#if !SILVERLIGHT
-							case (X.SurfaceFormat.Dxt1): surfaceFormat = SurfaceFormats.DXT1; break;
-							case (X.SurfaceFormat.Dxt3): surfaceFormat = SurfaceFormats.DXT3; break;
-							case (X.SurfaceFormat.Dxt5): surfaceFormat = SurfaceFormats.DXT5; break;
+							case X.SurfaceFormat.Dxt1: surfaceFormat = SurfaceFormats.DXT1; break;
+							case X.SurfaceFormat.Dxt3: surfaceFormat = SurfaceFormats.DXT3; break;
+							case X.SurfaceFormat.Dxt5: surfaceFormat = SurfaceFormats.DXT5; break;
 							#endif
 							default: Debug.ThrowError("Texture2D", "Unsuported surface format"); break;
 						}

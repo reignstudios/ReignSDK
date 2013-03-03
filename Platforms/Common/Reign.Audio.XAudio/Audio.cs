@@ -24,8 +24,8 @@ namespace Reign.Audio.XAudio
 
 				switch (error)
 				{
-					case (AudioErrors.XAudio2): Debug.ThrowError("Audio", "Failed to create XAudio2"); break;
-					case (AudioErrors.MasteringVoice): Debug.ThrowError("Audio", "Failed to create MasteringVoice"); break;
+					case AudioErrors.XAudio2: Debug.ThrowError("Audio", "Failed to create XAudio2"); break;
+					case AudioErrors.MasteringVoice: Debug.ThrowError("Audio", "Failed to create MasteringVoice"); break;
 				}
 			}
 			catch (Exception e)

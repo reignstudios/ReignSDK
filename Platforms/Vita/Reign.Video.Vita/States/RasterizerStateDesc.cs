@@ -21,15 +21,15 @@ namespace Reign.Video.Vita
 		{
 			switch (type)
 			{
-				case (RasterizerStateTypes.Solid_CullNone):
+				case RasterizerStateTypes.Solid_CullNone:
 					cullMode = CullFaceMode.None;
 					break;
 
-				case (RasterizerStateTypes.Solid_CullCW):
+				case RasterizerStateTypes.Solid_CullCW:
 					cullMode = CullFaceMode.Back;
 					break;
 
-				case (RasterizerStateTypes.Solid_CullCCW):
+				case RasterizerStateTypes.Solid_CullCCW:
 					cullMode = CullFaceMode.Front;
 					break;
 

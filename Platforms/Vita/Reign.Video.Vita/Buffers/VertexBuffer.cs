@@ -23,10 +23,10 @@ namespace Reign.Video.Vita
 			{
 				switch (value)
 				{
-					case (VertexBufferTopologys.None): primitiveTopology = G.DrawMode.Points; break;
-					case (VertexBufferTopologys.Point): primitiveTopology = G.DrawMode.Points; break;
-					case (VertexBufferTopologys.Line): primitiveTopology = G.DrawMode.Lines; break;
-					case (VertexBufferTopologys.Triangle): primitiveTopology = G.DrawMode.Triangles; break;
+					case VertexBufferTopologys.None: primitiveTopology = G.DrawMode.Points; break;
+					case VertexBufferTopologys.Point: primitiveTopology = G.DrawMode.Points; break;
+					case VertexBufferTopologys.Line: primitiveTopology = G.DrawMode.Lines; break;
+					case VertexBufferTopologys.Triangle: primitiveTopology = G.DrawMode.Triangles; break;
 				}
 				topology = value;
 			}
@@ -103,10 +103,10 @@ namespace Reign.Video.Vita
 			{
 				switch (bufferLayoutDesc.Elements[i].FloatCount)
 				{
-					case (1): format[i] = G.VertexFormat.Float; break;
-					case (2): format[i] = G.VertexFormat.Float2; break;
-					case (3): format[i] = G.VertexFormat.Float3; break;
-					case (4): format[i] = G.VertexFormat.Float4; break;
+					case 1: format[i] = G.VertexFormat.Float; break;
+					case 2: format[i] = G.VertexFormat.Float2; break;
+					case 3: format[i] = G.VertexFormat.Float3; break;
+					case 4: format[i] = G.VertexFormat.Float4; break;
 				}
 			}
 		

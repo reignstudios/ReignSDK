@@ -131,10 +131,10 @@ namespace Reign.Video
 			{
 				switch (channel.ID)
 				{
-					case ("Position"): hasPositionData = true; break;
-					case ("Color"): colors = channel.Values; break;
-					case ("Normal"): normals = channel.Values; break;
-					case ("UV"): uvs = channel.Values; break;
+					case "Position": hasPositionData = true; break;
+					case "Color": colors = channel.Values; break;
+					case "Normal": normals = channel.Values; break;
+					case "UV": uvs = channel.Values; break;
 				}
 			}
 			if (!hasPositionData) Debug.ThrowError("SoftwareMesh", "Vertices missing position data");
@@ -144,10 +144,10 @@ namespace Reign.Video
 			{
 				switch (index.ID)
 				{
-					case ("Position"): positionIndices = index.Values; break;
-					case ("Color"): colorIndices = index.Values; break;
-					case ("Normal"): normalIndices = index.Values; break;
-					case ("UV"): uvIndices = index.Values; break;
+					case "Position": positionIndices = index.Values; break;
+					case "Color": colorIndices = index.Values; break;
+					case "Normal": normalIndices = index.Values; break;
+					case "UV": uvIndices = index.Values; break;
 				}
 			}
 			if (positionIndices == null) Debug.ThrowError("SoftwareMesh", "Faces missing position data");

@@ -29,7 +29,7 @@ namespace Reign.Video.Vita
 		{
 			switch (type)
 			{
-				case (DepthStencilStateTypes.None):
+				case DepthStencilStateTypes.None:
 					depthReadEnable = false;
 					depthWriteEnable = false;
 					depthFunc = DepthFuncMode.Less;
@@ -41,7 +41,7 @@ namespace Reign.Video.Vita
 					stencilPassOp = StencilOpMode.Keep;
 					break;
 
-				case (DepthStencilStateTypes.ReadWrite_Less):
+				case DepthStencilStateTypes.ReadWrite_Less:
 					depthReadEnable = true;
 					depthWriteEnable = true;
 					depthFunc = DepthFuncMode.Less;

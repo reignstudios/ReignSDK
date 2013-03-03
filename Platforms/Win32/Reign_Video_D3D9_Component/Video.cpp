@@ -31,7 +31,7 @@ namespace Reign_Video_D3D9_Component
 		return direct3DEx;
 	}
 
-	VideoError VideoCom::Init(IntPtr handle, bool vSync, int width, int height, bool fullscreen, bool multithreaded, [Out] ComponentCaps^% caps)
+	VideoError VideoCom::Init(IntPtr handle, bool vSync, int width, int height, int depthBit, int stencilBit, bool fullscreen, bool multithreaded, [Out] ComponentCaps^% caps)
 	{
 		null();
 		IDirect3D9* direct3D = 0;
@@ -43,6 +43,8 @@ namespace Reign_Video_D3D9_Component
 		this->vSync = vSync;
 		lastWidth = width;
 		lastHeight = height;
+		this->depthBit = depthBit;
+		this->stencilBit = stencilBit;
 
 		//Create D3D Object
 		direct3D = createD3D9Ex();
@@ -123,10 +125,19 @@ namespace Reign_Video_D3D9_Component
 		presentParameters.SwapEffect = D3DSWAPEFFECT_DISCARD;
 		if (fullScreen) presentParameters.FullScreen_RefreshRateInHz = 60;
 		presentParameters.Windowed = !fullScreen;
-		presentParameters.EnableAutoDepthStencil = true;
-		presentParameters.AutoDepthStencilFormat = D3DFMT_D24S8;
+
+		if (depthBit != 0)
+		{
+			presentParameters.Flags = D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
+			presentParameters.EnableAutoDepthStencil = true;
+			presentParameters.AutoDepthStencilFormat = D3DFMT_D16;
+			if (depthBit == 24 && stencilBit == 8) presentParameters.AutoDepthStencilFormat = D3DFMT_D24S8;
+			if (depthBit == 24 && stencilBit == 0) presentParameters.AutoDepthStencilFormat = D3DFMT_D24X8;
+			else if (depthBit == 16 && stencilBit == 0) presentParameters.AutoDepthStencilFormat = D3DFMT_D16;
+			else if (depthBit == 32 && stencilBit == 0) presentParameters.AutoDepthStencilFormat = D3DFMT_D32;
+		}
+
 		presentParameters.PresentationInterval = vSync ? D3DPRESENT_INTERVAL_ONE : D3DPRESENT_INTERVAL_IMMEDIATE;
-		presentParameters.Flags = D3DPRESENTFLAG_DISCARD_DEPTHSTENCIL;
 		presentParameters.hDeviceWindow = handle;
 		presentParameters.MultiSampleQuality = 0;
 		presentParameters.MultiSampleType = D3DMULTISAMPLE_NONE;

@@ -23,7 +23,7 @@ namespace Reign.Video.D3D9
 
 				switch (error)
 				{
-					case (VertexShaderErrors.VertexShader): Debug.ThrowError("VertexShader", "Failed to create vertex shader"); break;
+					case VertexShaderErrors.VertexShader: Debug.ThrowError("VertexShader", "Failed to create vertex shader"); break;
 				}
 			}
 			catch (Exception e)

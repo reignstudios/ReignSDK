@@ -19,9 +19,11 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
-		public Video(DisposableI parent, ApplicationI application, bool vSync)
+		public Video(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync)
 		: base(parent)
 		{
+			if (depthStencilFormats != DepthStenicFormats.Defualt) Debug.ThrowError("Video", "Only a Defualt DepthStenicFormat may be used in XNA here");
+
 			this.application = application;
 			Device = application.GraphicsDevice;
 			defualtStates();
@@ -121,11 +123,11 @@ namespace Reign.Video.XNA
 		{
 			switch (surfaceFormat)
 			{
-				case (SurfaceFormats.RGBAx8): return SurfaceFormat.Color;
+				case SurfaceFormats.RGBAx8: return SurfaceFormat.Color;
 				#if !SILVERLIGHT
-				case (SurfaceFormats.RGBx10_Ax2): return SurfaceFormat.Rgba1010102;
-				case (SurfaceFormats.RGBAx16f): return SurfaceFormat.HalfVector4;
-				case (SurfaceFormats.RGBAx32f): return SurfaceFormat.Vector4;
+				case SurfaceFormats.RGBx10_Ax2: return SurfaceFormat.Rgba1010102;
+				case SurfaceFormats.RGBAx16f: return SurfaceFormat.HalfVector4;
+				case SurfaceFormats.RGBAx32f: return SurfaceFormat.Vector4;
 				#endif
 				default:
 					Debug.ThrowError("RenderTarget", "Unsuported SurfaceFormat");

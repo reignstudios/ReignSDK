@@ -27,7 +27,7 @@ namespace Reign.Video.OpenGL
 		{
 			switch (type)
 			{
-				case (DepthStencilStateTypes.None):
+				case DepthStencilStateTypes.None:
 					depthReadEnable = false;
 					depthWriteEnable = false;
 					depthFunc = GL.ALWAYS;
@@ -39,7 +39,7 @@ namespace Reign.Video.OpenGL
 					stencilPassOp = GL.KEEP;
 					break;
 
-				case (DepthStencilStateTypes.ReadWrite_Less):
+				case DepthStencilStateTypes.ReadWrite_Less:
 					depthReadEnable = true;
 					depthWriteEnable = true;
 					depthFunc = GL.LESS;

@@ -825,11 +825,13 @@ namespace Jitter.Dynamics
                         dynamicFriction = JMath.Max(body1.material.kineticFriction, body2.material.kineticFriction);
                         restitution = JMath.Max(body1.material.restitution, body2.material.restitution);
                         break;
+
                     case ContactSettings.MaterialCoefficientMixingType.TakeMinimum:
                         staticFriction = JMath.Min(body1.material.staticFriction, body2.material.staticFriction);
                         dynamicFriction = JMath.Min(body1.material.kineticFriction, body2.material.kineticFriction);
                         restitution = JMath.Min(body1.material.restitution, body2.material.restitution);
                         break;
+
                     case ContactSettings.MaterialCoefficientMixingType.UseAverage:
                         staticFriction = (body1.material.staticFriction + body2.material.staticFriction) / 2.0f;
                         dynamicFriction = (body1.material.kineticFriction + body2.material.kineticFriction) / 2.0f;

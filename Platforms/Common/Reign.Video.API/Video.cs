@@ -16,7 +16,7 @@ namespace Reign.Video.API
 
 	public static class Video
 	{
-		public static VideoI Init(VideoTypes typeFlags, out VideoTypes type, DisposableI parent, ApplicationI application, bool vSync)
+		public static VideoI Init(VideoTypes typeFlags, out VideoTypes type, DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync)
 		{
 			bool d3d11 = (typeFlags & VideoTypes.D3D11) != 0;
 			bool d3d9 = (typeFlags & VideoTypes.D3D9) != 0;
@@ -36,7 +36,7 @@ namespace Reign.Video.API
 					{
 						d3d11 = false;
 						type = VideoTypes.D3D11;
-						video = new Reign.Video.D3D11.Video(parent, application, vSync);
+						video = new Reign.Video.D3D11.Video(parent, application, depthStencilFormats, vSync);
 						break;
 					}
 					#endif
@@ -46,7 +46,7 @@ namespace Reign.Video.API
 					{
 					    d3d9 = false;
 					    type = VideoTypes.D3D9;
-					    video = new Reign.Video.D3D9.Video(parent, application, vSync);
+					    video = new Reign.Video.D3D9.Video(parent, application, depthStencilFormats, vSync);
 						break;
 					}
 					#endif
@@ -56,7 +56,7 @@ namespace Reign.Video.API
 					{
 						gl = false;
 						type = VideoTypes.OpenGL;
-						video = new Reign.Video.OpenGL.Video(parent, application, vSync);
+						video = new Reign.Video.OpenGL.Video(parent, application, depthStencilFormats, vSync);
 						break;
 					}
 					#endif
@@ -66,7 +66,7 @@ namespace Reign.Video.API
 					{
 						xna = false;
 						type = VideoTypes.XNA;
-						video = new Reign.Video.XNA.Video(parent, application, vSync);
+						video = new Reign.Video.XNA.Video(parent, application, depthStencilFormats, vSync);
 						break;
 					}
 					#endif
@@ -76,7 +76,7 @@ namespace Reign.Video.API
 					{
 						vita = false;
 						type = VideoTypes.Vita;
-						video = new Reign.Video.Vita.Video(parent, application, vSync);
+						video = new Reign.Video.Vita.Video(parent, application, depthStencilFormats, vSync);
 						break;
 					}
 					#endif

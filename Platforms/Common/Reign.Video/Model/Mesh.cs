@@ -128,11 +128,12 @@ namespace Reign.Video
 			var posElementType = BufferLayoutElementTypes.Vector3;
 			switch (softwareMesh.Dimensions)
 			{
-				case (2):
+				case 2:
 					posElementType = BufferLayoutElementTypes.Vector2;
 					posFloatCount = 2;
 					break;
-				case (3):
+
+				case 3:
 					posElementType = BufferLayoutElementTypes.Vector3;
 					posFloatCount = 3;
 					break;
@@ -145,7 +146,7 @@ namespace Reign.Video
 			{
 				switch (key.Key)
 				{
-					case (VertexComponentKeyTypes.Positions):
+					case VertexComponentKeyTypes.Positions:
 						elements.Add(new BufferLayoutElement(posElementType, BufferLayoutElementUsages.Position, 0, posCount, vertFloatCount));
 						vertFloatCount += posFloatCount;
 						++posCount;
@@ -157,7 +158,7 @@ namespace Reign.Video
 			{
 				switch (key.Key)
 				{
-					case (TriangleComponentKeyTypes.ColorComponents):
+					case TriangleComponentKeyTypes.ColorComponents:
 						if (loadColors)
 						{
 							elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector4, BufferLayoutElementUsages.Color, 0, colorCount, vertFloatCount));
@@ -166,7 +167,7 @@ namespace Reign.Video
 						}
 						break;
 
-					case (TriangleComponentKeyTypes.NormalComponents):
+					case TriangleComponentKeyTypes.NormalComponents:
 						if (loadNormals)
 						{
 							elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Normal, 0, normalCount, vertFloatCount));
@@ -175,7 +176,7 @@ namespace Reign.Video
 						}
 						break;
 
-					case (TriangleComponentKeyTypes.UVComponents):
+					case TriangleComponentKeyTypes.UVComponents:
 						if (loadUVs)
 						{
 							elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, uvCount, vertFloatCount));
@@ -197,7 +198,7 @@ namespace Reign.Video
 				{
 					switch (element.Usage)
 					{
-						case (BufferLayoutElementUsages.Position):
+						case BufferLayoutElementUsages.Position:
 							vertices[vi] = vertex.Positions[posIndex].X;
 							vertices[vi+1] = vertex.Positions[posIndex].Y;
 							if (posFloatCount == 3) vertices[vi+2] = vertex.Positions[posIndex].Z;
@@ -205,7 +206,7 @@ namespace Reign.Video
 							++posIndex;
 							break;
 
-						case (BufferLayoutElementUsages.Color):
+						case BufferLayoutElementUsages.Color:
 							if (loadColors)
 							{
 								vertices[vi] = vertex.Colors[uvIndex].X;
@@ -215,7 +216,7 @@ namespace Reign.Video
 							}
 							break;
 
-						case (BufferLayoutElementUsages.Normal):
+						case BufferLayoutElementUsages.Normal:
 							if (loadNormals)
 							{
 								vertices[vi] = vertex.Normals[normIndex].X;
@@ -226,7 +227,7 @@ namespace Reign.Video
 							}
 							break;
 
-						case (BufferLayoutElementUsages.UV):
+						case BufferLayoutElementUsages.UV:
 							if (loadUVs)
 							{
 								vertices[vi] = vertex.UVs[uvIndex].X;

@@ -27,7 +27,7 @@ namespace Reign.Video.OpenGL
 		{
 			switch (type)
 			{
-				case (SamplerStateTypes.Point_Wrap):
+				case SamplerStateTypes.Point_Wrap:
 					filterMin = GL.NEAREST;
 					filterMinMiped = GL.NEAREST_MIPMAP_NEAREST;
 					filterMag = GL.NEAREST;
@@ -37,7 +37,7 @@ namespace Reign.Video.OpenGL
 					borderColor = 0;
 					break;
 
-				case (SamplerStateTypes.Point_Clamp):
+				case SamplerStateTypes.Point_Clamp:
 					filterMin = GL.NEAREST;
 					filterMinMiped = GL.NEAREST_MIPMAP_NEAREST;
 					filterMag = GL.NEAREST;
@@ -47,7 +47,7 @@ namespace Reign.Video.OpenGL
 					borderColor = 0;
 					break;
 
-				case (SamplerStateTypes.Linear_Wrap):
+				case SamplerStateTypes.Linear_Wrap:
 					filterMin = GL.LINEAR;
 					filterMinMiped = GL.LINEAR_MIPMAP_LINEAR;
 					filterMag = GL.LINEAR;
@@ -57,7 +57,7 @@ namespace Reign.Video.OpenGL
 					borderColor = 0;
 					break;
 
-				case (SamplerStateTypes.Linear_Clamp):
+				case SamplerStateTypes.Linear_Clamp:
 					filterMin = GL.LINEAR;
 					filterMinMiped = GL.LINEAR_MIPMAP_LINEAR;
 					filterMag = GL.LINEAR;

@@ -28,7 +28,7 @@ namespace Reign.Video.XNA
 		{
 			switch (type)
 			{
-			    case (DepthStencilStateTypes.None):
+			    case DepthStencilStateTypes.None:
 			        depthReadEnable = false;
 			        depthWriteEnable = false;
 			        depthFunc = X.CompareFunction.Less;
@@ -40,7 +40,7 @@ namespace Reign.Video.XNA
 			        stencilPassOp = X.StencilOperation.Keep;
 			        break;
 
-			    case (DepthStencilStateTypes.ReadWrite_Less):
+			    case DepthStencilStateTypes.ReadWrite_Less:
 			        depthReadEnable = true;
 			        depthWriteEnable = true;
 			        depthFunc = X.CompareFunction.Less;

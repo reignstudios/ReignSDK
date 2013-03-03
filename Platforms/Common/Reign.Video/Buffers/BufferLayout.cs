@@ -61,11 +61,11 @@ namespace Reign.Video
 			{
 				switch (Type)
 				{
-					case (BufferLayoutElementTypes.Float): return sizeof(float);
-					case (BufferLayoutElementTypes.Vector2): return sizeof(float) * 2;
-					case (BufferLayoutElementTypes.Vector3): return sizeof(float) * 3;
-					case (BufferLayoutElementTypes.Vector4): return sizeof(float) * 4;
-					case (BufferLayoutElementTypes.RGBAx8): return sizeof(int);
+					case BufferLayoutElementTypes.Float: return sizeof(float);
+					case BufferLayoutElementTypes.Vector2: return sizeof(float) * 2;
+					case BufferLayoutElementTypes.Vector3: return sizeof(float) * 3;
+					case BufferLayoutElementTypes.Vector4: return sizeof(float) * 4;
+					case BufferLayoutElementTypes.RGBAx8: return sizeof(int);
 				}
 				return 0;
 			}
@@ -77,11 +77,11 @@ namespace Reign.Video
 			{
 				switch (Type)
 				{
-					case (BufferLayoutElementTypes.Float): return 1;
-					case (BufferLayoutElementTypes.Vector2): return 2;
-					case (BufferLayoutElementTypes.Vector3): return 3;
-					case (BufferLayoutElementTypes.Vector4): return 4;
-					case (BufferLayoutElementTypes.RGBAx8): return 1;
+					case BufferLayoutElementTypes.Float: return 1;
+					case BufferLayoutElementTypes.Vector2: return 2;
+					case BufferLayoutElementTypes.Vector3: return 3;
+					case BufferLayoutElementTypes.Vector4: return 4;
+					case BufferLayoutElementTypes.RGBAx8: return 1;
 				}
 				return 0;
 			}
@@ -129,77 +129,77 @@ namespace Reign.Video
 			Elements = new List<BufferLayoutElement>();
 			switch (bufferFormatType)
 			{
-				case (BufferLayoutTypes.Index):
+				case BufferLayoutTypes.Index:
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Float, BufferLayoutElementUsages.Index, 1, 0, 0));
 					break;
 
-				case (BufferLayoutTypes.Position2):
+				case BufferLayoutTypes.Position2:
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.Position, 0, 0, 0));
 					break;
 
-				case (BufferLayoutTypes.Position2_UV):
+				case BufferLayoutTypes.Position2_UV:
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.Position, 0, 0, 0));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 2));
 					break;
 
-				case (BufferLayoutTypes.Position2_IndexClassic):
+				case BufferLayoutTypes.Position2_IndexClassic:
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.Position, 0, 0, 0));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Float, BufferLayoutElementUsages.IndexClassic, 0, 0, 2));
 					break;
 
-				case (BufferLayoutTypes.Position3):
+				case BufferLayoutTypes.Position3:
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));
 					break;
 
-				case (BufferLayoutTypes.Position3_UV):
+				case BufferLayoutTypes.Position3_UV:
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 3));
 					break;
 
-				case (BufferLayoutTypes.Position3_UV2):
+				case BufferLayoutTypes.Position3_UV2:
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 3));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 1, 5));
 					break;
 
-				case (BufferLayoutTypes.Position3_UV_Index):
+				case BufferLayoutTypes.Position3_UV_Index:
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 3));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Float, BufferLayoutElementUsages.Index, 1, 0, 0));
 					break;
 
-				case (BufferLayoutTypes.Position3_UV_IndexClassic):
+				case BufferLayoutTypes.Position3_UV_IndexClassic:
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 3));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Float, BufferLayoutElementUsages.IndexClassic, 0, 0, 5));
 					break;
 
-				case (BufferLayoutTypes.Position3_Color):
+				case BufferLayoutTypes.Position3_Color:
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.RGBAx8, BufferLayoutElementUsages.Color, 0, 0, 3));
 					break;
 
-				case (BufferLayoutTypes.Position3_Color_UV):
+				case BufferLayoutTypes.Position3_Color_UV:
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.RGBAx8, BufferLayoutElementUsages.Color, 0, 0, 3));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 4));
 					break;
 
-				case (BufferLayoutTypes.Position3_Color_UV_Index):
+				case BufferLayoutTypes.Position3_Color_UV_Index:
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.RGBAx8, BufferLayoutElementUsages.Color, 0, 0, 3));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 4));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Float, BufferLayoutElementUsages.Index, 1, 0, 0));
 					break;
 
-				case (BufferLayoutTypes.Position3_Color_UV_IndexClassic):
+				case BufferLayoutTypes.Position3_Color_UV_IndexClassic:
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.RGBAx8, BufferLayoutElementUsages.Color, 0, 0, 3));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector2, BufferLayoutElementUsages.UV, 0, 0, 4));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Float, BufferLayoutElementUsages.IndexClassic, 0, 0, 6));
 					break;
 
-				case (BufferLayoutTypes.Position3_Normal):
+				case BufferLayoutTypes.Position3_Normal:
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Position, 0, 0, 0));
 					Elements.Add(new BufferLayoutElement(BufferLayoutElementTypes.Vector3, BufferLayoutElementUsages.Normal, 0, 0, 3));
 					break;

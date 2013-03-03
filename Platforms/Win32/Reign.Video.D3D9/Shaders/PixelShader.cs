@@ -23,7 +23,7 @@ namespace Reign.Video.D3D9
 
 				switch (error)
 				{
-					case (PixelShaderErrors.PixelShader): Debug.ThrowError("PixelShader", "Failed to create pixel shader"); break;
+					case PixelShaderErrors.PixelShader: Debug.ThrowError("PixelShader", "Failed to create pixel shader"); break;
 				}
 			}
 			catch (Exception e)

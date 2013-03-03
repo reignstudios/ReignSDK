@@ -58,41 +58,41 @@ namespace Reign.Input.WinRT
 		{
 			switch (theEvent.Type)
 			{
-				case (ApplicationEventTypes.LeftMouseDown):
+				case ApplicationEventTypes.LeftMouseDown:
 					leftOn = true;
 					currentPosition = theEvent.CursorPosition;
 					break;
 
-				case (ApplicationEventTypes.LeftMouseUp):
+				case ApplicationEventTypes.LeftMouseUp:
 					leftOn = false;
 					currentPosition = theEvent.CursorPosition;
 					break;
 
-				case (ApplicationEventTypes.MiddleMouseDown):
+				case ApplicationEventTypes.MiddleMouseDown:
 					middleOn = true;
 					currentPosition = theEvent.CursorPosition;
 					break;
 
-				case (ApplicationEventTypes.MiddleMouseUp):
+				case ApplicationEventTypes.MiddleMouseUp:
 					middleOn = false;
 					currentPosition = theEvent.CursorPosition;
 					break;
 
-				case (ApplicationEventTypes.RightMouseDown):
+				case ApplicationEventTypes.RightMouseDown:
 					rightOn = true;
 					currentPosition = theEvent.CursorPosition;
 					break;
 
-				case (ApplicationEventTypes.RightMouseUp):
+				case ApplicationEventTypes.RightMouseUp:
 					rightOn = false;
 					currentPosition = theEvent.CursorPosition;
 					break;
 
-				case (ApplicationEventTypes.MouseMove):
+				case ApplicationEventTypes.MouseMove:
 					currentPosition = theEvent.CursorPosition;
 					break;
 				
-				case (ApplicationEventTypes.ScrollWheel):
+				case ApplicationEventTypes.ScrollWheel:
 					scrollWheelVelocity = theEvent.ScrollWheelVelocity;
 					scollWheelChanged = true;
 					currentPosition = theEvent.CursorPosition;

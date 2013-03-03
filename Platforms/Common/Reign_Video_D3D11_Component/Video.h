@@ -98,6 +98,8 @@ namespace Reign_Video_D3D11_Component
 	{
 		#pragma region Properties
 		private: DXGI_FORMAT swapChainFromat;
+		private: int depthBit, stencilBit;
+
 		#if WIN32
 		private: IDXGISwapChain* swapChain;
 		internal: ID3D11Device* device;
@@ -137,11 +139,11 @@ namespace Reign_Video_D3D11_Component
 
 		#pragma region Constructors
 		#if WIN32
-		public: VideoError Init(IntPtr handle, bool vSync, int width, int height, bool fullscreen, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel);
+		public: VideoError Init(IntPtr handle, bool vSync, int width, int height, int depthBit, int stencilBit, bool fullscreen, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel);
 		#elif WINRT
-		public: VideoError Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ swapChainBackgroundPanel);
+		public: VideoError Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, int depthBit, int stencilBit, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ swapChainBackgroundPanel);
 		#else
-		public: VideoError Init(bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, RenderDelegate^ renderDelegate);
+		public: VideoError Init(bool vSync, int width, int height, int depthBit, int stencilBit, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, RenderDelegate^ renderDelegate);
 		public: Windows::Phone::Graphics::Interop::IDrawingSurfaceContentProvider^ GetProvider();
 		#endif
 		private: VideoError createViews(int width, int height);

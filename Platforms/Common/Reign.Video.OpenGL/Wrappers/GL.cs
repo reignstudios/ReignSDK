@@ -597,7 +597,11 @@ namespace Reign.Video.OpenGL
 		public const uint FRAMEBUFFER = 0x8D40u;
 		public const uint COLOR_ATTACHMENT0 = 0x8CE0u;
 		public const uint DEPTH_ATTACHMENT = 0x8D00u;
+		public const uint STENCIL_ATTACHMENT = 0x8D20u;
 		public const uint DEPTH_COMPONENT16 = 0x81A5u;
+		public const uint DEPTH_COMPONENT24 = 0x81A6u;
+		public const uint DEPTH_COMPONENT32 = 0x81A7u;
+		public const uint STENCIL_INDEX8 = 0x8D48u;
 		public const uint FRAMEBUFFER_COMPLETE = 0x8CD5u;
 		public const uint TEXTURE0 = 0x84C0u;
 		public const uint TEXTURE1 = 0x84C1u;
@@ -885,6 +889,10 @@ namespace Reign.Video.OpenGL
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(DLL, EntryPoint = "glGetString", ExactSpelling = true)]
 		public unsafe static extern GLubyte* GetString(GLenum name);
+
+		[SuppressUnmanagedCodeSecurity]
+		[DllImport(DLL, EntryPoint = "glGetBooleanv", ExactSpelling = true)]
+		public unsafe static extern void GetBooleanv(GLenum pname, [OutAttribute] GLboolean* @params);
 
 		[SuppressUnmanagedCodeSecurity]
 		[DllImport(DLL, EntryPoint = "glGetIntegerv", ExactSpelling = true)]

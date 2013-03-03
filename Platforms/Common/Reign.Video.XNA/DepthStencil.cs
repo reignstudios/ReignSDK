@@ -22,7 +22,7 @@ namespace Reign.Video.XNA
 			return new DepthStencil(parent, width, height, depthStenicFormats);
 		}
 
-		public DepthStencil(DisposableI parent, int width, int height, DepthStenicFormats depthStenicFormats)
+		public DepthStencil(DisposableI parent, int width, int height, DepthStenicFormats depthStencilFormats)
 		: base(parent)
 		{
 			try
@@ -31,7 +31,19 @@ namespace Reign.Video.XNA
 				Size = new Size2(width, height);
 				SizeF = Size.ToVector2();
 
-				depthStencil = new X.RenderTarget2D(video.Device, width, height, false, X.SurfaceFormat.Color, X.DepthFormat.Depth24Stencil8);
+				X.DepthFormat format = X.DepthFormat.None;
+				switch (depthStencilFormats)
+				{
+					case DepthStenicFormats.Defualt: format = X.DepthFormat.Depth24; break;
+					case DepthStenicFormats.Depth24Stencil8: format = X.DepthFormat.Depth24Stencil8; break;
+					case DepthStenicFormats.Depth16: format = X.DepthFormat.Depth16; break;
+
+					default:
+						Debug.ThrowError("Video", "Unsuported DepthStencilFormat type");
+						break;
+				}
+
+				depthStencil = new X.RenderTarget2D(video.Device, width, height, false, X.SurfaceFormat.Color, format);
 			}
 			catch (Exception e)
 			{

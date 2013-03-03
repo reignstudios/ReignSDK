@@ -41,6 +41,7 @@ namespace FontGenerator
 		Color fontColor, shadowColor, glowColor, bgColor;
 		double fontSize;
 		Reign.Video.FontMetrics.Character[] tempCharacters;
+		int lastWidth, lastHeight;
 
 		public MainWindow()
 		{
@@ -251,8 +252,10 @@ namespace FontGenerator
 			}
 
 			// render image
-			if (renderTarget == null) renderTarget = new RenderTargetBitmap((int)grid.Width, (int)grid.Height, 96, 96, PixelFormats.Pbgra32);
+			if (renderTarget == null || lastWidth != (int)renderTarget.Width || lastHeight != (int)renderTarget.Height) renderTarget = new RenderTargetBitmap((int)grid.Width, (int)grid.Height, 96, 96, PixelFormats.Pbgra32);
 			else renderTarget.Clear();
+			lastWidth = (int)grid.Width;
+			lastHeight = (int)grid.Height;
 			renderTarget.Render(grid);
 			sourceImage.Source = renderTarget;
 

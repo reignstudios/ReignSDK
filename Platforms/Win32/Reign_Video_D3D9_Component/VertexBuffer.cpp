@@ -28,9 +28,9 @@ namespace Reign_Video_D3D9_Component
 		this->topology = (D3DPRIMITIVETYPE)topology;
 		switch (topology)
 		{
-			case (REIGN_D3DPRIMITIVETYPE::TRIANGLELIST): primitiveVertexCount = 3; break;
-			case (REIGN_D3DPRIMITIVETYPE::LINELIST): primitiveVertexCount = 2; break;
-			case (REIGN_D3DPRIMITIVETYPE::POINTLIST): primitiveVertexCount = 1; break;
+			case REIGN_D3DPRIMITIVETYPE::TRIANGLELIST: primitiveVertexCount = 3; break;
+			case REIGN_D3DPRIMITIVETYPE::LINELIST: primitiveVertexCount = 2; break;
+			case REIGN_D3DPRIMITIVETYPE::POINTLIST: primitiveVertexCount = 1; break;
 		}
 	}
 

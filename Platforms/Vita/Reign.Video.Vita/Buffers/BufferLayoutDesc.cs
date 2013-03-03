@@ -72,32 +72,32 @@ namespace Reign.Video.Vita
 				string usageIndex = element.UsageIndex.ToString();
 			    switch (element.Usage)
 			    {
-					case (BufferLayoutElementUsages.Position):
+					case BufferLayoutElementUsages.Position:
 						Desc[i].Usage = VitaBufferElementUsages.Position;
 						Desc[i].Name = "Position" + usageIndex;
 						break;
 
-					case (BufferLayoutElementUsages.Color):
+					case BufferLayoutElementUsages.Color:
 						Desc[i].Usage = VitaBufferElementUsages.Color;
 						Desc[i].Name = "Color" + usageIndex;
 						break;
 
-					case (BufferLayoutElementUsages.UV):
+					case BufferLayoutElementUsages.UV:
 						Desc[i].Usage = VitaBufferElementUsages.UV;
 						Desc[i].Name = "Texcoord" + usageIndex;
 						break;
 
-					case (BufferLayoutElementUsages.Normal):
+					case BufferLayoutElementUsages.Normal:
 						Desc[i].Usage = VitaBufferElementUsages.Normal;
 						Desc[i].Name = "Normal" + usageIndex;
 						break;
 
-					case (BufferLayoutElementUsages.Index):
+					case BufferLayoutElementUsages.Index:
 						Desc[i].Usage = VitaBufferElementUsages.Index;
 						Desc[i].Name = "BlendIndex" + usageIndex;
 						break;
 
-					case (BufferLayoutElementUsages.IndexClassic):
+					case BufferLayoutElementUsages.IndexClassic:
 						Desc[i].Usage = VitaBufferElementUsages.IndexClassic;
 						Desc[i].Name = "BlendIndex" + usageIndex;
 						break;
@@ -107,11 +107,11 @@ namespace Reign.Video.Vita
 
 			    switch (element.Type)
 			    {
-			        case (BufferLayoutElementTypes.Float): Desc[i].Format = VitaBufferElementFormats.Single; break;
-			        case (BufferLayoutElementTypes.Vector2): Desc[i].Format = VitaBufferElementFormats.Vector2f; break;
-			        case (BufferLayoutElementTypes.Vector3): Desc[i].Format = VitaBufferElementFormats.Vector3f; break;
-			        case (BufferLayoutElementTypes.Vector4): Desc[i].Format = VitaBufferElementFormats.Vector4f; break;
-			        case (BufferLayoutElementTypes.RGBAx8): Desc[i].Format = VitaBufferElementFormats.Color; break;
+			        case BufferLayoutElementTypes.Float: Desc[i].Format = VitaBufferElementFormats.Single; break;
+			        case BufferLayoutElementTypes.Vector2: Desc[i].Format = VitaBufferElementFormats.Vector2f; break;
+			        case BufferLayoutElementTypes.Vector3: Desc[i].Format = VitaBufferElementFormats.Vector3f; break;
+			        case BufferLayoutElementTypes.Vector4: Desc[i].Format = VitaBufferElementFormats.Vector4f; break;
+			        case BufferLayoutElementTypes.RGBAx8: Desc[i].Format = VitaBufferElementFormats.Color; break;
 					default: Debug.ThrowError("BufferLayoutDesc", "Unsuported ElementType"); break;
 			    }
 

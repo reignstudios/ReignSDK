@@ -33,21 +33,21 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
-		public Video(DisposableI parent, ApplicationI application, bool vSync)
+		public Video(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync)
 		: base(parent)
 		{
 			#if WINRT
 			var xamlApp = application as XAMLApplication;
-			init(parent, application, vSync, xamlApp != null ? ((XAMLApplication)application).SwapChainPanel : null);
+			init(parent, application, depthStencilFormats, vSync, xamlApp != null ? ((XAMLApplication)application).SwapChainPanel : null);
 			#else
-			init(parent, application, vSync);
+			init(parent, application, depthStencilFormats, vSync);
 			#endif
 		}
 
 		#if WINRT
-		private void init(DisposableI parent, ApplicationI application, bool vSync, Windows.UI.Xaml.Controls.SwapChainBackgroundPanel swapChainBackgroundPanel)
+		private void init(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync, Windows.UI.Xaml.Controls.SwapChainBackgroundPanel swapChainBackgroundPanel)
 		#else
-		private void init(DisposableI parent, ApplicationI application, bool vSync)
+		private void init(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync)
 		#endif
 		{
 			this.application = application;
@@ -57,41 +57,74 @@ namespace Reign.Video.D3D11
 				FileTag = "D3D11_";
 				Cap = new Caps();
 
+				int depthBit = 16, stencilBit = 0;
+				switch (depthStencilFormats)
+				{
+					case DepthStenicFormats.None:
+						depthBit = 0;
+						stencilBit = 0;
+						break;
+
+					case DepthStenicFormats.Defualt:
+						depthBit = 24;
+						stencilBit = 0;
+						break;
+
+					case DepthStenicFormats.Depth24Stencil8:
+						depthBit = 24;
+						stencilBit = 8;
+						break;
+
+					case DepthStenicFormats.Depth16:
+						depthBit = 16;
+						stencilBit = 0;
+						break;
+
+					case DepthStenicFormats.Depth32:
+						depthBit = 32;
+						stencilBit = 0;
+						break;
+
+					default:
+						Debug.ThrowError("Video", "Unsuported DepthStencilFormat type");
+						break;
+				}
+
 				com = new VideoCom();
 				var featureLevel = REIGN_D3D_FEATURE_LEVEL.LEVEL_9_1;
 				var frame = application.FrameSize;
 				#if WIN32
-				var error = com.Init(application.Handle, vSync, frame.Width, frame.Height, false, out featureLevel);
+				var error = com.Init(application.Handle, vSync, frame.Width, frame.Height, depthBit, stencilBit, false, out featureLevel);
 				#elif WINRT
-				var error = com.Init(application.CoreWindow, vSync, frame.Width, frame.Height, out featureLevel, swapChainBackgroundPanel);
+				var error = com.Init(application.CoreWindow, vSync, frame.Width, frame.Height, depthBit, stencilBit, out featureLevel, swapChainBackgroundPanel);
 				#else
-				var error = com.Init(vSync, frame.Width, frame.Height, out featureLevel, OS.UpdateAndRender);
+				var error = com.Init(vSync, frame.Width, frame.Height, depthBit, stencilBit, out featureLevel, OS.UpdateAndRender);
 				#endif
 				BackBufferSize = frame;
 
 				switch (error)
 				{
-					case (VideoError.DepthStencilTextureFailed): Debug.ThrowError("Video", "Failed to create DepthStencilTexture"); break;
-					case (VideoError.DepthStencilViewFailed): Debug.ThrowError("Video", "Failed to create DepthStencilView"); break;
-					case (VideoError.RenderTargetViewFailed): Debug.ThrowError("Video", "Failed to create RenderTargetView"); break;
+					case VideoError.DepthStencilTextureFailed: Debug.ThrowError("Video", "Failed to create DepthStencilTexture"); break;
+					case VideoError.DepthStencilViewFailed: Debug.ThrowError("Video", "Failed to create DepthStencilView"); break;
+					case VideoError.RenderTargetViewFailed: Debug.ThrowError("Video", "Failed to create RenderTargetView"); break;
 					#if !WP8
-					case (VideoError.GetSwapChainFailed): Debug.ThrowError("Video", "Failed to get SwapChain"); break;
+					case VideoError.GetSwapChainFailed: Debug.ThrowError("Video", "Failed to get SwapChain"); break;
 					#endif
 					#if WIN32
-					case (VideoError.DeviceAndSwapChainFailed): Debug.ThrowError("Video", "Failed to create Device and SwapChain"); break;
+					case VideoError.DeviceAndSwapChainFailed: Debug.ThrowError("Video", "Failed to create Device and SwapChain"); break;
 					#else
-					case (VideoError.DeviceFailed): Debug.ThrowError("Video", "Failed to create Device"); break;
+					case VideoError.DeviceFailed: Debug.ThrowError("Video", "Failed to create Device"); break;
 					#if !WP8
-					case (VideoError.SwapChainFailed): Debug.ThrowError("Video", "Failed to create SwapChain"); break;
-					case (VideoError.D2DFactoryFailed): Debug.ThrowError("Video", "Failed to create D2D Factory"); break;
-					case (VideoError.D2DDeviceFailed): Debug.ThrowError("Video", "Failed to create D2D Device"); break;
-					case (VideoError.D2DDeviceContextFailed): Debug.ThrowError("Video", "Failed to D2D DeviceContext"); break;
-					case (VideoError.NativeSwapChainPanelFailed): Debug.ThrowError("Video", "Failed to get native SwapChainPanel"); break;
-					case (VideoError.GetDXGIBackBufferFailed): Debug.ThrowError("Video", "Failed to create DXGI BackBuffer"); break;
-					case (VideoError.DXGISurfaceFailed): Debug.ThrowError("Video", "Failed to create DXGI Surface"); break;
-					case (VideoError.D2DBitmapFailed): Debug.ThrowError("Video", "Failed to create D2D Bitmap"); break;
+					case VideoError.SwapChainFailed: Debug.ThrowError("Video", "Failed to create SwapChain"); break;
+					case VideoError.D2DFactoryFailed: Debug.ThrowError("Video", "Failed to create D2D Factory"); break;
+					case VideoError.D2DDeviceFailed: Debug.ThrowError("Video", "Failed to create D2D Device"); break;
+					case VideoError.D2DDeviceContextFailed: Debug.ThrowError("Video", "Failed to D2D DeviceContext"); break;
+					case VideoError.NativeSwapChainPanelFailed: Debug.ThrowError("Video", "Failed to get native SwapChainPanel"); break;
+					case VideoError.GetDXGIBackBufferFailed: Debug.ThrowError("Video", "Failed to create DXGI BackBuffer"); break;
+					case VideoError.DXGISurfaceFailed: Debug.ThrowError("Video", "Failed to create DXGI Surface"); break;
+					case VideoError.D2DBitmapFailed: Debug.ThrowError("Video", "Failed to create D2D Bitmap"); break;
 					#else
-					case (VideoError.RenderTextureFailed): Debug.ThrowError("Video", "Failed to create RenderTexture"); break;
+					case VideoError.RenderTextureFailed: Debug.ThrowError("Video", "Failed to create RenderTexture"); break;
 					#endif
 					#endif
 				}
@@ -103,38 +136,38 @@ namespace Reign.Video.D3D11
 				switch (featureLevel)
 				{
 					#if WINRT || WP8
-					case (REIGN_D3D_FEATURE_LEVEL.LEVEL_11_1):
+					case REIGN_D3D_FEATURE_LEVEL.LEVEL_11_1:
 						Cap.MaxShaderVersion = ShaderVersions.HLSL_5_0;
 						Cap.FeatureLevel = FeatureLevels.D3D11_1;
 						break;
 					#endif
 
-					case (REIGN_D3D_FEATURE_LEVEL.LEVEL_11_0):
+					case REIGN_D3D_FEATURE_LEVEL.LEVEL_11_0:
 						Cap.MaxShaderVersion = ShaderVersions.HLSL_5_0;
 						Cap.FeatureLevel = FeatureLevels.D3D11;
 						break;
 
-					case (REIGN_D3D_FEATURE_LEVEL.LEVEL_10_1):
+					case REIGN_D3D_FEATURE_LEVEL.LEVEL_10_1:
 						Cap.MaxShaderVersion = ShaderVersions.HLSL_4_1;
 						Cap.FeatureLevel = FeatureLevels.D3D10_1;
 						break;
 
-					case (REIGN_D3D_FEATURE_LEVEL.LEVEL_10_0):
+					case REIGN_D3D_FEATURE_LEVEL.LEVEL_10_0:
 						Cap.MaxShaderVersion = ShaderVersions.HLSL_4_0;
 						Cap.FeatureLevel = FeatureLevels.D3D10;
 						break;
 
-					case (REIGN_D3D_FEATURE_LEVEL.LEVEL_9_3):
+					case REIGN_D3D_FEATURE_LEVEL.LEVEL_9_3:
 						Cap.MaxShaderVersion = ShaderVersions.HLSL_3_0;
 						Cap.FeatureLevel = FeatureLevels.D3D9_3;
 						break;
 
-					case (REIGN_D3D_FEATURE_LEVEL.LEVEL_9_2):
+					case REIGN_D3D_FEATURE_LEVEL.LEVEL_9_2:
 						Cap.MaxShaderVersion = ShaderVersions.HLSL_2_a;
 						Cap.FeatureLevel = FeatureLevels.D3D9_2;
 						break;
 
-					case (REIGN_D3D_FEATURE_LEVEL.LEVEL_9_1):
+					case REIGN_D3D_FEATURE_LEVEL.LEVEL_9_1:
 						Cap.MaxShaderVersion = ShaderVersions.HLSL_2_0;
 						Cap.FeatureLevel = FeatureLevels.D3D9_1;
 						break;
@@ -207,13 +240,13 @@ namespace Reign.Video.D3D11
 		{
 			switch (surfaceFormat)
 			{
-				case (SurfaceFormats.DXT1): return REIGN_DXGI_FORMAT.BC1_UNORM;
-				case (SurfaceFormats.DXT3): return REIGN_DXGI_FORMAT.BC2_UNORM;
-				case (SurfaceFormats.DXT5): return REIGN_DXGI_FORMAT.BC3_UNORM;
-				case (SurfaceFormats.RGBAx8): return REIGN_DXGI_FORMAT.R8G8B8A8_UNORM;
-				case (SurfaceFormats.RGBx10_Ax2): return REIGN_DXGI_FORMAT.R10G10B10A2_UNORM;
-				case (SurfaceFormats.RGBAx16f): return REIGN_DXGI_FORMAT.R16G16B16A16_FLOAT;
-				case (SurfaceFormats.RGBAx32f): return REIGN_DXGI_FORMAT.R32G32B32A32_FLOAT;
+				case SurfaceFormats.DXT1: return REIGN_DXGI_FORMAT.BC1_UNORM;
+				case SurfaceFormats.DXT3: return REIGN_DXGI_FORMAT.BC2_UNORM;
+				case SurfaceFormats.DXT5: return REIGN_DXGI_FORMAT.BC3_UNORM;
+				case SurfaceFormats.RGBAx8: return REIGN_DXGI_FORMAT.R8G8B8A8_UNORM;
+				case SurfaceFormats.RGBx10_Ax2: return REIGN_DXGI_FORMAT.R10G10B10A2_UNORM;
+				case SurfaceFormats.RGBAx16f: return REIGN_DXGI_FORMAT.R16G16B16A16_FLOAT;
+				case SurfaceFormats.RGBAx32f: return REIGN_DXGI_FORMAT.R32G32B32A32_FLOAT;
 				default:
 					Debug.ThrowError("Video", "Unsuported SurfaceFormat.");
 					return REIGN_DXGI_FORMAT.R8G8B8A8_UNORM;

@@ -20,7 +20,7 @@ namespace Reign.Video.Vita
 		#endregion
 		
 		#region Constructors
-		public Video(DisposableI parent, ApplicationI application, bool vSync)
+		public Video(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync)
 		: base(parent)
 		{
 			try
@@ -30,7 +30,20 @@ namespace Reign.Video.Vita
 				currentPixelTextures = new Texture2D[4];
 				currentSamplerStates = new SamplerState[4];
 				
-				context = new GraphicsContext(0, 0, PixelFormat.Rgba, PixelFormat.Depth16, MultiSampleMode.None);
+				PixelFormat format = PixelFormat.None;
+				switch (depthStencilFormats)
+				{
+					case DepthStenicFormats.None: format = PixelFormat.None; break;
+					case DepthStenicFormats.Defualt: format = PixelFormat.Depth16; break;
+					case DepthStenicFormats.Depth24Stencil8: format = PixelFormat.Depth24Stencil8; break;
+					case DepthStenicFormats.Depth16: format = PixelFormat.Depth16; break;
+
+					default:
+						Debug.ThrowError("Video", "Unsuported DepthStencilFormat type");
+						break;
+				}
+				
+				context = new GraphicsContext(0, 0, PixelFormat.Rgba, format, MultiSampleMode.None);
 				currentFrameBuffer = context.Screen;
 				BackBufferSize = new Size2(currentFrameBuffer.Width, currentFrameBuffer.Height);
 				((VitaApplication)application).Vita_SetFrameSize(currentFrameBuffer.Width, currentFrameBuffer.Height);
@@ -120,7 +133,7 @@ namespace Reign.Video.Vita
 		{
 			switch (surfaceFormat)
 			{
-				case (SurfaceFormats.RGBAx8): return PixelFormat.Rgba;
+				case SurfaceFormats.RGBAx8: return PixelFormat.Rgba;
 				default:
 					Debug.ThrowError("RenderTarget", "Unsuported SurfaceFormat");
 					return PixelFormat.Rgba;

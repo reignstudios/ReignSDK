@@ -24,28 +24,28 @@ namespace Reign.Video.XNA
 		{
 			switch (type)
 			{
-				case (SamplerStateTypes.Point_Wrap):
+				case SamplerStateTypes.Point_Wrap:
 					filter = X.TextureFilter.Point;
 					addressU = X.TextureAddressMode.Wrap;
 					addressV = X.TextureAddressMode.Wrap;
 					addressW = X.TextureAddressMode.Wrap;
 					break;
 
-				case (SamplerStateTypes.Point_Clamp):
+				case SamplerStateTypes.Point_Clamp:
 					filter = X.TextureFilter.Point;
 					addressU = X.TextureAddressMode.Clamp;
 					addressV = X.TextureAddressMode.Clamp;
 					addressW = X.TextureAddressMode.Clamp;
 					break;
 
-				case (SamplerStateTypes.Linear_Wrap):
+				case SamplerStateTypes.Linear_Wrap:
 					filter = X.TextureFilter.Linear;
 					addressU = X.TextureAddressMode.Wrap;
 					addressV = X.TextureAddressMode.Wrap;
 					addressW = X.TextureAddressMode.Wrap;
 					break;
 
-				case (SamplerStateTypes.Linear_Clamp):
+				case SamplerStateTypes.Linear_Clamp:
 					filter = X.TextureFilter.Linear;
 					addressU = X.TextureAddressMode.Clamp;
 					addressV = X.TextureAddressMode.Clamp;

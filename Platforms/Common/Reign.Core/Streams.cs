@@ -203,10 +203,10 @@ namespace Reign.Core
 			PickerLocationId folder = PickerLocationId.Desktop;
 			switch (folderLocation)
 			{
-				case (FolderLocations.Documents): folder = PickerLocationId.DocumentsLibrary; break;
-				case (FolderLocations.Pictures): folder = PickerLocationId.PicturesLibrary; break;
-				case (FolderLocations.Music): folder = PickerLocationId.MusicLibrary; break;
-				case (FolderLocations.Video): folder = PickerLocationId.VideosLibrary; break;
+				case FolderLocations.Documents: folder = PickerLocationId.DocumentsLibrary; break;
+				case FolderLocations.Pictures: folder = PickerLocationId.PicturesLibrary; break;
+				case FolderLocations.Music: folder = PickerLocationId.MusicLibrary; break;
+				case FolderLocations.Video: folder = PickerLocationId.VideosLibrary; break;
 				default: Debug.ThrowError("Streams", "Unsuported folder location"); break;
 			}
 
@@ -351,27 +351,27 @@ namespace Reign.Core
 			fileName = fileName.Replace('/', '\\');
 			switch (folderLocation)
 			{
-				case (FolderLocations.Application):
+				case FolderLocations.Application:
 					var appFolder = Package.Current.InstalledLocation;
 					return await appFolder.OpenStreamForReadAsync(fileName);
 
-				case (FolderLocations.Storage):
+				case FolderLocations.Storage:
 					var storageFolder = ApplicationData.Current.LocalFolder;
 					return await storageFolder.OpenStreamForReadAsync(fileName);
 
-				case (FolderLocations.Documents):
+				case FolderLocations.Documents:
 					var docFile = await KnownFolders.DocumentsLibrary.GetFileAsync(fileName);
 					return await docFile.OpenStreamForReadAsync();
 
-				case (FolderLocations.Pictures):
+				case FolderLocations.Pictures:
 					var picFile = await KnownFolders.PicturesLibrary.GetFileAsync(fileName);
 					return await picFile.OpenStreamForReadAsync();
 
-				case (FolderLocations.Music):
+				case FolderLocations.Music:
 					var musicFile = await KnownFolders.MusicLibrary.GetFileAsync(fileName);
 					return await musicFile.OpenStreamForReadAsync();
 
-				case (FolderLocations.Video):
+				case FolderLocations.Video:
 					var videoFile = await KnownFolders.VideosLibrary.GetFileAsync(fileName);
 					return await videoFile.OpenStreamForReadAsync();
 			}
@@ -422,27 +422,27 @@ namespace Reign.Core
 			fileName = fileName.Replace('/', '\\');
 			switch (folderLocation)
 			{
-				case (FolderLocations.Application):
+				case FolderLocations.Application:
 					var appFolder = Package.Current.InstalledLocation;
 					return await appFolder.OpenStreamForWriteAsync(fileName, CreationCollisionOption.ReplaceExisting);
 
-				case (FolderLocations.Storage):
+				case FolderLocations.Storage:
 					var storageFolder = ApplicationData.Current.LocalFolder;
 					return await storageFolder.OpenStreamForWriteAsync(fileName, CreationCollisionOption.ReplaceExisting);
 
-				case (FolderLocations.Documents):
+				case FolderLocations.Documents:
 					var docFile = await KnownFolders.DocumentsLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 					return await docFile.OpenStreamForWriteAsync();
 
-				case (FolderLocations.Pictures):
+				case FolderLocations.Pictures:
 					var picFile = await KnownFolders.PicturesLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 					return await picFile.OpenStreamForWriteAsync();
 
-				case (FolderLocations.Music):
+				case FolderLocations.Music:
 					var musicFile = await KnownFolders.MusicLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 					return await musicFile.OpenStreamForWriteAsync();
 
-				case (FolderLocations.Video):
+				case FolderLocations.Video:
 					var videoFile = await KnownFolders.VideosLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 					return await videoFile.OpenStreamForWriteAsync();
 
@@ -491,24 +491,24 @@ namespace Reign.Core
 			{
 				switch (folderLocation)
 				{
-					case (FolderLocations.Application):
+					case FolderLocations.Application:
 						var appFolder = Package.Current.InstalledLocation;
 						return (await appFolder.GetFileAsync(fileName)) != null;
 
-					case (FolderLocations.Storage):
+					case FolderLocations.Storage:
 						var storageFolder = ApplicationData.Current.LocalFolder;
 						return (await storageFolder.GetFileAsync(fileName)) != null;
 
-					case (FolderLocations.Documents):
+					case FolderLocations.Documents:
 						return (await KnownFolders.DocumentsLibrary.GetFileAsync(fileName)) != null;
 
-					case (FolderLocations.Pictures):
+					case FolderLocations.Pictures:
 						return (await KnownFolders.PicturesLibrary.CreateFileAsync(fileName)) != null;
 
-					case (FolderLocations.Music):
+					case FolderLocations.Music:
 						return (await KnownFolders.MusicLibrary.CreateFileAsync(fileName)) != null;
 
-					case (FolderLocations.Video):
+					case FolderLocations.Video:
 						return (await KnownFolders.VideosLibrary.CreateFileAsync(fileName)) != null;
 
 					default:

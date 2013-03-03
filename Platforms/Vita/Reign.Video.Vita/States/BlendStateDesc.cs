@@ -31,7 +31,7 @@ namespace Reign.Video.Vita
 
 			switch (type)
 			{
-				case (BlendStateTypes.None):
+				case BlendStateTypes.None:
 					blendEnable = false;
 					blendOp = BlendFuncMode.Add;
 					srcBlend = BlendFuncFactor.One;
@@ -43,7 +43,7 @@ namespace Reign.Video.Vita
 					dstBlendAlpha = BlendFuncFactor.One;
 					break;
 
-				case (BlendStateTypes.Add):
+				case BlendStateTypes.Add:
 					blendEnable = true;
 					blendOp = BlendFuncMode.Add;
 					srcBlend = BlendFuncFactor.One;
@@ -55,7 +55,7 @@ namespace Reign.Video.Vita
 					dstBlendAlpha = BlendFuncFactor.One;
 					break;
 
-				case (BlendStateTypes.Subtract):
+				case BlendStateTypes.Subtract:
 					blendEnable = true;
 					blendOp = BlendFuncMode.Subtract;
 					srcBlend = BlendFuncFactor.One;
@@ -67,7 +67,7 @@ namespace Reign.Video.Vita
 					dstBlendAlpha = BlendFuncFactor.One;
 					break;
 
-				case (BlendStateTypes.RevSubtract):
+				case BlendStateTypes.RevSubtract:
 					blendEnable = true;
 					blendOp = BlendFuncMode.Subtract;
 					srcBlend = BlendFuncFactor.One;
@@ -79,7 +79,7 @@ namespace Reign.Video.Vita
 					dstBlendAlpha = BlendFuncFactor.One;
 					break;
 
-				case (BlendStateTypes.Alpha):
+				case BlendStateTypes.Alpha:
 					blendEnable = true;
 					blendOp = BlendFuncMode.Add;
 					srcBlend = BlendFuncFactor.SrcAlpha;

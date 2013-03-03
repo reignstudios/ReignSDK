@@ -37,7 +37,7 @@ namespace Reign.Video.OpenGL
 
 			switch (type)
 			{
-				case (BlendStateTypes.None):
+				case BlendStateTypes.None:
 					blendEnable = false;
 					blendOp = GL.FUNC_ADD;
 					srcBlend = GL.ONE;
@@ -49,7 +49,7 @@ namespace Reign.Video.OpenGL
 					dstBlendAlpha = GL.ONE;
 					break;
 
-				case (BlendStateTypes.Add):
+				case BlendStateTypes.Add:
 					blendEnable = true;
 					blendOp = GL.FUNC_ADD;
 					srcBlend = GL.ONE;
@@ -61,7 +61,7 @@ namespace Reign.Video.OpenGL
 					dstBlendAlpha = GL.ONE;
 					break;
 
-				case (BlendStateTypes.Subtract):
+				case BlendStateTypes.Subtract:
 					blendEnable = true;
 					blendOp = GL.FUNC_SUBTRACT;
 					srcBlend = GL.ONE;
@@ -73,7 +73,7 @@ namespace Reign.Video.OpenGL
 					dstBlendAlpha = GL.ONE;
 					break;
 
-				case (BlendStateTypes.RevSubtract):
+				case BlendStateTypes.RevSubtract:
 					blendEnable = true;
 					blendOp = GL.FUNC_REVERSE_SUBTRACT;
 					srcBlend = GL.ONE;
@@ -85,7 +85,7 @@ namespace Reign.Video.OpenGL
 					dstBlendAlpha = GL.ONE;
 					break;
 
-				case (BlendStateTypes.Alpha):
+				case BlendStateTypes.Alpha:
 					blendEnable = true;
 					blendOp = GL.FUNC_ADD;
 					srcBlend = GL.SRC_ALPHA;

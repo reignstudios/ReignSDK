@@ -52,7 +52,7 @@ namespace Reign.Video.XNA
 					#endif
 					switch (renderTargetUsage)
 					{
-						case (RenderTargetUsage.PlatformDefault):
+						case RenderTargetUsage.PlatformDefault:
 							#if SILVERLIGHT
 							xUsage = X.RenderTargetUsage.PreserveContents;
 							#else
@@ -60,8 +60,8 @@ namespace Reign.Video.XNA
 							#endif
 							break;
 
-						case (RenderTargetUsage.PreserveContents): xUsage = X.RenderTargetUsage.PreserveContents; break;
-						case (RenderTargetUsage.DiscardContents): xUsage = X.RenderTargetUsage.DiscardContents; break;
+						case RenderTargetUsage.PreserveContents: xUsage = X.RenderTargetUsage.PreserveContents; break;
+						case RenderTargetUsage.DiscardContents: xUsage = X.RenderTargetUsage.DiscardContents; break;
 					}
 					renderTarget = new X.RenderTarget2D(video.Device, width, height, false, Video.surfaceFormat(surfaceFormat), X.DepthFormat.None, 0, xUsage);
 				}

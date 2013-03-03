@@ -50,22 +50,22 @@ namespace Reign.Video.D3D9
 				{
 					switch (element.Usage)
 					{
-						case (BufferLayoutElementUsages.Position): usages[i] = REIGN_D3DDECLUSAGE.POSITION; break;
-						case (BufferLayoutElementUsages.Color): usages[i] = REIGN_D3DDECLUSAGE.COLOR; break;
-						case (BufferLayoutElementUsages.UV): usages[i] = REIGN_D3DDECLUSAGE.TEXCOORD; break;
-						case (BufferLayoutElementUsages.Normal): usages[i] = REIGN_D3DDECLUSAGE.NORMAL; break;
-						case (BufferLayoutElementUsages.Index): usages[i] = REIGN_D3DDECLUSAGE.BLENDINDICES; break;
-						case (BufferLayoutElementUsages.IndexClassic): usages[i] = REIGN_D3DDECLUSAGE.BLENDINDICES; break;
+						case BufferLayoutElementUsages.Position: usages[i] = REIGN_D3DDECLUSAGE.POSITION; break;
+						case BufferLayoutElementUsages.Color: usages[i] = REIGN_D3DDECLUSAGE.COLOR; break;
+						case BufferLayoutElementUsages.UV: usages[i] = REIGN_D3DDECLUSAGE.TEXCOORD; break;
+						case BufferLayoutElementUsages.Normal: usages[i] = REIGN_D3DDECLUSAGE.NORMAL; break;
+						case BufferLayoutElementUsages.Index: usages[i] = REIGN_D3DDECLUSAGE.BLENDINDICES; break;
+						case BufferLayoutElementUsages.IndexClassic: usages[i] = REIGN_D3DDECLUSAGE.BLENDINDICES; break;
 						default: Debug.ThrowError("BufferLayoutDesc", "Unsuported ElementUsage"); break;
 					}
 
 					switch (element.Type)
 					{
-						case (BufferLayoutElementTypes.Float): types[i] = REIGN_D3DDECLTYPE.FLOAT1; break;
-						case (BufferLayoutElementTypes.Vector2): types[i] = REIGN_D3DDECLTYPE.FLOAT2; break;
-						case (BufferLayoutElementTypes.Vector3): types[i] = REIGN_D3DDECLTYPE.FLOAT3; break;
-						case (BufferLayoutElementTypes.Vector4): types[i] = REIGN_D3DDECLTYPE.FLOAT4; break;
-						case (BufferLayoutElementTypes.RGBAx8): types[i] = REIGN_D3DDECLTYPE.D3DCOLOR; break;
+						case BufferLayoutElementTypes.Float: types[i] = REIGN_D3DDECLTYPE.FLOAT1; break;
+						case BufferLayoutElementTypes.Vector2: types[i] = REIGN_D3DDECLTYPE.FLOAT2; break;
+						case BufferLayoutElementTypes.Vector3: types[i] = REIGN_D3DDECLTYPE.FLOAT3; break;
+						case BufferLayoutElementTypes.Vector4: types[i] = REIGN_D3DDECLTYPE.FLOAT4; break;
+						case BufferLayoutElementTypes.RGBAx8: types[i] = REIGN_D3DDECLTYPE.D3DCOLOR; break;
 						default: Debug.ThrowError("BufferLayoutDesc", "Unsuported ElementType"); break;
 					}
 

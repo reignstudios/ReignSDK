@@ -26,13 +26,13 @@ namespace Reign.Video.D3D11
 				switch (type)
 				{
 					
-					case (DepthStencilStateTypes.None):
+					case DepthStencilStateTypes.None:
 						enable = false;
 						mask = REIGN_D3D11_DEPTH_WRITE_MASK.ZERO;
 						func = REIGN_D3D11_COMPARISON_FUNC.ALWAYS;
 						break;
 
-					case (DepthStencilStateTypes.ReadWrite_Less):
+					case DepthStencilStateTypes.ReadWrite_Less:
 						enable = true;
 						mask = REIGN_D3D11_DEPTH_WRITE_MASK.ALL;
 						func = REIGN_D3D11_COMPARISON_FUNC.LESS;

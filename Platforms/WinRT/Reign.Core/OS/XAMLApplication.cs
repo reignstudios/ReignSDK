@@ -34,7 +34,7 @@ namespace Reign.Core
 				
 				switch (adSize)
 				{
-					case (ApplicationAdSize.Sqaure_250x250):
+					case ApplicationAdSize.Sqaure_250x250:
 						adControl.Width = 250;
 						adControl.Height = 250;
 						break;
@@ -46,32 +46,32 @@ namespace Reign.Core
 
 				switch (adGravity)
 				{
-					case (ApplicationAdGravity.BottomLeft):
+					case ApplicationAdGravity.BottomLeft:
 						adControl.HorizontalAlignment = HorizontalAlignment.Left;
 						adControl.VerticalAlignment = VerticalAlignment.Bottom;
 						break;
 
-					case (ApplicationAdGravity.BottomRight):
+					case ApplicationAdGravity.BottomRight:
 						adControl.HorizontalAlignment = HorizontalAlignment.Right;
 						adControl.VerticalAlignment = VerticalAlignment.Bottom;
 						break;
 
-					case (ApplicationAdGravity.BottomCenter):
+					case ApplicationAdGravity.BottomCenter:
 						adControl.HorizontalAlignment = HorizontalAlignment.Center;
 						adControl.VerticalAlignment = VerticalAlignment.Top;
 						break;
 
-					case (ApplicationAdGravity.TopLeft):
+					case ApplicationAdGravity.TopLeft:
 						adControl.HorizontalAlignment = HorizontalAlignment.Left;
 						adControl.VerticalAlignment = VerticalAlignment.Top;
 						break;
 
-					case (ApplicationAdGravity.TopRight):
+					case ApplicationAdGravity.TopRight:
 						adControl.HorizontalAlignment = HorizontalAlignment.Right;
 						adControl.VerticalAlignment = VerticalAlignment.Top;
 						break;
 
-					case (ApplicationAdGravity.TopCenter):
+					case ApplicationAdGravity.TopCenter:
 						adControl.HorizontalAlignment = HorizontalAlignment.Center;
 						adControl.VerticalAlignment = VerticalAlignment.Top;
 						break;
@@ -163,7 +163,7 @@ namespace Reign.Core
                     //TODO: Load state from previously suspended application
                 }*/
 				
-				Window.Current.Content = new ApplicationPage(desc.ApplicationID, desc.UnitID, desc.AdSize, desc.AdGravity, desc.UseAds);
+				Window.Current.Content = new ApplicationPage(desc.WinRTAdApplicationID, desc.WinRTAdUnitID, desc.AdSize, desc.AdGravity, desc.UseAds);
 				Shown();
             }
 			

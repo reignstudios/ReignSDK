@@ -156,8 +156,8 @@ namespace Reign.Video.D3D11
 
 				switch (error)
 				{
-					case (TextureError.Texture): Debug.ThrowError("Texture2D", "Failed to create Texture2D"); break;
-					case (TextureError.ShaderResourceView): Debug.ThrowError("Texture2D", "Failed to create ShaderResourceView"); break;
+					case TextureError.Texture: Debug.ThrowError("Texture2D", "Failed to create Texture2D"); break;
+					case TextureError.ShaderResourceView: Debug.ThrowError("Texture2D", "Failed to create ShaderResourceView"); break;
 				}
 			}
 			catch (Exception e)

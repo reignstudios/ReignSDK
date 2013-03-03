@@ -51,8 +51,8 @@ namespace Reign.Video.D3D9
 
 				switch (error)
 				{
-					case (RenderTargetError.RenderTarget): Debug.ThrowError("RenderTarget", "Failed to create RenderTarget"); break;
-					case (RenderTargetError.StagingTexture): Debug.ThrowError("RenderTarget", "Failed to create Staging Texture"); break;
+					case RenderTargetError.RenderTarget: Debug.ThrowError("RenderTarget", "Failed to create RenderTarget"); break;
+					case RenderTargetError.StagingTexture: Debug.ThrowError("RenderTarget", "Failed to create Staging Texture"); break;
 				}
 			}
 			catch (Exception e)
@@ -72,12 +72,23 @@ namespace Reign.Video.D3D9
 		public override void Dispose()
 		{
 			disposeChilderen();
+			disposeLocal();
+			base.Dispose();
+		}
+
+		private void disposeLocal()
+		{
 			if (renderTargetCom != null)
 			{
 				renderTargetCom.Dispose();
 				renderTargetCom = null;
 			}
-			base.Dispose();
+		}
+
+		protected override void dispose()
+		{
+			disposeLocal();
+			base.dispose();
 		}
 		#endregion
 

@@ -14,12 +14,12 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
-		public static DepthStencilI New(DisposableI parent, int width, int height, DepthStenicFormats depthStenicFormats)
+		public static DepthStencilI New(DisposableI parent, int width, int height, DepthStenicFormats depthStencilFormats)
 		{
-			return new DepthStencil(parent, width, height, depthStenicFormats);
+			return new DepthStencil(parent, width, height, depthStencilFormats);
 		}
 
-		public DepthStencil(DisposableI parent, int width, int height, DepthStenicFormats depthStenicFormats)
+		public DepthStencil(DisposableI parent, int width, int height, DepthStenicFormats depthStencilFormats)
 		: base(parent)
 		{
 			try
@@ -28,13 +28,41 @@ namespace Reign.Video.D3D11
 				Size = new Size2(width, height);
 				SizeF = Size.ToVector2();
 
+				int depthBit = 16, stencilBit = 0;
+				switch (depthStencilFormats)
+				{
+					case DepthStenicFormats.Defualt:
+						depthBit = 24;
+						stencilBit = 0;
+						break;
+
+					case DepthStenicFormats.Depth24Stencil8:
+						depthBit = 24;
+						stencilBit = 8;
+						break;
+
+					case DepthStenicFormats.Depth16:
+						depthBit = 16;
+						stencilBit = 0;
+						break;
+
+					case DepthStenicFormats.Depth32:
+						depthBit = 32;
+						stencilBit = 0;
+						break;
+
+					default:
+						Debug.ThrowError("Video", "Unsuported DepthStencilFormat type");
+						break;
+				}
+
 				com = new DepthStencilCom();
-				var error = com.Init(video.com, width, height);
+				var error = com.Init(video.com, width, height, depthBit, stencilBit);
 
 				switch (error)
 				{
-					case (DepthStencilErrors.Textrue): Debug.ThrowError("DepthStencil", "Failed to create Texture2D"); break;
-					case (DepthStencilErrors.DepthStencilView): Debug.ThrowError("DepthStencil", "Failed to create DepthStencilView"); break;
+					case DepthStencilErrors.Textrue: Debug.ThrowError("DepthStencil", "Failed to create Texture2D"); break;
+					case DepthStencilErrors.DepthStencilView: Debug.ThrowError("DepthStencil", "Failed to create DepthStencilView"); break;
 				}
 			}
 			catch (Exception e)

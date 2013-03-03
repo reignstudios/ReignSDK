@@ -131,21 +131,21 @@ namespace Reign.Video
 			string ext = Streams.GetFileExt(fileName);
 			switch (ext.ToLower())
 			{
-				case (".dds"): return new ImageDDS(fileName, flip, loadedCallback);
-				case (".atc"): return new ImageDDS(fileName, flip, loadedCallback);
-				case (".pvr"): return new ImagePVR(fileName, flip, loadedCallback);
+				case ".dds": return new ImageDDS(fileName, flip, loadedCallback);
+				case ".atc": return new ImageDDS(fileName, flip, loadedCallback);
+				case ".pvr": return new ImagePVR(fileName, flip, loadedCallback);
 				#if !XNA && NaCl
-				case (".bmpc"): return new ImageBMPC(fileName, flip, loadedCallback);
+				case ".bmpc": return new ImageBMPC(fileName, flip, loadedCallback);
 				#endif
 				#if (!XNA && !NaCl && !VITA) || SILVERLIGHT
 				#if !WP8
-				case (".bmpc"): return new ImageBMPC(fileName, flip, loadedCallback);
+				case ".bmpc": return new ImageBMPC(fileName, flip, loadedCallback);
 				#endif
-				case (".png"): return new ImagePNG(fileName, flip, loadedCallback);
-				case (".jpg"): return new ImageJPG(fileName, flip, loadedCallback);
-				case (".jpeg"): return new ImageJPG(fileName, flip, loadedCallback);
+				case ".png": return new ImagePNG(fileName, flip, loadedCallback);
+				case ".jpg": return new ImageJPG(fileName, flip, loadedCallback);
+				case ".jpeg": return new ImageJPG(fileName, flip, loadedCallback);
 				#if !iOS && !ANDROID
-				case (".bmp"): return new ImageBMP(fileName, flip, loadedCallback);
+				case ".bmp": return new ImageBMP(fileName, flip, loadedCallback);
 				#endif
 				#endif
 				default:
@@ -172,20 +172,20 @@ namespace Reign.Video
 		{
 			switch (surfaceFormat)
 			{
-				case (SurfaceFormats.RGBAx8): return width * height * 4;
-				case (SurfaceFormats.RGBx10_Ax2): return width * height * 4;
-				case (SurfaceFormats.RGBAx16f): return (width * height * 4) * 2;
-				case (SurfaceFormats.RGBAx32f): return (width * height * 4) * 4;
-				case (SurfaceFormats.DXT1): return (width * height) / 2;
-				case (SurfaceFormats.DXT3): return width * height;
-				case (SurfaceFormats.DXT5): return width * height;
-				case (SurfaceFormats.ATC_RGB): return (width * height) / 2;
-				case (SurfaceFormats.ATC_RGBA_Explicit): return width * height;
-				case (SurfaceFormats.ATC_RGBA_Interpolated): return width * height;
-				case (SurfaceFormats.PVR_RGB_2): return (width * height) / 4;
-				case (SurfaceFormats.PVR_RGB_4): return (width * height) / 2;
-				case (SurfaceFormats.PVR_RGBA_2): return (width * height) / 4;
-				case (SurfaceFormats.PVR_RGBA_4): return (width * height) / 2;
+				case SurfaceFormats.RGBAx8: return width * height * 4;
+				case SurfaceFormats.RGBx10_Ax2: return width * height * 4;
+				case SurfaceFormats.RGBAx16f: return (width * height * 4) * 2;
+				case SurfaceFormats.RGBAx32f: return (width * height * 4) * 4;
+				case SurfaceFormats.DXT1: return (width * height) / 2;
+				case SurfaceFormats.DXT3: return width * height;
+				case SurfaceFormats.DXT5: return width * height;
+				case SurfaceFormats.ATC_RGB: return (width * height) / 2;
+				case SurfaceFormats.ATC_RGBA_Explicit: return width * height;
+				case SurfaceFormats.ATC_RGBA_Interpolated: return width * height;
+				case SurfaceFormats.PVR_RGB_2: return (width * height) / 4;
+				case SurfaceFormats.PVR_RGB_4: return (width * height) / 2;
+				case SurfaceFormats.PVR_RGBA_2: return (width * height) / 4;
+				case SurfaceFormats.PVR_RGBA_4: return (width * height) / 2;
 				default: Debug.ThrowError("Image", string.Format("Unsuported surface format: ", surfaceFormat)); break;
 			}
 
@@ -198,10 +198,10 @@ namespace Reign.Video
 			switch (imageFormat)
 			{
 				#if !NaCl && !XNA && !VITA && !WP8
-				case (ImageFormats.BMPC): ImageBMPC.Save(inData, width, height, outStream, imageSavedCallback); break;
+				case ImageFormats.BMPC: ImageBMPC.Save(inData, width, height, outStream, imageSavedCallback); break;
 				#endif
 				#if WINRT
-				case (ImageFormats.PNG): ImagePNG.Save(inData, width, height, outStream, imageSavedCallback); break;
+				case ImageFormats.PNG: ImagePNG.Save(inData, width, height, outStream, imageSavedCallback); break;
 				#endif
 				default: Debug.ThrowError("Image", string.Format("Unsuported format: ", imageFormat)); break;
 			}

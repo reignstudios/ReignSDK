@@ -22,19 +22,19 @@ namespace Reign.Video.XNA
 		{
 			switch (type)
 			{
-				case (RasterizerStateTypes.Solid_CullNone):
+				case RasterizerStateTypes.Solid_CullNone:
 					fillMode = X.FillMode.Solid;
 					cullMode = X.CullMode.None;
 					multisampleEnable = false;
 					break;
 
-				case (RasterizerStateTypes.Solid_CullCW):
+				case RasterizerStateTypes.Solid_CullCW:
 					fillMode = X.FillMode.Solid;
 					cullMode = X.CullMode.CullClockwiseFace;
 					multisampleEnable = false;
 					break;
 
-				case (RasterizerStateTypes.Solid_CullCCW):
+				case RasterizerStateTypes.Solid_CullCCW:
 					fillMode = X.FillMode.Solid;
 					cullMode = X.CullMode.CullCounterClockwiseFace;
 					multisampleEnable = false;

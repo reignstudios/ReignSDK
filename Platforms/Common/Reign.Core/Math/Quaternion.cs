@@ -204,25 +204,24 @@ namespace Reign.Core
 			euler.X *= .5f;
 			euler.Y *= .5f;
 			euler.Z *= .5f;
-			float cosYaw = (float)Math.Cos(euler.X);
-            float cosPitch = (float)Math.Cos(euler.Y);
-            float cosRoll = (float)Math.Cos(euler.Z);
-            float sinYaw = (float)Math.Sin(euler.X);
-            float sinPitch = (float)Math.Sin(euler.Y);
-            float sinRoll = (float)Math.Sin(euler.Z);
 
-            float cosYawCosPitch = cosYaw * cosPitch;
-            float cosYawSinPitch = cosYaw * sinPitch;
-            float sinYawCosPitch = sinYaw * cosPitch;
-            float sinYawSinPitch = sinYaw * sinPitch;
+			float c1 = (float)Math.Cos(euler.Y);
+			float s1 = (float)Math.Sin(euler.Y);
+			float c2 = (float)Math.Cos(euler.Z);
+			float s2 = (float)Math.Sin(euler.Z);
+			float c3 = (float)Math.Cos(euler.X);
+			float s3 = (float)Math.Sin(euler.X);
+			float c1c2 = c1*c2;
+			float s1s2 = s1*s2;
+			float s1c2 = s1*c2;
+			float c1s2 = c1*s2;
 
-			return new Quaternion
-			(
-				cosYawCosPitch * cosRoll + sinYawSinPitch * sinRoll,
-				sinYawCosPitch * cosRoll - cosYawSinPitch * sinRoll,
-				cosYawSinPitch * cosRoll + sinYawCosPitch * sinRoll,
-				cosYawCosPitch * sinRoll - sinYawSinPitch * cosRoll
-			);
+			Quaternion q;
+			q.W = c1c2*c3 - s1s2*s3;
+  			q.X = c1c2*s3 + s1s2*c3;
+			q.Y = s1c2*c3 + c1s2*s3;
+			q.Z = c1s2*c3 - s1c2*s3;
+			return q;
 		}
 
 		public static void FromEuler(Vector3 euler, out Quaternion result)
@@ -230,22 +229,22 @@ namespace Reign.Core
 			euler.X *= .5f;
 			euler.Y *= .5f;
 			euler.Z *= .5f;
-			float cosYaw = (float)Math.Cos(euler.X);
-            float cosPitch = (float)Math.Cos(euler.Y);
-            float cosRoll = (float)Math.Cos(euler.Z);
-            float sinYaw = (float)Math.Sin(euler.X);
-            float sinPitch = (float)Math.Sin(euler.Y);
-            float sinRoll = (float)Math.Sin(euler.Z);
 
-            float cosYawCosPitch = cosYaw * cosPitch;
-            float cosYawSinPitch = cosYaw * sinPitch;
-            float sinYawCosPitch = sinYaw * cosPitch;
-            float sinYawSinPitch = sinYaw * sinPitch;
+			float c1 = (float)Math.Cos(euler.Y);
+			float s1 = (float)Math.Sin(euler.Y);
+			float c2 = (float)Math.Cos(euler.Z);
+			float s2 = (float)Math.Sin(euler.Z);
+			float c3 = (float)Math.Cos(euler.X);
+			float s3 = (float)Math.Sin(euler.X);
+			float c1c2 = c1*c2;
+			float s1s2 = s1*s2;
+			float s1c2 = s1*c2;
+			float c1s2 = c1*s2;
 
-			result.X = cosYawCosPitch * cosRoll + sinYawSinPitch * sinRoll;
-			result.Y = sinYawCosPitch * cosRoll - cosYawSinPitch * sinRoll;
-			result.Z = cosYawSinPitch * cosRoll + sinYawCosPitch * sinRoll;
-			result.W = cosYawCosPitch * sinRoll - sinYawSinPitch * cosRoll;
+			result.W = c1c2*c3 - s1s2*s3;
+  			result.X = c1c2*s3 + s1s2*c3;
+			result.Y = s1c2*c3 + c1s2*s3;
+			result.Z = c1s2*c3 - s1c2*s3;
 		}
 
 		public static Quaternion FromEuler(float eulerX, float eulerY, float eulerZ)

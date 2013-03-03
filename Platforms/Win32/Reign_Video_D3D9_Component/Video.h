@@ -100,13 +100,14 @@ namespace Reign_Video_D3D9_Component
 		private: bool active, fullScreen, vSync;
 		private: int lastWidth, lastHeight;
 		internal: ComponentCaps^ caps;
+		private: int depthBit, stencilBit;
 
 		public: delegate void DeviceLostMethod();
 		public: DeviceLostMethod ^DeviceLost, ^DeviceReset;
 		#pragma endregion
 
 		#pragma region Constructors
-		public: VideoError Init(IntPtr handle, bool vSync, int width, int height, bool fullscreen, bool multithreaded, [Out] ComponentCaps^% caps);
+		public: VideoError Init(IntPtr handle, bool vSync, int width, int height, int depthBit, int stencilBit, bool fullscreen, bool multithreaded, [Out] ComponentCaps^% caps);
 		private: D3DPRESENT_PARAMETERS createPresentParameters();
 		public: ~VideoCom();
 		private: void null();

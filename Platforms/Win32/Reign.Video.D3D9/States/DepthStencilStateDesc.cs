@@ -27,7 +27,7 @@ namespace Reign.Video.D3D9
 
 			switch (type)
 			{
-				case (DepthStencilStateTypes.None):
+				case DepthStencilStateTypes.None:
 					depthReadEnable = REIGN_D3DZBUFFERTYPE._FALSE;
 					depthWriteEnable = false;
 					depthFunc = REIGN_D3DCMPFUNC.LESS;
@@ -39,7 +39,7 @@ namespace Reign.Video.D3D9
 					stencilPassOp = REIGN_D3DSTENCILOP.KEEP;
 					break;
 
-				case (DepthStencilStateTypes.ReadWrite_Less):
+				case DepthStencilStateTypes.ReadWrite_Less:
 					depthReadEnable = REIGN_D3DZBUFFERTYPE._TRUE;
 					depthWriteEnable = true;
 					depthFunc = REIGN_D3DCMPFUNC.LESS;

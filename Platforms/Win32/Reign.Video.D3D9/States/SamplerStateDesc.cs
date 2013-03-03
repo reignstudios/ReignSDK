@@ -24,28 +24,28 @@ namespace Reign.Video.D3D9
 
 			switch (type)
 			{
-				case (SamplerStateTypes.Point_Wrap):
+				case SamplerStateTypes.Point_Wrap:
 					filter = REIGN_D3DTEXTUREFILTERTYPE.POINT;
 					addressU = REIGN_D3DTEXTUREADDRESS.WRAP;
 					addressV = REIGN_D3DTEXTUREADDRESS.WRAP;
 					addressW = REIGN_D3DTEXTUREADDRESS.WRAP;
 					break;
 
-				case (SamplerStateTypes.Point_Clamp):
+				case SamplerStateTypes.Point_Clamp:
 					filter = REIGN_D3DTEXTUREFILTERTYPE.POINT;
 					addressU = REIGN_D3DTEXTUREADDRESS.CLAMP;
 					addressV = REIGN_D3DTEXTUREADDRESS.CLAMP;
 					addressW = REIGN_D3DTEXTUREADDRESS.CLAMP;
 					break;
 
-				case (SamplerStateTypes.Linear_Wrap):
+				case SamplerStateTypes.Linear_Wrap:
 					filter = REIGN_D3DTEXTUREFILTERTYPE.LINEAR;
 					addressU = REIGN_D3DTEXTUREADDRESS.WRAP;
 					addressV = REIGN_D3DTEXTUREADDRESS.WRAP;
 					addressW = REIGN_D3DTEXTUREADDRESS.WRAP;
 					break;
 
-				case (SamplerStateTypes.Linear_Clamp):
+				case SamplerStateTypes.Linear_Clamp:
 					filter = REIGN_D3DTEXTUREFILTERTYPE.LINEAR;
 					addressU = REIGN_D3DTEXTUREADDRESS.CLAMP;
 					addressV = REIGN_D3DTEXTUREADDRESS.CLAMP;

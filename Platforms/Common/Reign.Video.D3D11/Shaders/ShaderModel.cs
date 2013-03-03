@@ -34,12 +34,12 @@ namespace Reign.Video.D3D11
 				string shaderLvl = "";
 				switch (shaderVersion)
 				{
-					case (ShaderVersions.HLSL_2_0): shaderLvl = "_4_0_level_9_1"; break;
-					case (ShaderVersions.HLSL_2_a): shaderLvl = "_4_0_level_9_2"; break;
-					case (ShaderVersions.HLSL_3_0): shaderLvl = "_4_0_level_9_3"; break;
-					case (ShaderVersions.HLSL_4_0): shaderLvl = "_4_0"; break;
-					case (ShaderVersions.HLSL_4_1): shaderLvl = "_4_1"; break;
-					case (ShaderVersions.HLSL_5_0): shaderLvl = "_5_0"; break;
+					case ShaderVersions.HLSL_2_0: shaderLvl = "_4_0_level_9_1"; break;
+					case ShaderVersions.HLSL_2_a: shaderLvl = "_4_0_level_9_2"; break;
+					case ShaderVersions.HLSL_3_0: shaderLvl = "_4_0_level_9_3"; break;
+					case ShaderVersions.HLSL_4_0: shaderLvl = "_4_0"; break;
+					case ShaderVersions.HLSL_4_1: shaderLvl = "_4_1"; break;
+					case ShaderVersions.HLSL_5_0: shaderLvl = "_5_0"; break;
 					default: Debug.ThrowError("ShaderModel", "Unsuported ShaderVersion: " + shaderVersion); break;
 				}
 
@@ -57,10 +57,10 @@ namespace Reign.Video.D3D11
 				switch (error)
 				{
 					#if WIN32
-					case (ShaderModelErrors.CompileCode): Debug.ThrowError("ShaderModel", "Shader compiler error: " + errorText); break;
+					case ShaderModelErrors.CompileCode: Debug.ThrowError("ShaderModel", "Shader compiler error: " + errorText); break;
 					#endif
-					case (ShaderModelErrors.VariableBuffer): Debug.ThrowError("ShaderModel", "Failed to create VariableBuffer"); break;
-					case (ShaderModelErrors.Reflect): Debug.ThrowError("ShaderModel", "Failed to Reflect the shader"); break;
+					case ShaderModelErrors.VariableBuffer: Debug.ThrowError("ShaderModel", "Failed to create VariableBuffer"); break;
+					case ShaderModelErrors.Reflect: Debug.ThrowError("ShaderModel", "Failed to Reflect the shader"); break;
 				}
 			}
 			catch (Exception e)

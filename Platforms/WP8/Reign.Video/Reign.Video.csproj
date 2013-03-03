@@ -119,30 +119,6 @@
     <Compile Include="..\..\Common\Reign.Video\Image\ImagePVR.cs">
       <Link>Image\ImagePVR.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\Asset.cs">
-      <Link>Model\ColladaModel\Asset.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\ColladaModel.cs">
-      <Link>Model\ColladaModel\ColladaModel.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryEffect.cs">
-      <Link>Model\ColladaModel\LibraryEffect.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryGeometry.cs">
-      <Link>Model\ColladaModel\LibraryGeometry.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryImage.cs">
-      <Link>Model\ColladaModel\LibraryImage.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryMaterial.cs">
-      <Link>Model\ColladaModel\LibraryMaterial.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\LibraryVisualScene.cs">
-      <Link>Model\ColladaModel\LibraryVisualScene.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Video\Model\ColladaModel\Scene.cs">
-      <Link>Model\ColladaModel\Scene.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Video\Model\HardwareMeshProcessor.cs">
       <Link>Model\HardwareMeshProcessor.cs</Link>
     </Compile>
@@ -154,6 +130,9 @@
     </Compile>
     <Compile Include="..\..\Common\Reign.Video\Model\Model.cs">
       <Link>Model\Model.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\RMX\RMXModel.cs">
+      <Link>Model\RMX\RMXModel.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareEdge.cs">
       <Link>Model\SoftwareModel\SoftwareEdge.cs</Link>

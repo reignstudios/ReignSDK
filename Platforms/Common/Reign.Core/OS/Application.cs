@@ -103,15 +103,14 @@ namespace Reign.Core
 		public ApplicationStartPositions StartPosition = ApplicationStartPositions.CenterCurrentScreen;
 		public ApplicationOrientations Orientation = ApplicationOrientations.Landscape;
 		public Size2 FrameSize, MinFrameSize, MaxFrameSize;
+		public int DepthBit = -1, StencilBit = -1;
 
 		public bool UseAds = false;
 		public ApplicationAdGravity AdGravity = ApplicationAdGravity.Bottom;
 		public ApplicationAdSize AdSize = ApplicationAdSize.Default;
-		#if WINRT
-		public string ApplicationID, UnitID;
-		#endif
+		public string WinRTAdApplicationID, WinRTAdUnitID;
 		#if ANDROID
-		public string PublisherID;
+		public string PublisherID;// Make this called AndroidAdPublisherID
 		#endif
 	}
 

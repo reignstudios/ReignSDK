@@ -642,6 +642,7 @@ namespace Jitter.Collision
                         case 0:
                             _cachedValidClosest = false;
                             break;
+
                         case 1:
                             _cachedPA = _simplexPointsP[0];
                             _cachedPB = _simplexPointsQ[0];
@@ -650,6 +651,7 @@ namespace Jitter.Collision
                             _cachedBC.SetBarycentricCoordinates(1f, 0f, 0f, 0f);
                             _cachedValidClosest = _cachedBC.IsValid;
                             break;
+
                         case 2:
                             //closest point origin from line segment
                             JVector from = _simplexVectorW[0];
@@ -696,6 +698,7 @@ namespace Jitter.Collision
 
                             _cachedValidClosest = _cachedBC.IsValid;
                             break;
+
                         case 3:
                             //closest point origin from triangle
                             p = new JVector();
@@ -719,6 +722,7 @@ namespace Jitter.Collision
                             ReduceVertices(_cachedBC.UsedVertices);
                             _cachedValidClosest = _cachedBC.IsValid;
                             break;
+
                         case 4:
                             p = new JVector();
                             a = _simplexVectorW[0];
@@ -762,6 +766,7 @@ namespace Jitter.Collision
 
                             //closest point origin from tetrahedron
                             break;
+
                         default:
                             _cachedValidClosest = false;
                             break;

@@ -20,10 +20,10 @@ namespace Reign.Video.OpenGL
 			{
 				switch (value)
 				{
-					case (VertexBufferTopologys.None): primitiveTopology = 0; break;
-					case (VertexBufferTopologys.Point): primitiveTopology = GL.POINTS; break;
-					case (VertexBufferTopologys.Line): primitiveTopology = GL.LINES; break;
-					case (VertexBufferTopologys.Triangle): primitiveTopology = GL.TRIANGLES; break;
+					case VertexBufferTopologys.None: primitiveTopology = 0; break;
+					case VertexBufferTopologys.Point: primitiveTopology = GL.POINTS; break;
+					case VertexBufferTopologys.Line: primitiveTopology = GL.LINES; break;
+					case VertexBufferTopologys.Triangle: primitiveTopology = GL.TRIANGLES; break;
 				}
 				topology = value;
 			}

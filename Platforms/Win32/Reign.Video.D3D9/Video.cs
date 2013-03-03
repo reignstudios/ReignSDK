@@ -32,7 +32,7 @@ namespace Reign.Video.D3D9
 		#endregion
 
 		#region Constructors
-		public Video(DisposableI parent, ApplicationI application, bool vSync)
+		public Video(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync)
 		: base(parent)
 		{
 			try
@@ -42,19 +42,52 @@ namespace Reign.Video.D3D9
 				currentVertexTextures = new Texture2D[4];
 				currentPixelTextures = new Texture2D[8];
 
+				int depthBit = 16, stencilBit = 0;
+				switch (depthStencilFormats)
+				{
+					case DepthStenicFormats.None:
+						depthBit = 0;
+						stencilBit = 0;
+						break;
+
+					case DepthStenicFormats.Defualt:
+						depthBit = 24;
+						stencilBit = 0;
+						break;
+
+					case DepthStenicFormats.Depth24Stencil8:
+						depthBit = 24;
+						stencilBit = 8;
+						break;
+
+					case DepthStenicFormats.Depth16:
+						depthBit = 16;
+						stencilBit = 0;
+						break;
+
+					case DepthStenicFormats.Depth32:
+						depthBit = 32;
+						stencilBit = 0;
+						break;
+
+					default:
+						Debug.ThrowError("Video", "Unsuported DepthStencilFormat type");
+						break;
+				}
+
 				com = new VideoCom();
 				var frame = application.FrameSize;
 				BackBufferSize = frame;
 				ComponentCaps componentCaps;
-				var error = com.Init(application.Handle, vSync, frame.Width, frame.Height, false, false, out componentCaps);
+				var error = com.Init(application.Handle, vSync, frame.Width, frame.Height, depthBit, stencilBit, false, false, out componentCaps);
 
 				switch (error)
 				{
-					case (VideoError.Direct3DInterfaceFailed): Debug.ThrowError("Video", "Failed to create Direct3D9 interface.\nDo you have up to date graphics drivers?"); break;
-					case (VideoError.GetCapsFailed): Debug.ThrowError("Video", "Failed to get caps"); break;
-					case (VideoError.AdapterDisplayModeFailed): Debug.ThrowError("Video", "Failed to get adapter display mode"); break;
-					case (VideoError.VideoHardwareNotSupported): Debug.ThrowError("Video", "Your video hardware is not supported"); break;
-					case (VideoError.DeviceAndSwapChainFailed): Debug.ThrowError("Video", "Failed to create Device and SwapChain"); break;
+					case VideoError.Direct3DInterfaceFailed: Debug.ThrowError("Video", "Failed to create Direct3D9 interface.\nDo you have up to date graphics drivers?"); break;
+					case VideoError.GetCapsFailed: Debug.ThrowError("Video", "Failed to get caps"); break;
+					case VideoError.AdapterDisplayModeFailed: Debug.ThrowError("Video", "Failed to get adapter display mode"); break;
+					case VideoError.VideoHardwareNotSupported: Debug.ThrowError("Video", "Your video hardware is not supported"); break;
+					case VideoError.DeviceAndSwapChainFailed: Debug.ThrowError("Video", "Failed to create Device and SwapChain"); break;
 				}
 
 				Caps = new Caps()
@@ -183,13 +216,13 @@ namespace Reign.Video.D3D9
 		{
 		    switch (surfaceFormat)
 		    {
-		        case (SurfaceFormats.DXT1): return REIGN_D3DFORMAT.DXT1;
-		        case (SurfaceFormats.DXT3): return REIGN_D3DFORMAT.DXT3;
-		        case (SurfaceFormats.DXT5): return REIGN_D3DFORMAT.DXT5;
-		        case (SurfaceFormats.RGBAx8): return REIGN_D3DFORMAT.A8R8G8B8;
-		        case (SurfaceFormats.RGBx10_Ax2): return REIGN_D3DFORMAT.A2R10G10B10;
-		        case (SurfaceFormats.RGBAx16f): return REIGN_D3DFORMAT.A16B16G16R16F;
-		        case (SurfaceFormats.RGBAx32f): return REIGN_D3DFORMAT.A32B32G32R32F;
+		        case SurfaceFormats.DXT1: return REIGN_D3DFORMAT.DXT1;
+		        case SurfaceFormats.DXT3: return REIGN_D3DFORMAT.DXT3;
+		        case SurfaceFormats.DXT5: return REIGN_D3DFORMAT.DXT5;
+		        case SurfaceFormats.RGBAx8: return REIGN_D3DFORMAT.A8R8G8B8;
+		        case SurfaceFormats.RGBx10_Ax2: return REIGN_D3DFORMAT.A2R10G10B10;
+		        case SurfaceFormats.RGBAx16f: return REIGN_D3DFORMAT.A16B16G16R16F;
+		        case SurfaceFormats.RGBAx32f: return REIGN_D3DFORMAT.A32B32G32R32F;
 		        default:
 		            Debug.ThrowError("Video", "Unsuported SurfaceFormat.");
 		            return REIGN_D3DFORMAT.A8R8G8B8;

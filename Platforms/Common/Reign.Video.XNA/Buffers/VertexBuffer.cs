@@ -23,10 +23,10 @@ namespace Reign.Video.XNA
 			{
 				switch (value)
 				{
-					case (VertexBufferTopologys.None): primitiveTopology = X.PrimitiveType.LineList; primitiveVertexCount = 0; break;
-					case (VertexBufferTopologys.Point): Debug.ThrowError("VertexBuffer", "Point VertexBufferTopology NOT Supported in XNA"); break;
-					case (VertexBufferTopologys.Line): primitiveTopology = X.PrimitiveType.LineList; primitiveVertexCount = 2; break;
-					case (VertexBufferTopologys.Triangle): primitiveTopology = X.PrimitiveType.TriangleList; primitiveVertexCount = 3; break;
+					case VertexBufferTopologys.None: primitiveTopology = X.PrimitiveType.LineList; primitiveVertexCount = 0; break;
+					case VertexBufferTopologys.Point: Debug.ThrowError("VertexBuffer", "Point VertexBufferTopology NOT Supported in XNA"); break;
+					case VertexBufferTopologys.Line: primitiveTopology = X.PrimitiveType.LineList; primitiveVertexCount = 2; break;
+					case VertexBufferTopologys.Triangle: primitiveTopology = X.PrimitiveType.TriangleList; primitiveVertexCount = 3; break;
 				}
 				topology = value;
 			}

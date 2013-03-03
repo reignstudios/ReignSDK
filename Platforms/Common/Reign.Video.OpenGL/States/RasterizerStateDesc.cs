@@ -21,19 +21,19 @@ namespace Reign.Video.OpenGL
 		{
 			switch (type)
 			{
-				case (RasterizerStateTypes.Solid_CullNone):
+				case RasterizerStateTypes.Solid_CullNone:
 					fillMode = GL.FILL;
 					cullMode = GL.NONE;
 					multisampleEnable = false;
 					break;
 
-				case (RasterizerStateTypes.Solid_CullCW):
+				case RasterizerStateTypes.Solid_CullCW:
 					fillMode = GL.FILL;
 					cullMode = GL.BACK;
 					multisampleEnable = false;
 					break;
 
-				case (RasterizerStateTypes.Solid_CullCCW):
+				case RasterizerStateTypes.Solid_CullCCW:
 					fillMode = GL.FILL;
 					cullMode = GL.FRONT;
 					multisampleEnable = false;

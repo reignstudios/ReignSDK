@@ -19,9 +19,9 @@ namespace Reign.Video.D3D9
 			{
 				switch (value)
 				{
-					case (VertexBufferTopologys.Triangle): com.SetTopology(REIGN_D3DPRIMITIVETYPE.TRIANGLELIST); break;
-					case (VertexBufferTopologys.Line): com.SetTopology(REIGN_D3DPRIMITIVETYPE.LINELIST); break;
-					case (VertexBufferTopologys.Point): com.SetTopology(REIGN_D3DPRIMITIVETYPE.POINTLIST); break;
+					case VertexBufferTopologys.Triangle: com.SetTopology(REIGN_D3DPRIMITIVETYPE.TRIANGLELIST); break;
+					case VertexBufferTopologys.Line: com.SetTopology(REIGN_D3DPRIMITIVETYPE.LINELIST); break;
+					case VertexBufferTopologys.Point: com.SetTopology(REIGN_D3DPRIMITIVETYPE.POINTLIST); break;
 				}
 				topology = value;
 			}
@@ -45,9 +45,9 @@ namespace Reign.Video.D3D9
 				REIGN_D3DPRIMITIVETYPE topologyType = REIGN_D3DPRIMITIVETYPE.TRIANGLELIST;
 				switch (topology)
 				{
-					case (VertexBufferTopologys.Triangle): topologyType = REIGN_D3DPRIMITIVETYPE.TRIANGLELIST; break;
-					case (VertexBufferTopologys.Line): topologyType = REIGN_D3DPRIMITIVETYPE.LINELIST; break;
-					case (VertexBufferTopologys.Point): topologyType = REIGN_D3DPRIMITIVETYPE.POINTLIST; break;
+					case VertexBufferTopologys.Triangle: topologyType = REIGN_D3DPRIMITIVETYPE.TRIANGLELIST; break;
+					case VertexBufferTopologys.Line: topologyType = REIGN_D3DPRIMITIVETYPE.LINELIST; break;
+					case VertexBufferTopologys.Point: topologyType = REIGN_D3DPRIMITIVETYPE.POINTLIST; break;
 				}
 
 				com = new VertexBufferCom(video.com, topologyType);

@@ -51,8 +51,8 @@ namespace Reign.Video.D3D11
 
 				switch (error)
 				{
-					case (RenderTargetError.RenderTargetView): Debug.ThrowError("RenderTarget", "Failed to create RenderTargetView"); break;
-					case (RenderTargetError.StagingTexture): Debug.ThrowError("RenderTarget", "Failed to create Staging Texture"); break;
+					case RenderTargetError.RenderTargetView: Debug.ThrowError("RenderTarget", "Failed to create RenderTargetView"); break;
+					case RenderTargetError.StagingTexture: Debug.ThrowError("RenderTarget", "Failed to create Staging Texture"); break;
 				}
 			}
 			catch (Exception e)

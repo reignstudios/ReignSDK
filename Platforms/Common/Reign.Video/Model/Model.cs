@@ -300,7 +300,7 @@ namespace Reign.Video
 
 		#region Methods
 		#if WINRT || WP8
-		public static async void Save(string fileName, bool compress, SoftwareModel softwareModel, MeshVertexSizes positionSize, bool loadColors, bool loadUVs, bool loadNormals)
+		public static async void Save(string fileName, bool compress, SoftwareModel softwareModel, bool loadColors, bool loadUVs, bool loadNormals)
 		{
 			using (var file = await Streams.SaveFile(fileName, FolderLocations.Unknown))
 		#else

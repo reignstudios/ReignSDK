@@ -31,7 +31,7 @@ namespace Reign.Video.XNA
 
 			switch (type)
 			{
-			    case (BlendStateTypes.None):
+			    case BlendStateTypes.None:
 			        blendEnable = false;
 					blendOp = X.BlendFunction.Add;
 					srcBlend = X.Blend.One;
@@ -42,7 +42,7 @@ namespace Reign.Video.XNA
 					dstBlendAlpha = X.Blend.One;
 			        break;
 
-				case (BlendStateTypes.Add):
+				case BlendStateTypes.Add:
 			        blendEnable = true;
 					blendOp = X.BlendFunction.Add;
 					srcBlend = X.Blend.One;
@@ -53,7 +53,7 @@ namespace Reign.Video.XNA
 					dstBlendAlpha = X.Blend.One;
 			        break;
 
-				case (BlendStateTypes.Subtract):
+				case BlendStateTypes.Subtract:
 			        blendEnable = true;
 					blendOp = X.BlendFunction.Subtract;
 					srcBlend = X.Blend.One;
@@ -64,7 +64,7 @@ namespace Reign.Video.XNA
 					dstBlendAlpha = X.Blend.One;
 			        break;
 
-				case (BlendStateTypes.RevSubtract):
+				case BlendStateTypes.RevSubtract:
 			        blendEnable = true;
 					blendOp = X.BlendFunction.ReverseSubtract;
 					srcBlend = X.Blend.One;
@@ -75,7 +75,7 @@ namespace Reign.Video.XNA
 					dstBlendAlpha = X.Blend.One;
 			        break;
 
-				case (BlendStateTypes.Alpha):
+				case BlendStateTypes.Alpha:
 			        blendEnable = true;
 					blendOp = X.BlendFunction.Add;
 					srcBlend = X.Blend.SourceAlpha;

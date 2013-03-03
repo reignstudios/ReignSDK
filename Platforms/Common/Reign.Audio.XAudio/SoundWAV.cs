@@ -39,7 +39,7 @@ namespace Reign.Audio.XAudio
 
 				switch (error)
 				{
-					case (SoundWAVInstanceErrors.SourceVoice): Debug.ThrowError("SoundWAVInstance", "Failed to create SourceVoice"); break;
+					case SoundWAVInstanceErrors.SourceVoice: Debug.ThrowError("SoundWAVInstance", "Failed to create SourceVoice"); break;
 				}
 			}
 			catch (Exception e)

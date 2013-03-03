@@ -25,35 +25,35 @@ namespace Reign.Video.D3D11
 				REIGN_D3D11_BLEND srcBlend = REIGN_D3D11_BLEND.ONE, dstBlend = REIGN_D3D11_BLEND.ONE;
 				switch (type)
 				{
-					case (BlendStateTypes.None):
+					case BlendStateTypes.None:
 						enable = false;
 						operation = REIGN_D3D11_BLEND_OP.ADD;
 						srcBlend = REIGN_D3D11_BLEND.ONE;
 						dstBlend = REIGN_D3D11_BLEND.ONE;
 						break;
 
-					case (BlendStateTypes.Add):
+					case BlendStateTypes.Add:
 						enable = true;
 						operation = REIGN_D3D11_BLEND_OP.ADD;
 						srcBlend = REIGN_D3D11_BLEND.ONE;
 						dstBlend = REIGN_D3D11_BLEND.ONE;
 						break;
 
-					case (BlendStateTypes.Subtract):
+					case BlendStateTypes.Subtract:
 						enable = true;
 						operation = REIGN_D3D11_BLEND_OP.SUBTRACT;
 						srcBlend = REIGN_D3D11_BLEND.ONE;
 						dstBlend = REIGN_D3D11_BLEND.ONE;
 						break;
 
-					case (BlendStateTypes.RevSubtract):
+					case BlendStateTypes.RevSubtract:
 						enable = true;
 						operation = REIGN_D3D11_BLEND_OP.REV_SUBTRACT;
 						srcBlend = REIGN_D3D11_BLEND.ONE;
 						dstBlend = REIGN_D3D11_BLEND.ONE;
 						break;
 
-					case (BlendStateTypes.Alpha):
+					case BlendStateTypes.Alpha:
 						enable = true;
 						operation = REIGN_D3D11_BLEND_OP.ADD;
 						srcBlend = REIGN_D3D11_BLEND.SRC_ALPHA;

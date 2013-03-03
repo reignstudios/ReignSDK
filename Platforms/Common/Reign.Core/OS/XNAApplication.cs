@@ -46,7 +46,13 @@ namespace Reign.Core
 			graphics = new GraphicsDeviceManager(this);
 			graphics.PreparingDeviceSettings += graphics_PreparingDeviceSettings;
 			graphics.SynchronizeWithVerticalRetrace = true;
-			graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+
+			if (desc.DepthBit == -1) graphics.PreferredDepthStencilFormat = DepthFormat.Depth24;
+			else if (desc.DepthBit == 24 && desc.StencilBit == 8) graphics.PreferredDepthStencilFormat = DepthFormat.Depth24Stencil8;
+			else if (desc.DepthBit == 24 && desc.StencilBit == 0) graphics.PreferredDepthStencilFormat = DepthFormat.Depth24;
+			else if (desc.DepthBit == 16) graphics.PreferredDepthStencilFormat = DepthFormat.Depth16;
+			else if (desc.DepthBit == 0) graphics.PreferredDepthStencilFormat = DepthFormat.None;
+			else Debug.ThrowError("XNAApplication", string.Format("Unsuported DepthBit: {0} or StencilBit: {1}", desc.DepthBit, desc.StencilBit));
 
 			var frame = desc.FrameSize;
 			#if XBOX360

@@ -78,11 +78,49 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public Video(DisposableI parent, ApplicationI application, bool vSync)
+		public Video(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync)
 		: base(parent)
 		{
 			try
 			{
+				int depthBit = 16, stencilBit = 0;
+				switch (depthStencilFormats)
+				{
+					case DepthStenicFormats.None:
+						depthBit = 0;
+						stencilBit = 0;
+						break;
+
+					case DepthStenicFormats.Defualt:
+						#if iOS || ANDROID || NaCl || RPI
+						depthBit = 16;
+						stencilBit = 0;
+						#else
+						depthBit = 24;
+						stencilBit = 0;
+						#endif
+						break;
+
+					case DepthStenicFormats.Depth24Stencil8:
+						depthBit = 24;
+						stencilBit = 8;
+						break;
+
+					case DepthStenicFormats.Depth16:
+						depthBit = 16;
+						stencilBit = 0;
+						break;
+
+					case DepthStenicFormats.Depth32:
+						depthBit = 32;
+						stencilBit = 0;
+						break;
+
+					default:
+						Debug.ThrowError("Video", "Unsuported DepthStencilFormat type");
+						break;
+				}
+
 				currentPixelTextures = new Texture2D[8];
 				currentVertexTextures = new Texture2D[8];
 				currentSamplerStates = new SamplerState[8];
@@ -104,12 +142,13 @@ namespace Reign.Video.OpenGL
 				//Set BackBuffer format
 				WGL.PIXELFORMATDESCRIPTOR pfd = new WGL.PIXELFORMATDESCRIPTOR();
 				WGL.ZeroPixelDescriptor(ref pfd);
-				pfd.nVersion        = 1;
-				pfd.dwFlags         = WGL.PFD_DRAW_TO_WINDOW | WGL.PFD_SUPPORT_OPENGL | WGL.PFD_DOUBLEBUFFER;
-				pfd.iPixelType      = (byte)WGL.PFD_TYPE_RGBA;
-				pfd.cColorBits      = 24;
-				pfd.cAlphaBits      = 8;
-				pfd.cDepthBits      = 16;
+				pfd.nVersion = 1;
+				pfd.dwFlags = WGL.PFD_DRAW_TO_WINDOW | WGL.PFD_SUPPORT_OPENGL | WGL.PFD_DOUBLEBUFFER;
+				pfd.iPixelType = (byte)WGL.PFD_TYPE_RGBA;
+				pfd.cColorBits = 24;
+				pfd.cAlphaBits = 8;
+				pfd.cDepthBits = (byte)depthBit;
+				pfd.cStencilBits = (byte)stencilBit;
 				pfd.iLayerType      = (byte)WGL.PFD_MAIN_PLANE;
 				unsafe{pfd.nSize = (ushort)sizeof(WGL.PIXELFORMATDESCRIPTOR);}
 
@@ -191,8 +230,8 @@ namespace Reign.Video.OpenGL
 						//EGL.ALPHA_SIZE, 0,//EGL.DONT_CARE,
 						EGL.SURFACE_TYPE, EGL.WINDOW_BIT,
 						
-						EGL.DEPTH_SIZE, 16,
-						//EGL.STENCIL_SIZE, EGL.DONT_CARE,
+						EGL.DEPTH_SIZE, depthBit,
+						//EGL.STENCIL_SIZE, stencilBit,//EGL.DONT_CARE,//<<<<<<<<<< Test enabling this!
 						
 						//EGL.SAMPLE_BUFFERS, 0,
 						//EGL.SAMPLES, 0,
@@ -244,7 +283,7 @@ namespace Reign.Video.OpenGL
 					//GLX.GREEN_SIZE, 8,
 					//GLX.BLUE_SIZE, 8,
 					//GLX.ALPHA_SIZE, 8,
-					GLX.DEPTH_SIZE, 16,
+					GLX.DEPTH_SIZE, depthBit,
 					GLX.NONE
 				};
 			
@@ -274,7 +313,7 @@ namespace Reign.Video.OpenGL
 					NSOpenGLPixelFormatAttribute.DoubleBuffer,
 					NSOpenGLPixelFormatAttribute.ColorSize, 24,
 					NSOpenGLPixelFormatAttribute.AlphaSize, 8,
-					NSOpenGLPixelFormatAttribute.DepthSize, 16
+					NSOpenGLPixelFormatAttribute.DepthSize, depthBit
 				};
 	
 				var pixelFormat = new NSOpenGLPixelFormat(attribs);
@@ -300,7 +339,7 @@ namespace Reign.Video.OpenGL
 					//(int)CGL.PixelFormatAttribute.kCGLPFAWindow,
 					(int)CGL.PixelFormatAttribute.kCGLPFAAccelerated,
 					(int)CGL.PixelFormatAttribute.kCGLPFAColorSize, 32,
-					(int)CGL.PixelFormatAttribute.kCGLPFADepthSize, 32,
+					(int)CGL.PixelFormatAttribute.kCGLPFADepthSize, depthBit,
 					0
 				};
 			
@@ -333,9 +372,9 @@ namespace Reign.Video.OpenGL
 				var frame = application.FrameSize;
 				int[] attribs =
 				{
-			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 8,
-			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_DEPTH_SIZE, 24,
-			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_STENCIL_SIZE, 8,
+			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_ALPHA_SIZE, 8,// Try to disable this to see if it gets rid of alpha blending presintation issues
+			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_DEPTH_SIZE, depthBit,
+			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_STENCIL_SIZE, stencilBit,
 			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_SAMPLES, 0,
 			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_SAMPLE_BUFFERS, 0,
 			        (int)PPAPI.Graphics3DAttrib.PP_GRAPHICS3DATTRIB_WIDTH, frame.Width,
@@ -470,12 +509,12 @@ namespace Reign.Video.OpenGL
 					{
 						switch (ext)
 						{
-							case ("GL_instanced_arrays"): Caps.HardwareInstancing = true; break;
-							case ("GL_ARB_instanced_arrays"): Caps.HardwareInstancing = true; break;
-							case ("GL_EXT_texture_compression_s3tc"): Caps.TextureCompression_S3TC = true; break;
-							case ("GL_AMD_compressed_ATC_texture"): Caps.TextureCompression_ATC = true; break;
-							case ("GL_ATI_texture_compression_atitc"): Caps.TextureCompression_ATC = true; break;
-							case ("GL_IMG_texture_compression_pvrtc"): Caps.TextureCompression_PVR = true; break;
+							case "GL_instanced_arrays": Caps.HardwareInstancing = true; break;
+							case "GL_ARB_instanced_arrays": Caps.HardwareInstancing = true; break;
+							case "GL_EXT_texture_compression_s3tc": Caps.TextureCompression_S3TC = true; break;
+							case "GL_AMD_compressed_ATC_texture": Caps.TextureCompression_ATC = true; break;
+							case "GL_ATI_texture_compression_atitc": Caps.TextureCompression_ATC = true; break;
+							case "GL_IMG_texture_compression_pvrtc": Caps.TextureCompression_PVR = true; break;
 						}
 						//Console.WriteLine(ext);
 					}
@@ -646,13 +685,13 @@ namespace Reign.Video.OpenGL
 			{
 				switch (error)
 				{
-					case (GL.INVALID_ENUM): errorName = "INVALID_ENUM"; break;
-					case (GL.INVALID_VALUE): errorName = "INVALID_VALUE"; break;
-					case (GL.INVALID_OPERATION): errorName = "INVALID_OPERATION"; break;
-					case (GL.OUT_OF_MEMORY): errorName = "OUT_OF_MEMORY"; break;
-					case (GL.STACK_OVERFLOW): errorName = "STACK_OVERFLOW"; break;
-					case (GL.STACK_UNDERFLOW): errorName = "STACK_UNDERFLOW"; break;
-					case (GL.TABLE_TOO_LARGE): errorName = "TABLE_TOO_LARGE"; break;
+					case GL.INVALID_ENUM: errorName = "INVALID_ENUM"; break;
+					case GL.INVALID_VALUE: errorName = "INVALID_VALUE"; break;
+					case GL.INVALID_OPERATION: errorName = "INVALID_OPERATION"; break;
+					case GL.OUT_OF_MEMORY: errorName = "OUT_OF_MEMORY"; break;
+					case GL.STACK_OVERFLOW: errorName = "STACK_OVERFLOW"; break;
+					case GL.STACK_UNDERFLOW: errorName = "STACK_UNDERFLOW"; break;
+					case GL.TABLE_TOO_LARGE: errorName = "TABLE_TOO_LARGE"; break;
 					default: errorName = "Unknown Error"; break;
 				}
 
@@ -671,20 +710,20 @@ namespace Reign.Video.OpenGL
 			{
 				switch (error)
 				{
-					case (EGL.NOT_INITIALIZED): errorName = "NOT_INITIALIZED"; break;
-					case (EGL.BAD_ACCESS): errorName = "BAD_ACCESS"; break;
-					case (EGL.BAD_ALLOC): errorName = "BAD_ALLOC"; break;
-					case (EGL.BAD_ATTRIBUTE): errorName = "BAD_ATTRIBUTE"; break;
-					case (EGL.BAD_CONFIG): errorName = "BAD_CONFIG"; break;
-					case (EGL.BAD_CONTEXT): errorName = "BAD_CONTEXT"; break;
-					case (EGL.BAD_CURRENT_SURFACE): errorName = "BAD_CURRENT_SURFACE"; break;
-					case (EGL.BAD_DISPLAY): errorName = "BAD_DISPLAY"; break;
-					case (EGL.BAD_MATCH): errorName = "BAD_MATCH"; break;
-					case (EGL.BAD_NATIVE_PIXMAP): errorName = "BAD_NATIVE_PIXMAP"; break;
-					case (EGL.BAD_NATIVE_WINDOW): errorName = "BAD_NATIVE_WINDOW"; break;
-					case (EGL.BAD_PARAMETER): errorName = "BAD_PARAMETER"; break;
-					case (EGL.BAD_SURFACE): errorName = "BAD_SURFACE"; break;
-					case (EGL.CONTEXT_LOST): errorName = "CONTEXT_LOST"; break;
+					case EGL.NOT_INITIALIZED: errorName = "NOT_INITIALIZED"; break;
+					case EGL.BAD_ACCESS: errorName = "BAD_ACCESS"; break;
+					case EGL.BAD_ALLOC: errorName = "BAD_ALLOC"; break;
+					case EGL.BAD_ATTRIBUTE: errorName = "BAD_ATTRIBUTE"; break;
+					case EGL.BAD_CONFIG: errorName = "BAD_CONFIG"; break;
+					case EGL.BAD_CONTEXT: errorName = "BAD_CONTEXT"; break;
+					case EGL.BAD_CURRENT_SURFACE: errorName = "BAD_CURRENT_SURFACE"; break;
+					case EGL.BAD_DISPLAY: errorName = "BAD_DISPLAY"; break;
+					case EGL.BAD_MATCH: errorName = "BAD_MATCH"; break;
+					case EGL.BAD_NATIVE_PIXMAP: errorName = "BAD_NATIVE_PIXMAP"; break;
+					case EGL.BAD_NATIVE_WINDOW: errorName = "BAD_NATIVE_WINDOW"; break;
+					case EGL.BAD_PARAMETER: errorName = "BAD_PARAMETER"; break;
+					case EGL.BAD_SURFACE: errorName = "BAD_SURFACE"; break;
+					case EGL.CONTEXT_LOST: errorName = "CONTEXT_LOST"; break;
 					default: errorName = "Unknown Error"; break;
 				}
 				
@@ -709,6 +748,7 @@ namespace Reign.Video.OpenGL
 			((GLKView)application.View).BindDrawable();
 			#else
 		    GL.BindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+			GL.BindRenderbuffer(GL.RENDERBUFFER, 0);
 		    #endif
 		}
 
@@ -722,7 +762,7 @@ namespace Reign.Video.OpenGL
 			
 			if (depthStencil != null)
 			{
-				uint surface = ((DepthStencil)depthStencil).surface;
+				uint surface = ((DepthStencil)depthStencil).depthBuffer;
 				GL.BindRenderbuffer(GL.RENDERBUFFER, surface);
 				GL.FramebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, surface);
 			}
@@ -732,10 +772,16 @@ namespace Reign.Video.OpenGL
 			}
 		}
 
-		public void ClearAll(float r, float g, float b, float a)
+		public unsafe void ClearAll(float r, float g, float b, float a)
 		{
+			bool depthWrite = true;
+			GL.GetBooleanv(GL.DEPTH_WRITEMASK, &depthWrite);
+			if (depthWrite != true) GL.DepthMask(true);
+
 			GL.ClearColor(r, g, b, a);
 			GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
+
+			if (depthWrite != true) GL.DepthMask(false);
 		}
 
 		public void ClearColor(float r, float g, float b, float a)
@@ -744,15 +790,27 @@ namespace Reign.Video.OpenGL
 			GL.Clear(GL.COLOR_BUFFER_BIT);
 		}
 
-		public void ClearColorDepth(float r, float g, float b, float a)
+		public unsafe void ClearColorDepth(float r, float g, float b, float a)
 		{
+			bool depthWrite = true;
+			GL.GetBooleanv(GL.DEPTH_WRITEMASK, &depthWrite);
+			if (depthWrite != true) GL.DepthMask(true);
+
 			GL.ClearColor(r, g, b, a);
 			GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+
+			if (depthWrite != true) GL.DepthMask(false);
 		}
 
-		public void ClearDepthStencil()
+		public unsafe void ClearDepthStencil()
 		{
+			bool depthWrite = true;
+			GL.GetBooleanv(GL.DEPTH_WRITEMASK, &depthWrite);
+			if (depthWrite != true) GL.DepthMask(true);
+
 			GL.Clear(GL.DEPTH_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
+
+			if (depthWrite != true) GL.DepthMask(false);
 		}
 
 		public void Present()
@@ -815,15 +873,15 @@ namespace Reign.Video.OpenGL
 		{
 			switch (surfaceFormat)
 			{
-				case (SurfaceFormats.RGBAx8):
+				case SurfaceFormats.RGBAx8:
 					#if iOS || ANDROID || NaCl || RPI
 					return (int)GL.RGBA;
 					#else
 					return GL.RGBA8;
 					#endif
-				case (SurfaceFormats.RGBx10_Ax2): return GL.RGB10_A2;
-				case (SurfaceFormats.RGBAx16f): return GL.RGBA16F;
-				case (SurfaceFormats.RGBAx32f): return GL.RGBA32F;
+				case SurfaceFormats.RGBx10_Ax2: return GL.RGB10_A2;
+				case SurfaceFormats.RGBAx16f: return GL.RGBA16F;
+				case SurfaceFormats.RGBAx32f: return GL.RGBA32F;
 				default: 
 					Debug.ThrowError("Video", "Unsuported SurfaceFormat");
 					return GL.RGBA8;

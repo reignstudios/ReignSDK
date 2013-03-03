@@ -28,14 +28,14 @@ namespace Reign.Video.OpenGL
 				switch (shaderVersion)
 				{
 					#if iOS || ANDROID || NaCl || RPI
-					case (ShaderVersions.GLSL_1_00): shaderLvl = "100"; break;
+					case ShaderVersions.GLSL_1_00: shaderLvl = "100"; break;
 					#else
-					case (ShaderVersions.GLSL_1_10): shaderLvl = "110"; break;
-					case (ShaderVersions.GLSL_1_20): shaderLvl = "120"; break;
-					case (ShaderVersions.GLSL_1_30): shaderLvl = "130"; break;
-					case (ShaderVersions.GLSL_1_40): shaderLvl = "140"; break;
-					case (ShaderVersions.GLSL_1_50): shaderLvl = "150"; break;
-					case (ShaderVersions.GLSL_3_30): shaderLvl = "330"; break;
+					case ShaderVersions.GLSL_1_10: shaderLvl = "110"; break;
+					case ShaderVersions.GLSL_1_20: shaderLvl = "120"; break;
+					case ShaderVersions.GLSL_1_30: shaderLvl = "130"; break;
+					case ShaderVersions.GLSL_1_40: shaderLvl = "140"; break;
+					case ShaderVersions.GLSL_1_50: shaderLvl = "150"; break;
+					case ShaderVersions.GLSL_3_30: shaderLvl = "330"; break;
 					#endif
 					default: Debug.ThrowError("ShaderModel", "Unsuported ShaderVersion: " + shaderVersion); break;
 				}
@@ -76,11 +76,11 @@ namespace Reign.Video.OpenGL
 		{
 			switch (quality)
 			{
-				case (ShaderFloatingPointQuality.High): return "precision highp float;";
-				case (ShaderFloatingPointQuality.Med): return "precision mediump float;";
-				case (ShaderFloatingPointQuality.Low): return "precision lowp float;";
+				case ShaderFloatingPointQuality.High: return "precision highp float;";
+				case ShaderFloatingPointQuality.Med: return "precision mediump float;";
+				case ShaderFloatingPointQuality.Low: return "precision lowp float;";
 				
-				case (ShaderFloatingPointQuality.Max):
+				case ShaderFloatingPointQuality.Max:
 					return
 @"
 #ifdef GL_FRAGMENT_PRECISION_HIGH

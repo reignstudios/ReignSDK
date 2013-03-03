@@ -72,32 +72,32 @@ namespace Reign.Video.OpenGL
 				string usageIndex = element.UsageIndex.ToString();
 			    switch (element.Usage)
 			    {
-					case (BufferLayoutElementUsages.Position):
+					case BufferLayoutElementUsages.Position:
 						desc[i].Usage = GLBufferElementUsages.Position;
 						desc[i].Name = "Position" + usageIndex;
 						break;
 
-					case (BufferLayoutElementUsages.Color):
+					case BufferLayoutElementUsages.Color:
 						desc[i].Usage = GLBufferElementUsages.Color;
 						desc[i].Name = "Color" + usageIndex;
 						break;
 
-					case (BufferLayoutElementUsages.UV):
+					case BufferLayoutElementUsages.UV:
 						desc[i].Usage = GLBufferElementUsages.UV;
 						desc[i].Name = "Texcoord" + usageIndex;
 						break;
 
-					case (BufferLayoutElementUsages.Normal):
+					case BufferLayoutElementUsages.Normal:
 						desc[i].Usage = GLBufferElementUsages.Normal;
 						desc[i].Name = "Normal" + usageIndex;
 						break;
 
-					case (BufferLayoutElementUsages.Index):
+					case BufferLayoutElementUsages.Index:
 						desc[i].Usage = GLBufferElementUsages.Index;
 						desc[i].Name = "BlendIndex" + usageIndex;
 						break;
 
-					case (BufferLayoutElementUsages.IndexClassic):
+					case BufferLayoutElementUsages.IndexClassic:
 						desc[i].Usage = GLBufferElementUsages.IndexClassic;
 						desc[i].Name = "BlendIndex" + usageIndex;
 						break;
@@ -107,11 +107,11 @@ namespace Reign.Video.OpenGL
 
 			    switch (element.Type)
 			    {
-			        case (BufferLayoutElementTypes.Float): desc[i].Format = GLBufferElementFormats.Single; break;
-			        case (BufferLayoutElementTypes.Vector2): desc[i].Format = GLBufferElementFormats.Vector2f; break;
-			        case (BufferLayoutElementTypes.Vector3): desc[i].Format = GLBufferElementFormats.Vector3f; break;
-			        case (BufferLayoutElementTypes.Vector4): desc[i].Format = GLBufferElementFormats.Vector4f; break;
-			        case (BufferLayoutElementTypes.RGBAx8): desc[i].Format = GLBufferElementFormats.Color; break;
+			        case BufferLayoutElementTypes.Float: desc[i].Format = GLBufferElementFormats.Single; break;
+			        case BufferLayoutElementTypes.Vector2: desc[i].Format = GLBufferElementFormats.Vector2f; break;
+			        case BufferLayoutElementTypes.Vector3: desc[i].Format = GLBufferElementFormats.Vector3f; break;
+			        case BufferLayoutElementTypes.Vector4: desc[i].Format = GLBufferElementFormats.Vector4f; break;
+			        case BufferLayoutElementTypes.RGBAx8: desc[i].Format = GLBufferElementFormats.Color; break;
 					default: Debug.ThrowError("BufferLayoutDesc", "Unsuported ElementType"); break;
 			    }
 

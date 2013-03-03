@@ -48,11 +48,11 @@ namespace Reign.Input.XNA
 
 			switch (controller)
 			{
-				case (GamePadControllers.All): useAllControllers = true; break;
-				case (GamePadControllers.One): playerIndex = F.PlayerIndex.One; break;
-				case (GamePadControllers.Two): playerIndex = F.PlayerIndex.Two; break;
-				case (GamePadControllers.Three): playerIndex = F.PlayerIndex.Three; break;
-				case (GamePadControllers.Four): playerIndex = F.PlayerIndex.Four; break;
+				case GamePadControllers.All: useAllControllers = true; break;
+				case GamePadControllers.One: playerIndex = F.PlayerIndex.One; break;
+				case GamePadControllers.Two: playerIndex = F.PlayerIndex.Two; break;
+				case GamePadControllers.Three: playerIndex = F.PlayerIndex.Three; break;
+				case GamePadControllers.Four: playerIndex = F.PlayerIndex.Four; break;
 				default: Debug.ThrowError("GamePad", "Unsuported controller"); break;
 			}
 

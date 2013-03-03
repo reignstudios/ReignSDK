@@ -29,7 +29,7 @@ namespace Reign.Video.D3D9
 
 				switch (error)
 				{
-					case (BufferLayoutErrors.VertexDeclaration): Debug.ThrowError("BufferLayout", "Failed to create vertex declaration"); break;
+					case BufferLayoutErrors.VertexDeclaration: Debug.ThrowError("BufferLayout", "Failed to create vertex declaration"); break;
 				}
 			}
 			catch (Exception e)

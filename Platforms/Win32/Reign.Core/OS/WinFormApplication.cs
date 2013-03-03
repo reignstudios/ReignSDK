@@ -39,21 +39,21 @@ namespace Reign.Core
 	
 			switch (desc.StartPosition)
 			{
-				case (ApplicationStartPositions.Default): StartPosition = FormStartPosition.WindowsDefaultLocation; break;
-				case (ApplicationStartPositions.CenterCurrentScreen): StartPosition = FormStartPosition.CenterScreen; break;
+				case ApplicationStartPositions.Default: StartPosition = FormStartPosition.WindowsDefaultLocation; break;
+				case ApplicationStartPositions.CenterCurrentScreen: StartPosition = FormStartPosition.CenterScreen; break;
 			}
 	
 			switch (desc.Type)
 			{
-				case (ApplicationTypes.Box):
+				case ApplicationTypes.Box:
 					FormBorderStyle = FormBorderStyle.None; break;
 
-				case (ApplicationTypes.Frame):
+				case ApplicationTypes.Frame:
 					FormBorderStyle = FormBorderStyle.FixedDialog;
 					MaximizeBox = false;
 					break;
 
-				case (ApplicationTypes.FrameSizable):
+				case ApplicationTypes.FrameSizable:
 					FormBorderStyle = FormBorderStyle.Sizable; break;
 			}
 	
@@ -97,9 +97,9 @@ namespace Reign.Core
 		{
 			switch (e.Button)
 			{
-				case (MouseButtons.Left): theEvent.Type = ApplicationEventTypes.LeftMouseDown; break;
-				case (MouseButtons.Middle): theEvent.Type = ApplicationEventTypes.MiddleMouseDown; break;
-				case (MouseButtons.Right): theEvent.Type = ApplicationEventTypes.RightMouseDown; break;
+				case MouseButtons.Left: theEvent.Type = ApplicationEventTypes.LeftMouseDown; break;
+				case MouseButtons.Middle: theEvent.Type = ApplicationEventTypes.MiddleMouseDown; break;
+				case MouseButtons.Right: theEvent.Type = ApplicationEventTypes.RightMouseDown; break;
 			}
 
 			theEvent.CursorPosition.X = e.X;
@@ -111,9 +111,9 @@ namespace Reign.Core
 		{
 			switch (e.Button)
 			{
-				case (MouseButtons.Left): theEvent.Type = ApplicationEventTypes.LeftMouseUp; break;
-				case (MouseButtons.Middle): theEvent.Type = ApplicationEventTypes.MiddleMouseUp; break;
-				case (MouseButtons.Right): theEvent.Type = ApplicationEventTypes.RightMouseUp; break;
+				case MouseButtons.Left: theEvent.Type = ApplicationEventTypes.LeftMouseUp; break;
+				case MouseButtons.Middle: theEvent.Type = ApplicationEventTypes.MiddleMouseUp; break;
+				case MouseButtons.Right: theEvent.Type = ApplicationEventTypes.RightMouseUp; break;
 			}
 
 			theEvent.CursorPosition.X = e.X;

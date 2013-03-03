@@ -24,19 +24,19 @@ namespace Reign.Video.D3D9
 
 			switch (type)
 			{
-				case (RasterizerStateTypes.Solid_CullNone):
+				case RasterizerStateTypes.Solid_CullNone:
 					fillMode = REIGN_D3DFILLMODE.SOLID;
 					cullMode = REIGN_D3DCULL.NONE;
 					multisampleEnable = false;
 					break;
 
-				case (RasterizerStateTypes.Solid_CullCW):
+				case RasterizerStateTypes.Solid_CullCW:
 					fillMode = REIGN_D3DFILLMODE.SOLID;
 					cullMode = REIGN_D3DCULL.CW;
 					multisampleEnable = false;
 					break;
 
-				case (RasterizerStateTypes.Solid_CullCCW):
+				case RasterizerStateTypes.Solid_CullCCW:
 					fillMode = REIGN_D3DFILLMODE.SOLID;
 					cullMode = REIGN_D3DCULL.CCW;
 					multisampleEnable = false;

@@ -4,8 +4,11 @@ namespace Reign.Video
 {
 	public enum DepthStenicFormats
 	{
-		//Depth24Stencil8
-		Depth16
+		None,
+		Defualt,
+		Depth24Stencil8,
+		Depth16,
+		Depth32
 	}
 
 	public interface DepthStencilI : DisposableI
@@ -23,11 +26,11 @@ namespace Reign.Video
 			DepthStencilAPI.newPtr = newPtr;
 		}
 
-		public delegate DepthStencilI NewPtrMethod(DisposableI parent, int width, int height, DepthStenicFormats depthStenicFormats);
+		public delegate DepthStencilI NewPtrMethod(DisposableI parent, int width, int height, DepthStenicFormats depthStencilFormats);
 		private static NewPtrMethod newPtr;
-		public static DepthStencilI New(DisposableI parent, int width, int height, DepthStenicFormats depthStenicFormats)
+		public static DepthStencilI New(DisposableI parent, int width, int height, DepthStenicFormats depthStencilFormats)
 		{
-			return newPtr(parent, width, height, depthStenicFormats);
+			return newPtr(parent, width, height, depthStencilFormats);
 		}
 	}
 }

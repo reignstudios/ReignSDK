@@ -27,7 +27,7 @@ namespace Reign.Video.D3D11
 				float depthBiasClamp = 0, slopeScaledDepthBias = 0;
 				switch (type)
 				{
-					case (RasterizerStateTypes.Solid_CullNone):
+					case RasterizerStateTypes.Solid_CullNone:
 						fillMode = REIGN_D3D11_FILL_MODE.SOLID;
 						cullMode = REIGN_D3D11_CULL_NONE.NONE;
 						frontCounterClockwise = false;
@@ -40,7 +40,7 @@ namespace Reign.Video.D3D11
 						antialiasedLineEnable = false;
 						break;
 
-					case (RasterizerStateTypes.Solid_CullCW):
+					case RasterizerStateTypes.Solid_CullCW:
 						fillMode = REIGN_D3D11_FILL_MODE.SOLID;
 						cullMode = REIGN_D3D11_CULL_NONE.FRONT;
 						frontCounterClockwise = false;
@@ -53,7 +53,7 @@ namespace Reign.Video.D3D11
 						antialiasedLineEnable = false;
 						break;
 
-					case (RasterizerStateTypes.Solid_CullCCW):
+					case RasterizerStateTypes.Solid_CullCCW:
 						fillMode = REIGN_D3D11_FILL_MODE.SOLID;
 						cullMode = REIGN_D3D11_CULL_NONE.BACK;
 						frontCounterClockwise = false;

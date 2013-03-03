@@ -170,8 +170,8 @@ namespace Reign.Video.D3D9
 
 				switch (error)
 				{
-					case (TextureError.Texture): Debug.ThrowError("Texture2D", "Failed to create Texture2D"); break;
-					case (TextureError.SystemTexture): Debug.ThrowError("Texture2D", "Failed to create System Texture2D"); break;
+					case TextureError.Texture: Debug.ThrowError("Texture2D", "Failed to create Texture2D"); break;
+					case TextureError.SystemTexture: Debug.ThrowError("Texture2D", "Failed to create System Texture2D"); break;
 				}
 
 				if (!video.Caps.ExDevice && nativePool != REIGN_D3DPOOL.MANAGED)
@@ -188,6 +188,7 @@ namespace Reign.Video.D3D9
 					LostDevice_lockable = lockable;
 					LostDevice_pool = nativePool;
 				}
+
 				if (nativePool == REIGN_D3DPOOL.DEFAULT && !video.Caps.ExDevice && !video.deviceReseting)
 				{
 					video.DeviceLost += deviceLost;
@@ -219,6 +220,12 @@ namespace Reign.Video.D3D9
 		public override void Dispose()
 		{
 			disposeChilderen();
+			dispose();
+			base.Dispose();
+		}
+
+		protected virtual void dispose()
+		{
 			if (video != null)
 			{
 				video.removeActiveTexture(this);
@@ -229,17 +236,17 @@ namespace Reign.Video.D3D9
 				}
 				video = null;
 			}
+
 			if (com != null)
 			{
 				com.Dispose();
 				com = null;
 			}
-			base.Dispose();
 		}
 
 		private void deviceLost()
 		{
-			if (!video.Caps.ExDevice && (LostDevice_pool != REIGN_D3DPOOL.MANAGED || LostDevice_isRenderTarget)) Dispose();
+			if (!video.Caps.ExDevice && (LostDevice_pool != REIGN_D3DPOOL.MANAGED || LostDevice_isRenderTarget)) dispose();
 		}
 
 		private void deviceReset()

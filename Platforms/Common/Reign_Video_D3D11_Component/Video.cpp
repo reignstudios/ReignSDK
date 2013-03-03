@@ -11,11 +11,11 @@ namespace Reign_Video_D3D11_Component
 {
 	#pragma region Constructors
 	#if WIN32
-	VideoError VideoCom::Init(IntPtr handle, bool vSync, int width, int height, bool fullscreen, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel)
+	VideoError VideoCom::Init(IntPtr handle, bool vSync, int width, int height, int depthBit, int stencilBit, bool fullscreen, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel)
 	#elif WINRT
-	VideoError VideoCom::Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ swapChainBackgroundPanel)
+	VideoError VideoCom::Init(Windows::UI::Core::CoreWindow^ coreWindow, bool vSync, int width, int height, int depthBit, int stencilBit, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, Windows::UI::Xaml::Controls::SwapChainBackgroundPanel^ swapChainBackgroundPanel)
 	#else
-	VideoError VideoCom::Init(bool vSync, int width, int height, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, RenderDelegate^ renderDelegate)
+	VideoError VideoCom::Init(bool vSync, int width, int height, int depthBit, int stencilBit, OutType(REIGN_D3D_FEATURE_LEVEL) featureLevel, RenderDelegate^ renderDelegate)
 	#endif
 	{
 		null();
@@ -33,6 +33,8 @@ namespace Reign_Video_D3D11_Component
 
 		lastWidth = width;
 		lastHeight = height;
+		this->depthBit = depthBit;
+		this->stencilBit = stencilBit;
 
 		currentVertexResourceCount = 8;
 		currentPixelResourceCount = currentVertexResourceCount;
@@ -268,39 +270,47 @@ namespace Reign_Video_D3D11_Component
 		#endif
 		
 		// DepthStencil Texture
-		D3D11_TEXTURE2D_DESC descDepth;
-		ZeroMemory(&descDepth, sizeof(descDepth));
-		descDepth.Width = width;
-		descDepth.Height = height;
-		descDepth.MipLevels = 1;
-		descDepth.ArraySize = 1;
-		descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;//DXGI_FORMAT_D32_FLOAT;
-		descDepth.SampleDesc.Count = 1;
-		descDepth.SampleDesc.Quality = 0;
-		descDepth.Usage = D3D11_USAGE_DEFAULT;
-		descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-		descDepth.CPUAccessFlags = 0;
-		descDepth.MiscFlags = 0;
-		ID3D11Texture2D* depthTextureTEMP = 0;
-		if (FAILED(device->CreateTexture2D(&descDepth, 0, &depthTextureTEMP)))
+		if (depthBit != 0)
 		{
-			return VideoError::DepthStencilTextureFailed;
-		}
-		depthTexture = depthTextureTEMP;
+			D3D11_TEXTURE2D_DESC descDepth;
+			ZeroMemory(&descDepth, sizeof(descDepth));
+			descDepth.Width = width;
+			descDepth.Height = height;
+			descDepth.MipLevels = 1;
+			descDepth.ArraySize = 1;
+
+			descDepth.Format = DXGI_FORMAT_R16_UINT;
+			if (depthBit == 24 && (stencilBit == 8 || stencilBit == 0)) descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+			else if (depthBit == 16 && stencilBit == 0) descDepth.Format = DXGI_FORMAT_D16_UNORM;
+			else if (depthBit == 32 && stencilBit == 0) descDepth.Format = DXGI_FORMAT_D32_FLOAT;
+
+			descDepth.SampleDesc.Count = 1;
+			descDepth.SampleDesc.Quality = 0;
+			descDepth.Usage = D3D11_USAGE_DEFAULT;
+			descDepth.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+			descDepth.CPUAccessFlags = 0;
+			descDepth.MiscFlags = 0;
+			ID3D11Texture2D* depthTextureTEMP = 0;
+			if (FAILED(device->CreateTexture2D(&descDepth, 0, &depthTextureTEMP)))
+			{
+				return VideoError::DepthStencilTextureFailed;
+			}
+			depthTexture = depthTextureTEMP;
 		
-		// DepthStencil View
-		D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
-		ZeroMemory(&descDSV, sizeof(descDSV));
-		descDSV.Format = descDepth.Format;
-		if (descDepth.SampleDesc.Count > 1) descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
-		else descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-		descDSV.Texture2D.MipSlice = 0;
-		ID3D11DepthStencilView* depthStencilTEMP;
-		if (FAILED(device->CreateDepthStencilView(depthTexture, &descDSV, &depthStencilTEMP)))
-		{
-			return VideoError::DepthStencilViewFailed;
+			// DepthStencil View
+			D3D11_DEPTH_STENCIL_VIEW_DESC descDSV;
+			ZeroMemory(&descDSV, sizeof(descDSV));
+			descDSV.Format = descDepth.Format;
+			if (descDepth.SampleDesc.Count > 1) descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+			else descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+			descDSV.Texture2D.MipSlice = 0;
+			ID3D11DepthStencilView* depthStencilTEMP;
+			if (FAILED(device->CreateDepthStencilView(depthTexture, &descDSV, &depthStencilTEMP)))
+			{
+				return VideoError::DepthStencilViewFailed;
+			}
+			depthStencil = depthStencilTEMP;
 		}
-		depthStencil = depthStencilTEMP;
 
 		#if WINRT
 		// D2D renderTarget
@@ -424,7 +434,7 @@ namespace Reign_Video_D3D11_Component
 		{
 			renderTarget->Release();
 			depthStencil->Release();
-			depthTexture->Release();
+			if (depthTexture) depthTexture->Release();
 			#if WINRT
 			if (dxgiSurface) dxgiSurface->Release();
 			if (d2dRenderTarget) d2dRenderTarget->Release();

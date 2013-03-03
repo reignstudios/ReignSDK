@@ -421,7 +421,7 @@ namespace Reign.Video
 					int src = (column * rowCount + row) * blockSize;
 					switch (FormatD3D)
 					{
-						case (FOURCC_DXT1):
+						case FOURCC_DXT1:
 							// Color only
 							dataOut[dst + 0] = data[src + 0];
 							dataOut[dst + 1] = data[src + 1];
@@ -432,7 +432,8 @@ namespace Reign.Video
 							dataOut[dst + 6] = data[src + 5];
 							dataOut[dst + 7] = data[src + 4];
 							break;
-						case (FOURCC_DXT3):
+
+						case FOURCC_DXT3:
 							// Alpha
 							dataOut[dst + 0] = data[src + 6];
 							dataOut[dst + 1] = data[src + 7];
@@ -453,7 +454,8 @@ namespace Reign.Video
 							dataOut[dst + 14] = data[src + 13];
 							dataOut[dst + 15] = data[src + 12];
 							break;
-						case (FOURCC_DXT5):
+
+						case FOURCC_DXT5:
 							// Alpha, the first 2 bytes remain 
 							dataOut[dst + 0] = data[src + 0];
 							dataOut[dst + 1] = data[src + 1];
