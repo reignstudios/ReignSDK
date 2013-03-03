@@ -150,6 +150,9 @@
     <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Joints\Joint.cs">
       <Link>Dynamics\Joints\Joint.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Joints\LimitedHingeJoint.cs">
+      <Link>Dynamics\Joints\LimitedHingeJoint.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.Physics.Jitter\Dynamics\Joints\PrismaticJoint.cs">
       <Link>Dynamics\Joints\PrismaticJoint.cs</Link>
     </Compile>
