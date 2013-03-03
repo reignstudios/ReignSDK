@@ -150,6 +150,12 @@
     <Compile Include="..\..\Common\Reign.Core\OS\X11Application.cs">
       <Link>OS\X11Application.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingBox2.cs">
+      <Link>Math\BoundingBox2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Core\Math\BoundingSphere2.cs">
+      <Link>Math\BoundingSphere2.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

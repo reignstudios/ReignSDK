@@ -136,11 +136,11 @@ namespace Reign.Input.X11
 		{
 			switch (theEvent.Type)
 			{
-				case (ApplicationEventTypes.KeyDown):
+				case ApplicationEventTypes.KeyDown:
 					keys[theEvent.KeyCode] = true;
 					break;
 				
-				case (ApplicationEventTypes.KeyUp):
+				case ApplicationEventTypes.KeyUp:
 					keys[theEvent.KeyCode] = false;
 					break;
 			}

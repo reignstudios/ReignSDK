@@ -64,9 +64,9 @@ namespace Reign.Audio.OpenAL
 			AL.GetSourcei(instance, AL.SOURCE_STATE, &playingState);
 			switch (playingState)
 			{
-				case(AL.PLAYING): State = SoundStates.Playing; break;
-				case(AL.PAUSED): State = SoundStates.Paused; break;
-				case(AL.STOPPED): State = SoundStates.Stopped; break;
+				case AL.PLAYING: State = SoundStates.Playing; break;
+				case AL.PAUSED: State = SoundStates.Paused; break;
+				case AL.STOPPED: State = SoundStates.Stopped; break;
 			}
 		}
 		

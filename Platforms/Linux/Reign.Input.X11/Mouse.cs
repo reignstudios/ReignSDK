@@ -58,14 +58,14 @@ namespace Reign.Input.X11
 		{
 			switch (theEvent.Type)
 			{
-				case (ApplicationEventTypes.LeftMouseDown): leftOn = true; break;
-				case (ApplicationEventTypes.LeftMouseUp): leftOn = false; break;
+				case ApplicationEventTypes.LeftMouseDown: leftOn = true; break;
+				case ApplicationEventTypes.LeftMouseUp: leftOn = false; break;
 				
-				case (ApplicationEventTypes.MiddleMouseDown): middleOn = true; break;
-				case (ApplicationEventTypes.MiddleMouseUp): middleOn = false; break;
+				case ApplicationEventTypes.MiddleMouseDown: middleOn = true; break;
+				case ApplicationEventTypes.MiddleMouseUp: middleOn = false; break;
 				
-				case (ApplicationEventTypes.RightMouseDown): rightOn = true; break;
-				case (ApplicationEventTypes.RightMouseUp): rightOn = false; break;
+				case ApplicationEventTypes.RightMouseDown: rightOn = true; break;
+				case ApplicationEventTypes.RightMouseUp: rightOn = false; break;
 				
 				case (ApplicationEventTypes.ScrollWheel):
 					scrollWheelVelocity = theEvent.ScrollWheelVelocity;
