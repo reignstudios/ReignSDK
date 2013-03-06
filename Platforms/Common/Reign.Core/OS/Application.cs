@@ -99,6 +99,7 @@ namespace Reign.Core
 	public class ApplicationDesc
 	{
 		public string Name = "Reign Application";
+		public string Win32_IconFileName;
 		public ApplicationTypes Type = ApplicationTypes.Frame;
 		public ApplicationStartPositions StartPosition = ApplicationStartPositions.CenterCurrentScreen;
 		public ApplicationOrientations Orientation = ApplicationOrientations.Landscape;

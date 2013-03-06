@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Reign.Core
@@ -29,6 +30,17 @@ namespace Reign.Core
 		#region Constructors
 		public void Init(ApplicationDesc desc)
 		{
+			// set icon
+			if (!string.IsNullOrEmpty(desc.Win32_IconFileName))
+			{
+				using (var s = this.GetType().Assembly.GetManifestResourceStream(desc.Win32_IconFileName))
+				{
+					if (s == null) Debug.ThrowError("WinFormApplication", "Cannot find icon file.\nYou must use this nameing convention: {MyAppNam}.IconFileName.png");
+					Bitmap bmp = new Bitmap(s);
+					this.Icon = Icon.FromHandle(bmp.GetHicon());
+				}
+			}
+
 			theEvent = new ApplicationEvent();
 
 			base.Name = desc.Name;
