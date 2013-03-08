@@ -54,6 +54,7 @@
     <Compile Include="UI\UISolidTexture2.cs" />
     <Compile Include="UI\UISolidTexture3.cs" />
     <Compile Include="Diffuse\DiffuseSolidColor.cs" />
+    <Compile Include="Diffuse\VertexDiffuse2Texture.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

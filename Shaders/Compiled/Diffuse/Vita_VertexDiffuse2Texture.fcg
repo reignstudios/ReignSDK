@@ -1,0 +1,10 @@
+uniform sampler2D Diffuse;
+
+void main(
+float4 in Position_VSPS : POSITION,
+float4 in Light_VSPS : TEXCOORD0,
+float2 in UV_VSPS : TEXCOORD1,
+float4 out Color_PS : COLOR)
+{
+	Color_PS = tex2D(Diffuse, UV_VSPS) * Light_VSPS;
+}

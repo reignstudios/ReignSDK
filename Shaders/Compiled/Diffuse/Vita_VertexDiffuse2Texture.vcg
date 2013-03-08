@@ -1,0 +1,24 @@
+uniform float4x4 Camera;
+uniform float3 LightDirection;
+uniform float3 LightDirection2;
+uniform float4 LightColor;
+uniform float4 LightColor2;
+uniform float4x4 Transform;
+
+void main(
+float3 in Position_VS : POSITION,
+float3 in Normal_VS : NORMAL,
+float2 in UV_VS : TEXCOORD0,
+float4 out Position_VSPS : POSITION,
+float4 out Light_VSPS : TEXCOORD0,
+float2 out UV_VSPS : TEXCOORD1)
+{
+	float4 loc = mul(Transform,  float4(Position_VS, 1));
+	Position_VSPS = mul(loc, Camera);
+	UV_VSPS = float2(UV_VS.x, 1.0-UV_VS.y);
+
+	float3 normal = normalize(mul(Transform,  float4(Normal_VS, 0)).xyz);
+	float light = max(dot(-LightDirection, normal), 0.0);
+	float light2 = max(dot(-LightDirection2, normal), 0.0);
+	Light_VSPS = ((light * LightColor) + (light2 * LightColor2));
+}

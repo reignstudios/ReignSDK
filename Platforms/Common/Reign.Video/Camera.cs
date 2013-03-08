@@ -84,10 +84,12 @@ namespace Reign.Video
 			matrix = matrix.RotateAroundAxisX(radians.X);
 			matrix = matrix.RotateAroundAxisY(radians.Y);
 			matrix = matrix.RotateAroundAxisZ(radians.Z);
+
 			LookAtPosition -= Position;
 			LookAtPosition = LookAtPosition.Transform(matrixTranspose);
 			LookAtPosition = LookAtPosition.Transform(matrix);
 			LookAtPosition += Position;
+
 			UpPosition -= Position;
 			UpPosition = UpPosition.Transform(matrixTranspose);
 			UpPosition = UpPosition.Transform(matrix);
@@ -102,10 +104,12 @@ namespace Reign.Video
 			matrix = matrix.RotateAroundAxisX(radians.X);
 			matrix = matrix.RotateAroundAxisY(radians.Y);
 			matrix = matrix.RotateAroundAxisZ(radians.Z);
+
 			Position -= LookAtPosition;
 			Position = Position.Transform(matrixTranspose);
 			Position = Position.Transform(matrix);
 			Position += LookAtPosition;
+
 			UpPosition -= LookAtPosition;
 			UpPosition = UpPosition.Transform(matrixTranspose);
 			UpPosition = UpPosition.Transform(matrix);
@@ -120,10 +124,12 @@ namespace Reign.Video
 			matrix = matrix.RotateAroundAxisX(radians.X);
 			matrix = matrix.RotateAroundAxisY(radians.Y);
 			matrix = matrix.RotateAroundAxisZ(radians.Z);
+
 			LookAtPosition -= UpPosition;
 			LookAtPosition = LookAtPosition.Transform(matrixTranspose);
 			LookAtPosition = LookAtPosition.Transform(matrix);
 			LookAtPosition += UpPosition;
+
 			Position -= UpPosition;
 			Position = Position.Transform(matrixTranspose);
 			Position = Position.Transform(matrix);
@@ -133,37 +139,52 @@ namespace Reign.Video
 		public void RotateAroundPositionWorld(float radiansX, float radiansY, float radiansZ) {RotateAroundPositionWorld(new Vector3(radiansX, radiansY, radiansZ));}
 		public void RotateAroundPositionWorld(Vector3 radians)
 		{
-			var quaternion = Quaternion.FromEuler(radians);
+			var matrix = Matrix3.Identity;
+			matrix = matrix.RotateAroundWorldAxisX(radians.X);
+			matrix = matrix.RotateAroundWorldAxisY(radians.Y);
+			matrix = matrix.RotateAroundWorldAxisZ(radians.Z);
+			
 			LookAtPosition -= Position;
-			UpPosition -= Position;
-			Vector3.Transform(ref LookAtPosition, ref quaternion, out LookAtPosition);
-			Vector3.Transform(ref UpPosition, ref quaternion, out UpPosition);
+			LookAtPosition = LookAtPosition.Transform(matrix);
 			LookAtPosition += Position;
+
+			UpPosition -= Position;
+			UpPosition = UpPosition.Transform(matrix);
 			UpPosition += Position;
 		}
 
 		public void RotateAroundLookPositionWorld(float radiansX, float radiansY, float radiansZ) {RotateAroundLookPositionWorld(new Vector3(radiansX, radiansY, radiansZ));}
 		public void RotateAroundLookPositionWorld(Vector3 radians)
 		{
-			var quaternion = Quaternion.FromEuler(radians);
+			var matrix = Matrix3.Identity;
+			matrix = matrix.RotateAroundWorldAxisX(radians.X);
+			matrix = matrix.RotateAroundWorldAxisY(radians.Y);
+			matrix = matrix.RotateAroundWorldAxisZ(radians.Z);
+			
 			Position -= LookAtPosition;
-			UpPosition -= LookAtPosition;
-			Vector3.Transform(ref Position, ref quaternion, out Position);
-			Vector3.Transform(ref UpPosition, ref quaternion, out UpPosition);
+			Position = Position.Transform(matrix);
 			Position += LookAtPosition;
+
+			UpPosition -= LookAtPosition;
+			UpPosition = UpPosition.Transform(matrix);
 			UpPosition += LookAtPosition;
 		}
 
 		public void RotateAroundUpPositionWorld(float radiansX, float radiansY, float radiansZ) {RotateAroundUpPositionWorld(new Vector3(radiansX, radiansY, radiansZ));}
 		public void RotateAroundUpPositionWorld(Vector3 radians)
 		{
-			var quaternion = Quaternion.FromEuler(radians);
-			Position -= UpPosition;
+			var matrix = Matrix3.Identity;
+			matrix = matrix.RotateAroundWorldAxisX(radians.X);
+			matrix = matrix.RotateAroundWorldAxisY(radians.Y);
+			matrix = matrix.RotateAroundWorldAxisZ(radians.Z);
+
 			LookAtPosition -= UpPosition;
-			Vector3.Transform(ref Position, ref quaternion, out Position);
-			Vector3.Transform(ref LookAtPosition, ref quaternion, out LookAtPosition);
-			Position += UpPosition;
+			LookAtPosition = LookAtPosition.Transform(matrix);
 			LookAtPosition += UpPosition;
+			
+			Position -= UpPosition;
+			Position = Position.Transform(matrix);
+			Position += UpPosition;
 		}
 
 		public void Rotate(Line3 pLine, float radians)

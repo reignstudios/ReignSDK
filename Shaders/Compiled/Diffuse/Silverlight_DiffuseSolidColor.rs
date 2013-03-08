@@ -23,7 +23,7 @@ VSOutPSIn main(VSIn In)
 
 	float4 loc = mul(Transform,  float4(In.Position_VS, 1));
 	Out.Position_VSPS = mul(loc, Camera);
-	Out.Normal_VSPS = normalize(mul(Transform,  float4(In.Normal_VS, 0)).xyz);
+	Out.Normal_VSPS = mul(Transform,  float4(In.Normal_VS, 0)).xyz;
 
 	return Out;
 }
@@ -44,7 +44,8 @@ PSOut main(VSOutPSIn In)
 {
 	PSOut Out;
 
-	float light = dot(-LightDirection, In.Normal_VSPS);
+	float3 normal = normalize(In.Normal_VSPS);
+	float light = dot(-LightDirection, normal);
 	Out.Color_PS = Diffuse * LightColor * light;
 
 	return Out;

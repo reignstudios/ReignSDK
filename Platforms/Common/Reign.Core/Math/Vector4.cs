@@ -579,6 +579,17 @@ namespace Reign.Core
 		    result = (matrix.X*vector.X) + (matrix.Y*vector.Y) + (matrix.Z*vector.Z) + (matrix.W*vector.W);
 		}
 
+		public Vector4 Multiply(Matrix4 matrix)
+		{
+			return new Vector4
+			(
+				(matrix.X.X*X) + (matrix.X.Y*Y) + (matrix.X.Z*Z) + (matrix.X.W*W),
+				(matrix.Y.X*X) + (matrix.Y.Y*Y) + (matrix.Y.Z*Z) + (matrix.Y.W*W),
+				(matrix.Z.X*X) + (matrix.Z.Y*Y) + (matrix.Z.Z*Z) + (matrix.Z.W*W),
+				(matrix.W.X*X) + (matrix.W.Y*Y) + (matrix.W.Z*Z) + (matrix.W.W*W)
+			);
+		}
+
 		public bool AproxEqualsBox(Vector4 vector, float tolerance)
 		{
 			return
@@ -610,8 +621,8 @@ namespace Reign.Core
 		public Vector4 Project(Matrix4 projectionMatrix, Matrix4 viewMatrix, int viewX, int viewY, int viewWidth, int viewHeight)
 		{
 			var result = this;
-			result = result.Transform(viewMatrix);
-			result = result.Transform(projectionMatrix);
+			result = result.Multiply(viewMatrix);
+			result = result.Multiply(projectionMatrix);
 			
 			float wDelta = 1 / result.W;
 			result.X *= wDelta;
@@ -631,8 +642,8 @@ namespace Reign.Core
 		public static void Project(ref Vector4 vector, ref Matrix4 projectionMatrix, ref Matrix4 viewMatrix, int viewX, int viewY, int viewWidth, int viewHeight, out Vector4 result)
 		{
 			result = vector;
-			result = result.Transform(viewMatrix);
-			result = result.Transform(projectionMatrix);
+			result = result.Multiply(viewMatrix);
+			result = result.Multiply(projectionMatrix);
 			
 			float wDelta = 1 / result.W;
 			result.X *= wDelta;

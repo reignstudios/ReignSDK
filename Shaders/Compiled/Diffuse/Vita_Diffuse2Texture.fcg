@@ -10,7 +10,8 @@ float3 in Normal_VSPS : TEXCOORD0,
 float2 in UV_VSPS : TEXCOORD1,
 float4 out Color_PS : COLOR)
 {
-	float light = dot(-LightDirection, Normal_VSPS);
-	float light2 = dot(-LightDirection2, Normal_VSPS);
+	float3 normal = normalize(Normal_VSPS);
+	float light = max(dot(-LightDirection, normal), 0.0);
+	float light2 = max(dot(-LightDirection2, normal), 0.0);
 	Color_PS = tex2D(Diffuse, UV_VSPS) * ((light * LightColor) + (light2 * LightColor2));
 }

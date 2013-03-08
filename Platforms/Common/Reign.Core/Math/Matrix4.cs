@@ -579,6 +579,12 @@ namespace Reign.Core
 		// ==
 		public static bool operator==(Matrix4 p1, Matrix4 p2) {return (p1.X==p2.X && p1.Y==p2.Y && p1.Z==p2.Z && p1.W==p2.W);}
 		public static bool operator!=(Matrix4 p1, Matrix4 p2) {return (p1.X!=p2.X || p1.Y!=p2.Y || p1.Z!=p2.Z || p1.W!=p2.W);}
+
+		// convert
+		public Matrix3 ToMatrix3()
+		{
+			return new Matrix3(X.ToVector3(), Y.ToVector3(), Z.ToVector3());
+		}
 		#endregion
 		
 		#region Methods
@@ -909,7 +915,7 @@ namespace Reign.Core
 				new Vector4(n/width, 0, (right+left)/width, 0),
 				new Vector4(0, n/height, (top+bottom)/height, 0),
 				new Vector4(0, 0, -(far+near)/depth, -(n*far)/depth),
-				new Vector4(0, 0, -1, 0)
+				new Vector4(0, 0, -1, 1)
 			);
 		}
 
@@ -938,7 +944,7 @@ namespace Reign.Core
 			result.W.X = 0;
 			result.W.Y = 0;
 			result.W.Z = -1;
-			result.W.W = 0;
+			result.W.W = 1;
 		}
 
 		public static Matrix4 Orthographic(float width, float height, float near, float far)

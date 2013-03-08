@@ -1,0 +1,7 @@
+vsVar Camera 0 4
+vsVar LightDirection 4 1
+vsVar LightDirection2 5 1
+vsVar LightColor 6 1
+vsVar LightColor2 7 1
+vsVar Transform 8 4
+psRes Diffuse 0

@@ -45,41 +45,11 @@ namespace Reign.Core
 
 		public static Quaternion LookAt(Vector3 forward, Vector3 up)
 		{
-			//Quaternion Quaternion::LookRotation(Vector& lookAt, Vector& upDirection) {
-			//Vector forward = lookAt; Vector up = upDirection;
-			//Vector::OrthoNormalize(&forward, &up);
-			//Vector right = Vector::Cross(up, forward);
-
-			//#define m00 right.x
-			//#define m01 up.x
-			//#define m02 forward.x
-			//#define m10 right.y
-			//#define m11 up.y
-			//#define m12 forward.y
-			//#define m20 right.z
-			//#define m21 up.z
-			//#define m22 forward.z
-
-			//        Quaternion ret;
-			//        ret.w = sqrtf(1.0f + m00 + m11 + m22) * 0.5f;
-			//        float w4_recip = 1.0f / (4.0f * ret.w);
-			//        ret.x = (m21 - m12) * w4_recip;
-			//        ret.y = (m02 - m20) * w4_recip;
-			//        ret.z = (m10 - m01) * w4_recip;
-
-			//#undef m00
-			//#undef m01
-			//#undef m02
-			//#undef m10
-			//#undef m11
-			//#undef m12
-			//#undef m20
-			//#undef m21
-			//#undef m22
-
-			//        return ret;
-			//}
-			throw new NotImplementedException();
+			Matrix3 mat;
+			Matrix3.LookAt(ref forward, ref up, out mat);
+			Quaternion q;
+			Quaternion.FromMatrix3(ref mat, out q);
+			return q;
 		}
 
 		public static Quaternion FromMatrix3(Matrix3 matrix)
@@ -252,25 +222,24 @@ namespace Reign.Core
 			eulerX *= .5f;
 			eulerY *= .5f;
 			eulerZ *= .5f;
-			float cosYaw = (float)Math.Cos(eulerX);
-            float cosPitch = (float)Math.Cos(eulerY);
-            float cosRoll = (float)Math.Cos(eulerZ);
-            float sinYaw = (float)Math.Sin(eulerX);
-            float sinPitch = (float)Math.Sin(eulerY);
-            float sinRoll = (float)Math.Sin(eulerZ);
 
-            float cosYawCosPitch = cosYaw * cosPitch;
-            float cosYawSinPitch = cosYaw * sinPitch;
-            float sinYawCosPitch = sinYaw * cosPitch;
-            float sinYawSinPitch = sinYaw * sinPitch;
+			float c1 = (float)Math.Cos(eulerY);
+			float s1 = (float)Math.Sin(eulerY);
+			float c2 = (float)Math.Cos(eulerZ);
+			float s2 = (float)Math.Sin(eulerZ);
+			float c3 = (float)Math.Cos(eulerX);
+			float s3 = (float)Math.Sin(eulerX);
+			float c1c2 = c1*c2;
+			float s1s2 = s1*s2;
+			float s1c2 = s1*c2;
+			float c1s2 = c1*s2;
 
-			return new Quaternion
-			(
-				cosYawCosPitch * cosRoll + sinYawSinPitch * sinRoll,
-				sinYawCosPitch * cosRoll - cosYawSinPitch * sinRoll,
-				cosYawSinPitch * cosRoll + sinYawCosPitch * sinRoll,
-				cosYawCosPitch * sinRoll - sinYawSinPitch * cosRoll
-			);
+			Quaternion q;
+			q.W = c1c2*c3 - s1s2*s3;
+  			q.X = c1c2*s3 + s1s2*c3;
+			q.Y = s1c2*c3 + c1s2*s3;
+			q.Z = c1s2*c3 - s1c2*s3;
+			return q;
 		}
 
 		public static void FromEuler(float eulerX, float eulerY, float eulerZ, out Quaternion result)
@@ -278,22 +247,22 @@ namespace Reign.Core
 			eulerX *= .5f;
 			eulerY *= .5f;
 			eulerZ *= .5f;
-			float cosYaw = (float)Math.Cos(eulerX);
-            float cosPitch = (float)Math.Cos(eulerY);
-            float cosRoll = (float)Math.Cos(eulerZ);
-            float sinYaw = (float)Math.Sin(eulerX);
-            float sinPitch = (float)Math.Sin(eulerY);
-            float sinRoll = (float)Math.Sin(eulerZ);
 
-            float cosYawCosPitch = cosYaw * cosPitch;
-            float cosYawSinPitch = cosYaw * sinPitch;
-            float sinYawCosPitch = sinYaw * cosPitch;
-            float sinYawSinPitch = sinYaw * sinPitch;
+			float c1 = (float)Math.Cos(eulerY);
+			float s1 = (float)Math.Sin(eulerY);
+			float c2 = (float)Math.Cos(eulerZ);
+			float s2 = (float)Math.Sin(eulerZ);
+			float c3 = (float)Math.Cos(eulerX);
+			float s3 = (float)Math.Sin(eulerX);
+			float c1c2 = c1*c2;
+			float s1s2 = s1*s2;
+			float s1c2 = s1*c2;
+			float c1s2 = c1*s2;
 
-			result.X = cosYawCosPitch * cosRoll + sinYawSinPitch * sinRoll;
-			result.Y = sinYawCosPitch * cosRoll - cosYawSinPitch * sinRoll;
-			result.Z = cosYawSinPitch * cosRoll + sinYawCosPitch * sinRoll;
-			result.W = cosYawCosPitch * sinRoll - sinYawSinPitch * cosRoll;
+			result.W = c1c2*c3 - s1s2*s3;
+  			result.X = c1c2*s3 + s1s2*c3;
+			result.Y = s1c2*c3 + c1s2*s3;
+			result.Z = c1s2*c3 - s1c2*s3;
 		}
 
 		public static readonly Quaternion Identity = new Quaternion(0, 0, 0, 1);
@@ -716,6 +685,21 @@ namespace Reign.Core
 			if (longitude < 0) longitude += MathUtilities.Pi2;
 		}
 
+		public void Euler(out Vector3 euler)
+		{
+			float sqx = X*X;
+			float sqy = Y*Y;
+			float sqz = Z*Z;
+			float sqw = W*W;
+
+			float unit = sqx + sqy + sqz + sqw;
+			float test = X*Y + Z*W;
+
+			euler.Y = (float)Math.Atan2(2*Y*W - 2*X*Z, sqx - sqy - sqz + sqw);
+			euler.Z = (float)Math.Asin(2*test/unit);
+			euler.X = (float)Math.Atan2(2*X*W - 2*Y*Z, -sqx + sqy - sqz + sqw);
+		}
+
 		public static Quaternion Slerp(Quaternion start, Quaternion end, float interpolationAmount)
 		{
 			float cosHalfTheta = start.W * end.W + start.X * end.X + start.Y * end.Y + start.Z * end.Z;
@@ -727,14 +711,14 @@ namespace Reign.Core
             }
 
             // If the orientations are similar enough, then just pick one of the inputs.
-            if (cosHalfTheta > .999999) return start;
+            if (cosHalfTheta > .999999f) return start;
 
             // Calculate temporary values.
             float halfTheta = (float)Math.Acos(cosHalfTheta);
             float sinHalfTheta = (float)Math.Sqrt(1.0 - cosHalfTheta * cosHalfTheta);
 
             //Check to see if we're 180 degrees away from the target.
-            if (Math.Abs(sinHalfTheta) < 0.00001) return (start + end) * .5f;
+            if (Math.Abs(sinHalfTheta) < 0.00001f) return (start + end) * .5f;
 
             //Blend the two quaternions to get the result!
 			float aFraction = (float)Math.Sin((1 - interpolationAmount) * halfTheta) / sinHalfTheta;
@@ -753,7 +737,7 @@ namespace Reign.Core
             }
 
             // If the orientations are similar enough, then just pick one of the inputs.
-            if (cosHalfTheta > .999999)
+            if (cosHalfTheta > .999999f)
 			{
 				result = start;
 				return;
@@ -764,7 +748,7 @@ namespace Reign.Core
             float sinHalfTheta = (float)Math.Sqrt(1.0 - cosHalfTheta * cosHalfTheta);
 
             //Check to see if we're 180 degrees away from the target.
-            if (Math.Abs(sinHalfTheta) < 0.00001)
+            if (Math.Abs(sinHalfTheta) < 0.00001f)
 			{
 				result = (start + end) * .5f;
 				return;

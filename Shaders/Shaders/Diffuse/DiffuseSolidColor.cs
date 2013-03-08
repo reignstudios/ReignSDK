@@ -23,13 +23,14 @@ namespace Shaders
 		{
 			Vector4 loc = Transform.MultiplyInvert(new Vector4(Position_VS, 1));
 			Position_VSPS = Camera.Multiply(loc);
-			Normal_VSPS = SL.Normalize(Transform.MultiplyInvert(new Vector4(Normal_VS, 0)).xyz);
+			Normal_VSPS = Transform.MultiplyInvert(new Vector4(Normal_VS, 0)).xyz;
 		}
 		
 		[ShaderMethod(ShaderMethodTypes.PS)]
 		public void MainPS()
 		{
-			double light = SL.Dot(-LightDirection, Normal_VSPS);
+			Vector3 normal = SL.Normalize(Normal_VSPS);
+			double light = SL.Dot(-LightDirection, normal);
 			Color_PS = Diffuse * LightColor * light;
 		}
 	}

@@ -16,7 +16,7 @@ void main()
 {
 	vec4 loc = (Transform *  vec4(Position0, 1));
 	gl_Position = Position_VSPS = (loc * Camera);
-	Normal_VSPS = normalize((Transform *  vec4(Normal0, 0)).xyz);
+	Normal_VSPS = (Transform *  vec4(Normal0, 0)).xyz;
 	UV_VSPS = vec2(Texcoord0.x, 1.0-Texcoord0.y);
 }
 #END
@@ -28,7 +28,8 @@ uniform sampler2D Diffuse;
 
 void main()
 {
-	float light = dot(-LightDirection, Normal_VSPS);
+	vec3 normal = normalize(Normal_VSPS);
+	float light = dot(-LightDirection, normal);
 	gl_FragData[0] = texture2D(Diffuse, UV_VSPS) * LightColor * light;
 }
 #END

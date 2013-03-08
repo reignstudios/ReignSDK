@@ -14,7 +14,7 @@ void main()
 {
 	vec4 loc = (Transform *  vec4(Position0, 1));
 	gl_Position = Position_VSPS = (loc * Camera);
-	Normal_VSPS = normalize((Transform *  vec4(Normal0, 0)).xyz);
+	Normal_VSPS = (Transform *  vec4(Normal0, 0)).xyz;
 }
 #END
 
@@ -25,7 +25,8 @@ uniform vec4 Diffuse;
 
 void main()
 {
-	float light = dot(-LightDirection, Normal_VSPS);
+	vec3 normal = normalize(Normal_VSPS);
+	float light = dot(-LightDirection, normal);
 	gl_FragData[0] = Diffuse * LightColor * light;
 }
 #END
