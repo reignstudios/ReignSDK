@@ -39,9 +39,9 @@ namespace Reign.Video
 		string Name {get; set;}
 
 		void Enable();
-		void ApplyGlobalContants(Mesh mesh);
-		void ApplyInstanceContants(Mesh mesh);
-		void ApplyInstancingContants(Mesh mesh);
-		void Apply(Mesh mesh);
+		void ApplyGlobalContants(ObjectMesh objectMesh);
+		void ApplyInstanceContants(ObjectMesh objectMesh);
+		void ApplyInstancingContants(ObjectMesh objectMesh);
+		void Apply(ObjectMesh objectMesh);
 	}
 }

@@ -8,9 +8,7 @@ namespace Reign.Video
 	public class Mesh : Disposable
 	{
 		#region Properties
-		public Model Model;
-		public Vector3 Position, Rotation, Scale;
-		public Matrix3 RotationMatrix;
+		public string Name;
 		public MaterialI Material;
 
 		public VertexBufferI VertexBuffer {get; private set;}
@@ -29,17 +27,11 @@ namespace Reign.Video
 		{
 			try
 			{
-				Model = model;
+				Name = reader.ReadString();
 
 				// material
 				int materialIndex = reader.ReadInt32();
 				if (materialIndex != -1) Material = model.Materials[materialIndex];
-
-				// transform
-				Position = reader.ReadVector3();
-				Scale = reader.ReadVector3();
-				Rotation = reader.ReadVector3();
-				RotationMatrix = Matrix3.FromEuler(Rotation);
 
 				// elements
 				int elementCount = reader.ReadInt32();
@@ -261,6 +253,9 @@ namespace Reign.Video
 			int[] indices;
 			initData(softwareMesh, loadColors, loadUVs, loadNormals, out elements, out vertices, out indices);
 
+			// name
+			writer.Write(softwareMesh.Name);
+
 			// material
 			int materialIndex = -1;
 			if (softwareMesh.Material != null)
@@ -275,11 +270,6 @@ namespace Reign.Video
 				}
 			}
 			writer.Write(materialIndex);
-
-			// transform
-			writer.WriteVector(softwareMesh.Position);
-			writer.WriteVector(softwareMesh.Scale);
-			writer.WriteVector(softwareMesh.Rotation);
 
 			// elements
 			writer.Write(elements.Count);
@@ -307,12 +297,12 @@ namespace Reign.Video
 			}
 		}
 
-		public void Enable()
+		public void Enable(ObjectMesh objectMesh)
 		{
 			if (Material != null)
 			{
 				Material.Enable();
-				Material.Apply(this);
+				Material.Apply(objectMesh);
 			}
 			VertexBuffer.Enable(IndexBuffer);
 		}
@@ -320,12 +310,6 @@ namespace Reign.Video
 		public void Draw()
 		{
 			VertexBuffer.Draw();
-		}
-
-		public void Render()
-		{
-			Enable();
-			Draw();
 		}
 		#endregion
 	}

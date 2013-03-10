@@ -104,8 +104,23 @@
     <Compile Include="..\..\Common\Reign.Video\Model\Model.cs">
       <Link>Model\Model.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\Object.cs">
+      <Link>Model\Object.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\ObjectMesh.cs">
+      <Link>Model\ObjectMesh.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.Video\Model\RMX\RMXModel.cs">
       <Link>Model\RMX\RMXModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\RMX\RMXModel_Materials.cs">
+      <Link>Model\RMX\RMXModel_Materials.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\RMX\RMXModel_Meshes.cs">
+      <Link>Model\RMX\RMXModel_Meshes.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\RMX\RMXModel_Objects.cs">
+      <Link>Model\RMX\RMXModel_Objects.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareEdge.cs">
       <Link>Model\SoftwareModel\SoftwareEdge.cs</Link>
@@ -118,6 +133,12 @@
     </Compile>
     <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareModel.cs">
       <Link>Model\SoftwareModel\SoftwareModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareObject.cs">
+      <Link>Model\SoftwareModel\SoftwareObject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareObjectMesh.cs">
+      <Link>Model\SoftwareModel\SoftwareObjectMesh.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Video\Model\SoftwareModel\SoftwareTriangle.cs">
       <Link>Model\SoftwareModel\SoftwareTriangle.cs</Link>

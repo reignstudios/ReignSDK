@@ -12,6 +12,7 @@ namespace Reign.Video
 		public bool Loaded {get; private set;}
 		public bool FailedToLoad {get; protected set;}
 
+		public List<SoftwareObject> Objects;
 		public List<SoftwareMesh> Meshes;
 		public List<SoftwareMaterial> Materials;
 		#endregion
@@ -57,12 +58,16 @@ namespace Reign.Video
 
 				// meshes
 				Meshes = new List<SoftwareMesh>();
-				foreach (var o in rmx.RMXObjects)
+				foreach (var mesh in rmx.Meshes.Meshes)
 				{
-					if (o.Mesh == null) continue;
+					Meshes.Add(new SoftwareMesh(this, mesh));
+				}
 
-					var mesh = new SoftwareMesh(this, o.Mesh, o.Name);
-					Meshes.Add(mesh);
+				// objects
+				Objects = new List<SoftwareObject>();
+				foreach (var o in rmx.RMXObjects.Objects)
+				{
+					if (o.Type == "MESH") Objects.Add(new SoftwareObjectMesh(this, o));
 				}
 			}
 			catch (Exception e)
@@ -86,7 +91,13 @@ namespace Reign.Video
 		#region Methods
 		public void Rotate(float x, float y, float z)
 		{
-			foreach (var mesh in Meshes) mesh.Rotate(x, y, z);
+			foreach (var o in Objects) o.Rotate(x, y, z);
+		}
+
+		public void RotateGeometry(float x, float y, float z)
+		{
+			foreach (var o in Objects) o.RotateGeometry(x, y, z);
+			foreach (var mesh in Meshes) mesh.RotateGeometry(x, y, z);
 		}
 		#endregion
 	}

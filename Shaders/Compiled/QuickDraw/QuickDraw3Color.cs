@@ -20,7 +20,7 @@ namespace ShaderMaterials.Shaders
 
 		#region Instance Properties
 		public string Name {get; set;}
-		public delegate void ApplyCallbackMethod(QuickDraw3ColorMaterial material, Mesh mesh);
+		public delegate void ApplyCallbackMethod(QuickDraw3ColorMaterial material, ObjectMesh objectMesh);
 		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
 		[MaterialField(MaterialFieldUsages.Global)] public static Matrix4 Camera;
 		#endregion
@@ -96,29 +96,29 @@ namespace ShaderMaterials.Shaders
 			BufferLayout.Enable();
 		}
 
-		public void ApplyGlobalContants(Mesh mesh)
+		public void ApplyGlobalContants(ObjectMesh objectMesh)
 		{
-			if (ApplyGlobalConstantsCallback != null) ApplyGlobalConstantsCallback(this, mesh);
+			if (ApplyGlobalConstantsCallback != null) ApplyGlobalConstantsCallback(this, objectMesh);
 			CameraConstant.Set(Camera);
 		}
 
-		public void ApplyInstanceContants(Mesh mesh)
+		public void ApplyInstanceContants(ObjectMesh objectMesh)
 		{
-			if (ApplyInstanceConstantsCallback != null) ApplyInstanceConstantsCallback(this, mesh);
+			if (ApplyInstanceConstantsCallback != null) ApplyInstanceConstantsCallback(this, objectMesh);
 			
 		}
 
-		public void ApplyInstancingContants(Mesh mesh)
+		public void ApplyInstancingContants(ObjectMesh objectMesh)
 		{
-			if (ApplyInstancingConstantsCallback != null) ApplyInstancingConstantsCallback(this, mesh);
+			if (ApplyInstancingConstantsCallback != null) ApplyInstancingConstantsCallback(this, objectMesh);
 			
 		}
 
-		public void Apply(Mesh mesh)
+		public void Apply(ObjectMesh objectMesh)
 		{
-			ApplyGlobalContants(mesh);
-			ApplyInstanceContants(mesh);
-			ApplyInstancingContants(mesh);
+			ApplyGlobalContants(objectMesh);
+			ApplyInstanceContants(objectMesh);
+			ApplyInstancingContants(objectMesh);
 			Shader.Apply();
 		}
 

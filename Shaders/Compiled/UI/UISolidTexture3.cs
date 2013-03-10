@@ -20,7 +20,7 @@ namespace ShaderMaterials.Shaders
 
 		#region Instance Properties
 		public string Name {get; set;}
-		public delegate void ApplyCallbackMethod(UISolidTexture3Material material, Mesh mesh);
+		public delegate void ApplyCallbackMethod(UISolidTexture3Material material, ObjectMesh objectMesh);
 		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
 		[MaterialField(MaterialFieldUsages.Global)] public static Matrix4 Camera;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 Position;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 Size;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 TexelOffset;[MaterialField(MaterialFieldUsages.Instance)] public Vector4 Color;[MaterialField(MaterialFieldUsages.Instance)] public float Fade;[MaterialField(MaterialFieldUsages.Instance)] public float Fade2;[MaterialField(MaterialFieldUsages.Instance)] public Texture2DI MainTexture;[MaterialField(MaterialFieldUsages.Instance)] public Texture2DI MainTexture2;[MaterialField(MaterialFieldUsages.Instance)] public Texture2DI MainTexture3;
 		#endregion
@@ -96,29 +96,29 @@ namespace ShaderMaterials.Shaders
 			BufferLayout.Enable();
 		}
 
-		public void ApplyGlobalContants(Mesh mesh)
+		public void ApplyGlobalContants(ObjectMesh objectMesh)
 		{
-			if (ApplyGlobalConstantsCallback != null) ApplyGlobalConstantsCallback(this, mesh);
+			if (ApplyGlobalConstantsCallback != null) ApplyGlobalConstantsCallback(this, objectMesh);
 			CameraConstant.Set(Camera);
 		}
 
-		public void ApplyInstanceContants(Mesh mesh)
+		public void ApplyInstanceContants(ObjectMesh objectMesh)
 		{
-			if (ApplyInstanceConstantsCallback != null) ApplyInstanceConstantsCallback(this, mesh);
+			if (ApplyInstanceConstantsCallback != null) ApplyInstanceConstantsCallback(this, objectMesh);
 			PositionConstant.Set(Position);SizeConstant.Set(Size);TexelOffsetConstant.Set(TexelOffset);ColorConstant.Set(Color);FadeConstant.Set(Fade);Fade2Constant.Set(Fade2);MainTextureConstant.Set(MainTexture);MainTexture2Constant.Set(MainTexture2);MainTexture3Constant.Set(MainTexture3);
 		}
 
-		public void ApplyInstancingContants(Mesh mesh)
+		public void ApplyInstancingContants(ObjectMesh objectMesh)
 		{
-			if (ApplyInstancingConstantsCallback != null) ApplyInstancingConstantsCallback(this, mesh);
+			if (ApplyInstancingConstantsCallback != null) ApplyInstancingConstantsCallback(this, objectMesh);
 			
 		}
 
-		public void Apply(Mesh mesh)
+		public void Apply(ObjectMesh objectMesh)
 		{
-			ApplyGlobalContants(mesh);
-			ApplyInstanceContants(mesh);
-			ApplyInstancingContants(mesh);
+			ApplyGlobalContants(objectMesh);
+			ApplyInstanceContants(objectMesh);
+			ApplyInstancingContants(objectMesh);
 			Shader.Apply();
 		}
 

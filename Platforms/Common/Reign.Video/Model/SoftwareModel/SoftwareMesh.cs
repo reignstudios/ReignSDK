@@ -27,7 +27,6 @@ namespace Reign.Video
 		public SoftwareModel Model;
 		public string Name;
 		public int Dimensions {get; private set;}
-		public Vector3 Position, Rotation, Scale;
 		public SoftwareMaterial Material;
 
 		public List<SoftwareVertex> Verticies;
@@ -41,10 +40,10 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public SoftwareMesh(SoftwareModel model, RMX_Mesh mesh, string name)
+		public SoftwareMesh(SoftwareModel model, RMX_Mesh mesh)
 		{
 			Model = model;
-			Name = name;
+			Name = mesh.Name;
 
 			Verticies = new List<SoftwareVertex>();
 			Triangles = new List<SoftwareTriangle>();
@@ -56,18 +55,6 @@ namespace Reign.Video
 			VertexComponentKeys = new Dictionary<VertexComponentKeyTypes,int>();
 			TriangleComponentKeys = new Dictionary<TriangleComponentKeyTypes,int>();
 			EdgeComponentKeys = new Dictionary<EdgeComponentKeyTypes,int>();
-
-			// transform
-			foreach (var input in mesh.RMXObject.Transform.Inputs)
-			{
-				switch (input.Type)
-				{
-					case "EulerRotation": Rotation = new Vector3(input.Values[0], input.Values[1], input.Values[2]); break;
-					case "Scale": Scale = new Vector3(input.Values[0], input.Values[1], input.Values[2]); break;
-					case "Position": Position = new Vector3(input.Values[0], input.Values[1], input.Values[2]); break;
-					default: Debug.ThrowError("SoftwareMesh", "Unsuported Transform Type: " + input.Type); break;
-				}
-			}
 
 			// material
 			if (!string.IsNullOrEmpty(mesh.Material))
@@ -256,10 +243,9 @@ namespace Reign.Video
 			}
 		}
 
-		public void Rotate(float x, float y, float z)
+		public void RotateGeometry(float x, float y, float z)
 		{
 			var mat = Matrix3.FromEuler(x, y, z);
-			Position = Position.Transform(mat);
 
 			// rotate positions
 			foreach (var key in VertexComponentKeys)

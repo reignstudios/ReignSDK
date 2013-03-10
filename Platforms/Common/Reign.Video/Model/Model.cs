@@ -14,6 +14,7 @@ namespace Reign.Video
 		public bool FailedToLoad {get; private set;}
 
 		public Vector3 Position, Rotation, Scale;
+		public Object[] Objects {get; private set;}
 		public Mesh[] Meshes {get; private set;}
 		public MaterialI[] Materials {get; private set;}
 		public List<Texture2DI> Textures {get; private set;}
@@ -151,6 +152,16 @@ namespace Reign.Video
 				for (int i = 0; i != meshCount; ++i)
 				{
 					Meshes[i] = new Mesh(reader, this, classicInstanceCount);
+				}
+
+				// objects
+				int objectCount = reader.ReadInt32();
+				Objects = new Object[objectCount];
+				for (int i = 0; i != objectCount; ++i)
+				{
+					string type = reader.ReadString();
+					if (type == "MESH") Objects[i] = new ObjectMesh(reader, this);
+					else Debug.ThrowError("Mesh", "Unsuported Object type");
 				}
 			}
 			catch (Exception e)
@@ -320,7 +331,7 @@ namespace Reign.Video
 			// meta data
 			writer.Write(Streams.MakeFourCC('R', 'M', 'F', 'T'));// tag
 			writer.Write(1.0f);// version
-			writer.Write(compress);
+			writer.Write(false);//compress);// TODO: add zip compression
 
 			// materials
 			writer.Write(softwareModel.Materials.Count);
@@ -375,13 +386,20 @@ namespace Reign.Video
 			{
 				Mesh.Write(writer, softwareModel, mesh, loadColors, loadUVs, loadNormals);
 			}
+
+			// objects
+			writer.Write(softwareModel.Objects.Count);
+			foreach (var o in softwareModel.Objects)
+			{
+				Object.Write(writer, o);
+			}
 		}
 
 		public void Render()
 		{
-			foreach (var mesh in Meshes)
+			foreach (var o in Objects)
 			{
-				mesh.Render();
+				o.Render();
 			}
 		}
 		#endregion
