@@ -186,13 +186,15 @@ def save(operator, context, filepath="", path_mode='AUTO'):
         for f in a.fcurves:
             dataPath = f.data_path
             m = re.search('pose.bones\["([\w|\s|\.]*)"\]', dataPath)
+            aType = "OBJECT"
             if m is not None:
                 dataPath = m.group(1)
-            file.write("\t\t\t<FCurves DataPath=\"%s\" Index=\"%d\">\n" % (dataPath, f.array_index))
+                aType = "BONE"
+            file.write("\t\t\t<FCurves Type=\"%s\" DataPath=\"%s\" Index=\"%d\">\n" % (aType, dataPath, f.array_index))
 
             file.write("\t\t\t\t<Coordinates>")
             for k in f.keyframe_points:
-                file.write("%.6f %.6f " % (k.co[0], k.co[1]))
+                file.write("%.6f %.6f " % k.co[:])
             file.write("</Coordinates>\n")
 
             file.write("\t\t\t\t<InterpolationType>")
@@ -220,7 +222,31 @@ def save(operator, context, filepath="", path_mode='AUTO'):
 
         file.write("\t\t<Armature Name=\"%s\">\n" % arm.name)
 
+        file.write("\t\t\t<Bones>\n")
+        for bone in arm.bones:
+            if bone.use_deform == False:
+                continue
 
+            parentName = str()
+            if bone.parent != None:
+                parentName = bone.parent.name
+            file.write("\t\t\t\t<Bone Name=\"%s\" Parent=\"%s\">\n" % (bone.name, parentName))
+
+            file.write("\t\t\t\t\t<InheritScale>%s</InheritScale>\n" % bone.use_inherit_scale)
+            file.write("\t\t\t\t\t<InheritRotation>%s</InheritRotation>\n" % bone.use_inherit_rotation)
+
+            boneX = bone.tail[0] + bone.head[0]
+            boneY = bone.tail[1] + bone.head[1]
+            boneZ = bone.tail[2] + bone.head[2]
+            file.write("\t\t\t\t\t<Position>%.6f %.6f %.6f</Position>\n" % (boneX, boneY, boneZ))
+
+            file.write("\t\t\t\t\t<Matrix>%.6f %.6f %.6f " % bone.matrix[0][:])
+            file.write("%.6f %.6f %.6f " % bone.matrix[1][:])
+            file.write("%.6f %.6f %.6f</Matrix>\n" % bone.matrix[2][:])
+
+            file.write("\t\t\t\t</Bone>\n")
+
+        file.write("\t\t\t</Bones>\n")
 
         file.write("\t\t</Armature>\n")
     file.write("\t</Armatures>\n")
@@ -257,7 +283,7 @@ def save(operator, context, filepath="", path_mode='AUTO'):
         file.write("</Input>\n")
         file.write("\t\t\t</Transform>\n")
         
-        # write link mesh
+        # write mesh link
         if obj.type == "MESH":
             mesh = obj.data
             if (len(mesh.vertices) + len(mesh.tessfaces)) > 0:
@@ -265,7 +291,7 @@ def save(operator, context, filepath="", path_mode='AUTO'):
                 if mesh not in meshList:
                     meshList.append(mesh)
 
-        # write link armature
+        # write armature link
         if obj.type == "ARMATURE":
             armature = obj.data
             file.write("\t\t\t<Armature Name=\"%s\"/>\n" % armature.name)
