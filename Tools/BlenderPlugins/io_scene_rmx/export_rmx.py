@@ -117,6 +117,24 @@ def save(operator, context, filepath="", path_mode='AUTO'):
                 index += 1
                 file.write("</Channel>\n")
 
+        # --bone groups/weights
+        file.write("\t\t\t\t<BoneGroups>\n")
+        file.write("\t\t\t\t\t<Counts>")
+        for vert in mesh.vertices:
+            file.write("%d " % len(vert.groups))
+        file.write("</Counts>\n")
+        file.write("\t\t\t\t\t<Indices>")
+        for vert in mesh.vertices:
+            for group in vert.groups:
+                file.write("%d " % group.group)
+        file.write("</Indices>\n")
+        file.write("\t\t\t\t\t<Weights>")
+        for vert in mesh.vertices:
+            for group in vert.groups:
+                file.write("%.6f " % group.weight)
+        file.write("</Weights>\n")
+        file.write("\t\t\t\t</BoneGroups>\n")
+
         file.write("\t\t\t</Vertices>\n")
         
         # write faces -------------------------
@@ -254,13 +272,14 @@ def save(operator, context, filepath="", path_mode='AUTO'):
     # -------------------------------------
     # write objects -----------------------
     # -------------------------------------
-    meshList = list()
-    armatureList = list()
     file.write("\t<Objects>\n")
     for obj in objects:
 		
 		# begin object
-        file.write("\t\t<Object Name=\"%s\" Type=\"%s\">\n" % (obj.name, obj.type))
+        parentName = str()
+        if obj.parent != None:
+            parentName = obj.parent.name
+        file.write("\t\t<Object Name=\"%s\" Type=\"%s\" Parent=\"%s\">\n" % (obj.name, obj.type, parentName))
 
         # write transform
         file.write("\t\t\t<Transform>\n")
@@ -288,13 +307,21 @@ def save(operator, context, filepath="", path_mode='AUTO'):
             mesh = obj.data
             if (len(mesh.vertices) + len(mesh.tessfaces)) > 0:
                 file.write("\t\t\t<Mesh Name=\"%s\"/>\n" % mesh.name)
-                if mesh not in meshList:
-                    meshList.append(mesh)
+            arm = obj.find_armature()
+            if arm is not None:
+                file.write("\t\t\t<ArmatureObject Name=\"%s\"/>\n" % arm.name)
 
         # write armature link
         if obj.type == "ARMATURE":
             armature = obj.data
             file.write("\t\t\t<Armature Name=\"%s\"/>\n" % armature.name)
+
+        # write vertex groups
+        if len(obj.vertex_groups) > 0:
+            file.write("\t\t\t<BoneGroups>\n")
+            for group in obj.vertex_groups:
+                file.write("\t\t\t\t<BoneGroup Name=\"%s\" Index=\"%d\"/>\n" % (group.name, group.index))
+            file.write("\t\t\t</BoneGroups>\n")
 
         # end object
         file.write("\t\t</Object>\n")
