@@ -323,6 +323,10 @@ def save(operator, context, filepath="", path_mode='AUTO'):
                 file.write("\t\t\t\t<BoneGroup Name=\"%s\" Index=\"%d\"/>\n" % (group.name, group.index))
             file.write("\t\t\t</BoneGroups>\n")
 
+        # write armature link
+        if obj.animation_data is not None and obj.animation_data.action is not None:
+            file.write("\t\t\t<Action Name=\"%s\"/>\n" % obj.animation_data.action.name)
+
         # end object
         file.write("\t\t</Object>\n")
 
