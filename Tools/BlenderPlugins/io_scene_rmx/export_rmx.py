@@ -142,29 +142,29 @@ def save(operator, context, filepath="", path_mode='AUTO'):
         
         # write face steps
         file.write("\t\t\t\t<Steps>")
-        for face in mesh.tessfaces:
-            file.write("%d " % len(face.vertices))
+        for poly in mesh.polygons:
+            file.write("%d " % len(poly.vertices))
         file.write("</Steps>\n")
         
         # write face position indices
         file.write("\t\t\t\t<Indices ID=\"Position\">")
-        for face in mesh.tessfaces:
-            for i in range(len(face.vertices)):
-                file.write("%d " % face.vertices[i])
+        for poly in mesh.polygons:
+            for i in range(len(poly.vertices)):
+                file.write("%d " % poly.vertices[i])
         file.write("</Indices>\n")
 
         # write face normal indices
         file.write("\t\t\t\t<Indices ID=\"Normal\">")
         i2 = 0
-        for face in mesh.tessfaces:
-            if face.use_smooth:
-                vertLength = len(face.vertices)
+        for poly in mesh.polygons:
+            if poly.use_smooth:
+                vertLength = len(poly.vertices)
                 for i in range(vertLength):
                     file.write("%d " % (i2 + i))
 
                 i2 = i2 + vertLength
             else:
-                vertLength = len(face.vertices)
+                vertLength = len(poly.vertices)
                 for i in range(vertLength):
                     file.write("%d " % i2)
 
