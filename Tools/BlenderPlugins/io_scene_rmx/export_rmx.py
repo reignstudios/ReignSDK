@@ -73,7 +73,7 @@ def save(operator, context, filepath="", path_mode='AUTO'):
     file.write("\t<Meshes>\n")
     for mesh in bpy.data.meshes:
 
-        if mesh.id_data.users < 1 or (len(mesh.vertices) + len(mesh.tessfaces)) <= 0:
+        if mesh.id_data.users < 1 or (len(mesh.vertices) + len(mesh.polygons)) <= 0:
             continue
 
         # add material to list if needed
@@ -95,24 +95,22 @@ def save(operator, context, filepath="", path_mode='AUTO'):
 
         # --normals
         file.write("\t\t\t\t<Channel ID=\"Normal\" Index=\"0\" Step=\"3\">")
-        for face in mesh.tessfaces:
-            if face.use_smooth:
-                for i in face.vertices:
+        for poly in mesh.polygons:
+            if poly.use_smooth:
+                for i in poly.vertices:
                     file.write("%.6f %.6f %.6f " % mesh.vertices[i].normal[:])
             else:
-                file.write("%.6f %.6f %.6f " % face.normal[:])
+                file.write("%.6f %.6f %.6f " % poly.normal[:])
         file.write("</Channel>\n")
 
         # --uv
-        hasUVs = len(mesh.uv_textures) > 0
+        hasUVs = len(mesh.uv_layers) > 0
         if hasUVs:
             index = 0
-            for face in mesh.tessface_uv_textures:
+            for poly in mesh.uv_layers:
                 file.write("\t\t\t\t<Channel ID=\"UV\" Index=\"%d\" Step=\"2\">" % index)
-                #for uvData in mesh.tessface_uv_textures.active.data: # Use if you only want to use one UV set
-                for uvData in face.data:
-                    for uv in uvData.uv:
-                        file.write("%.6f %.6f " % uv[:])
+                for uvData in poly.data:
+                    file.write("%.6f %.6f " % uvData.uv[:])
 
                 index += 1
                 file.write("</Channel>\n")
@@ -175,8 +173,8 @@ def save(operator, context, filepath="", path_mode='AUTO'):
         if hasUVs:
             file.write("\t\t\t\t<Indices ID=\"UV\">")
             i2 = 0
-            for face in mesh.tessfaces:
-                vertLength = len(face.vertices)
+            for poly in mesh.polygons:
+                vertLength = len(poly.vertices)
                 for i in range(vertLength):
                     file.write("%d " % (i2 + i))
 
@@ -208,7 +206,7 @@ def save(operator, context, filepath="", path_mode='AUTO'):
             if m is not None:
                 dataPath = m.group(1)
                 aType = "BONE"
-            file.write("\t\t\t<FCurves Type=\"%s\" DataPath=\"%s\" Index=\"%d\">\n" % (aType, dataPath, f.array_index))
+            file.write("\t\t\t<FCurve Type=\"%s\" DataPath=\"%s\" Index=\"%d\">\n" % (aType, dataPath, f.array_index))
 
             file.write("\t\t\t\t<Coordinates>")
             for k in f.keyframe_points:
@@ -225,7 +223,7 @@ def save(operator, context, filepath="", path_mode='AUTO'):
                     file.write("C")
             file.write("</InterpolationType>\n")
 
-            file.write("\t\t\t</FCurves>\n")
+            file.write("\t\t\t</FCurve>\n")
 
         file.write("\t\t</Action>\n")
     file.write("\t</Actions>\n")
@@ -258,9 +256,9 @@ def save(operator, context, filepath="", path_mode='AUTO'):
             boneZ = bone.tail[2] + bone.head[2]
             file.write("\t\t\t\t\t<Position>%.6f %.6f %.6f</Position>\n" % (boneX, boneY, boneZ))
 
-            file.write("\t\t\t\t\t<Matrix>%.6f %.6f %.6f " % bone.matrix[0][:])
+            file.write("\t\t\t\t\t<Orientation>%.6f %.6f %.6f " % bone.matrix[0][:])
             file.write("%.6f %.6f %.6f " % bone.matrix[1][:])
-            file.write("%.6f %.6f %.6f</Matrix>\n" % bone.matrix[2][:])
+            file.write("%.6f %.6f %.6f</Orientation>\n" % bone.matrix[2][:])
 
             file.write("\t\t\t\t</Bone>\n")
 
@@ -325,7 +323,7 @@ def save(operator, context, filepath="", path_mode='AUTO'):
 
         # write armature link
         if obj.animation_data is not None and obj.animation_data.action is not None:
-            file.write("\t\t\t<Action Name=\"%s\"/>\n" % obj.animation_data.action.name)
+            file.write("\t\t\t<DefaultAction Name=\"%s\"/>\n" % obj.animation_data.action.name)
 
         # end object
         file.write("\t\t</Object>\n")

@@ -36,12 +36,28 @@ namespace Reign.Video
 		[XmlAttribute("Name")] public string Name;
 	}
 
+	public class RMX_ObjectBoneGroup
+	{
+		[XmlElement("Name")] public string Name;
+		[XmlElement("Index")] public int Index;
+	}
+
+	public class RMX_ObjectBoneGroups
+	{
+		[XmlElement("BoneGroup")] public RMX_ObjectBoneGroup[] BoneGroups;
+	}
+
 	public class RMX_Object
 	{
 		[XmlAttribute("Name")] public string Name;
 		[XmlAttribute("Type")] public string Type;
+		[XmlAttribute("Parent")] public string Parent;
 		[XmlElement("Transform")] public RMX_ObjectTransform Transform;
 		[XmlElement("Mesh")] public RMX_ObjectMesh Mesh;
+		[XmlElement("ArmatureObject")] public string ArmatureObject;
+		[XmlElement("Armature")] public string Armature;
+		[XmlElement("DefaultAction")] public string DefaultAction;
+		[XmlElement("BoneGroups")] public RMX_ObjectBoneGroups BoneGroups;
 
 		public void Init()
 		{

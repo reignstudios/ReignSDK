@@ -17,9 +17,35 @@ namespace Reign.Video
 		}
 	}
 
+	public class RMX_MeshVertexBoneGroupValues
+	{
+		[XmlText] public string Content;
+		public float[] Values;
+
+		public void Init()
+		{
+			Values = RMXModel.ConvertToFloatArray(Content);
+		}
+	}
+
+	public class RMX_MeshVertexBoneGroups
+	{
+		[XmlElement("Counts")] public RMX_MeshVertexBoneGroupValues Counts;
+		[XmlElement("Indices")] public RMX_MeshVertexBoneGroupValues Indices;
+		[XmlElement("Weights")] public RMX_MeshVertexBoneGroupValues Weights;
+
+		public void Init()
+		{
+			Counts.Init();
+			Indices.Init();
+			Weights.Init();
+		}
+	}
+
 	public class RMX_MeshVerticies
 	{
 		[XmlElement("Channel")] public RMX_MeshVertexChannel[] Channels;
+		[XmlElement("BoneGroups")] public RMX_MeshVertexBoneGroups BoneGroups;
 
 		public void Init()
 		{
@@ -27,6 +53,8 @@ namespace Reign.Video
 			{
 				channel.Init();
 			}
+
+			if (BoneGroups != null) BoneGroups.Init();
 		}
 	}
 
