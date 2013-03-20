@@ -10,7 +10,7 @@ namespace Reign.Video
 		[XmlElement("Materials")] public RMX_Materials Materials;
 		[XmlElement("Meshes")] public RMX_Meshes Meshes;
 		[XmlElement("Actions")] public RMX_Actions Actions;
-		[XmlElement("Armatures")] public RMX_Materials Armatures;
+		[XmlElement("Armatures")] public RMX_Armatures Armatures;
 		[XmlElement("Objects")] public RMX_Objects RMXObjects;
 
 		public void Init()

@@ -18,8 +18,13 @@ namespace Reign.Video
 	{
 		[XmlAttribute("Name")] public string Name;
 		[XmlAttribute("Parent")] public string Parent;
-		[XmlElement("InheritScale")] public bool InheritScale;
-		[XmlElement("InheritRotation")] public bool InheritRotation;
+
+		[XmlElement("InheritScale")] public string InheritScaleContent;
+		public bool InheritScale {get{return System.Xml.XmlConvert.ToBoolean(InheritScaleContent.ToLower());}}
+
+		[XmlElement("InheritRotation")] public string InheritRotationContent;
+		public bool InheritRotation {get{return System.Xml.XmlConvert.ToBoolean(InheritRotationContent.ToLower());}}
+
 		[XmlElement("Position")] public RMX_ArmatureBoneValues Position;
 		[XmlElement("Orientation")] public RMX_ArmatureBoneValues Orientation;
 
@@ -48,6 +53,7 @@ namespace Reign.Video
 
 	public class RMX_Armature
 	{
+		[XmlAttribute("Name")] public string Name;
 		[XmlElement("Bones")] public RMX_ArmatureBones Bones;
 
 		public void Init()

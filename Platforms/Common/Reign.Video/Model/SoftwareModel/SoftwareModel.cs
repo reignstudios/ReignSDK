@@ -12,9 +12,11 @@ namespace Reign.Video
 		public bool Loaded {get; private set;}
 		public bool FailedToLoad {get; protected set;}
 
-		public List<SoftwareObject> Objects;
-		public List<SoftwareMesh> Meshes;
 		public List<SoftwareMaterial> Materials;
+		public List<SoftwareMesh> Meshes;
+		public List<SoftwareAction> Actions;
+		public List<SoftwareArmature> Armatures;
+		public List<SoftwareObject> Objects;
 		#endregion
 
 		#region Constructors
@@ -63,11 +65,33 @@ namespace Reign.Video
 					Meshes.Add(new SoftwareMesh(this, mesh));
 				}
 
+				// actions
+				Actions = new List<SoftwareAction>();
+				foreach (var action in rmx.Actions.Actions)
+				{
+					Actions.Add(new SoftwareAction(action));
+				}
+
+				// armatures
+				Armatures = new List<SoftwareArmature>();
+				foreach (var armature in rmx.Armatures.Armatures)
+				{
+					Armatures.Add(new SoftwareArmature(armature));
+				}
+
 				// objects
 				Objects = new List<SoftwareObject>();
 				foreach (var o in rmx.RMXObjects.Objects)
 				{
 					if (o.Type == "MESH") Objects.Add(new SoftwareObjectMesh(this, o));
+					else if (o.Type == "ARMATURE") Objects.Add(new SoftwareObjectArmature(this, o));
+				}
+
+				int i = 0;
+				foreach (var o in Objects)
+				{
+					o.linkObjects(rmx.RMXObjects.Objects[i]);
+					++i;
 				}
 			}
 			catch (Exception e)

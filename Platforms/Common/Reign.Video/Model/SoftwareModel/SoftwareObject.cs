@@ -7,8 +7,11 @@ namespace Reign.Video
 	{
 		#region Properties
 		public SoftwareModel Model;
+		public SoftwareObject Parent;
 		public string Name;
 		public Vector3 Position, Rotation, Scale;
+		public SoftwareObjectArmature ArmatureObject;
+		public SoftwareAction DefaultAction;
 		#endregion
 
 		#region Constructors
@@ -27,6 +30,51 @@ namespace Reign.Video
 					case "Position": Position = new Vector3(input.Values[0], input.Values[1], input.Values[2]); break;
 					default: Debug.ThrowError("SoftwareMesh", "Unsuported Transform Type: " + input.Type); break;
 				}
+			}
+
+			// find action
+			if (o.DefaultAction != null)
+			{
+				foreach (var action in model.Actions)
+				{
+					if (o.DefaultAction.Name == action.Name)
+					{
+						DefaultAction = action;
+						break;
+					}
+				}
+				if (DefaultAction == null) Debug.ThrowError("SoftwareObjectArmature", "Failed to find Action: " + o.DefaultAction.Name);
+			}
+		}
+
+		internal void linkObjects(RMX_Object o)
+		{
+			// find parent
+			if (!string.IsNullOrEmpty(o.Parent))
+			{
+				foreach (var parent in Model.Objects)
+				{
+					if (o.Parent == parent.Name)
+					{
+						Parent = parent;
+						break;
+					}
+				}
+				if (Parent == null) Debug.ThrowError("SoftwareObject", "Failed to find Parent: " + o.Parent);
+			}
+
+			// find armature object
+			if (o.ArmatureObject != null)
+			{
+				foreach (var action in Model.Objects)
+				{
+					if (o.ArmatureObject.Name == action.Name)
+					{
+						ArmatureObject = (SoftwareObjectArmature)action;
+						break;
+					}
+				}
+				if (ArmatureObject == null) Debug.ThrowError("SoftwareObject", "Failed to find ArmatureObject: " + o.ArmatureObject.Name);
 			}
 		}
 		#endregion

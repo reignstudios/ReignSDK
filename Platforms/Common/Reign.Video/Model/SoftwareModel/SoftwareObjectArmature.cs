@@ -13,12 +13,17 @@ namespace Reign.Video
 		public SoftwareObjectArmature(SoftwareModel model, RMX_Object o)
 		: base(model, o)
 		{
-			
+			// find armature
+			foreach (var armature in model.Armatures)
+			{
+				if (o.Armature.Name == armature.Name)
+				{
+					Armature = armature;
+					break;
+				}
+			}
+			if (Armature == null) Debug.ThrowError("SoftwareObjectArmature", "Failed to find Armature: " + o.Armature.Name);
 		}
-		#endregion
-
-		#region Methods
-		
 		#endregion
 	}
 }

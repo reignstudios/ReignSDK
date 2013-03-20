@@ -35,6 +35,7 @@ namespace Reign.Video
 
 	public class RMX_Action
 	{
+		[XmlAttribute("Name")] public string Name;
 		[XmlElement("FCurve")] public RMX_ActionFCurve[] FCurves;
 
 		public void Init()

@@ -293,7 +293,7 @@ def save(operator, context, filepath="", path_mode='AUTO'):
         file.write("%.6f" % obj.scale.z)
         file.write("</Input>\n")
 
-        file.write("\t\t\t<Input Type=\"Position\">")
+        file.write("\t\t\t\t<Input Type=\"Position\">")
         file.write("%.6f " % obj.location.x)
         file.write("%.6f " % obj.location.y)
         file.write("%.6f" % obj.location.z)
