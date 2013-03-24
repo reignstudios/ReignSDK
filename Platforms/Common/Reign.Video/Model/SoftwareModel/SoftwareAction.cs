@@ -4,19 +4,6 @@ using System;
 
 namespace Reign.Video
 {
-	public enum FCurveTypes
-	{
-		Object,
-		Bone
-	}
-
-	public enum InterpolationTypes
-	{
-		Bezier,
-		Linear,
-		Constant
-	}
-
 	public class SoftwareFCurve
 	{
 		public FCurveTypes Type;

@@ -14,9 +14,13 @@ namespace Reign.Video
 		public bool FailedToLoad {get; private set;}
 
 		public Vector3 Position, Rotation, Scale;
-		public Object[] Objects {get; private set;}
-		public Mesh[] Meshes {get; private set;}
+
 		public MaterialI[] Materials {get; private set;}
+		public Mesh[] Meshes {get; private set;}
+		public Action[] Actions {get; private set;}
+		public Armature[] Armatures {get; private set;}
+		public Object[] Objects {get; private set;}
+		
 		public List<Texture2DI> Textures {get; private set;}
 		#endregion
 

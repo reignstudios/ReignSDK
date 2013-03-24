@@ -626,6 +626,7 @@ namespace Reign.Core
 
 	public static class StreamExtensions
 	{
+		#region Vectors
 		public static void WriteVector(this BinaryWriter writer, Vector2 value)
 		{
 			writer.Write(value.X);
@@ -661,5 +662,44 @@ namespace Reign.Core
 		{
 			return new Vector4(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
 		}
+		#endregion
+
+		#region Matrices
+		public static void WriteMatrix(this BinaryWriter writer, Matrix2 value)
+		{
+			writer.WriteVector(value.X);
+			writer.WriteVector(value.Y);
+		}
+
+		public static void WriteMatrix(this BinaryWriter writer, Matrix3 value)
+		{
+			writer.WriteVector(value.X);
+			writer.WriteVector(value.Y);
+			writer.WriteVector(value.Z);
+		}
+
+		public static void WriteMatrix(this BinaryWriter writer, Matrix4 value)
+		{
+			writer.WriteVector(value.X);
+			writer.WriteVector(value.Y);
+			writer.WriteVector(value.Z);
+			writer.WriteVector(value.W);
+		}
+
+		public static Matrix2 ReadMatrix2(this BinaryReader reader)
+		{
+			return new Matrix2(reader.ReadVector2(), reader.ReadVector2());
+		}
+
+		public static Matrix3 ReadMatrix3(this BinaryReader reader)
+		{
+			return new Matrix3(reader.ReadVector3(), reader.ReadVector3(), reader.ReadVector3());
+		}
+
+		public static Matrix4 ReadMatrix4(this BinaryReader reader)
+		{
+			return new Matrix4(reader.ReadVector4(), reader.ReadVector4(), reader.ReadVector4(), reader.ReadVector4());
+		}
+		#endregion
 	}
 }

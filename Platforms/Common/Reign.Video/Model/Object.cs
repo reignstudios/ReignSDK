@@ -12,6 +12,7 @@ namespace Reign.Video
 		public string Name;
 		public Vector3 Position, Rotation, Scale;
 		public Matrix3 RotationMatrix;
+		public Action Action;
 		#endregion
 
 		#region Constructors
@@ -43,19 +44,27 @@ namespace Reign.Video
 			string typeName = "";
 			var type = softwareObject.GetType();
 			if (softwareObject.GetType() == typeof(SoftwareObjectMesh)) typeName = "MESH";
+			if (softwareObject.GetType() == typeof(SoftwareObjectArmature)) typeName = "ARMATURE";
 			else Debug.ThrowError("Object", "Unsuported SoftwareObject type: " + softwareObject.GetType());
 			writer.Write(typeName);
 
 			// name
 			writer.Write(softwareObject.Name);
+			writer.Write(softwareObject.Parent != null);
+			if (softwareObject.Parent != null) writer.Write(softwareObject.Parent.Name);
 
 			// transform
 			writer.WriteVector(softwareObject.Position);
 			writer.WriteVector(softwareObject.Scale);
 			writer.WriteVector(softwareObject.Rotation);
 
+			// animation
+			writer.Write(softwareObject.ArmatureObject.Name);
+			writer.Write(softwareObject.DefaultAction.Name);
+
 			// types
 			if (typeName == "MESH") ObjectMesh.Write(writer, (SoftwareObjectMesh)softwareObject);
+			else if (typeName == "ARMATURE") ObjectArmature.Write(writer, (SoftwareObjectArmature)softwareObject);
 		}
 
 		public virtual void Render()
