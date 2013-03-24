@@ -26,12 +26,12 @@ namespace Reign.Video
 		public bool InheritRotation {get{return System.Xml.XmlConvert.ToBoolean(InheritRotationContent.ToLower());}}
 
 		[XmlElement("Position")] public RMX_ArmatureBoneValues Position;
-		[XmlElement("Orientation")] public RMX_ArmatureBoneValues Orientation;
+		[XmlElement("Rotation")] public RMX_ArmatureBoneValues Rotation;
 
 		public void Init()
 		{
 			Position.Init();
-			Orientation.Init();
+			Rotation.Init();
 		}
 	}
 

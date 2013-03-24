@@ -9,7 +9,7 @@ namespace Reign.Video
 		public SoftwareBone Parent;
 		public bool InheritScale, InheritRotation;
 		public Vector3 Position;
-		public Matrix3 Orientation;
+		public Matrix3 Rotation;
 
 		public SoftwareBone(RMX_ArmatureBone bone)
 		{
@@ -17,11 +17,11 @@ namespace Reign.Video
 			InheritScale = bone.InheritScale;
 			InheritRotation = bone.InheritRotation;
 			Position = new Vector3(bone.Position.Values[0], bone.Position.Values[1], bone.Position.Values[2]);
-			Orientation = new Matrix3
+			Rotation = new Matrix3
 			(
-				new Vector3(bone.Orientation.Values[0], bone.Orientation.Values[1], bone.Orientation.Values[2]),
-				new Vector3(bone.Orientation.Values[3], bone.Orientation.Values[4], bone.Orientation.Values[5]),
-				new Vector3(bone.Orientation.Values[6], bone.Orientation.Values[7], bone.Orientation.Values[8])
+				new Vector3(bone.Rotation.Values[0], bone.Rotation.Values[1], bone.Rotation.Values[2]),
+				new Vector3(bone.Rotation.Values[3], bone.Rotation.Values[4], bone.Rotation.Values[5]),
+				new Vector3(bone.Rotation.Values[6], bone.Rotation.Values[7], bone.Rotation.Values[8])
 			);
 		}
 

@@ -13,8 +13,6 @@ namespace Reign.Video
 		public bool Loaded {get; private set;}
 		public bool FailedToLoad {get; private set;}
 
-		public Vector3 Position, Rotation, Scale;
-
 		public MaterialI[] Materials {get; private set;}
 		public Mesh[] Meshes {get; private set;}
 		public Action[] Actions {get; private set;}
@@ -84,11 +82,6 @@ namespace Reign.Video
 		{
 			try
 			{
-				// transform
-				Position = new Vector3();
-				Scale = new Vector3(1);
-				Rotation = new Vector3();
-
 				var reader = new BinaryReader(stream);
 				// meta data
 				if (reader.ReadInt32() != Streams.MakeFourCC('R', 'M', 'F', 'T')) Debug.ThrowError("Error", "Not a ReignModel file: " + fileName);
@@ -158,6 +151,22 @@ namespace Reign.Video
 					Meshes[i] = new Mesh(reader, this, classicInstanceCount);
 				}
 
+				// actions
+				int actionCount = reader.ReadInt32();
+				Actions = new Action[actionCount];
+				for (int i = 0; i != actionCount; ++i)
+				{
+					Actions[i] = new Action(reader);
+				}
+
+				// armatures
+				int armatureCount = reader.ReadInt32();
+				Armatures = new Armature[armatureCount];
+				for (int i = 0; i != armatureCount; ++i)
+				{
+					Armatures[i] = new Armature(reader);
+				}
+
 				// objects
 				int objectCount = reader.ReadInt32();
 				Objects = new Object[objectCount];
@@ -165,7 +174,14 @@ namespace Reign.Video
 				{
 					string type = reader.ReadString();
 					if (type == "MESH") Objects[i] = new ObjectMesh(reader, this);
-					else Debug.ThrowError("Mesh", "Unsuported Object type");
+					else if (type == "ARMATURE") Objects[i] = new ObjectArmature(reader, this);
+					else Debug.ThrowError("Mesh", "Unsuported Object type: " + type);
+				}
+
+				// link objects
+				foreach (var o in Objects)
+				{
+					o.linkObjects(Objects);
 				}
 			}
 			catch (Exception e)
@@ -389,6 +405,20 @@ namespace Reign.Video
 			foreach (var mesh in softwareModel.Meshes)
 			{
 				Mesh.Write(writer, softwareModel, mesh, loadColors, loadUVs, loadNormals);
+			}
+
+			// actions
+			writer.Write(softwareModel.Actions.Count);
+			foreach (var action in softwareModel.Actions)
+			{
+				Action.Write(writer, action);
+			}
+
+			// armatures
+			writer.Write(softwareModel.Armatures.Count);
+			foreach (var armature in softwareModel.Armatures)
+			{
+				Armature.Write(writer, armature);
 			}
 
 			// objects

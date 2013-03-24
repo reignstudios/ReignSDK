@@ -21,17 +21,31 @@ namespace Reign.Video
 	public class FCurve
 	{
 		#region Properties
-		public FCurveTypes Type;
-		public string DataPath;
-		public int Index;
-		public Vector2[] Cordinates;
-		public InterpolationTypes[] InterpolationTypes;
+		public FCurveTypes Type {get; private set;}
+		public string DataPath {get; private set;}
+		public int Index {get; private set;}
+		public Vector2[] Cordinates {get; private set;}
+		public InterpolationTypes[] InterpolationTypes {get; private set;}
 		#endregion
 
 		#region Constructors
-		public FCurve()
+		public FCurve(BinaryReader reader)
 		{
-			
+			Type = (FCurveTypes)reader.ReadInt32();
+			Index = reader.ReadInt32();
+			DataPath = reader.ReadString();
+
+			Cordinates = new Vector2[reader.ReadInt32()];
+			for (int i = 0; i != Cordinates.Length; ++i)
+			{
+				Cordinates[i] = reader.ReadVector2();
+			}
+
+			InterpolationTypes = new InterpolationTypes[reader.ReadInt32()];
+			for (int i = 0; i != Cordinates.Length; ++i)
+			{
+				InterpolationTypes[i] = (InterpolationTypes)reader.ReadInt32();
+			}
 		}
 		#endregion
 
@@ -60,14 +74,20 @@ namespace Reign.Video
 	public class Action
 	{
 		#region Properties
-		public string Name;
-		public FCurve[] FCurves;
+		public string Name {get; private set;}
+		public FCurve[] FCurves {get; private set;}
 		#endregion
 
 		#region Constructors
-		public Action()
+		public Action(BinaryReader reader)
 		{
-			
+			Name = reader.ReadString();
+
+			FCurves = new FCurve[reader.ReadInt32()];
+			for (int i = 0; i != FCurves.Length; ++i)
+			{
+				FCurves[i] = new FCurve(reader);
+			}
 		}
 		#endregion
 

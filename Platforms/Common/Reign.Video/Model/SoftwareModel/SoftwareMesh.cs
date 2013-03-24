@@ -111,6 +111,23 @@ namespace Reign.Video
 				VertexComponentKeys.Add(VertexComponentKeyTypes.Positions, i);
 			}
 
+			// vertex bone groups
+			var counts = mesh.Verticies.BoneGroups.Counts.Values;
+			var indices = mesh.Verticies.BoneGroups.Indices.Values;
+			var weights = mesh.Verticies.BoneGroups.Weights.Values;
+			if (counts.Length != Verticies.Count) Debug.ThrowError("SoftwareMesh", "BoneGroup counts do not match vertex count");
+			int bg = 0;
+			for (int i = 0; i != counts.Length; ++i)
+			{
+				for (int i2 = 0; i2 != counts[i]; ++i2)
+				{
+					int i3 = bg + i2;
+					Verticies[i].BoneGroups.Add(new SoftwareVertexBoneGroup(indices[i3], weights[i3]));
+				}
+
+				bg += counts[i];
+			}
+
 			// triangles
 			bool hasPositionData = false;
 			float[] colors = null, normals = null, uvs = null;

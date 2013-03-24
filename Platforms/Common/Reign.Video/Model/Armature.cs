@@ -7,17 +7,37 @@ namespace Reign.Video
 	public class Bone
 	{
 		#region Properties
-		public string Name;
-		public Bone Parent;
+		public string Name {get; private set;}
+		private string parentName;
+		public Bone Parent {get; private set;}
 		public bool InheritScale, InheritRotation;
 		public Vector3 Position;
-		public Matrix3 Orientation;
+		public Matrix3 Rotation;
 		#endregion
 
 		#region Constructors
-		public Bone()
+		public Bone(BinaryReader reader)
 		{
-			
+			Name = reader.ReadString();
+			parentName = reader.ReadString();
+
+			InheritScale = reader.ReadBoolean();
+			InheritRotation = reader.ReadBoolean();
+			Position = reader.ReadVector3();
+			Rotation = reader.ReadMatrix3();
+		}
+
+		internal void linkObjects(Bone[] bones)
+		{
+			foreach (var bone in bones)
+			{
+				if (parentName == bone.Name)
+				{
+					Parent = bone;
+					parentName = null;
+					break;
+				}
+			}
 		}
 		#endregion
 
@@ -25,13 +45,12 @@ namespace Reign.Video
 		public static void Write(BinaryWriter writer, SoftwareBone softwareBone)
 		{
 			writer.Write(softwareBone.Name);
-			writer.Write(softwareBone.Parent != null);
-			if (softwareBone.Parent != null) writer.Write(softwareBone.Parent.Name);
+			writer.Write((softwareBone.Parent != null) ? softwareBone.Parent.Name : "");
 
 			writer.Write(softwareBone.InheritScale);
 			writer.Write(softwareBone.InheritRotation);
 			writer.WriteVector(softwareBone.Position);
-			writer.WriteMatrix(softwareBone.Orientation);
+			writer.WriteMatrix(softwareBone.Rotation);
 		}
 		#endregion
 	}
@@ -39,14 +58,26 @@ namespace Reign.Video
 	public class Armature
 	{
 		#region Properties
-		public string Name;
-		public Bone[] Bones;
+		public string Name {get; private set;}
+		public Bone[] Bones {get; private set;}
 		#endregion
 
 		#region Constructors
-		public Armature()
+		public Armature(BinaryReader reader)
 		{
-			
+			Name = reader.ReadString();
+
+			Bones = new Bone[reader.ReadInt32()];
+			for (int i = 0; i != Bones.Length; ++i)
+			{
+				Bones[i] = new Bone(reader);
+			}
+
+			// link bones
+			foreach (var bone in Bones)
+			{
+				bone.linkObjects(Bones);
+			}
 		}
 		#endregion
 

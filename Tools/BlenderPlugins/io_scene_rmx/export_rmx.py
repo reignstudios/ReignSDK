@@ -251,14 +251,17 @@ def save(operator, context, filepath="", path_mode='AUTO'):
             file.write("\t\t\t\t\t<InheritScale>%s</InheritScale>\n" % bone.use_inherit_scale)
             file.write("\t\t\t\t\t<InheritRotation>%s</InheritRotation>\n" % bone.use_inherit_rotation)
 
-            boneX = bone.tail[0] + bone.head[0]
-            boneY = bone.tail[1] + bone.head[1]
-            boneZ = bone.tail[2] + bone.head[2]
+            boneX = bone.tail_local[0]# + bone.head[0]
+            boneY = bone.tail_local[1]# + bone.head[1]
+            boneZ = bone.tail_local[2]# + bone.head[2]
             file.write("\t\t\t\t\t<Position>%.6f %.6f %.6f</Position>\n" % (boneX, boneY, boneZ))
 
-            file.write("\t\t\t\t\t<Orientation>%.6f %.6f %.6f " % bone.matrix[0][:])
-            file.write("%.6f %.6f %.6f " % bone.matrix[1][:])
-            file.write("%.6f %.6f %.6f</Orientation>\n" % bone.matrix[2][:])
+            #file.write("\t\t\t\t\t<Rotation>%.6f %.6f %.6f " % bone.matrix[0][:])
+            #file.write("%.6f %.6f %.6f " % bone.matrix[1][:])
+            #file.write("%.6f %.6f %.6f</Rotation>\n" % bone.matrix[2][:])
+            file.write("\t\t\t\t\t<Rotation>%.6f %.6f %.6f " % (bone.matrix_local[0][0], bone.matrix_local[0][1], bone.matrix_local[0][2]))
+            file.write("%.6f %.6f %.6f " % (bone.matrix_local[1][0], bone.matrix_local[1][1], bone.matrix_local[1][2]))
+            file.write("%.6f %.6f %.6f</Rotation>\n" % (bone.matrix_local[2][0], bone.matrix_local[2][1], bone.matrix_local[2][2]))
 
             file.write("\t\t\t\t</Bone>\n")
 

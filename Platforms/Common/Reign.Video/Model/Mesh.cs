@@ -8,7 +8,7 @@ namespace Reign.Video
 	public class Mesh : Disposable
 	{
 		#region Properties
-		public string Name;
+		public string Name {get; private set;}
 		public MaterialI Material;
 
 		public VertexBufferI VertexBuffer {get; private set;}

@@ -7,7 +7,6 @@ namespace Reign.Video
 	public class ObjectArmature : Object
 	{
 		#region Properties
-		public string Name;
 		public Armature Armature;
 		#endregion
 
@@ -15,7 +14,15 @@ namespace Reign.Video
 		public ObjectArmature(BinaryReader reader, Model model)
 		: base(reader, model)
 		{
-			
+			string armatureName = reader.ReadString();
+			foreach (var armature in model.Armatures)
+			{
+				if (armatureName == armature.Name)
+				{
+					Armature = armature;
+					break;
+				}
+			}
 		}
 		#endregion
 

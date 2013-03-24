@@ -17,7 +17,18 @@ namespace Reign.Video
 		}
 	}
 
-	public class RMX_MeshVertexBoneGroupValues
+	public class RMX_MeshVertexBoneGroupIntValues
+	{
+		[XmlText] public string Content;
+		public int[] Values;
+
+		public void Init()
+		{
+			Values = RMXModel.ConvertToIntArray(Content);
+		}
+	}
+
+	public class RMX_MeshVertexBoneGroupFloatValues
 	{
 		[XmlText] public string Content;
 		public float[] Values;
@@ -30,9 +41,9 @@ namespace Reign.Video
 
 	public class RMX_MeshVertexBoneGroups
 	{
-		[XmlElement("Counts")] public RMX_MeshVertexBoneGroupValues Counts;
-		[XmlElement("Indices")] public RMX_MeshVertexBoneGroupValues Indices;
-		[XmlElement("Weights")] public RMX_MeshVertexBoneGroupValues Weights;
+		[XmlElement("Counts")] public RMX_MeshVertexBoneGroupIntValues Counts;
+		[XmlElement("Indices")] public RMX_MeshVertexBoneGroupIntValues Indices;
+		[XmlElement("Weights")] public RMX_MeshVertexBoneGroupFloatValues Weights;
 
 		public void Init()
 		{
