@@ -13,6 +13,11 @@ namespace Reign.Video
 		public bool Loaded {get; private set;}
 		public bool FailedToLoad {get; private set;}
 
+		public float FrameStart {get; private set;}
+		public float FrameEnd {get; private set;}
+		public float FrameCount {get; private set;}
+		public float FPS {get; private set;}
+
 		public MaterialI[] Materials {get; private set;}
 		public Mesh[] Meshes {get; private set;}
 		public Action[] Actions {get; private set;}
@@ -83,11 +88,18 @@ namespace Reign.Video
 			try
 			{
 				var reader = new BinaryReader(stream);
+
 				// meta data
 				if (reader.ReadInt32() != Streams.MakeFourCC('R', 'M', 'F', 'T')) Debug.ThrowError("Error", "Not a ReignModel file: " + fileName);
 				float version = reader.ReadSingle();
 				if (version != 1.0f) Debug.ThrowError("Error", "Unsuported model version: " + version.ToString());
 				bool compressed = reader.ReadBoolean();
+
+				// frames
+				FrameStart = reader.ReadSingle();
+				FrameEnd = reader.ReadSingle();
+				FrameCount = FrameEnd - FrameStart;
+				FPS = reader.ReadSingle();
 
 				// materials
 				int materialCount = reader.ReadInt32();
@@ -352,6 +364,11 @@ namespace Reign.Video
 			writer.Write(Streams.MakeFourCC('R', 'M', 'F', 'T'));// tag
 			writer.Write(1.0f);// version
 			writer.Write(false);//compress);// TODO: add zip compression
+
+			// frames
+			writer.Write(softwareModel.FrameStart);
+			writer.Write(softwareModel.FrameEnd);
+			writer.Write(softwareModel.FPS);
 
 			// materials
 			writer.Write(softwareModel.Materials.Count);

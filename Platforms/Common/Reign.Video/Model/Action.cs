@@ -18,6 +18,24 @@ namespace Reign.Video
 		Constant
 	}
 
+	public class KeyFrame
+	{
+		public Vector2 Cordinate {get; private set;}
+		public InterpolationTypes InterpolationType {get; private set;}
+
+		public KeyFrame(BinaryReader reader)
+		{
+			Cordinate = reader.ReadVector2();
+			InterpolationType = (InterpolationTypes)reader.ReadInt32();
+		}
+
+		public static void Write(BinaryWriter writer, SoftwareKeyFrame softwareKeyFrame)
+		{
+			writer.WriteVector(softwareKeyFrame.Cordinate);
+			writer.Write((int)softwareKeyFrame.InterpolationType);
+		}
+	}
+
 	public class FCurve
 	{
 		#region Properties
@@ -26,6 +44,7 @@ namespace Reign.Video
 		public int Index {get; private set;}
 		public Vector2[] Cordinates {get; private set;}
 		public InterpolationTypes[] InterpolationTypes {get; private set;}
+		public KeyFrame[] KeyFrames {get; private set;}
 		#endregion
 
 		#region Constructors
@@ -35,16 +54,10 @@ namespace Reign.Video
 			Index = reader.ReadInt32();
 			DataPath = reader.ReadString();
 
-			Cordinates = new Vector2[reader.ReadInt32()];
-			for (int i = 0; i != Cordinates.Length; ++i)
+			KeyFrames = new KeyFrame[reader.ReadInt32()];
+			for (int i = 0; i != KeyFrames.Length; ++i)
 			{
-				Cordinates[i] = reader.ReadVector2();
-			}
-
-			InterpolationTypes = new InterpolationTypes[reader.ReadInt32()];
-			for (int i = 0; i != Cordinates.Length; ++i)
-			{
-				InterpolationTypes[i] = (InterpolationTypes)reader.ReadInt32();
+				KeyFrames[i] = new KeyFrame(reader);
 			}
 		}
 		#endregion
@@ -56,17 +69,28 @@ namespace Reign.Video
 			writer.Write(softwareFCurve.Index);
 			writer.Write(softwareFCurve.DataPath);
 
-			writer.Write(softwareFCurve.Cordinates.Count);
-			foreach (var cord in softwareFCurve.Cordinates)
+			writer.Write(softwareFCurve.KeyFrames.Count);
+			foreach (var keyframe in softwareFCurve.KeyFrames)
 			{
-				writer.WriteVector(cord);
+				KeyFrame.Write(writer, keyframe);
+			}
+		}
+
+		public void GetKeyFrames(float frame, out KeyFrame start, out KeyFrame end)
+		{
+			// TODO: this method must be optamized
+			for (int i = 0; i != KeyFrames.Length; ++i)
+			{
+				if (frame >= KeyFrames[i].Cordinate.X && frame <= KeyFrames[i+1].Cordinate.X)
+				{
+					start = KeyFrames[i];
+					end = KeyFrames[i+1];
+					return;
+				}
 			}
 
-			writer.Write(softwareFCurve.InterpolationTypes.Count);
-			foreach (var type in softwareFCurve.InterpolationTypes)
-			{
-				writer.Write((int)type);
-			}
+			start = null;
+			end = null;
 		}
 		#endregion
 	}
@@ -75,6 +99,8 @@ namespace Reign.Video
 	{
 		#region Properties
 		public string Name {get; private set;}
+		public float FrameStart {get; private set;}
+		public float FrameEnd {get; private set;}
 		public FCurve[] FCurves {get; private set;}
 		#endregion
 
@@ -82,6 +108,8 @@ namespace Reign.Video
 		public Action(BinaryReader reader)
 		{
 			Name = reader.ReadString();
+			FrameStart = reader.ReadSingle();
+			FrameEnd = reader.ReadSingle();
 
 			FCurves = new FCurve[reader.ReadInt32()];
 			for (int i = 0; i != FCurves.Length; ++i)
@@ -95,6 +123,8 @@ namespace Reign.Video
 		public static void Write(BinaryWriter writer, SoftwareAction softwareAction)
 		{
 			writer.Write(softwareAction.Name);
+			writer.Write(softwareAction.FrameStart);
+			writer.Write(softwareAction.FrameEnd);
 
 			writer.Write(softwareAction.FCurves.Count);
 			foreach (var curve in softwareAction.FCurves)

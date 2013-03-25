@@ -3,6 +3,18 @@ using Reign.Core;
 
 namespace Reign.Video
 {
+	public class SoftwareObjectBoneGroup
+	{
+		public string Name;
+		public int Index;
+
+		public SoftwareObjectBoneGroup(RMX_ObjectBoneGroup boneGroup)
+		{
+			Name = boneGroup.Name;
+			Index = boneGroup.Index;
+		}
+	}
+
 	public abstract class SoftwareObject
 	{
 		#region Properties
@@ -12,6 +24,7 @@ namespace Reign.Video
 		public Vector3 Position, Rotation, Scale;
 		public SoftwareObjectArmature ArmatureObject;
 		public SoftwareAction DefaultAction;
+		public List<SoftwareObjectBoneGroup> BoneGroups;
 		#endregion
 
 		#region Constructors
@@ -44,6 +57,16 @@ namespace Reign.Video
 					}
 				}
 				if (DefaultAction == null) Debug.ThrowError("SoftwareObjectArmature", "Failed to find Action: " + o.DefaultAction.Name);
+			}
+
+			// bone groups
+			BoneGroups = new List<SoftwareObjectBoneGroup>();
+			if (o.BoneGroups != null)
+			{
+				foreach (var bonegroup in o.BoneGroups.BoneGroups)
+				{
+					BoneGroups.Add(new SoftwareObjectBoneGroup(bonegroup));
+				}
 			}
 		}
 

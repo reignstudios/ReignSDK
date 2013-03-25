@@ -7,6 +7,9 @@ namespace Reign.Video
 	public class RMXModel
 	{
 		[XmlAttribute("Version")] public float Version;
+		[XmlAttribute("FrameStart")] public float FrameStart;
+		[XmlAttribute("FrameEnd")] public float FrameEnd;
+		[XmlAttribute("FPS")] public float FPS;
 		[XmlElement("Materials")] public RMX_Materials Materials;
 		[XmlElement("Meshes")] public RMX_Meshes Meshes;
 		[XmlElement("Actions")] public RMX_Actions Actions;

@@ -22,7 +22,7 @@ def save(operator, context, filepath="", path_mode='AUTO'):
     # begin writing scene
     file.write("<!-- Reign Model-XML Format -->\n")
     file.write("<!-- www.reign-studios.com -->\n")
-    file.write("<Scene Version=\"1.0\">\n")
+    file.write("<Scene Version=\"1.0\" FrameStart=\"%.6f\" FrameEnd=\"%.6f\" FPS=\"%.6f\">\n" % (scene.frame_start, scene.frame_end, 24))
 
     # -------------------------------------
     # write materials ---------------------
@@ -196,7 +196,7 @@ def save(operator, context, filepath="", path_mode='AUTO'):
         if a.id_data.users < 1:
             continue
 
-        file.write("\t\t<Action Name=\"%s\">\n" % a.name)
+        file.write("\t\t<Action Name=\"%s\" FrameStart=\"%.6f\" FrameEnd=\"%.6f\">\n" % (a.name, a.frame_range[0], a.frame_range[1]))
 
         # write fcurves-----------------
         for f in a.fcurves:
@@ -250,15 +250,8 @@ def save(operator, context, filepath="", path_mode='AUTO'):
 
             file.write("\t\t\t\t\t<InheritScale>%s</InheritScale>\n" % bone.use_inherit_scale)
             file.write("\t\t\t\t\t<InheritRotation>%s</InheritRotation>\n" % bone.use_inherit_rotation)
+            file.write("\t\t\t\t\t<Position>%.6f %.6f %.6f</Position>\n" % (bone.tail_local[0], bone.tail_local[1], bone.tail_local[2]))
 
-            boneX = bone.tail_local[0]# + bone.head[0]
-            boneY = bone.tail_local[1]# + bone.head[1]
-            boneZ = bone.tail_local[2]# + bone.head[2]
-            file.write("\t\t\t\t\t<Position>%.6f %.6f %.6f</Position>\n" % (boneX, boneY, boneZ))
-
-            #file.write("\t\t\t\t\t<Rotation>%.6f %.6f %.6f " % bone.matrix[0][:])
-            #file.write("%.6f %.6f %.6f " % bone.matrix[1][:])
-            #file.write("%.6f %.6f %.6f</Rotation>\n" % bone.matrix[2][:])
             file.write("\t\t\t\t\t<Rotation>%.6f %.6f %.6f " % (bone.matrix_local[0][0], bone.matrix_local[0][1], bone.matrix_local[0][2]))
             file.write("%.6f %.6f %.6f " % (bone.matrix_local[1][0], bone.matrix_local[1][1], bone.matrix_local[1][2]))
             file.write("%.6f %.6f %.6f</Rotation>\n" % (bone.matrix_local[2][0], bone.matrix_local[2][1], bone.matrix_local[2][2]))

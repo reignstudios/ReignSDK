@@ -38,8 +38,8 @@ namespace Reign.Video
 
 	public class RMX_ObjectBoneGroup
 	{
-		[XmlElement("Name")] public string Name;
-		[XmlElement("Index")] public int Index;
+		[XmlAttribute("Name")] public string Name;
+		[XmlAttribute("Index")] public int Index;
 	}
 
 	public class RMX_ObjectBoneGroups

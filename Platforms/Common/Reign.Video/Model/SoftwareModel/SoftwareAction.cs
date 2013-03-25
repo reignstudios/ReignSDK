@@ -4,13 +4,24 @@ using System;
 
 namespace Reign.Video
 {
+	public class SoftwareKeyFrame
+	{
+		public Vector2 Cordinate {get; private set;}
+		public InterpolationTypes InterpolationType {get; private set;}
+
+		public SoftwareKeyFrame(Vector2 cordinate, InterpolationTypes interpolationType)
+		{
+			Cordinate = cordinate;
+			InterpolationType = interpolationType;
+		}
+	}
+
 	public class SoftwareFCurve
 	{
 		public FCurveTypes Type;
 		public string DataPath;
 		public int Index;
-		public List<Vector2> Cordinates;
-		public List<InterpolationTypes> InterpolationTypes;
+		public List<SoftwareKeyFrame> KeyFrames;
 
 		public SoftwareFCurve(RMX_ActionFCurve fcurve)
 		{
@@ -25,24 +36,21 @@ namespace Reign.Video
 			Index = fcurve.Index;
 
 			var values = fcurve.Coordinates.Values;
-			Cordinates = new List<Vector2>();
+			var types = fcurve.InterpolationTypes.Content;
+			KeyFrames = new List<SoftwareKeyFrame>();
 			int i2 = 0, loop = values.Length / 2;
 			for (int i = 0; i != loop; ++i)
 			{
-				Cordinates.Add(new Vector2(values[i2], values[i2+1]));
-				i2 += 2;
-			}
-
-			var types = fcurve.InterpolationTypes.Content;
-			InterpolationTypes = new List<InterpolationTypes>();
-			for (int i = 0; i != types.Length; ++i)
-			{
+				InterpolationTypes interpolationType = InterpolationTypes.Bezier;
 				switch (types[i])
 				{
-					case 'B': InterpolationTypes.Add(Video.InterpolationTypes.Bezier); break;
-					case 'L': InterpolationTypes.Add(Video.InterpolationTypes.Linear); break;
-					case 'C': InterpolationTypes.Add(Video.InterpolationTypes.Constant); break;
+					case 'B': interpolationType = InterpolationTypes.Bezier; break;
+					case 'L': interpolationType = InterpolationTypes.Linear; break;
+					case 'C': interpolationType = InterpolationTypes.Constant; break;
 				}
+
+				KeyFrames.Add(new SoftwareKeyFrame(new Vector2(values[i2], values[i2+1]), interpolationType));
+				i2 += 2;
 			}
 		}
 	}
@@ -51,6 +59,7 @@ namespace Reign.Video
 	{
 		#region Properties
 		public string Name;
+		public float FrameStart, FrameEnd;
 		public List<SoftwareFCurve> FCurves;
 		#endregion
 
@@ -58,6 +67,8 @@ namespace Reign.Video
 		public SoftwareAction(RMX_Action action)
 		{
 			Name = action.Name;
+			FrameStart = action.FrameStart;
+			FrameEnd = action.FrameEnd;
 
 			FCurves = new List<SoftwareFCurve>();
 			foreach (var fcurve in action.FCurves)

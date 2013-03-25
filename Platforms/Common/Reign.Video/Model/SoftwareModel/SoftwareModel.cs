@@ -12,6 +12,8 @@ namespace Reign.Video
 		public bool Loaded {get; private set;}
 		public bool FailedToLoad {get; protected set;}
 
+		public float FrameStart, FrameEnd, FPS;
+
 		public List<SoftwareMaterial> Materials;
 		public List<SoftwareMesh> Meshes;
 		public List<SoftwareAction> Actions;
@@ -50,6 +52,11 @@ namespace Reign.Video
 
 				// check file version
 				if (rmx.Version != 1.0f) Debug.ThrowError("SoftwareModel", "Unsuported file version, must be 1.0");
+
+				// frames
+				FrameStart = rmx.FrameStart;
+				FrameEnd = rmx.FrameEnd;
+				FPS = rmx.FPS;
 
 				// materials
 				Materials = new List<SoftwareMaterial>();

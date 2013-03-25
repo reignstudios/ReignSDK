@@ -101,6 +101,18 @@
     <Compile Include="..\..\Common\Reign.Video\Model\HardwareMeshProcessor.cs">
       <Link>Model\HardwareMeshProcessor.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\InstanceModel\InstanceModel.cs">
+      <Link>Model\InstanceModel\InstanceModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\InstanceModel\InstanceObject.cs">
+      <Link>Model\InstanceModel\InstanceObject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\InstanceModel\InstanceObjectArmature.cs">
+      <Link>Model\InstanceModel\InstanceObjectArmature.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\Reign.Video\Model\InstanceModel\InstanceObjectMesh.cs">
+      <Link>Model\InstanceModel\InstanceObjectMesh.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.Video\Model\Material.cs">
       <Link>Model\Material.cs</Link>
     </Compile>
