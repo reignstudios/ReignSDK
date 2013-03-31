@@ -20,8 +20,13 @@ namespace ShaderMaterials.Shaders
 
 		#region Instance Properties
 		public string Name {get; set;}
-		public delegate void ApplyCallbackMethod(FontMaterial material, ObjectMesh objectMesh);
-		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
+		
+		public delegate void ApplyObjectMeshCallbackMethod(FontMaterial material, ObjectMesh objectMesh);
+		public static ApplyObjectMeshCallbackMethod ApplyObjectMeshCallback;
+		
+		public delegate void ApplyInstanceObjectMeshCallbackMethod(FontMaterial material, InstanceObjectMesh intanceObjectMesh);
+		public static ApplyInstanceObjectMeshCallbackMethod ApplyInstanceObjectMeshCallback;
+		
 		[MaterialField(MaterialFieldUsages.Global)] public static Matrix4 Camera;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 Position;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 Size;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 PositionUV;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 SizeUV;[MaterialField(MaterialFieldUsages.Instance)] public Vector2 TexelOffset;[MaterialField(MaterialFieldUsages.Instance)] public Vector4 Color;[MaterialField(MaterialFieldUsages.Instance)] public Texture2DI DiffuseTexture;
 		#endregion
 
@@ -96,29 +101,31 @@ namespace ShaderMaterials.Shaders
 			BufferLayout.Enable();
 		}
 
-		public void ApplyGlobalContants(ObjectMesh objectMesh)
-		{
-			if (ApplyGlobalConstantsCallback != null) ApplyGlobalConstantsCallback(this, objectMesh);
-			CameraConstant.Set(Camera);
-		}
-
 		public void ApplyInstanceContants(ObjectMesh objectMesh)
 		{
-			if (ApplyInstanceConstantsCallback != null) ApplyInstanceConstantsCallback(this, objectMesh);
+			if (ApplyObjectMeshCallback != null) ApplyObjectMeshCallback(this, objectMesh);
 			PositionConstant.Set(Position);SizeConstant.Set(Size);PositionUVConstant.Set(PositionUV);SizeUVConstant.Set(SizeUV);TexelOffsetConstant.Set(TexelOffset);ColorConstant.Set(Color);DiffuseTextureConstant.Set(DiffuseTexture);
-		}
-
-		public void ApplyInstancingContants(ObjectMesh objectMesh)
-		{
-			if (ApplyInstancingConstantsCallback != null) ApplyInstancingConstantsCallback(this, objectMesh);
-			
 		}
 
 		public void Apply(ObjectMesh objectMesh)
 		{
-			ApplyGlobalContants(objectMesh);
+			CameraConstant.Set(Camera);
 			ApplyInstanceContants(objectMesh);
-			ApplyInstancingContants(objectMesh);
+			
+			Shader.Apply();
+		}
+		
+		public void ApplyInstanceContants(InstanceObjectMesh instanceObjectMesh)
+		{
+			if (ApplyInstanceObjectMeshCallback != null) ApplyInstanceObjectMeshCallback(this, instanceObjectMesh);
+			PositionConstant.Set(Position);SizeConstant.Set(Size);PositionUVConstant.Set(PositionUV);SizeUVConstant.Set(SizeUV);TexelOffsetConstant.Set(TexelOffset);ColorConstant.Set(Color);DiffuseTextureConstant.Set(DiffuseTexture);
+		}
+
+		public void Apply(InstanceObjectMesh instanceObjectMesh)
+		{
+			CameraConstant.Set(Camera);
+			ApplyInstanceContants(instanceObjectMesh);
+			
 			Shader.Apply();
 		}
 

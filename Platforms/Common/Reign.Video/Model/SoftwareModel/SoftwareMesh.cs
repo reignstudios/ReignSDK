@@ -63,6 +63,8 @@ namespace Reign.Video
 				{
 					if (material.Name == mesh.Material) this.Material = material;
 				}
+
+				if (Material == null) Debug.ThrowError("SoftwareMesh", "Failed to find material: " + mesh.Material);
 			}
 
 			// verticies

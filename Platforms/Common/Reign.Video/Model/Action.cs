@@ -102,6 +102,7 @@ namespace Reign.Video
 		public float FrameStart {get; private set;}
 		public float FrameEnd {get; private set;}
 		public FCurve[] FCurves {get; private set;}
+		private float[] calculatedValues;
 		#endregion
 
 		#region Constructors
@@ -116,6 +117,8 @@ namespace Reign.Video
 			{
 				FCurves[i] = new FCurve(reader);
 			}
+
+			calculatedValues = new float[FCurves.Length];
 		}
 		#endregion
 
@@ -131,6 +134,20 @@ namespace Reign.Video
 			{
 				FCurve.Write(writer, curve);
 			}
+		}
+
+		internal float[] calculateValues(float frame)
+		{
+			for (int i = 0; i != FCurves.Length; ++i)
+			{
+				KeyFrame start, end;
+				FCurves[i].GetKeyFrames(frame, out start, out end);
+
+				float interpolation = (frame - start.Cordinate.X) / (end.Cordinate.X - start.Cordinate.X);
+				calculatedValues[i] = start.Cordinate.Y + ((end.Cordinate.Y - start.Cordinate.Y) * interpolation);
+			}
+
+			return calculatedValues;
 		}
 		#endregion
 	}

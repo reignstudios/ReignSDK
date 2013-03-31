@@ -60,45 +60,60 @@ namespace Reign.Video
 
 				// materials
 				Materials = new List<SoftwareMaterial>();
-				foreach (var material in rmx.Materials.Materials)
+				if (rmx.Materials.Materials != null)
 				{
-					Materials.Add(new SoftwareMaterial(material));
+					foreach (var material in rmx.Materials.Materials)
+					{
+						Materials.Add(new SoftwareMaterial(material));
+					}
 				}
 
 				// meshes
 				Meshes = new List<SoftwareMesh>();
-				foreach (var mesh in rmx.Meshes.Meshes)
+				if (rmx.Meshes.Meshes != null)
 				{
-					Meshes.Add(new SoftwareMesh(this, mesh));
+					foreach (var mesh in rmx.Meshes.Meshes)
+					{
+						Meshes.Add(new SoftwareMesh(this, mesh));
+					}
 				}
 
 				// actions
 				Actions = new List<SoftwareAction>();
-				foreach (var action in rmx.Actions.Actions)
+				if (rmx.Actions.Actions != null)
 				{
-					Actions.Add(new SoftwareAction(action));
+					foreach (var action in rmx.Actions.Actions)
+					{
+						Actions.Add(new SoftwareAction(action));
+					}
 				}
 
 				// armatures
 				Armatures = new List<SoftwareArmature>();
-				foreach (var armature in rmx.Armatures.Armatures)
+				if (rmx.Armatures.Armatures != null)
 				{
-					Armatures.Add(new SoftwareArmature(armature));
+					foreach (var armature in rmx.Armatures.Armatures)
+					{
+						Armatures.Add(new SoftwareArmature(armature));
+					}
 				}
 
 				// objects
 				Objects = new List<SoftwareObject>();
-				foreach (var o in rmx.RMXObjects.Objects)
+				if (rmx.RMXObjects.Objects != null)
 				{
-					if (o.Type == "MESH") Objects.Add(new SoftwareObjectMesh(this, o));
-					else if (o.Type == "ARMATURE") Objects.Add(new SoftwareObjectArmature(this, o));
-				}
-
-				int i = 0;
-				foreach (var o in Objects)
-				{
-					o.linkObjects(rmx.RMXObjects.Objects[i]);
-					++i;
+					foreach (var o in rmx.RMXObjects.Objects)
+					{
+						if (o.Type == "MESH") Objects.Add(new SoftwareObjectMesh(this, o));
+						else if (o.Type == "ARMATURE") Objects.Add(new SoftwareObjectArmature(this, o));
+					}
+				
+					int i = 0;
+					foreach (var o in Objects)
+					{
+						o.linkObjects(rmx.RMXObjects.Objects[i]);
+						++i;
+					}
 				}
 			}
 			catch (Exception e)

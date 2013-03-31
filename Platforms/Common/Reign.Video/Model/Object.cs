@@ -72,7 +72,7 @@ namespace Reign.Video
 		}
 
 		public ObjectArmature ArmatureObject {get; private set;}
-		public Action Action;
+		public Action DefaultAction;
 		public ObjectBoneGroup[] BoneGroups;
 		#endregion
 
@@ -95,7 +95,7 @@ namespace Reign.Video
 			{
 				if (actionName == action.Name)
 				{
-					Action = action;
+					DefaultAction = action;
 					break;
 				}
 			}

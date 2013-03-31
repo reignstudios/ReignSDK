@@ -519,8 +519,13 @@ namespace ShaderMaterials.{0}
 
 		#region Instance Properties
 		public string Name {{get; set;}}
-		public delegate void ApplyCallbackMethod({1}Material material, ObjectMesh objectMesh);
-		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
+		
+		public delegate void ApplyObjectMeshCallbackMethod({1}Material material, ObjectMesh objectMesh);
+		public static ApplyObjectMeshCallbackMethod ApplyObjectMeshCallback;
+		
+		public delegate void ApplyInstanceObjectMeshCallbackMethod({1}Material material, InstanceObjectMesh intanceObjectMesh);
+		public static ApplyInstanceObjectMeshCallbackMethod ApplyInstanceObjectMeshCallback;
+		
 		{3}
 		#endregion
 
@@ -595,29 +600,31 @@ namespace ShaderMaterials.{0}
 			BufferLayout.Enable();
 		}}
 
-		public void ApplyGlobalContants(ObjectMesh objectMesh)
-		{{
-			if (ApplyGlobalConstantsCallback != null) ApplyGlobalConstantsCallback(this, objectMesh);
-			{4}
-		}}
-
 		public void ApplyInstanceContants(ObjectMesh objectMesh)
 		{{
-			if (ApplyInstanceConstantsCallback != null) ApplyInstanceConstantsCallback(this, objectMesh);
+			if (ApplyObjectMeshCallback != null) ApplyObjectMeshCallback(this, objectMesh);
 			{5}
-		}}
-
-		public void ApplyInstancingContants(ObjectMesh objectMesh)
-		{{
-			if (ApplyInstancingConstantsCallback != null) ApplyInstancingConstantsCallback(this, objectMesh);
-			{6}
 		}}
 
 		public void Apply(ObjectMesh objectMesh)
 		{{
-			ApplyGlobalContants(objectMesh);
+			{4}
 			ApplyInstanceContants(objectMesh);
-			ApplyInstancingContants(objectMesh);
+			{6}
+			Shader.Apply();
+		}}
+		
+		public void ApplyInstanceContants(InstanceObjectMesh instanceObjectMesh)
+		{{
+			if (ApplyInstanceObjectMeshCallback != null) ApplyInstanceObjectMeshCallback(this, instanceObjectMesh);
+			{5}
+		}}
+
+		public void Apply(InstanceObjectMesh instanceObjectMesh)
+		{{
+			{4}
+			ApplyInstanceContants(instanceObjectMesh);
+			{6}
 			Shader.Apply();
 		}}
 

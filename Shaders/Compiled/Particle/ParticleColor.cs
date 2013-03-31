@@ -20,8 +20,13 @@ namespace ShaderMaterials.Shaders
 
 		#region Instance Properties
 		public string Name {get; set;}
-		public delegate void ApplyCallbackMethod(ParticleColorMaterial material, ObjectMesh objectMesh);
-		public static ApplyCallbackMethod ApplyGlobalConstantsCallback, ApplyInstanceConstantsCallback, ApplyInstancingConstantsCallback;
+		
+		public delegate void ApplyObjectMeshCallbackMethod(ParticleColorMaterial material, ObjectMesh objectMesh);
+		public static ApplyObjectMeshCallbackMethod ApplyObjectMeshCallback;
+		
+		public delegate void ApplyInstanceObjectMeshCallbackMethod(ParticleColorMaterial material, InstanceObjectMesh intanceObjectMesh);
+		public static ApplyInstanceObjectMeshCallbackMethod ApplyInstanceObjectMeshCallback;
+		
 		[MaterialField(MaterialFieldUsages.Global)] public static Matrix4 Camera;[MaterialField(MaterialFieldUsages.Global)] public static Matrix4 BillboardTransform;[MaterialField(MaterialFieldUsages.Global)] public static Texture2DI Diffuse;private static WeakReference colorpallet; [MaterialField(MaterialFieldUsages.Global)] public static Vector4[] ColorPallet { get{return (Vector4[])colorpallet.Target;} set{colorpallet = new WeakReference(value);} }[MaterialField(MaterialFieldUsages.Global)] public static Vector4 ScalePallet;private static WeakReference transforms; [MaterialField(MaterialFieldUsages.Instancing)] public static Vector4[] Transforms { get{return (Vector4[])transforms.Target;} set{transforms = new WeakReference(value);} }
 		#endregion
 
@@ -96,29 +101,31 @@ namespace ShaderMaterials.Shaders
 			BufferLayout.Enable();
 		}
 
-		public void ApplyGlobalContants(ObjectMesh objectMesh)
-		{
-			if (ApplyGlobalConstantsCallback != null) ApplyGlobalConstantsCallback(this, objectMesh);
-			CameraConstant.Set(Camera);BillboardTransformConstant.Set(BillboardTransform);DiffuseConstant.Set(Diffuse);ColorPalletConstant.Set(ColorPallet);ScalePalletConstant.Set(ScalePallet);
-		}
-
 		public void ApplyInstanceContants(ObjectMesh objectMesh)
 		{
-			if (ApplyInstanceConstantsCallback != null) ApplyInstanceConstantsCallback(this, objectMesh);
+			if (ApplyObjectMeshCallback != null) ApplyObjectMeshCallback(this, objectMesh);
 			
-		}
-
-		public void ApplyInstancingContants(ObjectMesh objectMesh)
-		{
-			if (ApplyInstancingConstantsCallback != null) ApplyInstancingConstantsCallback(this, objectMesh);
-			TransformsConstant.Set(Transforms);
 		}
 
 		public void Apply(ObjectMesh objectMesh)
 		{
-			ApplyGlobalContants(objectMesh);
+			CameraConstant.Set(Camera);BillboardTransformConstant.Set(BillboardTransform);DiffuseConstant.Set(Diffuse);ColorPalletConstant.Set(ColorPallet);ScalePalletConstant.Set(ScalePallet);
 			ApplyInstanceContants(objectMesh);
-			ApplyInstancingContants(objectMesh);
+			TransformsConstant.Set(Transforms);
+			Shader.Apply();
+		}
+		
+		public void ApplyInstanceContants(InstanceObjectMesh instanceObjectMesh)
+		{
+			if (ApplyInstanceObjectMeshCallback != null) ApplyInstanceObjectMeshCallback(this, instanceObjectMesh);
+			
+		}
+
+		public void Apply(InstanceObjectMesh instanceObjectMesh)
+		{
+			CameraConstant.Set(Camera);BillboardTransformConstant.Set(BillboardTransform);DiffuseConstant.Set(Diffuse);ColorPalletConstant.Set(ColorPallet);ScalePalletConstant.Set(ScalePallet);
+			ApplyInstanceContants(instanceObjectMesh);
+			TransformsConstant.Set(Transforms);
 			Shader.Apply();
 		}
 

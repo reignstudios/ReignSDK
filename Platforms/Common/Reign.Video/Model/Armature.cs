@@ -12,7 +12,8 @@ namespace Reign.Video
 		public Bone Parent {get; private set;}
 		public bool InheritScale, InheritRotation;
 		public Vector3 Position;
-		public Matrix3 Rotation;
+		public Quaternion Rotation;
+		public Matrix3 RotationMatrix;
 		#endregion
 
 		#region Constructors
@@ -24,7 +25,8 @@ namespace Reign.Video
 			InheritScale = reader.ReadBoolean();
 			InheritRotation = reader.ReadBoolean();
 			Position = reader.ReadVector3();
-			Rotation = reader.ReadMatrix3();
+			RotationMatrix = reader.ReadMatrix3();
+			Rotation = Quaternion.FromMatrix3(RotationMatrix);
 		}
 
 		internal void linkObjects(Bone[] bones)
