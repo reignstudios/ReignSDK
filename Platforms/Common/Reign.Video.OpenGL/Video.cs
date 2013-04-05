@@ -161,7 +161,7 @@ namespace Reign.Video.OpenGL
 				if (WGL.MakeCurrent(dc, ctx) == 0) Debug.ThrowError("Video", "Failed to make GL context current");
 
 				WGL.Init();
-				WGL.SwapInterval(vSync ? 1 : 0);
+				WGL.SwapInterval(vSync ? 1 : 0);// -1 for smart vsync
 				#endif
 				
 				#if RPI

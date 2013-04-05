@@ -118,7 +118,7 @@ namespace Reign.Video.OpenGL
 			Video.checkForError();
 		}
 
-		//glMapBuffer 
+		//glMapBuffer <<< NOTE: This method is slower, only use if have to
 		//glUnmapBuffer 
 		public unsafe override void Update(int[] indices, int updateCount)
 		{

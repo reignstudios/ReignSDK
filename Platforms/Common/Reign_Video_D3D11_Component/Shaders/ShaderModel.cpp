@@ -62,7 +62,7 @@ namespace Reign_Video_D3D11_Component
 			D3D11_BUFFER_DESC cbDesc;
 			ZeroMemory(&cbDesc, sizeof(D3D11_BUFFER_DESC));
 			cbDesc.ByteWidth = constDesc.Size;
-			cbDesc.Usage = D3D11_USAGE_DEFAULT;
+			cbDesc.Usage = D3D11_USAGE_DEFAULT;// NOTE: this needs to be: D3D11_USAGE_DYNAMIC
 			cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 			cbDesc.CPUAccessFlags = 0;
 			cbDesc.MiscFlags = 0;
@@ -170,6 +170,7 @@ namespace Reign_Video_D3D11_Component
 	{
 		if (variableBuffer)
 		{
+			// NOTE: this method should be used with: D3D11_USAGE_DYNAMIC
 			/*D3D11_MAPPED_SUBRESOURCE source;
 			video->deviceContext->Map(variableBuffer, 0, D3D11_MAP_WRITE_DISCARD, NULL, &source);
 			memcpy(source.pData, variableBufferBytes, variableBufferBytesCount);
