@@ -873,17 +873,26 @@ namespace Reign.Video.OpenGL
 		{
 			switch (surfaceFormat)
 			{
+				case SurfaceFormats.Defualt:
+					#if iOS || ANDROID || NaCl || RPI
+					return (int)GL.RGBA;
+					#else
+					return GL.RGBA8;
+					#endif
+
 				case SurfaceFormats.RGBAx8:
 					#if iOS || ANDROID || NaCl || RPI
 					return (int)GL.RGBA;
 					#else
 					return GL.RGBA8;
 					#endif
+
 				case SurfaceFormats.RGBx10_Ax2: return GL.RGB10_A2;
 				case SurfaceFormats.RGBAx16f: return GL.RGBA16F;
 				case SurfaceFormats.RGBAx32f: return GL.RGBA32F;
+
 				default: 
-					Debug.ThrowError("Video", "Unsuported SurfaceFormat");
+					Debug.ThrowError("Video", "Unsuported SurfaceFormat: " + surfaceFormat);
 					return GL.RGBA8;
 			}
 		}

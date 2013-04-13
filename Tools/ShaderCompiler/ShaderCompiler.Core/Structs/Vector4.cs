@@ -43,6 +43,16 @@ namespace ShaderCompiler.Core
 				this.y = value.y;
 			}
 		}
+		
+		public Vector2 zw
+		{
+			get {return new Vector2(z, w);}
+			set
+			{
+				this.z = value.x;
+				this.w = value.y;
+			}
+		}
 
 		public Vector3 xyz
 		{

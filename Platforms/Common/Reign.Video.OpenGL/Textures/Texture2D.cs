@@ -197,7 +197,7 @@ namespace Reign.Video.OpenGL
 						GL.GenerateMipmap(GL.TEXTURE_2D);
 					}
 					Size = new Size2(width, height);
-					PixelByteSize = Image.CalculatePixelByteSize(surfaceFormat, width, height);
+					PixelByteSize = Image.CalculatePixelByteSize((surfaceFormat == SurfaceFormats.Defualt ? SurfaceFormats.RGBAx8 : surfaceFormat), width, height);
 				}
 
 				SizeF = Size.ToVector2();

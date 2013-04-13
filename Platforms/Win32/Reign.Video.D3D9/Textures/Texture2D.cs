@@ -141,7 +141,7 @@ namespace Reign.Video.D3D9
 				{
 					if (width == 0 || height == 0) Debug.ThrowError("Texture2D", "Width or Height cannot be 0");
 					Size = new Size2(width, height);
-					PixelByteSize = Image.CalculatePixelByteSize(surfaceFormat, width, height);
+					PixelByteSize = Image.CalculatePixelByteSize((surfaceFormat == SurfaceFormats.Defualt ? SurfaceFormats.RGBAx8 : surfaceFormat), width, height);
 				}
 				TexelOffset = (1 / Size.ToVector2()) * .5f;
 				SizeF = Size.ToVector2();

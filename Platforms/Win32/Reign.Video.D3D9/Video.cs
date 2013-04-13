@@ -216,6 +216,7 @@ namespace Reign.Video.D3D9
 		{
 		    switch (surfaceFormat)
 		    {
+				case SurfaceFormats.Defualt: return REIGN_D3DFORMAT.A8R8G8B8;
 		        case SurfaceFormats.DXT1: return REIGN_D3DFORMAT.DXT1;
 		        case SurfaceFormats.DXT3: return REIGN_D3DFORMAT.DXT3;
 		        case SurfaceFormats.DXT5: return REIGN_D3DFORMAT.DXT5;
@@ -223,8 +224,9 @@ namespace Reign.Video.D3D9
 		        case SurfaceFormats.RGBx10_Ax2: return REIGN_D3DFORMAT.A2R10G10B10;
 		        case SurfaceFormats.RGBAx16f: return REIGN_D3DFORMAT.A16B16G16R16F;
 		        case SurfaceFormats.RGBAx32f: return REIGN_D3DFORMAT.A32B32G32R32F;
+
 		        default:
-		            Debug.ThrowError("Video", "Unsuported SurfaceFormat.");
+		            Debug.ThrowError("Video", "Unsuported SurfaceFormat: " + surfaceFormat);
 		            return REIGN_D3DFORMAT.A8R8G8B8;
 		    }
 		}

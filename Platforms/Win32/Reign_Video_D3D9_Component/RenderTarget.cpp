@@ -7,6 +7,7 @@ namespace Reign_Video_D3D9_Component
 	RenderTargetError RenderTargetCom::Init(VideoCom^ video, Texture2DCom^ texture, int width, int height, int multiSampleMultiple, REIGN_D3DFORMAT surfaceFormat, bool readable, bool lockable)
 	{
 		null();
+		this->video = video;
 		D3DFORMAT nativeSurfaceFormat = (D3DFORMAT)surfaceFormat;
 
 		if (multiSampleMultiple != 0)

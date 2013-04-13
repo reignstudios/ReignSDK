@@ -248,6 +248,7 @@ namespace Reign.Video.D3D11
 				case SurfaceFormats.RGBx10_Ax2: return REIGN_DXGI_FORMAT.R10G10B10A2_UNORM;
 				case SurfaceFormats.RGBAx16f: return REIGN_DXGI_FORMAT.R16G16B16A16_FLOAT;
 				case SurfaceFormats.RGBAx32f: return REIGN_DXGI_FORMAT.R32G32B32A32_FLOAT;
+
 				default:
 					Debug.ThrowError("Video", "Unsuported SurfaceFormat: " + surfaceFormat);
 					return REIGN_DXGI_FORMAT.R8G8B8A8_UNORM;
