@@ -13,6 +13,7 @@
 		</Border>
 
 		<Button Name="saveButton" Content="Save" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="75" Click="saveButton_Click"/>
+		<CheckBox Name="saveMetrics" Content="Save Metr" IsChecked="True" HorizontalAlignment="Right" Margin="0,0,10,35" VerticalAlignment="Bottom" Foreground="Gray"/>
 		<ListBox Name="colorListBox" HorizontalAlignment="Right" Height="83" Margin="0,41,10,0" VerticalAlignment="Top" Width="215" Background="DarkGray" BorderBrush="LightGray" BorderThickness="2" SelectionChanged="colorListBox_SelectionChanged"/>
 		<TextBox Name="testText" Margin="10,0,90,85" TextWrapping="Wrap" Text="Hello World!" VerticalAlignment="Bottom" TextChanged="testText_TextChanged"/>
 		<Slider Name="colorOffsetSlider" HorizontalAlignment="Left" Margin="369,44,0,0" VerticalAlignment="Top" Width="192" ValueChanged="colorOffsetSlider_ValueChanged"/>
@@ -50,6 +51,7 @@
 		<Label Content="Angle" HorizontalAlignment="Left" Margin="293,105,0,0" VerticalAlignment="Top" Foreground="Gray"/>
 		<Slider Name="angleSlider" HorizontalAlignment="Left" Margin="369,106,0,0" VerticalAlignment="Top" Width="192" Value="3.5" ValueChanged="slider_ValueChanged"/>
 		<Button Name="viewImageButton" Content="View Image" HorizontalAlignment="Left" Margin="210,36,0,0" VerticalAlignment="Top" Width="75" Click="viewImageButton_Click"/>
+		<Button Name="viewMetricsButton" Content="View Metrics" HorizontalAlignment="Left" Margin="210,10,0,0" VerticalAlignment="Top" Width="75" Click="viewMetricsButton_Click"/>
 		<CheckBox Name="generateFinalImage" Content="Generate Final Image" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Foreground="Gray" Click="render_Checked"/>
 	</Grid>
 </Window>

@@ -8,6 +8,7 @@ namespace Reign.Video.D3D11
 	{
 		#region Properties
 		private VertexBufferCom com;
+		private IndexBuffer indexBuffer;
 
 		private VertexBufferTopologys topology;
 		public override VertexBufferTopologys Topology
@@ -32,8 +33,24 @@ namespace Reign.Video.D3D11
 			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices);
 		}
 
+		public static VertexBuffer New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
+		{
+			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices, indices);
+		}
+
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
 		: base(parent, bufferLayoutDesc, usage)
+		{
+			init(parent, bufferLayoutDesc, usage, topology, vertices, null);
+		}
+
+		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
+		: base(parent, bufferLayoutDesc, usage)
+		{
+			init(parent, bufferLayoutDesc, usage, topology, vertices, indices);
+		}
+
+		private void init(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
 		{
 			try
 			{
@@ -49,13 +66,23 @@ namespace Reign.Video.D3D11
 				}
 
 				com = new VertexBufferCom(video.com, topologyType);
-				Init(vertices);
+				initBuffer(vertices);
+				if (indices != null && indices.Length != 0) indexBuffer = new IndexBuffer(this, usage, indices);
 			}
 			catch (Exception e)
 			{
 				Dispose();
 				throw e;
 			}
+		}
+
+		private void initBuffer(float[] vertices)
+		{
+			var bufferUsage = (usage == BufferUsages.Write) ? REIGN_D3D11_USAGE.DYNAMIC : REIGN_D3D11_USAGE.DEFAULT;
+			var cpuUsage = (usage == BufferUsages.Write) ? REIGN_D3D11_CPU_ACCESS_FLAG.WRITE : (REIGN_D3D11_CPU_ACCESS_FLAG)0;
+			var error = com.Init(vertices, vertexCount, vertexByteSize, bufferUsage, cpuUsage);
+
+			if (error == VertexBufferErrors.Buffer) Debug.ThrowError("VertexBuffer", "Failed to create Buffer");
 		}
 
 		public override void Dispose()
@@ -74,12 +101,12 @@ namespace Reign.Video.D3D11
 		public override void Init(float[] vertices)
 		{
 			base.Init(vertices);
-
-			var bufferUsage = (usage == BufferUsages.Write) ? REIGN_D3D11_USAGE.DYNAMIC : REIGN_D3D11_USAGE.DEFAULT;
-			var cpuUsage = (usage == BufferUsages.Write) ? REIGN_D3D11_CPU_ACCESS_FLAG.WRITE : (REIGN_D3D11_CPU_ACCESS_FLAG)0;
-			var error = com.Init(vertices, vertexCount, vertexByteSize, bufferUsage, cpuUsage);
-
-			if (error == VertexBufferErrors.Buffer) Debug.ThrowError("VertexBuffer", "Failed to create Buffer");
+			initBuffer(vertices);
+			if (indexBuffer != null)
+			{
+				indexBuffer.Dispose();
+				indexBuffer = null;
+			}
 		}
 
 		public override void Update(float[] vertices, int updateCount)
@@ -89,17 +116,19 @@ namespace Reign.Video.D3D11
 
 		public override void Enable()
 		{
-			com.Enable();
+			if (indexBuffer != null) com.Enable(indexBuffer.com, null);
+			else com.Enable(null, null);
 		}
 
 		public override void Enable(IndexBufferI indexBuffer)
 		{
-			com.Enable(((IndexBuffer)indexBuffer).com);
+			com.Enable(((IndexBuffer)indexBuffer).com, null);
 		}
 
 		public override void Enable(VertexBufferI instanceBuffer)
 		{
-			com.Enable(((VertexBuffer)instanceBuffer).com);
+			if (indexBuffer != null) com.Enable(indexBuffer.com, ((VertexBuffer)instanceBuffer).com);
+			else com.Enable(null, ((VertexBuffer)instanceBuffer).com);
 		}
 
 		public override void Enable(IndexBufferI indexBuffer, VertexBufferI instanceBuffer)

@@ -259,6 +259,9 @@ namespace ShaderCompiler.Core
 			
 			// Convert SL types
 			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Distance", "distance");
+			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Length", "length");
+			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Reflect", "reflect");
+			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Pow", "pow");
 			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Dot", "dot");
 			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Normalize", "normalize");
 			methodBlock = Utility.ReplaceKeyword(methodBlock, "SL.Cross", "cross");

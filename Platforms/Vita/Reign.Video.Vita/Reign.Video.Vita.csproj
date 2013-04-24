@@ -62,7 +62,6 @@
     <Compile Include="Buffers\BufferLayout.cs" />
     <Compile Include="Buffers\BufferLayoutDesc.cs" />
     <Compile Include="Buffers\VertexBuffer.cs" />
-    <Compile Include="Buffers\IndexBuffer.cs" />
     <Compile Include="States\BlendState.cs" />
     <Compile Include="States\BlendStateDesc.cs" />
     <Compile Include="States\DepthStencilState.cs" />

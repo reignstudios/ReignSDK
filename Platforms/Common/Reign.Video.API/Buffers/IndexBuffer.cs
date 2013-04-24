@@ -21,10 +21,6 @@ namespace Reign.Video.API
 			#if XNA
 			if (type == VideoTypes.XNA) IndexBufferAPI.Init(Reign.Video.XNA.IndexBuffer.New, Reign.Video.XNA.IndexBuffer.New);
 			#endif
-			
-			#if VITA
-			if (type == VideoTypes.Vita) IndexBufferAPI.Init(Reign.Video.Vita.IndexBuffer.New, Reign.Video.Vita.IndexBuffer.New);
-			#endif
 		}
 	}
 }

@@ -37,10 +37,6 @@ namespace Reign_Video_D3D11_Component
 		#pragma region Methods
 		public: void SetTopology(REIGN_D3D_PRIMITIVE_TOPOLOGY topology);
 		public: void Update(const array<float>^ vertices, int updateCount);
-		private: void enable(IndexBufferCom^ indexBuffer, VertexBufferCom^ instanceBuffer);
-		public: void Enable();
-		public: void Enable(IndexBufferCom^ indexBuffer);
-		public: void Enable(VertexBufferCom^ instanceBuffer);
 		public: void Enable(IndexBufferCom^ indexBuffer, VertexBufferCom^ instanceBuffer);
 		public: void Draw();
 		public: void Draw(int drawCount);

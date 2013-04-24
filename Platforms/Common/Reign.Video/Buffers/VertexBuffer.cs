@@ -108,9 +108,10 @@ namespace Reign.Video
 
 	public static class VertexBufferAPI
 	{
-		public static void Init(NewPtrMethod newPtr)
+		public static void Init(NewPtrMethod newPtr, NewPtrMethod2 newPtr2)
 		{
 			VertexBufferAPI.newPtr = newPtr;
+			VertexBufferAPI.newPtr2 = newPtr2;
 		}
 
 		public delegate VertexBufferI NewPtrMethod(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices);
@@ -118,6 +119,13 @@ namespace Reign.Video
 		public static VertexBufferI New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
 		{
 			return newPtr(parent, bufferLayoutDesc, usage, topology, vertices);
+		}
+
+		public delegate VertexBufferI NewPtrMethod2(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices);
+		private static NewPtrMethod2 newPtr2;
+		public static VertexBufferI New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
+		{
+			return newPtr2(parent, bufferLayoutDesc, usage, topology, vertices, indices);
 		}
 	}
 }

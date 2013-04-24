@@ -9,7 +9,7 @@ namespace Reign.Video.OpenGL
 		private Video video;
 		private uint vertexBuffer;
 		private uint primitiveTopology;
-		private IndexBuffer indexBuffer;
+		private IndexBuffer indexBuffer, currentIndexBuffer;
 		private VertexBuffer instanceBuffer;
 
 		private VertexBufferTopologys topology;
@@ -36,21 +36,63 @@ namespace Reign.Video.OpenGL
 			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices);
 		}
 
+		public static VertexBuffer New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
+		{
+			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices, indices);
+		}
+
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices)
 		: base(parent, bufferLayoutDesc, bufferUsage)
+		{
+			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices, null);
+		}
+
+		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
+		: base(parent, bufferLayoutDesc, bufferUsage)
+		{
+			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices, indices);
+		}
+
+		private void init(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
 		{
 			try
 			{
 				video = parent.FindParentOrSelfWithException<Video>();
 				Topology = vertexBufferTopology;
 
-				if (vertices != null) Init(vertices);
+				initBuffer(vertices);
+				if (indices != null && indices.Length != 0) indexBuffer = new IndexBuffer(this, usage, indices);
 			}
 			catch (Exception e)
 			{
 				Dispose();
 				throw e;
 			}
+		}
+
+		private unsafe void initBuffer(float[] vertices)
+		{
+			if (vertexBuffer != 0)
+			{
+				uint vertexBufferTEMP = vertexBuffer;
+				GL.BindBuffer(GL.ARRAY_BUFFER, 0);
+				GL.DeleteBuffers(1, &vertexBufferTEMP);
+				vertexBuffer = 0;
+			}
+
+			uint vPtr = 0;
+			GL.GenBuffers(1, &vPtr);
+			vertexBuffer = vPtr;
+			if (vertexBuffer == 0) Debug.ThrowError("VertexBuffer", "Failed to create VertexBuffer");
+
+			GL.BindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
+			fixed (float* verticesPtr = vertices)
+			{
+				var bufferSize = new IntPtr(vertexByteSize * vertexCount);
+				GL.BufferData(GL.ARRAY_BUFFER, bufferSize, verticesPtr, GL.STATIC_DRAW);
+			}
+
+			Video.checkForError();
 		}
 
 		public unsafe override void Dispose()
@@ -75,30 +117,15 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Methods
-		public unsafe override void Init(float[] vertices)
+		public override void Init(float[] vertices)
 		{
 			base.Init(vertices);
-			if (vertexBuffer != 0)
+			initBuffer(vertices);
+			if (indexBuffer != null)
 			{
-				uint vertexBufferTEMP = vertexBuffer;
-				GL.BindBuffer(GL.ARRAY_BUFFER, 0);
-				GL.DeleteBuffers(1, &vertexBufferTEMP);
-				vertexBuffer = 0;
+				indexBuffer.Dispose();
+				indexBuffer = null;
 			}
-
-			uint vPtr = 0;
-			GL.GenBuffers(1, &vPtr);
-			vertexBuffer = vPtr;
-			if (vertexBuffer == 0) Debug.ThrowError("VertexBuffer", "Failed to create VertexBuffer");
-
-			GL.BindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
-			fixed(float* verticesPtr = vertices)
-			{
-				var bufferSize = new IntPtr(vertexByteSize * vertexCount);
-				GL.BufferData(GL.ARRAY_BUFFER, bufferSize, verticesPtr, GL.STATIC_DRAW);
-			}
-
-			Video.checkForError();
 		}
 
 		public unsafe override void Update(float[] vertices, int updateCount)
@@ -118,27 +145,29 @@ namespace Reign.Video.OpenGL
 		public override void Enable()
 		{
 			video.currentVertexBuffer = this;
+			currentIndexBuffer = indexBuffer;
+			this.instanceBuffer = null;
 		}
 
 		public override void Enable(IndexBufferI indexBuffer)
 		{
-			this.indexBuffer = (IndexBuffer)indexBuffer;
+			video.currentVertexBuffer = this;
+			this.currentIndexBuffer = (IndexBuffer)indexBuffer;
 			this.instanceBuffer = null;
-			Enable();
 		}
 
 		public override void Enable(VertexBufferI instanceBuffer)
 		{
-			this.indexBuffer = null;
+			video.currentVertexBuffer = this;
+			this.currentIndexBuffer = indexBuffer;
 			this.instanceBuffer = (VertexBuffer)instanceBuffer;
-			Enable();
 		}
 
 		public override void Enable(IndexBufferI indexBuffer, VertexBufferI instanceBuffer)
 		{
-			this.indexBuffer = (IndexBuffer)indexBuffer;
+			video.currentVertexBuffer = this;
+			this.currentIndexBuffer = (IndexBuffer)indexBuffer;
 			this.instanceBuffer = (VertexBuffer)instanceBuffer;
-			Enable();
 		}
 
 		private void enable()
@@ -146,7 +175,7 @@ namespace Reign.Video.OpenGL
 			if (video.currentVertexBuffer == this || !BufferLayout.enabled)
 			{
 				video.currentVertexBuffer = null;
-				if (indexBuffer != null) indexBuffer.enable();
+				if (currentIndexBuffer != null) currentIndexBuffer.enable();
 				GL.BindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
 
 				var bufferLayout = video.currentBufferLayout;
@@ -167,8 +196,8 @@ namespace Reign.Video.OpenGL
 		public override void Draw()
 		{
 			enable();
-			if (indexBuffer == null) GL.DrawArrays(primitiveTopology, 0, vertexCount);
-			else GL.DrawElements(primitiveTopology, indexBuffer.IndexCount, indexBuffer._32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0));
+			if (currentIndexBuffer == null) GL.DrawArrays(primitiveTopology, 0, vertexCount);
+			else GL.DrawElements(primitiveTopology, currentIndexBuffer.IndexCount, currentIndexBuffer._32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0));
 
 			#if DEBUG
 			Video.checkForError();
@@ -178,8 +207,8 @@ namespace Reign.Video.OpenGL
 		public override void Draw(int drawCount)
 		{
 			enable();
-			if (indexBuffer == null) GL.DrawArrays(primitiveTopology, 0, drawCount);
-			else GL.DrawElements(primitiveTopology, drawCount, indexBuffer._32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0));
+			if (currentIndexBuffer == null) GL.DrawArrays(primitiveTopology, 0, drawCount);
+			else GL.DrawElements(primitiveTopology, drawCount, currentIndexBuffer._32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0));
 
 			#if DEBUG
 			Video.checkForError();
@@ -189,8 +218,8 @@ namespace Reign.Video.OpenGL
 		public override void DrawInstanced(int drawCount)
 		{
 			enable();
-			if (indexBuffer == null) GL.DrawArraysInstanced(primitiveTopology, 0, vertexCount, drawCount);
-			else GL.DrawElementsInstanced(primitiveTopology, indexBuffer.IndexCount, indexBuffer._32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0), drawCount);
+			if (currentIndexBuffer == null) GL.DrawArraysInstanced(primitiveTopology, 0, vertexCount, drawCount);
+			else GL.DrawElementsInstanced(primitiveTopology, currentIndexBuffer.IndexCount, currentIndexBuffer._32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0), drawCount);
 
 			#if DEBUG
 			Video.checkForError();
@@ -200,8 +229,8 @@ namespace Reign.Video.OpenGL
 		public override void DrawInstancedClassic(int drawCount, int meshVertexCount, int meshIndexCount)
 		{
 			enable();
-			if (indexBuffer == null) GL.DrawArrays(primitiveTopology, 0, drawCount * meshVertexCount);
-			else GL.DrawElements(primitiveTopology, drawCount * meshIndexCount, indexBuffer._32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0));
+			if (currentIndexBuffer == null) GL.DrawArrays(primitiveTopology, 0, drawCount * meshVertexCount);
+			else GL.DrawElements(primitiveTopology, drawCount * meshIndexCount, currentIndexBuffer._32BitIndices ? GL.UNSIGNED_INT : GL.UNSIGNED_SHORT, new IntPtr(0));
 
 			#if DEBUG
 			Video.checkForError();

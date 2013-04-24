@@ -435,6 +435,15 @@ namespace FontGenerator
 			window.ShowDialog();
 		}
 
+		private void viewMetricsButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (tempCharacters == null) return;
+
+			double textureSize = (double)textureSizeComboBox.SelectedValue;
+			var window = new MetricsWindow(tempCharacters, textureSize);
+			window.ShowDialog();
+		}
+
 		private void saveButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (generateFinalImage.IsChecked != true || tempCharacters == null) return;
@@ -445,12 +454,15 @@ namespace FontGenerator
 				try
 				{
 					// save xml
-					var fontMetrics = new Reign.Video.FontMetrics();
-					fontMetrics.Characters = tempCharacters;
-
-					using (var file = new FileStream(dlg.FileName + ".font", FileMode.Create, FileAccess.Write))
+					if (saveMetrics.IsChecked == true)
 					{
-						fontMetrics.Save(file);
+						var fontMetrics = new Reign.Video.FontMetrics();
+						fontMetrics.Characters = tempCharacters;
+
+						using (var file = new FileStream(dlg.FileName + ".font", FileMode.Create, FileAccess.Write))
+						{
+							fontMetrics.Save(file);
+						}
 					}
 
 					// save image

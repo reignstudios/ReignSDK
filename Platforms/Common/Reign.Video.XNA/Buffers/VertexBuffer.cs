@@ -12,7 +12,7 @@ namespace Reign.Video.XNA
 		private BufferLayout bufferLayout;
 		private X.PrimitiveType primitiveTopology;
 		private int primitiveVertexCount;
-		private IndexBuffer indexBuffer;
+		private IndexBuffer indexBuffer, currentIndexBuffer;
 		private VertexBuffer instanceBuffer;
 
 		private VertexBufferTopologys topology;
@@ -39,8 +39,24 @@ namespace Reign.Video.XNA
 			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices);
 		}
 
+		public static VertexBuffer New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
+		{
+			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices, indices);
+		}
+
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices)
 		: base(parent, bufferLayoutDesc, bufferUsage)
+		{
+			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices, null);
+		}
+
+		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
+		: base(parent, bufferLayoutDesc, bufferUsage)
+		{
+			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices, indices);
+		}
+
+		private void init(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
 		{
 			try
 			{
@@ -48,13 +64,26 @@ namespace Reign.Video.XNA
 				Topology = vertexBufferTopology;
 				bufferLayout = new BufferLayout(this, null, bufferLayoutDesc, true);
 
-				if (vertices != null) Init(vertices);
+				initBuffer(vertices);
+				if (indices != null && indices.Length != 0) indexBuffer = new IndexBuffer(this, usage, indices);
 			}
 			catch (Exception e)
 			{
 				Dispose();
 				throw e;
 			}
+		}
+
+		private void initBuffer(float[] vertices)
+		{
+			if (vertexBuffer != null)
+			{
+				vertexBuffer.Dispose();
+				vertexBuffer = null;
+			}
+
+			vertexBuffer = new X.VertexBuffer(video.Device, bufferLayout.layout, vertexCount, X.BufferUsage.WriteOnly);
+			Update(vertices, vertexCount);
 		}
 
 		public override void Dispose()
@@ -73,14 +102,12 @@ namespace Reign.Video.XNA
 		public override void Init(float[] vertices)
 		{
 			base.Init(vertices);
-			if (vertexBuffer != null)
+			initBuffer(vertices);
+			if (indexBuffer != null)
 			{
-				vertexBuffer.Dispose();
-				vertexBuffer = null;
+				indexBuffer.Dispose();
+				indexBuffer = null;
 			}
-
-			vertexBuffer = new X.VertexBuffer(video.Device, bufferLayout.layout, vertexCount, X.BufferUsage.WriteOnly);
-			Update(vertices, vertexCount);
 		}
 
 		public override void Update(float[] vertices, int updateCount)
@@ -107,14 +134,14 @@ namespace Reign.Video.XNA
 			}
 			else
 			{
-				this.indexBuffer = (IndexBuffer)indexBuffer;
-				this.indexBuffer.enable();
+				this.currentIndexBuffer = (IndexBuffer)indexBuffer;
+				this.currentIndexBuffer.enable();
 			}
 		}
 
 		public override void Enable()
 		{
-			enable(null, null);
+			enable(indexBuffer, null);
 		}
 
 		public override void Enable(IndexBufferI indexBuffer)
@@ -134,13 +161,13 @@ namespace Reign.Video.XNA
 
 		public override void Draw()
 		{
-			if (indexBuffer == null) video.Device.DrawPrimitives(primitiveTopology, 0, (vertexCount/primitiveVertexCount));
-			else video.Device.DrawIndexedPrimitives(primitiveTopology, 0, 0, vertexCount, 0, (indexBuffer.IndexCount/primitiveVertexCount));
+			if (currentIndexBuffer == null) video.Device.DrawPrimitives(primitiveTopology, 0, (vertexCount/primitiveVertexCount));
+			else video.Device.DrawIndexedPrimitives(primitiveTopology, 0, 0, vertexCount, 0, (currentIndexBuffer.IndexCount/primitiveVertexCount));
 		}
 
 		public override void Draw(int drawCount)
 		{
-			if (indexBuffer == null) video.Device.DrawPrimitives(primitiveTopology, 0, (drawCount/primitiveVertexCount));
+			if (currentIndexBuffer == null) video.Device.DrawPrimitives(primitiveTopology, 0, (drawCount/primitiveVertexCount));
 			else video.Device.DrawIndexedPrimitives(primitiveTopology, 0, 0, vertexCount, 0, (drawCount/primitiveVertexCount));
 		}
 
@@ -157,15 +184,15 @@ namespace Reign.Video.XNA
 			video.Device.SetVertexBuffers(buffers);
 
 			int primitiveCount;
-			if (indexBuffer == null) primitiveCount = (vertexCount/primitiveVertexCount);
-			else primitiveCount = (indexBuffer.IndexCount/primitiveVertexCount);
+			if (currentIndexBuffer == null) primitiveCount = (vertexCount/primitiveVertexCount);
+			else primitiveCount = (currentIndexBuffer.IndexCount/primitiveVertexCount);
 			video.Device.DrawInstancedPrimitives(primitiveTopology, 0, 0, vertexCount, 0, primitiveCount, drawCount);
 			#endif
 		}
 
 		public override void DrawInstancedClassic(int drawCount, int meshVertexCount, int meshIndexCount)
 		{
-			if (indexBuffer == null) video.Device.DrawPrimitives(primitiveTopology, 0, drawCount * (meshVertexCount/primitiveVertexCount));
+			if (currentIndexBuffer == null) video.Device.DrawPrimitives(primitiveTopology, 0, drawCount * (meshVertexCount/primitiveVertexCount));
 			else video.Device.DrawIndexedPrimitives(primitiveTopology, 0, 0, drawCount * meshVertexCount, 0, drawCount * (meshIndexCount/primitiveVertexCount));
 		}
 		#endregion

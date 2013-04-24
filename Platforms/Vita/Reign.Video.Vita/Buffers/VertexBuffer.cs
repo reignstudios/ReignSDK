@@ -8,12 +8,9 @@ namespace Reign.Video.Vita
 	{
 		#region Properties
 		private Video video;
-		private bool initialized;
 		private G.VertexBuffer vertexBuffer;
 		private G.DrawMode primitiveTopology;
-		private IndexBuffer indexBuffer;
-		private float[] vertices;
-		private BufferLayoutDesc bufferLayoutDesc;
+		private int indexCount = -1;
 
 		private VertexBufferTopologys topology;
 		public override VertexBufferTopologys Topology
@@ -38,17 +35,60 @@ namespace Reign.Video.Vita
 		{
 			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices);
 		}
+		
+		public static VertexBuffer New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
+		{
+			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices, indices);
+		}
 
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices)
 		: base(parent, bufferLayoutDesc, bufferUsage)
+		{
+			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices, null);
+		}
+		
+		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
+		: base(parent, bufferLayoutDesc, bufferUsage)
+		{
+			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices, indices);
+		}
+		
+		private void init(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
 		{
 			try
 			{
 				video = parent.FindParentOrSelfWithException<Video>();
 				Topology = vertexBufferTopology;
-				this.bufferLayoutDesc = (BufferLayoutDesc)bufferLayoutDesc;
-
-				if (vertices != null) Init(vertices);
+				
+				var format = new G.VertexFormat[bufferLayoutDesc.Elements.Count];
+				for (int i = 0; i != bufferLayoutDesc.Elements.Count; ++i)
+				{
+					switch (bufferLayoutDesc.Elements[i].FloatCount)
+					{
+						case 1: format[i] = G.VertexFormat.Float; break;
+						case 2: format[i] = G.VertexFormat.Float2; break;
+						case 3: format[i] = G.VertexFormat.Float3; break;
+						case 4: format[i] = G.VertexFormat.Float4; break;
+					}
+				}
+			
+				if (indices != null && indices.Length != 0)
+				{
+					vertexBuffer = new G.VertexBuffer(vertexCount, indices.Length, format);
+					
+					indexCount = indices.Length;
+					var indicesShort = new ushort[indexCount];
+					for (int i = 0; i != indexCount; ++i)
+					{
+						indicesShort[i] = (ushort)indices[i];
+					}
+					vertexBuffer.SetIndices(indicesShort);
+				}
+				else
+				{
+					vertexBuffer = new G.VertexBuffer(vertexCount, format);
+				}
+				vertexBuffer.SetVertices(vertices);
 			}
 			catch (Exception e)
 			{
@@ -77,11 +117,9 @@ namespace Reign.Video.Vita
 			{
 				vertexBuffer.Dispose();
 				vertexBuffer = null;
-				indexBuffer = null;
-				initialized = false;
 			}
 			
-			this.vertices = vertices;
+			throw new NotImplementedException();
 		}
 
 		public override void Update(float[] vertices, int updateCount)
@@ -91,61 +129,12 @@ namespace Reign.Video.Vita
 
 		public override void Enable()
 		{
-			if (indexBuffer != null) Debug.ThrowError("VertexBuffer", "Already enabled with IndexBuffer. Can't change the enable type");
-			if (!initialized) initialize(null);
 			video.context.SetVertexBuffer(0, vertexBuffer);
-		}
-		
-		private void initialize(IndexBuffer indexBuffer)
-		{
-			var format = new G.VertexFormat[bufferLayoutDesc.Elements.Count];
-			for (int i = 0; i != bufferLayoutDesc.Elements.Count; ++i)
-			{
-				switch (bufferLayoutDesc.Elements[i].FloatCount)
-				{
-					case 1: format[i] = G.VertexFormat.Float; break;
-					case 2: format[i] = G.VertexFormat.Float2; break;
-					case 3: format[i] = G.VertexFormat.Float3; break;
-					case 4: format[i] = G.VertexFormat.Float4; break;
-				}
-			}
-		
-			if (indexBuffer != null)
-			{
-				vertexBuffer = new G.VertexBuffer(vertexCount, indexBuffer.indices.Length, format);
-				vertexBuffer.SetIndices(indexBuffer.indices);
-			}
-			else
-			{
-				vertexBuffer = new G.VertexBuffer(vertexCount, format);
-			}
-			vertexBuffer.SetVertices(vertices);
-			vertices = null;
-			this.indexBuffer = indexBuffer;
-			initialized = true;
 		}
 
 		public override void Enable(IndexBufferI indexBuffer)
 		{
-			// check if index buffer is usable
-			var i = (IndexBuffer)indexBuffer;
-			if (this.indexBuffer != indexBuffer && i.Used && !i.Updateable) Debug.ThrowError("VertexBuffer", "IndexBuffer has already been used. IndexBuffer can only be used with one VertexBuffer");
-			
-			// init
-			if (!initialized) initialize(i);
-			else if (this.indexBuffer == null) Debug.ThrowError("VertexBuffer", "VertexBuffer has already been used without an index buffer");
-			
-			if (!i.Updateable)
-			{
-				i.Used = true;
-				i.indices = null;
-			}
-			else if (this.indexBuffer != i)
-			{
-				vertexBuffer.SetIndices(i.indices);
-			}
-			
-			video.context.SetVertexBuffer(0, vertexBuffer);
+			Debug.ThrowError("VertexBuffer", "IndexBuffer not supported. Create VertexBuffer with indices instead");
 		}
 
 		public override void Enable(VertexBufferI instanceBuffer)
@@ -160,7 +149,7 @@ namespace Reign.Video.Vita
 
 		public override void Draw()
 		{
-			if (indexBuffer != null) video.context.DrawArrays(primitiveTopology, 0, indexBuffer.IndexCount);
+			if (indexCount != -1) video.context.DrawArrays(primitiveTopology, 0, indexCount);
 			else video.context.DrawArrays(primitiveTopology, 0, vertexCount);
 		}
 
@@ -176,7 +165,7 @@ namespace Reign.Video.Vita
 
 		public override void DrawInstancedClassic(int drawCount, int meshVertexCount, int meshIndexCount)
 		{
-			if (indexBuffer != null) video.context.DrawArrays(primitiveTopology, 0, meshIndexCount * drawCount);
+			if (indexCount != -1) video.context.DrawArrays(primitiveTopology, 0, meshIndexCount * drawCount);
 			else video.context.DrawArrays(primitiveTopology, 0, meshVertexCount * drawCount);
 		}
 		#endregion

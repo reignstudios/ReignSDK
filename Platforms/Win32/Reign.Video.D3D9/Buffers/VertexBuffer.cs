@@ -9,7 +9,7 @@ namespace Reign.Video.D3D9
 	{
 		#region Properties
 		private VertexBufferCom com;
-		private IndexBuffer indexBuffer;
+		private IndexBuffer indexBuffer, currentIndexBuffer;
 
 		private VertexBufferTopologys topology;
 		public override VertexBufferTopologys Topology
@@ -34,8 +34,24 @@ namespace Reign.Video.D3D9
 			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices);
 		}
 
+		public static VertexBuffer New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
+		{
+			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices, indices);
+		}
+
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
 		: base(parent, bufferLayoutDesc, usage)
+		{
+			init(parent, bufferLayoutDesc, usage, topology, vertices, null);
+		}
+
+		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
+		: base(parent, bufferLayoutDesc, usage)
+		{
+			init(parent, bufferLayoutDesc, usage, topology, vertices, indices);
+		}
+
+		private void init(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
 		{
 			try
 			{
@@ -51,13 +67,20 @@ namespace Reign.Video.D3D9
 				}
 
 				com = new VertexBufferCom(video.com, topologyType);
-				Init(vertices);
+				initBuffer(vertices);
+				if (indices != null && indices.Length != 0) indexBuffer = new IndexBuffer(this, usage, indices);
 			}
 			catch (Exception e)
 			{
 				Dispose();
 				throw e;
 			}
+		}
+
+		private void initBuffer(float[] vertices)
+		{
+			var error = com.Init(vertices, REIGN_D3DUSAGE.WRITEONLY, vertexCount, vertexByteSize);
+			if (error == VertexBufferErrors.VertexBuffer) Debug.ThrowError("VertexBuffer", "Failed to create VertexBuffer");
 		}
 
 		public override void Dispose()
@@ -76,9 +99,12 @@ namespace Reign.Video.D3D9
 		public override void Init(float[] vertices)
 		{
 			base.Init(vertices);
-
-			var error = com.Init(vertices, REIGN_D3DUSAGE.WRITEONLY, vertexCount, vertexByteSize);
-			if (error == VertexBufferErrors.VertexBuffer) Debug.ThrowError("VertexBuffer", "Failed to create VertexBuffer");
+			initBuffer(vertices);
+			if (indexBuffer != null)
+			{
+				indexBuffer.Dispose();
+				indexBuffer = null;
+			}
 		}
 
 		public override void Update(float[] vertices, int updateCount)
@@ -88,33 +114,35 @@ namespace Reign.Video.D3D9
 
 		public override void Enable()
 		{
-			indexBuffer = null;
-			com.Enable(null, null, vertexByteSize, 0);
+			currentIndexBuffer = indexBuffer;
+			if (indexBuffer != null) com.Enable(indexBuffer.com, null, vertexByteSize, 0);
+			else com.Enable(null, null, vertexByteSize, 0);
 		}
 
 		public override void Enable(IndexBufferI indexBuffer)
 		{
-			this.indexBuffer = (IndexBuffer)indexBuffer;
+			this.currentIndexBuffer = (IndexBuffer)indexBuffer;
 			com.Enable(((IndexBuffer)indexBuffer).com, null, vertexByteSize, 0);
 		}
 
 		public override void Enable(VertexBufferI instanceBuffer)
 		{
-			indexBuffer = null;
+			currentIndexBuffer = indexBuffer;
 			var ib = ((VertexBuffer)instanceBuffer);
-			com.Enable(null, ib.com, vertexByteSize, ib.vertexByteSize);
+			if (indexBuffer != null) com.Enable(indexBuffer.com, ib.com, vertexByteSize, ib.vertexByteSize);
+			else com.Enable(null, ib.com, vertexByteSize, ib.vertexByteSize);
 		}
 
 		public override void Enable(IndexBufferI indexBuffer, VertexBufferI instanceBuffer)
 		{
-			this.indexBuffer = (IndexBuffer)indexBuffer;
+			this.currentIndexBuffer = (IndexBuffer)indexBuffer;
 			var ib = ((VertexBuffer)instanceBuffer);
 			com.Enable(((IndexBuffer)indexBuffer).com, ib.com, vertexByteSize, ib.vertexByteSize);
 		}
 
 		public override void Draw()
 		{
-			com.Draw(vertexCount, vertexCount, indexBuffer.IndexCount);
+			com.Draw(vertexCount, vertexCount, currentIndexBuffer.IndexCount);
 		}
 
 		public override void Draw(int drawCount)

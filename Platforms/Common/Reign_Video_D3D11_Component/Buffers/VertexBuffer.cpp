@@ -72,7 +72,7 @@ namespace Reign_Video_D3D11_Component
 		video->deviceContext->Unmap(vertexBuffer, 0);
 	}
 
-	void VertexBufferCom::enable(IndexBufferCom^ indexBuffer, VertexBufferCom^ instanceBuffer)
+	void VertexBufferCom::Enable(IndexBufferCom^ indexBuffer, VertexBufferCom^ instanceBuffer)
 	{
 		video->deviceContext->IASetPrimitiveTopology(primitiveTopology);
 
@@ -99,26 +99,6 @@ namespace Reign_Video_D3D11_Component
 		{
 			this->indexBuffer = nullptr;
 		}
-	}
-
-	void VertexBufferCom::Enable()
-	{
-		enable(nullptr, nullptr);
-	}
-
-	void VertexBufferCom::Enable(IndexBufferCom^ indexBuffer)
-	{
-		enable(indexBuffer, nullptr);
-	}
-
-	void VertexBufferCom::Enable(VertexBufferCom^ instanceBuffer)
-	{
-		enable(nullptr, instanceBuffer);
-	}
-
-	void VertexBufferCom::Enable(IndexBufferCom^ indexBuffer, VertexBufferCom^ instanceBuffer)
-	{
-		enable(indexBuffer, instanceBuffer);
 	}
 
 	void VertexBufferCom::Draw()

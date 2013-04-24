@@ -21,6 +21,21 @@ namespace ShaderCompiler.Core
 			var dis = vector - vector2;
 			return Math.Sqrt((dis.x*dis.x) + (dis.y*dis.y) + (dis.z*dis.z) + (dis.w*dis.w));
 		}
+		
+		public static double Length(Vector2 vector)
+		{
+			return 0;
+		}
+		
+		public static double Length(Vector3 vector)
+		{
+			return 0;
+		}
+		
+		public static double Length(Vector4 vector)
+		{
+			return 0;
+		}
 
 		public static double Dot(Vector2 vector, Vector2 vector2)
 		{
@@ -40,6 +55,31 @@ namespace ShaderCompiler.Core
 		public static void Clip(double value)
 		{
 			// Do nothing
+		}
+		
+		public static Vector3 Reflect(Vector3 vector, Vector3 normal)
+		{
+			throw new NotImplementedException();
+		}
+		
+		public static double Pow(double vector, double power)
+		{
+			return 0;
+		}
+		
+		public static Vector2 Pow(Vector2 vector, double power)
+		{
+			return new Vector2();
+		}
+		
+		public static Vector3 Pow(Vector3 vector, double power)
+		{
+			return new Vector3();
+		}
+		
+		public static Vector4 Pow(Vector4 vector, double power)
+		{
+			return new Vector4();
 		}
 		
 		public static Vector3 Normalize(Vector3 value)
