@@ -45,8 +45,9 @@ namespace Reign.Video
 					Size = new Size2(width, height);
 				
 					var data = new byte[width * height * 4];
+					var emptyRect = RectangleF.Empty;
 					using (CGContext imageContext = new CGBitmapContext(data, width, height, 8, width*4, CGColorSpace.CreateDeviceRGB(), CGImageAlphaInfo.PremultipliedLast))
-					using (var cgImage = image.AsCGImage(RectangleF.Empty, null, null))
+					using (var cgImage = image.AsCGImage(ref emptyRect, null, null))
 					{
 						imageContext.DrawImage(new RectangleF(0, 0, width, height), cgImage);
 					
