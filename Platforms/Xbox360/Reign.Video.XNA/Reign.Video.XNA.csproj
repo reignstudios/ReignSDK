@@ -103,9 +103,6 @@
     <Compile Include="..\..\Common\Reign.Video.XNA\Buffers\VertexBuffer.cs">
       <Link>Buffers\VertexBuffer.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Video.XNA\DepthStencil.cs">
-      <Link>DepthStencil.cs</Link>
-    </Compile>
     <Compile Include="..\..\Common\Reign.Video.XNA\QuickDraw.cs">
       <Link>QuickDraw.cs</Link>
     </Compile>

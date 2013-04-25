@@ -45,7 +45,7 @@ namespace Reign.Video.D3D11
 		}
 
 		#if WINRT
-		private void init(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync, Windows.UI.Xaml.Controls.SwapChainBackgroundPanel swapChainBackgroundPanel)
+		private void init(DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync, Windows.UI.Xaml.Controls.SwapChainBackgroundPanel swapChainBackgroundPanel)
 		#else
 		private void init(DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync)
 		#endif
