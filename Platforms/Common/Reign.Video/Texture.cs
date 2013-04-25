@@ -130,11 +130,11 @@ namespace Reign.Video
 			RenderTargetAPI.newPtr2 = newPtr2;
 		}
 
-		public delegate RenderTargetI NewPtrMethod1(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback);
+		public delegate RenderTargetI NewPtrMethod1(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback);
 		private static NewPtrMethod1 newPtr1;
-		public static RenderTargetI New(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
+		public static RenderTargetI New(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return newPtr1(parent, width, height, multiSampleType, surfaceFormat, usage, renderTargetUsage, loadedCallback);
+			return newPtr1(parent, width, height, multiSampleType, surfaceFormat, depthStencilFormat, usage, renderTargetUsage, loadedCallback);
 		}
 
 		public delegate RenderTargetI NewPtrMethod2(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback);

@@ -33,7 +33,7 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
-		public Video(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync)
+		public Video(DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync)
 		: base(parent)
 		{
 			#if WINRT
@@ -47,7 +47,7 @@ namespace Reign.Video.D3D11
 		#if WINRT
 		private void init(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync, Windows.UI.Xaml.Controls.SwapChainBackgroundPanel swapChainBackgroundPanel)
 		#else
-		private void init(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync)
+		private void init(DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync)
 		#endif
 		{
 			this.application = application;
@@ -60,27 +60,32 @@ namespace Reign.Video.D3D11
 				int depthBit = 16, stencilBit = 0;
 				switch (depthStencilFormats)
 				{
-					case DepthStenicFormats.None:
+					case DepthStencilFormats.None:
 						depthBit = 0;
 						stencilBit = 0;
 						break;
 
-					case DepthStenicFormats.Defualt:
+					case DepthStencilFormats.Defualt:
 						depthBit = 24;
 						stencilBit = 0;
 						break;
 
-					case DepthStenicFormats.Depth24Stencil8:
+					case DepthStencilFormats.Depth24Stencil8:
 						depthBit = 24;
 						stencilBit = 8;
 						break;
 
-					case DepthStenicFormats.Depth16:
+					case DepthStencilFormats.Depth16:
 						depthBit = 16;
 						stencilBit = 0;
 						break;
 
-					case DepthStenicFormats.Depth32:
+					case DepthStencilFormats.Depth24:
+						depthBit = 24;
+						stencilBit = 0;
+						break;
+
+					case DepthStencilFormats.Depth32:
 						depthBit = 32;
 						stencilBit = 0;
 						break;

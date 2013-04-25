@@ -10,9 +10,11 @@ namespace Reign_Video_D3D9_Component
 		this->video = video;
 		D3DFORMAT nativeSurfaceFormat = (D3DFORMAT)surfaceFormat;
 
+		// RenderTarget
 		if (multiSampleMultiple != 0)
 		{
-			// RenderTarget
+			isMultiSampled = true;
+			isMultiSampledResolved = false;
 			IDirect3DSurface9* renderTargetTEMP = 0;
 			if (FAILED(video->device->CreateRenderTarget(width, height, nativeSurfaceFormat, D3DMULTISAMPLE_NONE, 0, lockable, &renderTargetTEMP, 0)))
 			{
@@ -23,6 +25,7 @@ namespace Reign_Video_D3D9_Component
 		}
 		else
 		{
+			isMultiSampled = false;
 			renderTarget = texture->surface;
 		}
 		
@@ -63,18 +66,23 @@ namespace Reign_Video_D3D9_Component
 	{
 		video->device->SetRenderTarget(0, renderTarget);
 		video->device->SetDepthStencilSurface(0);
+		isMultiSampledResolved = false;
 	}
 
 	void RenderTargetCom::Enable(DepthStencilCom^ depthStencil)
 	{
 		video->device->SetRenderTarget(0, renderTarget);
-		if (depthStencil != nullptr) video->device->SetDepthStencilSurface(depthStencil->surface);
-		else video->device->SetDepthStencilSurface(0);
+		video->device->SetDepthStencilSurface(depthStencil->surface);
+		isMultiSampledResolved = false;
 	}
 
 	void RenderTargetCom::ResolveMultisampled()
 	{
-		video->device->StretchRect(renderTarget, 0, surface, 0, D3DTEXF_NONE);
+		if (isMultiSampled && !isMultiSampledResolved)
+		{
+			video->device->StretchRect(renderTarget, 0, surface, 0, D3DTEXF_NONE);
+			isMultiSampledResolved = true;
+		}
 	}
 
 	void RenderTargetCom::ReadPixels(void* data, int dataLength)

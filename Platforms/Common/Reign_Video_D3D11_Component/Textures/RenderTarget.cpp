@@ -82,17 +82,10 @@ namespace Reign_Video_D3D11_Component
 		video->removeActiveResource(texture->shaderResource);
 		ID3D11RenderTargetView* renderTargetTEMP = renderTarget;
 		video->currentRenderTarget = renderTarget;
-		
-		if (depthStencil)
-		{
-			ID3D11DepthStencilView* surface = ((DepthStencilCom^)depthStencil)->surface;
-			video->currentDepthStencil = surface;
-			video->deviceContext->OMSetRenderTargets(1, &renderTargetTEMP, surface);
-		}
-		else
-		{
-			video->deviceContext->OMSetRenderTargets(1, &renderTargetTEMP, 0);
-		}
+
+		ID3D11DepthStencilView* surface = ((DepthStencilCom^)depthStencil)->surface;
+		video->currentDepthStencil = surface;
+		video->deviceContext->OMSetRenderTargets(1, &renderTargetTEMP, surface);
 	}
 
 	void RenderTargetCom::ReadPixels(int dataPtr, int dataLength)

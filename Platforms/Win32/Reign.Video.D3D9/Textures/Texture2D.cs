@@ -228,7 +228,7 @@ namespace Reign.Video.D3D9
 		{
 			if (video != null)
 			{
-				video.removeActiveTexture(this);
+				video.disableActiveTexture(this);
 				if (!video.Caps.ExDevice && !video.deviceReseting)
 				{
 					video.DeviceLost -= deviceLost;

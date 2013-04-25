@@ -11,12 +11,13 @@ namespace Reign.Video.XNA
 	{
 		#region Properties
 		public X.RenderTarget2D renderTarget;
+		private DepthStencilFormats initDepthStencilFormat;
 		#endregion
 
 		#region Constructors
-		public static RenderTarget New(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
+		public static RenderTarget New(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return new RenderTarget(parent, width, height, multiSampleType, surfaceFormat, usage, renderTargetUsage, loadedCallback);
+			return new RenderTarget(parent, width, height, multiSampleType, surfaceFormat, depthStencilFormat, usage, renderTargetUsage, loadedCallback);
 		}
 
 		public static RenderTarget New(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
@@ -24,9 +25,10 @@ namespace Reign.Video.XNA
 			return new RenderTarget(parent, fileName, multiSampleType, usage, renderTargetUsage, loadedCallback);
 		}
 
-		public RenderTarget(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
+		public RenderTarget(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent, width, height, surfaceFormat, usage, loadedCallback)
 		{
+			initDepthStencilFormat = depthStencilFormat;
 		}
 
 		public RenderTarget(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
@@ -63,7 +65,24 @@ namespace Reign.Video.XNA
 						case RenderTargetUsage.PreserveContents: xUsage = X.RenderTargetUsage.PreserveContents; break;
 						case RenderTargetUsage.DiscardContents: xUsage = X.RenderTargetUsage.DiscardContents; break;
 					}
-					renderTarget = new X.RenderTarget2D(video.Device, width, height, false, Video.surfaceFormat(surfaceFormat), X.DepthFormat.None, 0, xUsage);
+
+					X.DepthFormat format = X.DepthFormat.None;
+					if (initDepthStencilFormat != DepthStencilFormats.None)
+					{
+						switch (initDepthStencilFormat)
+						{
+							case DepthStencilFormats.Defualt: format = X.DepthFormat.Depth24; break;
+							case DepthStencilFormats.Depth24Stencil8: format = X.DepthFormat.Depth24Stencil8; break;
+							case DepthStencilFormats.Depth16: format = X.DepthFormat.Depth16; break;
+							case DepthStencilFormats.Depth24: format = X.DepthFormat.Depth24; break;
+
+							default:
+								Debug.ThrowError("RenderTarget", "Unsuported DepthStencilFormat type");
+								break;
+						}
+					}
+
+					renderTarget = new X.RenderTarget2D(video.Device, width, height, false, Video.surfaceFormat(surfaceFormat), format, 0, xUsage);
 				}
 				else
 				{
@@ -95,19 +114,7 @@ namespace Reign.Video.XNA
 
 		public void Enable(DepthStencilI depthStencil)
 		{
-			if (depthStencil == null)
-			{
-				video.Device.SetRenderTarget(renderTarget);
-			}
-			else
-			{
-				var bindings = new X.RenderTargetBinding[2]
-				{
-					renderTarget,
-					((DepthStencil)depthStencil).depthStencil
-				};
-				video.Device.SetRenderTargets(bindings);
-			}
+			Debug.ThrowError("RenderTarget", "DepthStencils are build into Rendertargets, thus this method does not apply to XNA");
 		}
 
 		public void ReadPixels(byte[] data)

@@ -63,7 +63,7 @@ namespace Reign.Video.OpenGL
 		public void Set(Texture2DI resource)
 		{
 			var texture = (Texture2D)resource;
-			video.currentPixelTextures[index] = texture;
+			video.currentTextures[index] = texture;
 			resourceIndex = texture.Texture;
 			this.texture = new WeakReference(texture);
 			Apply = setTexture2D;

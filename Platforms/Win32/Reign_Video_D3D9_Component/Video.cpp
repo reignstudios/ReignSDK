@@ -132,7 +132,7 @@ namespace Reign_Video_D3D9_Component
 			presentParameters.EnableAutoDepthStencil = true;
 			presentParameters.AutoDepthStencilFormat = D3DFMT_D16;
 			if (depthBit == 24 && stencilBit == 8) presentParameters.AutoDepthStencilFormat = D3DFMT_D24S8;
-			if (depthBit == 24 && stencilBit == 0) presentParameters.AutoDepthStencilFormat = D3DFMT_D24X8;
+			else if (depthBit == 24 && stencilBit == 0) presentParameters.AutoDepthStencilFormat = D3DFMT_D24X8;
 			else if (depthBit == 16 && stencilBit == 0) presentParameters.AutoDepthStencilFormat = D3DFMT_D16;
 			else if (depthBit == 32 && stencilBit == 0) presentParameters.AutoDepthStencilFormat = D3DFMT_D32;
 		}
@@ -300,21 +300,8 @@ namespace Reign_Video_D3D9_Component
 
 	void VideoCom::EnableRenderTarget(DepthStencilCom^ depthStencil)
 	{
-		if (depthStencil != nullptr)
-		{
-			device->SetDepthStencilSurface(depthStencil->surface);
-		}
-		else
-		{
-			device->SetDepthStencilSurface(0);
-		}
+		device->SetDepthStencilSurface(depthStencil->surface);
 		device->SetRenderTarget(0, backBuffer);
-	}
-
-	void VideoCom::DisableRenderTarget()
-	{
-		device->SetDepthStencilSurface(0);
-		device->SetRenderTarget(0, 0);
 	}
 
 	void VideoCom::ClearAll(float r, float g, float b, float a)
@@ -345,6 +332,11 @@ namespace Reign_Video_D3D9_Component
 	void VideoCom::DisableVertexTexture(int index)
 	{
 		device->SetTexture(D3DVERTEXTEXTURESAMPLER0 + index, 0);
+	}
+
+	void VideoCom::DisableRenderTarget(int index)
+	{
+		device->SetRenderTarget(index, 0);
 	}
 	#pragma endregion
 }

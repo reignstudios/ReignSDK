@@ -49,13 +49,12 @@ namespace Reign.Video.OpenGL
 
 		public Caps Caps;
 		private bool disposed;
-		internal Texture2D[] currentPixelTextures, currentVertexTextures;
+		internal Texture2D[] currentTextures;
 		internal SamplerState[] currentSamplerStates;
 		internal BufferLayout currentBufferLayout;
 		internal VertexBuffer currentVertexBuffer;
 
 		private IntPtr ctx, dc;
-		uint frameBuffer;
 
 		#if WIN32 || LINUX
 		private IntPtr handle;
@@ -78,7 +77,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public Video(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync)
+		public Video(DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync)
 		: base(parent)
 		{
 			try
@@ -86,12 +85,12 @@ namespace Reign.Video.OpenGL
 				int depthBit = 16, stencilBit = 0;
 				switch (depthStencilFormats)
 				{
-					case DepthStenicFormats.None:
+					case DepthStencilFormats.None:
 						depthBit = 0;
 						stencilBit = 0;
 						break;
 
-					case DepthStenicFormats.Defualt:
+					case DepthStencilFormats.Defualt:
 						#if iOS || ANDROID || NaCl || RPI
 						depthBit = 16;
 						stencilBit = 0;
@@ -101,17 +100,22 @@ namespace Reign.Video.OpenGL
 						#endif
 						break;
 
-					case DepthStenicFormats.Depth24Stencil8:
+					case DepthStencilFormats.Depth24Stencil8:
 						depthBit = 24;
 						stencilBit = 8;
 						break;
 
-					case DepthStenicFormats.Depth16:
+					case DepthStencilFormats.Depth16:
 						depthBit = 16;
 						stencilBit = 0;
 						break;
 
-					case DepthStenicFormats.Depth32:
+					case DepthStencilFormats.Depth24:
+						depthBit = 24;
+						stencilBit = 0;
+						break;
+
+					case DepthStencilFormats.Depth32:
 						depthBit = 32;
 						stencilBit = 0;
 						break;
@@ -121,8 +125,7 @@ namespace Reign.Video.OpenGL
 						break;
 				}
 
-				currentPixelTextures = new Texture2D[8];
-				currentVertexTextures = new Texture2D[8];
+				currentTextures = new Texture2D[8];
 				currentSamplerStates = new SamplerState[8];
 
 				#if WIN32 || OSX || LINUX || NaCl
@@ -541,18 +544,6 @@ namespace Reign.Video.OpenGL
 			#if NaCl
 			PPAPI.StopSwapBufferLoop();
 			#endif
-
-			if (frameBuffer != 0)
-			{
-				uint frameBufferTEMP = frameBuffer;
-				GL.BindFramebuffer(GL.FRAMEBUFFER, 0);
-				GL.DeleteFramebuffers(1, &frameBufferTEMP);
-				frameBuffer = 0;
-
-				#if DEBUG
-				Video.checkForError();
-				#endif
-			}
 			
 			if (dc != IntPtr.Zero)
 			{
@@ -747,7 +738,7 @@ namespace Reign.Video.OpenGL
 			#if iOS
 			((GLKView)application.View).BindDrawable();
 			#else
-		    GL.BindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+		    GL.BindFramebuffer(GL.FRAMEBUFFER, 0);
 			GL.BindRenderbuffer(GL.RENDERBUFFER, 0);
 		    #endif
 		}
@@ -757,19 +748,12 @@ namespace Reign.Video.OpenGL
 			#if iOS
 			((GLKView)application.View).BindDrawable();
 			#else
-		    GL.BindFramebuffer(GL.FRAMEBUFFER, frameBuffer);
+		    GL.BindFramebuffer(GL.FRAMEBUFFER, 0);
 		    #endif
 			
-			if (depthStencil != null)
-			{
-				uint surface = ((DepthStencil)depthStencil).depthBuffer;
-				GL.BindRenderbuffer(GL.RENDERBUFFER, surface);
-				GL.FramebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, surface);
-			}
-			else
-			{
-				GL.BindRenderbuffer(GL.RENDERBUFFER, 0);
-			}
+			uint surface = ((DepthStencil)depthStencil).depthBuffer;
+			GL.BindRenderbuffer(GL.RENDERBUFFER, surface);
+			GL.FramebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, surface);
 		}
 
 		public unsafe void ClearAll(float r, float g, float b, float a)
@@ -847,17 +831,7 @@ namespace Reign.Video.OpenGL
 
 		internal void disableActiveTextures(Texture2D texture)
 		{
-			var textures = currentVertexTextures;
-			for (int i = 0; i != textures.Length; ++i)
-			{
-				if (textures[i] == texture)
-				{
-					throw new NotImplementedException();
-					//textures[i] = null;
-				}
-			}
-
-			textures = currentPixelTextures;
+			var textures = currentTextures;
 			for (int i = 0; i != textures.Length; ++i)
 			{
 				if (textures[i] == texture)

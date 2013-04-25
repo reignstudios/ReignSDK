@@ -21,6 +21,7 @@ namespace Reign.Video.D3D9
 		internal VideoCom com;
 		private ApplicationI application;
 		internal Texture2D[] currentVertexTextures, currentPixelTextures;
+		internal RenderTarget[] currentRenderTargets;
 		public Size2 BackBufferSize {get; private set;}
 
 		public delegate void DeviceLostMethod();
@@ -32,7 +33,7 @@ namespace Reign.Video.D3D9
 		#endregion
 
 		#region Constructors
-		public Video(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync)
+		public Video(DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync)
 		: base(parent)
 		{
 			try
@@ -41,31 +42,37 @@ namespace Reign.Video.D3D9
 				FileTag = "D3D9_";
 				currentVertexTextures = new Texture2D[4];
 				currentPixelTextures = new Texture2D[8];
+				currentRenderTargets = new RenderTarget[4];
 
 				int depthBit = 16, stencilBit = 0;
 				switch (depthStencilFormats)
 				{
-					case DepthStenicFormats.None:
+					case DepthStencilFormats.None:
 						depthBit = 0;
 						stencilBit = 0;
 						break;
 
-					case DepthStenicFormats.Defualt:
+					case DepthStencilFormats.Defualt:
 						depthBit = 24;
 						stencilBit = 0;
 						break;
 
-					case DepthStenicFormats.Depth24Stencil8:
+					case DepthStencilFormats.Depth24Stencil8:
 						depthBit = 24;
 						stencilBit = 8;
 						break;
 
-					case DepthStenicFormats.Depth16:
+					case DepthStencilFormats.Depth16:
 						depthBit = 16;
 						stencilBit = 0;
 						break;
 
-					case DepthStenicFormats.Depth32:
+					case DepthStencilFormats.Depth24:
+						depthBit = 24;
+						stencilBit = 0;
+						break;
+
+					case DepthStencilFormats.Depth32:
 						depthBit = 32;
 						stencilBit = 0;
 						break;
@@ -160,8 +167,7 @@ namespace Reign.Video.D3D9
 
 		public void EnableRenderTarget(DepthStencilI depthStencil)
 		{
-			if (depthStencil != null) com.EnableRenderTarget(((DepthStencil)depthStencil).com);
-			else com.EnableRenderTarget(null);
+			com.EnableRenderTarget(((DepthStencil)depthStencil).com);
 		}
 
 		public void ClearAll(float r, float g, float b, float a)
@@ -189,7 +195,7 @@ namespace Reign.Video.D3D9
 			com.Present();
 		}
 
-		internal void removeActiveTexture(Texture2D texture)
+		internal void disableActiveTexture(Texture2D texture)
 		{
 			var textures = currentVertexTextures;
 			for (int i = 0; i != textures.Length; ++i)
@@ -208,6 +214,19 @@ namespace Reign.Video.D3D9
 				{
 					com.DisableTexture(i);
 					textures[i] = null;
+				}
+			}
+		}
+
+		internal void disableInactiveRenderTargets(RenderTarget currentRenderTarget)
+		{
+			var renderTargets = currentRenderTargets;
+			for (int i = 0; i != renderTargets.Length; ++i)
+			{
+				if (renderTargets[i] != null && renderTargets[i] != currentRenderTarget)
+				{
+					com.DisableRenderTarget(i);
+					renderTargets[i] = null;
 				}
 			}
 		}

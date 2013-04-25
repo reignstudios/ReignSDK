@@ -8,12 +8,13 @@ namespace Reign.Video.D3D11
 	{
 		#region Properties
 		private RenderTargetCom renderTargetCom;
+		private DepthStencil depthStencil;
 		#endregion
 
 		#region Constructors
-		public static RenderTarget New(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
+		public static RenderTarget New(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			return new RenderTarget(parent, width, height, multiSampleType, surfaceFormat, usage, renderTargetUsage, loadedCallback);
+			return new RenderTarget(parent, width, height, multiSampleType, surfaceFormat, depthStencilFormat, usage, renderTargetUsage, loadedCallback);
 		}
 
 		public static RenderTarget New(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
@@ -21,9 +22,10 @@ namespace Reign.Video.D3D11
 			return new RenderTarget(parent, fileName, multiSampleType, usage, renderTargetUsage, loadedCallback);
 		}
 
-		public RenderTarget(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
+		public RenderTarget(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent, width, height, surfaceFormat, usage, loadedCallback)
 		{
+			initDepthStencil(width, height, depthStencilFormat);
 		}
 
 		public RenderTarget(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
@@ -69,6 +71,11 @@ namespace Reign.Video.D3D11
 			return true;
 		}
 
+		private void initDepthStencil(int width, int height, DepthStencilFormats depthStencilFormat)
+		{
+			if (depthStencilFormat != DepthStencilFormats.None) depthStencil = new DepthStencil(this, width, height, depthStencilFormat);
+		}
+
 		public override void Dispose()
 		{
 			disposeChilderen();
@@ -84,7 +91,8 @@ namespace Reign.Video.D3D11
 		#region Methods
 		public void Enable()
 		{
-			renderTargetCom.Enable();
+			if (depthStencil != null) renderTargetCom.Enable(depthStencil.com);
+			else renderTargetCom.Enable();
 		}
 
 		public void Enable(DepthStencilI depthStencil)

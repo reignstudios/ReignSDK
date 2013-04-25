@@ -450,10 +450,10 @@ namespace Reign_Video_D3D11_Component
 
 	void VideoCom::EnableRenderTarget()
 	{
-		ID3D11RenderTargetView* renderTargetTEMP = renderTarget;
-		deviceContext->OMSetRenderTargets(1, &renderTargetTEMP, depthStencil);
 		currentRenderTarget = renderTarget;
 		currentDepthStencil = depthStencil;
+		ID3D11RenderTargetView* renderTargetTEMP = renderTarget;
+		deviceContext->OMSetRenderTargets(1, &renderTargetTEMP, depthStencil);
 
 		#if WINRT
 		if (compositionMode) d2dDeviceContext->SetTarget(d2dRenderTarget);
@@ -462,18 +462,10 @@ namespace Reign_Video_D3D11_Component
 
 	void VideoCom::EnableRenderTarget(DepthStencilCom^ depthStencil)
 	{
-		ID3D11RenderTargetView* renderTargetTEMP = renderTarget;
 		currentRenderTarget = renderTarget;
-
-		if (depthStencil)
-		{
-			currentDepthStencil = depthStencil->surface;
-			deviceContext->OMSetRenderTargets(1, &renderTargetTEMP, depthStencil->surface);
-		}
-		else
-		{
-			deviceContext->OMSetRenderTargets(1, &renderTargetTEMP, 0);
-		}
+		currentDepthStencil = depthStencil->surface;
+		ID3D11RenderTargetView* renderTargetTEMP = renderTarget;
+		deviceContext->OMSetRenderTargets(1, &renderTargetTEMP, depthStencil->surface);
 
 		#if WINRT
 		if (compositionMode) d2dDeviceContext->SetTarget(d2dRenderTarget);

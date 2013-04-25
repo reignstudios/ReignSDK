@@ -17,10 +17,6 @@ namespace Reign.Video.API
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
 			if (type == VideoTypes.OpenGL) DepthStencilAPI.Init(Reign.Video.OpenGL.DepthStencil.New);
 			#endif
-
-			#if XNA
-			if (type == VideoTypes.XNA) DepthStencilAPI.Init(Reign.Video.XNA.DepthStencil.New);
-			#endif
 			
 			#if VITA
 			if (type == VideoTypes.Vita) DepthStencilAPI.Init(Reign.Video.Vita.DepthStencil.New);

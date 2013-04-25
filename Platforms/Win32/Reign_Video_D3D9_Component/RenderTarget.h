@@ -16,6 +16,7 @@ namespace Reign_Video_D3D9_Component
 		#pragma region Properties
 		private: VideoCom^ video;
 		private: IDirect3DSurface9* renderTarget, *surface, *stagingSurface;
+		private: bool isMultiSampled, isMultiSampledResolved;
 		#pragma endregion
 
 		#pragma region Constructors

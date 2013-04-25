@@ -120,7 +120,6 @@ namespace Reign_Video_D3D9_Component
 		private: void deviceReset();
 		public: void EnableRenderTarget();
 		public: void EnableRenderTarget(DepthStencilCom^ depthStencil);
-		public: void DisableRenderTarget();
 		public: void Present();
 		public: void ClearAll(float r, float g, float b, float a);
 		public: void ClearColor(float r, float g, float b, float a);
@@ -128,6 +127,7 @@ namespace Reign_Video_D3D9_Component
 		public: void ClearDepthStencil();
 		public: void DisableTexture(int index);
 		public: void DisableVertexTexture(int index);
+		public: void DisableRenderTarget(int index);
 		#pragma endregion
 	};
 }

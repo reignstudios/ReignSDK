@@ -16,7 +16,7 @@ namespace Reign.Video.API
 
 	public static class Video
 	{
-		public static VideoI Init(VideoTypes typeFlags, out VideoTypes type, DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync)
+		public static VideoI Init(VideoTypes typeFlags, out VideoTypes type, DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync)
 		{
 			bool d3d11 = (typeFlags & VideoTypes.D3D11) != 0;
 			bool d3d9 = (typeFlags & VideoTypes.D3D9) != 0;

@@ -13,12 +13,12 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public static DepthStencilI New(DisposableI parent, int width, int height, DepthStenicFormats depthStencilFormats)
+		public static DepthStencilI New(DisposableI parent, int width, int height, DepthStencilFormats depthStencilFormats)
 		{
 			return new DepthStencil(parent, width, height, depthStencilFormats);
 		}
 
-		public unsafe DepthStencil(DisposableI parent, int width, int height, DepthStenicFormats depthStencilFormats)
+		public unsafe DepthStencil(DisposableI parent, int width, int height, DepthStencilFormats depthStencilFormats)
 		: base(parent)
 		{
 			try
@@ -26,7 +26,7 @@ namespace Reign.Video.OpenGL
 				uint depthBit = GL.DEPTH_COMPONENT16, stencilBit = 0;
 				switch (depthStencilFormats)
 				{
-					case DepthStenicFormats.Defualt:
+					case DepthStencilFormats.Defualt:
 						#if iOS || ANDROID || NaCl || RPI
 						depthBit = GL.DEPTH_COMPONENT16;
 						stencilBit = 0;
@@ -36,17 +36,22 @@ namespace Reign.Video.OpenGL
 						#endif
 						break;
 
-					case DepthStenicFormats.Depth24Stencil8:
+					case DepthStencilFormats.Depth24Stencil8:
 						depthBit = GL.DEPTH_COMPONENT24;
 						stencilBit = GL.STENCIL_INDEX8;
 						break;
 
-					case DepthStenicFormats.Depth16:
+					case DepthStencilFormats.Depth16:
 						depthBit = GL.DEPTH_COMPONENT16;
 						stencilBit = 0;
 						break;
 
-					case DepthStenicFormats.Depth32:
+					case DepthStencilFormats.Depth24:
+						depthBit = GL.DEPTH_COMPONENT24;
+						stencilBit = 0;
+						break;
+
+					case DepthStencilFormats.Depth32:
 						depthBit = GL.DEPTH_COMPONENT32;
 						stencilBit = 0;
 						break;

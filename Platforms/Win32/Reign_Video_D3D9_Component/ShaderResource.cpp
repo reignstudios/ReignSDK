@@ -18,5 +18,12 @@ namespace Reign_Video_D3D9_Component
 		if (vertexIndex != -1) video->device->SetTexture(D3DVERTEXTEXTURESAMPLER0 + vertexIndex, texture->texture);
 		if (pixelIndex != -1) video->device->SetTexture(pixelIndex, texture->texture);
 	}
+
+	void ShaderResourceCom::SetRenderTarget(Texture2DCom^ texture, RenderTargetCom^ renderTarget)
+	{
+		renderTarget->ResolveMultisampled();
+		if (vertexIndex != -1) video->device->SetTexture(D3DVERTEXTEXTURESAMPLER0 + vertexIndex, texture->texture);
+		if (pixelIndex != -1) video->device->SetTexture(pixelIndex, texture->texture);
+	}
 	#pragma endregion
 }

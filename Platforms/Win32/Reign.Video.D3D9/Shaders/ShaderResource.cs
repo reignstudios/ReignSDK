@@ -38,7 +38,9 @@ namespace Reign.Video.D3D9
 
 		private void setTexture2D()
 		{
-			com.SetTexture2D(((Texture2D)resource.Target).com);
+			var renderTarget = resource.Target as RenderTarget;
+			if (renderTarget != null) com.SetRenderTarget(renderTarget.com, renderTarget.renderTargetCom);
+			else com.SetTexture2D(((Texture2D)resource.Target).com);
 		}
 
 		public void Set(Texture2DI resource)

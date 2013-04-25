@@ -19,10 +19,10 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Constructors
-		public Video(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync)
+		public Video(DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync)
 		: base(parent)
 		{
-			if (depthStencilFormats != DepthStenicFormats.Defualt) Debug.ThrowError("Video", "Only a Defualt DepthStenicFormat may be used in XNA here");
+			if (depthStencilFormats != DepthStencilFormats.Defualt) Debug.ThrowError("Video", "Only a Defualt DepthStenicFormat may be used in XNA here");
 
 			this.application = application;
 			Device = application.GraphicsDevice;
@@ -78,20 +78,7 @@ namespace Reign.Video.XNA
 
 		public void EnableRenderTarget(DepthStencilI depthStencil)
 		{
-			if (depthStencil == null)
-			{
-				Device.SetRenderTarget(null);
-			}
-			else
-			{
-				var buffer = (DepthStencil)depthStencil;
-				var buffers = new RenderTargetBinding[2]
-				{
-				    backBuffers[0],
-				    buffer.depthStencil
-				};
-				Device.SetRenderTargets(buffers);
-			}
+			Debug.ThrowError("Video", "DepthStencils are build into Rendertargets, thus this method does not apply to XNA");
 		}
 
 		public void ClearAll(float r, float g, float b, float a)

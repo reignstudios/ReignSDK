@@ -14,22 +14,22 @@ namespace Reign.Video.D3D9
 
 		private Video video;
 		private int width, height;
-		private DepthStenicFormats depthStencilFormats;
+		private DepthStencilFormats depthStencilFormats;
 		#endregion
 
 		#region Constructors
-		public static DepthStencilI New(DisposableI parent, int width, int height, DepthStenicFormats depthStencilFormats)
+		public static DepthStencilI New(DisposableI parent, int width, int height, DepthStencilFormats depthStencilFormats)
 		{
 			return new DepthStencil(parent, width, height, depthStencilFormats);
 		}
 
-		public DepthStencil(DisposableI parent, int width, int height, DepthStenicFormats depthStencilFormats)
+		public DepthStencil(DisposableI parent, int width, int height, DepthStencilFormats depthStencilFormats)
 		: base(parent)
 		{
 			init(parent, width, height, depthStencilFormats);
 		}
 
-		private void init(DisposableI parent, int width, int height, DepthStenicFormats depthStencilFormats)
+		private void init(DisposableI parent, int width, int height, DepthStencilFormats depthStencilFormats)
 		{
 			try
 			{
@@ -44,22 +44,27 @@ namespace Reign.Video.D3D9
 				int depthBit = 16, stencilBit = 0;
 				switch (depthStencilFormats)
 				{
-					case DepthStenicFormats.Defualt:
+					case DepthStencilFormats.Defualt:
 						depthBit = 24;
 						stencilBit = 0;
 						break;
 
-					case DepthStenicFormats.Depth24Stencil8:
+					case DepthStencilFormats.Depth24Stencil8:
 						depthBit = 24;
 						stencilBit = 8;
 						break;
 
-					case DepthStenicFormats.Depth16:
+					case DepthStencilFormats.Depth16:
 						depthBit = 16;
 						stencilBit = 0;
 						break;
 
-					case DepthStenicFormats.Depth32:
+					case DepthStencilFormats.Depth24:
+						depthBit = 24;
+						stencilBit = 0;
+						break;
+
+					case DepthStencilFormats.Depth32:
 						depthBit = 32;
 						stencilBit = 0;
 						break;

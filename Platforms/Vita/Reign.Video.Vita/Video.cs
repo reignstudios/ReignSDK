@@ -20,7 +20,7 @@ namespace Reign.Video.Vita
 		#endregion
 		
 		#region Constructors
-		public Video(DisposableI parent, ApplicationI application, DepthStenicFormats depthStencilFormats, bool vSync)
+		public Video(DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync)
 		: base(parent)
 		{
 			try
@@ -33,10 +33,11 @@ namespace Reign.Video.Vita
 				PixelFormat format = PixelFormat.None;
 				switch (depthStencilFormats)
 				{
-					case DepthStenicFormats.None: format = PixelFormat.None; break;
-					case DepthStenicFormats.Defualt: format = PixelFormat.Depth16; break;
-					case DepthStenicFormats.Depth24Stencil8: format = PixelFormat.Depth24Stencil8; break;
-					case DepthStenicFormats.Depth16: format = PixelFormat.Depth16; break;
+					case DepthStencilFormats.None: format = PixelFormat.None; break;
+					case DepthStencilFormats.Defualt: format = PixelFormat.Depth16; break;
+					case DepthStencilFormats.Depth24Stencil8: format = PixelFormat.Depth24Stencil8; break;
+					case DepthStencilFormats.Depth16: format = PixelFormat.Depth16; break;
+					case DepthStencilFormats.Depth24: format = PixelFormat.Depth24; break;
 
 					default:
 						Debug.ThrowError("Video", "Unsuported DepthStencilFormat type");
@@ -123,7 +124,7 @@ namespace Reign.Video.Vita
 			{
 				if (currentPixelTextures[i] == texture)
 				{
-					context.SetTexture(i, texture.texture);
+					context.SetTexture(i, null);
 					currentPixelTextures[i] = null;
 				}
 			}
