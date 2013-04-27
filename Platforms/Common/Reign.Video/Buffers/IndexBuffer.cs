@@ -17,29 +17,20 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		protected IndexBufferI(DisposableI parent, BufferUsages usage)
+		protected IndexBufferI(DisposableI parent, BufferUsages usage, int[] indices)
 		: base(parent)
 		{
 			this.usage = usage;
 			indexByteSize = sizeof(short);
-		}
-
-		protected IndexBufferI(DisposableI parent, BufferUsages usage, bool _32BitIndices)
-		: base(parent)
-		{
-			this.usage = usage;
-			this._32BitIndices = _32BitIndices;
+			indexCount = indices.Length;
+			_32BitIndices = indexCount > short.MaxValue;
 			indexByteSize = _32BitIndices ? sizeof(int) : sizeof(short);
 		}
 		#endregion
 
 		#region Methods
-		public virtual void Init(int[] indices)
-		{
-			indexCount = indices.Length;
-		}
-
-		public void Init(List<int[]> indices)
+		// TODO: Implement contructors for these
+		/*public void Init(List<int[]> indices)
 		{
 			int[] i = new int[indices.Count];
 			int indexSeg = 0;
@@ -53,7 +44,7 @@ namespace Reign.Video
 			}
 
 			Init(i);
-		}
+		}*/
 
 		public abstract void Update(int[] indices, int updateCount);
 		#endregion
@@ -61,10 +52,9 @@ namespace Reign.Video
 
 	public static class IndexBufferAPI
 	{
-		public static void Init(NewPtrMethod1 newPtr1, NewPtrMethod2 newPtr2)
+		public static void Init(NewPtrMethod1 newPtr1)
 		{
 			IndexBufferAPI.newPtr1 = newPtr1;
-			IndexBufferAPI.newPtr2 = newPtr2;
 		}
 
 		public delegate IndexBufferI NewPtrMethod1(DisposableI parent, BufferUsages usage, int[] indices);
@@ -72,13 +62,6 @@ namespace Reign.Video
 		public static IndexBufferI New(DisposableI parent, BufferUsages usage, int[] indices)
 		{
 			return newPtr1(parent, usage, indices);
-		}
-
-		public delegate IndexBufferI NewPtrMethod2(DisposableI parent, BufferUsages usage, int[] indices, bool _32BitIndices);
-		private static NewPtrMethod2 newPtr2;
-		public static IndexBufferI New(DisposableI parent, BufferUsages usage, int[] indices, bool _32BitIndices)
-		{
-			return newPtr2(parent, usage, indices, _32BitIndices);
 		}
 	}
 }

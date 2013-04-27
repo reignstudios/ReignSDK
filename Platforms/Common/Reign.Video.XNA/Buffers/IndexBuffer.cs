@@ -17,35 +17,20 @@ namespace Reign.Video.XNA
 			return new IndexBuffer(parent, usage, indices);
 		}
 
-		public static IndexBuffer New(DisposableI parent, BufferUsages usage, int[] indices, bool _32BitIndices)
-		{
-			return new IndexBuffer(parent, usage, indices, _32BitIndices);
-		}
-
-		public IndexBuffer(DisposableI parent, BufferUsages bufferUsage)
-		: base(parent, bufferUsage)
-		{
-			init(parent, null);
-		}
-
 		public IndexBuffer(DisposableI parent, BufferUsages bufferUsage, int[] indices)
-		: base(parent, bufferUsage)
-		{
-			init(parent, indices);
-		}
-
-		public IndexBuffer(DisposableI parent, BufferUsages bufferUsage, int[] indices, bool _32BitIndices)
-		: base(parent, bufferUsage, _32BitIndices)
-		{
-			init(parent, indices);
-		}
-
-		void init(DisposableI parent, int[] indices)
+		: base(parent, bufferUsage, indices)
 		{
 			try
 			{
 				video = parent.FindParentOrSelfWithException<Video>();
-				if (indices != null) Init(indices);
+				
+				#if SILVERLIGHT
+				X.IndexElementSize elementSize = X.IndexElementSize.SixteenBits;
+				#else
+				X.IndexElementSize elementSize = _32BitIndices ? X.IndexElementSize.ThirtyTwoBits : X.IndexElementSize.SixteenBits;
+				#endif
+				indexBuffer = new X.IndexBuffer(video.Device, elementSize, indices.Length, X.BufferUsage.WriteOnly);
+				Update(indices, indexCount);
 			}
 			catch (Exception e)
 			{
@@ -67,24 +52,6 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Methods
-		public override void Init(int[] indices)
-		{
-			base.Init(indices);
-			if (indexBuffer != null)
-			{
-				indexBuffer.Dispose();
-				indexBuffer = null;
-			}
-
-			#if SILVERLIGHT
-			X.IndexElementSize elementSize = X.IndexElementSize.SixteenBits;
-			#else
-			X.IndexElementSize elementSize = _32BitIndices ? X.IndexElementSize.ThirtyTwoBits : X.IndexElementSize.SixteenBits;
-			#endif
-			indexBuffer = new X.IndexBuffer(video.Device, elementSize, indices.Length, X.BufferUsage.WriteOnly);
-			Update(indices, indexCount);
-		}
-
 		public override void Update(int[] indices, int updateCount)
 		{
 			if (_32BitIndices)

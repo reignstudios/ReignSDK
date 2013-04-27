@@ -28,6 +28,11 @@ namespace Reign.Video.Vita
 				topology = value;
 			}
 		}
+		
+		public override IndexBufferI IndexBuffer
+		{
+			get {return null;}
+		}
 		#endregion
 
 		#region Constructors
@@ -42,13 +47,13 @@ namespace Reign.Video.Vita
 		}
 
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices)
-		: base(parent, bufferLayoutDesc, bufferUsage)
+		: base(parent, bufferLayoutDesc, bufferUsage, vertices)
 		{
 			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices, null);
 		}
 		
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
-		: base(parent, bufferLayoutDesc, bufferUsage)
+		: base(parent, bufferLayoutDesc, bufferUsage, vertices)
 		{
 			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices, indices);
 		}
@@ -110,18 +115,6 @@ namespace Reign.Video.Vita
 		#endregion
 
 		#region Methods
-		public override void Init(float[] vertices)
-		{
-			base.Init(vertices);
-			if (vertexBuffer != null)
-			{
-				vertexBuffer.Dispose();
-				vertexBuffer = null;
-			}
-			
-			throw new NotImplementedException();
-		}
-
 		public override void Update(float[] vertices, int updateCount)
 		{
 			vertexBuffer.SetVertices(vertices, 0, 0, updateCount);

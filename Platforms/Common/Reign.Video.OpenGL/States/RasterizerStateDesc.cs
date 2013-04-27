@@ -29,13 +29,13 @@ namespace Reign.Video.OpenGL
 
 				case RasterizerStateTypes.Solid_CullCW:
 					fillMode = GL.FILL;
-					cullMode = GL.BACK;
+					cullMode = GL.FRONT;
 					multisampleEnable = false;
 					break;
 
 				case RasterizerStateTypes.Solid_CullCCW:
 					fillMode = GL.FILL;
-					cullMode = GL.FRONT;
+					cullMode = GL.BACK;
 					multisampleEnable = false;
 					break;
 

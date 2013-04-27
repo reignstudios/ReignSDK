@@ -9,7 +9,6 @@ namespace Reign.Video.OpenGL
 		private Video video;
 		private uint vertexBuffer;
 		private uint primitiveTopology;
-		private IndexBuffer indexBuffer, currentIndexBuffer;
 		private VertexBuffer instanceBuffer;
 
 		private VertexBufferTopologys topology;
@@ -28,6 +27,12 @@ namespace Reign.Video.OpenGL
 				topology = value;
 			}
 		}
+
+		private IndexBuffer indexBuffer, currentIndexBuffer;
+		public override IndexBufferI IndexBuffer
+		{
+			get {return indexBuffer;}
+		}
 		#endregion
 
 		#region Constructors
@@ -42,25 +47,38 @@ namespace Reign.Video.OpenGL
 		}
 
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices)
-		: base(parent, bufferLayoutDesc, bufferUsage)
+		: base(parent, bufferLayoutDesc, bufferUsage, vertices)
 		{
 			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices, null);
 		}
 
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
-		: base(parent, bufferLayoutDesc, bufferUsage)
+		: base(parent, bufferLayoutDesc, bufferUsage, vertices)
 		{
 			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices, indices);
 		}
 
-		private void init(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
+		private unsafe void init(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
 		{
 			try
 			{
 				video = parent.FindParentOrSelfWithException<Video>();
 				Topology = vertexBufferTopology;
 
-				initBuffer(vertices);
+				uint vPtr = 0;
+				GL.GenBuffers(1, &vPtr);
+				vertexBuffer = vPtr;
+				if (vertexBuffer == 0) Debug.ThrowError("VertexBuffer", "Failed to create VertexBuffer");
+
+				GL.BindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
+				fixed (float* verticesPtr = vertices)
+				{
+					var bufferSize = new IntPtr(vertexByteSize * vertexCount);
+					GL.BufferData(GL.ARRAY_BUFFER, bufferSize, verticesPtr, GL.STATIC_DRAW);
+				}
+
+				Video.checkForError();
+				
 				if (indices != null && indices.Length != 0) indexBuffer = new IndexBuffer(this, usage, indices);
 			}
 			catch (Exception e)
@@ -68,31 +86,6 @@ namespace Reign.Video.OpenGL
 				Dispose();
 				throw e;
 			}
-		}
-
-		private unsafe void initBuffer(float[] vertices)
-		{
-			if (vertexBuffer != 0)
-			{
-				uint vertexBufferTEMP = vertexBuffer;
-				GL.BindBuffer(GL.ARRAY_BUFFER, 0);
-				GL.DeleteBuffers(1, &vertexBufferTEMP);
-				vertexBuffer = 0;
-			}
-
-			uint vPtr = 0;
-			GL.GenBuffers(1, &vPtr);
-			vertexBuffer = vPtr;
-			if (vertexBuffer == 0) Debug.ThrowError("VertexBuffer", "Failed to create VertexBuffer");
-
-			GL.BindBuffer(GL.ARRAY_BUFFER, vertexBuffer);
-			fixed (float* verticesPtr = vertices)
-			{
-				var bufferSize = new IntPtr(vertexByteSize * vertexCount);
-				GL.BufferData(GL.ARRAY_BUFFER, bufferSize, verticesPtr, GL.STATIC_DRAW);
-			}
-
-			Video.checkForError();
 		}
 
 		public unsafe override void Dispose()
@@ -117,17 +110,6 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Methods
-		public override void Init(float[] vertices)
-		{
-			base.Init(vertices);
-			initBuffer(vertices);
-			if (indexBuffer != null)
-			{
-				indexBuffer.Dispose();
-				indexBuffer = null;
-			}
-		}
-
 		public unsafe override void Update(float[] vertices, int updateCount)
 		{
 			GL.BindBuffer(GL.ARRAY_BUFFER, vertexBuffer);

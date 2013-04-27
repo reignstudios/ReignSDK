@@ -22,25 +22,23 @@ namespace Reign.Video
 		public int VertexByteSize {get{return vertexByteSize;}}
 		public int VertexFloatArraySize {get{return vertexFloatArraySize;}}
 		public abstract VertexBufferTopologys Topology {get; set;}
+		public abstract IndexBufferI IndexBuffer {get;}
 		#endregion
 
 		#region Constructors
-		protected VertexBufferI(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage)
+		protected VertexBufferI(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, float[] vertices)
 		: base(parent)
 		{
+			this.usage = usage;
 			vertexByteSize = bufferLayoutDesc.ByteSize;
 			vertexFloatArraySize = bufferLayoutDesc.FloatCount;
-			this.usage = usage;
+			vertexCount = vertices.Length / vertexFloatArraySize;
 		}
 		#endregion
 
 		#region Methods
-		public virtual void Init(float[] vertices)
-		{
-			vertexCount = vertices.Length / vertexFloatArraySize;
-		}
-
-		public void Init(List<float[]> vertices)
+		// TODO: Implement contructors for these and normal Vector types
+		/*public void Init(List<float[]> vertices)
 		{
 			float[] verts = new float[vertices.Count * vertexFloatArraySize];
 			int vertSeg = 0;
@@ -92,7 +90,7 @@ namespace Reign.Video
 			#else
 			Debug.ThrowError("VertexBufferI", "Does not work on Xbox360.");
 			#endif
-		}
+		}*/
 
 		public abstract void Update(float[] vertices, int updateCount);
 		public abstract void Enable();

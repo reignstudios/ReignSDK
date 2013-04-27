@@ -9,7 +9,6 @@ namespace Reign.Video.D3D9
 	{
 		#region Properties
 		private VertexBufferCom com;
-		private IndexBuffer indexBuffer, currentIndexBuffer;
 
 		private VertexBufferTopologys topology;
 		public override VertexBufferTopologys Topology
@@ -26,6 +25,12 @@ namespace Reign.Video.D3D9
 				topology = value;
 			}
 		}
+
+		private IndexBuffer indexBuffer, currentIndexBuffer;
+		public override IndexBufferI IndexBuffer
+		{
+			get {return indexBuffer;}
+		}
 		#endregion
 
 		#region Constructors
@@ -40,13 +45,13 @@ namespace Reign.Video.D3D9
 		}
 
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
-		: base(parent, bufferLayoutDesc, usage)
+		: base(parent, bufferLayoutDesc, usage, vertices)
 		{
 			init(parent, bufferLayoutDesc, usage, topology, vertices, null);
 		}
 
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
-		: base(parent, bufferLayoutDesc, usage)
+		: base(parent, bufferLayoutDesc, usage, vertices)
 		{
 			init(parent, bufferLayoutDesc, usage, topology, vertices, indices);
 		}
@@ -67,7 +72,9 @@ namespace Reign.Video.D3D9
 				}
 
 				com = new VertexBufferCom(video.com, topologyType);
-				initBuffer(vertices);
+				var error = com.Init(vertices, REIGN_D3DUSAGE.WRITEONLY, vertexCount, vertexByteSize);
+				if (error == VertexBufferErrors.VertexBuffer) Debug.ThrowError("VertexBuffer", "Failed to create VertexBuffer");
+				
 				if (indices != null && indices.Length != 0) indexBuffer = new IndexBuffer(this, usage, indices);
 			}
 			catch (Exception e)
@@ -75,12 +82,6 @@ namespace Reign.Video.D3D9
 				Dispose();
 				throw e;
 			}
-		}
-
-		private void initBuffer(float[] vertices)
-		{
-			var error = com.Init(vertices, REIGN_D3DUSAGE.WRITEONLY, vertexCount, vertexByteSize);
-			if (error == VertexBufferErrors.VertexBuffer) Debug.ThrowError("VertexBuffer", "Failed to create VertexBuffer");
 		}
 
 		public override void Dispose()
@@ -96,17 +97,6 @@ namespace Reign.Video.D3D9
 		#endregion
 
 		#region Methods
-		public override void Init(float[] vertices)
-		{
-			base.Init(vertices);
-			initBuffer(vertices);
-			if (indexBuffer != null)
-			{
-				indexBuffer.Dispose();
-				indexBuffer = null;
-			}
-		}
-
 		public override void Update(float[] vertices, int updateCount)
 		{
 			com.Update(vertices, updateCount, vertexByteSize);

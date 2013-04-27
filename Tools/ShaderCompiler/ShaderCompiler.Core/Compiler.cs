@@ -109,12 +109,12 @@ namespace ShaderCompiler.Core
 	
 					IntPtr vsBuffer;
 					int vsBufferSize;
-					var error = Reign_Video_D3D11_Component.ShaderModelCom.Compile(code[0], code[0].Length, "vs_4_0_level_9_3", out vsBuffer, out vsBufferSize);
+					var error = Reign_Video_D3D11_Component.ShaderModelCom.Compile(code[0], code[0].Length, "vs_4_0_level_9_1", out vsBuffer, out vsBufferSize);
 					if (error != null) throw new Exception("Failed to compile Metro VS shader: " + error);
 	
 					IntPtr psBuffer;
 					int psBufferSize;
-					error = Reign_Video_D3D11_Component.ShaderModelCom.Compile(code[1], code[1].Length, "ps_4_0_level_9_3", out psBuffer, out psBufferSize);
+					error = Reign_Video_D3D11_Component.ShaderModelCom.Compile(code[1], code[1].Length, "ps_4_0_level_9_1", out psBuffer, out psBufferSize);
 					if (error != null) throw new Exception("Failed to compile Metro PS shader: " + error);
 	
 					var data = new byte[vsBufferSize + psBufferSize];

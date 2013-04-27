@@ -16,35 +16,43 @@ namespace Reign.Video.OpenGL
 			return new IndexBuffer(parent, usage, indices);
 		}
 
-		public static IndexBuffer New(DisposableI parent, BufferUsages usage, int[] indices, bool _32BitIndices)
-		{
-			return new IndexBuffer(parent, usage, indices, _32BitIndices);
-		}
-
-		public IndexBuffer(DisposableI parent, BufferUsages bufferUsage)
-		: base(parent, bufferUsage)
-		{
-			init(parent, null);
-		}
-
-		public IndexBuffer(DisposableI parent, BufferUsages bufferUsage, int[] indices)
-		: base(parent, bufferUsage)
-		{
-			init(parent, indices);
-		}
-
-		public IndexBuffer(DisposableI parent, BufferUsages bufferUsage, int[] indices, bool _32BitIndice)
-		: base(parent, bufferUsage, _32BitIndice)
-		{
-			init(parent, indices);
-		}
-
-		private void init(DisposableI parent, int[] indices)
+		public unsafe IndexBuffer(DisposableI parent, BufferUsages bufferUsage, int[] indices)
+		: base(parent, bufferUsage, indices)
 		{
 			try
 			{
 				video = parent.FindParentOrSelfWithException<Video>();
-				if (indices != null) Init(indices);
+				
+				uint vPtr = 0;
+				GL.GenBuffers(1, &vPtr);
+				indexBuffer = vPtr;
+				if (indexBuffer == 0) Debug.ThrowError("IndexBuffer", "Failed to create IndexBuffer");
+
+				GL.BindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
+				if (_32BitIndices)
+				{
+					fixed(int* indicesPtr = indices)
+					{
+						var bufferSize = new IntPtr(indexByteSize * indexCount);
+						GL.BufferData(GL.ELEMENT_ARRAY_BUFFER, bufferSize, indicesPtr, GL.STATIC_DRAW);
+					}
+				}
+				else
+				{
+					var indices16Bit = new short[indices.Length];
+					for (int i = 0; i != indices.Length; ++i)
+					{
+						indices16Bit[i] = (short)indices[i];
+					}
+
+					fixed(short* indicesPtr = indices16Bit)
+					{
+						var bufferSize = new IntPtr(indexByteSize * indexCount);
+						GL.BufferData(GL.ELEMENT_ARRAY_BUFFER, bufferSize, indicesPtr, GL.STATIC_DRAW);
+					}
+				}
+
+				Video.checkForError();
 			}
 			catch (Exception e)
 			{
@@ -75,49 +83,6 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Methods
-		public unsafe override void Init(int[] indices)
-		{
-			base.Init(indices);
-			if (indexBuffer != 0)
-			{
-				uint indexBufferTEMP = indexBuffer;
-				GL.BindBuffer(GL.ELEMENT_ARRAY_BUFFER, 0);
-				GL.DeleteBuffers(1, &indexBufferTEMP);
-				indexBuffer = 0;
-			}
-
-			uint vPtr = 0;
-			GL.GenBuffers(1, &vPtr);
-			indexBuffer = vPtr;
-			if (indexBuffer == 0) Debug.ThrowError("IndexBuffer", "Failed to create IndexBuffer");
-
-			GL.BindBuffer(GL.ELEMENT_ARRAY_BUFFER, indexBuffer);
-			if (_32BitIndices)
-			{
-				fixed(int* indicesPtr = indices)
-				{
-					var bufferSize = new IntPtr(indexByteSize * indexCount);
-					GL.BufferData(GL.ELEMENT_ARRAY_BUFFER, bufferSize, indicesPtr, GL.STATIC_DRAW);
-				}
-			}
-			else
-			{
-				var indices16Bit = new short[indices.Length];
-				for (int i = 0; i != indices.Length; ++i)
-				{
-					indices16Bit[i] = (short)indices[i];
-				}
-
-				fixed(short* indicesPtr = indices16Bit)
-				{
-					var bufferSize = new IntPtr(indexByteSize * indexCount);
-					GL.BufferData(GL.ELEMENT_ARRAY_BUFFER, bufferSize, indicesPtr, GL.STATIC_DRAW);
-				}
-			}
-
-			Video.checkForError();
-		}
-
 		//glMapBuffer <<< NOTE: This method is slower, only use if have to
 		//glUnmapBuffer 
 		public unsafe override void Update(int[] indices, int updateCount)

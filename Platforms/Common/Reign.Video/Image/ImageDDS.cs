@@ -266,7 +266,6 @@ namespace Reign.Video
 				desc.ddckCKSrcBlt.dwColorSpaceLowValue = reader.ReadUInt32();
 				desc.ddckCKSrcBlt.dwColorSpaceHighValue = reader.ReadUInt32();
 
-
 				desc.Union4 = new DDSURFACEDESC2.DUMMYUNIONNAMEN4();
 				desc.Union4.ddpfPixelFormat = new DDPIXELFORMAT();
 				desc.Union4.ddpfPixelFormat.dwSize = reader.ReadUInt32();

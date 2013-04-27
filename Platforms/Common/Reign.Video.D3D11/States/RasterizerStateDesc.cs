@@ -42,7 +42,7 @@ namespace Reign.Video.D3D11
 
 					case RasterizerStateTypes.Solid_CullCW:
 						fillMode = REIGN_D3D11_FILL_MODE.SOLID;
-						cullMode = REIGN_D3D11_CULL_NONE.FRONT;
+						cullMode = REIGN_D3D11_CULL_NONE.BACK;
 						frontCounterClockwise = false;
 						depthBias = 0;
 						depthBiasClamp = 0.0f;
@@ -55,7 +55,7 @@ namespace Reign.Video.D3D11
 
 					case RasterizerStateTypes.Solid_CullCCW:
 						fillMode = REIGN_D3D11_FILL_MODE.SOLID;
-						cullMode = REIGN_D3D11_CULL_NONE.BACK;
+						cullMode = REIGN_D3D11_CULL_NONE.FRONT;
 						frontCounterClockwise = false;
 						depthBias = 0;
 						depthBiasClamp = 0.0f;

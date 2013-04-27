@@ -7,19 +7,19 @@ namespace Reign.Video.API
 		public static void Init(VideoTypes type)
 		{
 			#if WIN32
-			if (type == VideoTypes.D3D9) IndexBufferAPI.Init(Reign.Video.D3D9.IndexBuffer.New, Reign.Video.D3D9.IndexBuffer.New);
+			if (type == VideoTypes.D3D9) IndexBufferAPI.Init(Reign.Video.D3D9.IndexBuffer.New);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) IndexBufferAPI.Init(Reign.Video.D3D11.IndexBuffer.New, Reign.Video.D3D11.IndexBuffer.New);
+			if (type == VideoTypes.D3D11) IndexBufferAPI.Init(Reign.Video.D3D11.IndexBuffer.New);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) IndexBufferAPI.Init(Reign.Video.OpenGL.IndexBuffer.New, Reign.Video.OpenGL.IndexBuffer.New);
+			if (type == VideoTypes.OpenGL) IndexBufferAPI.Init(Reign.Video.OpenGL.IndexBuffer.New);
 			#endif
 
 			#if XNA
-			if (type == VideoTypes.XNA) IndexBufferAPI.Init(Reign.Video.XNA.IndexBuffer.New, Reign.Video.XNA.IndexBuffer.New);
+			if (type == VideoTypes.XNA) IndexBufferAPI.Init(Reign.Video.XNA.IndexBuffer.New);
 			#endif
 		}
 	}

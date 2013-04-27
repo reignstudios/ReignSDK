@@ -58,7 +58,7 @@ namespace Reign.Video
 				{
 					indices[i] = reader.ReadInt32();
 				}
-				IndexBuffer = IndexBufferAPI.New(this, BufferUsages.Default, indices, indices.Length > ushort.MaxValue);
+				IndexBuffer = IndexBufferAPI.New(this, BufferUsages.Default, indices);
 
 				// create instancing buffers
 				ClassicInstanceCount = classicInstanceCount;
@@ -103,7 +103,7 @@ namespace Reign.Video
 
 						iOffset += VertexBuffer.VertexCount;
 					}
-					InstancingIndexBuffer = IndexBufferAPI.New(this, BufferUsages.Default, instancingIndices, instancingIndices.Length > ushort.MaxValue);
+					InstancingIndexBuffer = IndexBufferAPI.New(this, BufferUsages.Default, instancingIndices);
 				}
 			}
 			catch (Exception e)

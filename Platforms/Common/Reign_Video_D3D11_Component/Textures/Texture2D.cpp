@@ -16,6 +16,7 @@ namespace Reign_Video_D3D11_Component
 		
 		// Texture2D
 		uint mipLvls = generateMipmaps ? 0 : 1;
+		if (hasMipmaps && mipmaps) mipLvls = mipmaps->Length;
 		D3D11_TEXTURE2D_DESC desc;
 		ZeroMemory(&desc, sizeof(D3D11_TEXTURE2D_DESC));
 		desc.Width = width;
@@ -67,6 +68,8 @@ namespace Reign_Video_D3D11_Component
 			return TextureError::ShaderResourceView;
 		}
 		shaderResource = shaderResourceTEMP;
+
+		if (generateMipmaps) video->deviceContext->GenerateMips(shaderResourceTEMP);
 
 		return TextureError::None;
 	}

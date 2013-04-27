@@ -12,7 +12,6 @@ namespace Reign.Video.XNA
 		private BufferLayout bufferLayout;
 		private X.PrimitiveType primitiveTopology;
 		private int primitiveVertexCount;
-		private IndexBuffer indexBuffer, currentIndexBuffer;
 		private VertexBuffer instanceBuffer;
 
 		private VertexBufferTopologys topology;
@@ -31,6 +30,12 @@ namespace Reign.Video.XNA
 				topology = value;
 			}
 		}
+
+		private IndexBuffer indexBuffer, currentIndexBuffer;
+		public override IndexBufferI IndexBuffer
+		{
+			get {return indexBuffer;}
+		}
 		#endregion
 
 		#region Constructors
@@ -45,13 +50,13 @@ namespace Reign.Video.XNA
 		}
 
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices)
-		: base(parent, bufferLayoutDesc, bufferUsage)
+		: base(parent, bufferLayoutDesc, bufferUsage, vertices)
 		{
 			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices, null);
 		}
 
 		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
-		: base(parent, bufferLayoutDesc, bufferUsage)
+		: base(parent, bufferLayoutDesc, bufferUsage, vertices)
 		{
 			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices, indices);
 		}
@@ -64,7 +69,9 @@ namespace Reign.Video.XNA
 				Topology = vertexBufferTopology;
 				bufferLayout = new BufferLayout(this, null, bufferLayoutDesc, true);
 
-				initBuffer(vertices);
+				vertexBuffer = new X.VertexBuffer(video.Device, bufferLayout.layout, vertexCount, X.BufferUsage.WriteOnly);
+				Update(vertices, vertexCount);
+
 				if (indices != null && indices.Length != 0) indexBuffer = new IndexBuffer(this, usage, indices);
 			}
 			catch (Exception e)
@@ -72,18 +79,6 @@ namespace Reign.Video.XNA
 				Dispose();
 				throw e;
 			}
-		}
-
-		private void initBuffer(float[] vertices)
-		{
-			if (vertexBuffer != null)
-			{
-				vertexBuffer.Dispose();
-				vertexBuffer = null;
-			}
-
-			vertexBuffer = new X.VertexBuffer(video.Device, bufferLayout.layout, vertexCount, X.BufferUsage.WriteOnly);
-			Update(vertices, vertexCount);
 		}
 
 		public override void Dispose()
@@ -99,17 +94,6 @@ namespace Reign.Video.XNA
 		#endregion
 
 		#region Methods
-		public override void Init(float[] vertices)
-		{
-			base.Init(vertices);
-			initBuffer(vertices);
-			if (indexBuffer != null)
-			{
-				indexBuffer.Dispose();
-				indexBuffer = null;
-			}
-		}
-
 		public override void Update(float[] vertices, int updateCount)
 		{
 			vertexBuffer.SetData<float>(vertices, 0, (vertexFloatArraySize * updateCount));
