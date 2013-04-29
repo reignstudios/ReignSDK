@@ -11,24 +11,6 @@ namespace Reign.Core
 
 		#region Operators
 		// +
-		public static void Add(ref Matrix2x3 value1, ref Matrix2x3 value2, out Matrix2x3 result)
-		{
-			result.X = value1.X + value2.X;
-			result.Y = value1.Y + value2.Y;
-		}
-
-		public static void Add(ref Matrix2x3 value1, float value2, out Matrix2x3 result)
-		{
-			result.X = value1.X + value2;
-			result.Y = value1.Y + value2;
-		}
-
-		public static void Add(float value1, ref Matrix2x3 value2, out Matrix2x3 result)
-		{
-			result.X = value1 + value2.X;
-			result.Y = value1 + value2.Y;
-		}
-
 		public static Matrix2x3 operator+(Matrix2x3 p1, Matrix2x3 p2)
 		{
 			p1.X += p2.X;
@@ -65,30 +47,6 @@ namespace Reign.Core
 		}
 
 		// -
-		public static void Sub(ref Matrix2x3 value1, ref Matrix2x3 value2, out Matrix2x3 result)
-		{
-			result.X = value1.X - value2.X;
-			result.Y = value1.Y - value2.Y;
-		}
-
-		public static void Sub(ref Matrix2x3 value1, float value2, out Matrix2x3 result)
-		{
-			result.X = value1.X - value2;
-			result.Y = value1.Y - value2;
-		}
-
-		public static void Sub(float value1, ref Matrix2x3 value2, out Matrix2x3 result)
-		{
-			result.X = value1 - value2.X;
-			result.Y = value1 - value2.Y;
-		}
-
-		public static void Neg(ref Matrix2x3 value, out Matrix2x3 result)
-		{
-			result.X = -value.X;
-			result.Y = -value.Y;
-		}
-
 		public static Matrix2x3 operator-(Matrix2x3 p1, Matrix2x3 p2)
 		{
 			p1.X -= p2.X;
@@ -132,24 +90,6 @@ namespace Reign.Core
 		}
 
 		// *
-		public static void Mul(ref Matrix2x3 value1, ref Matrix2x3 value2, out Matrix2x3 result)
-		{
-			result.X = value1.X * value2.X;
-			result.Y = value1.Y * value2.Y;
-		}
-
-		public static void Mul(ref Matrix2x3 value1, float value2, out Matrix2x3 result)
-		{
-			result.X = value1.X * value2;
-			result.Y = value1.Y * value2;
-		}
-
-		public static void Mul(float value1, ref Matrix2x3 value2, out Matrix2x3 result)
-		{
-			result.X = value1 * value2.X;
-			result.Y = value1 * value2.Y;
-		}
-
 		public static Matrix2x3 operator*(Matrix2x3 p1, Matrix2x3 p2)
 		{
 			p1.X *= p2.X;
@@ -186,24 +126,6 @@ namespace Reign.Core
 		}
 
 		// /
-		public static void Div(ref Matrix2x3 value1, ref Matrix2x3 value2, out Matrix2x3 result)
-		{
-			result.X = value1.X / value2.X;
-			result.Y = value1.Y / value2.Y;
-		}
-
-		public static void Div(ref Matrix2x3 value1, float value2, out Matrix2x3 result)
-		{
-			result.X = value1.X / value2;
-			result.Y = value1.Y / value2;
-		}
-
-		public static void Div(float value1, ref Matrix2x3 value2, out Matrix2x3 result)
-		{
-			result.X = value1 / value2.X;
-			result.Y = value1 / value2.Y;
-		}
-
 		public static Matrix2x3 operator/(Matrix2x3 p1, Matrix2x3 p2)
 		{
 			p1.X /= p2.X;

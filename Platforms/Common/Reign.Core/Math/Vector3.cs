@@ -45,33 +45,26 @@ namespace Reign.Core
 
 		#region Operators
 		// +
-		public static void Add(ref Vector3 value1, ref Vector3 value2, out Vector3 result)
-		{
-			result.X = value1.X + value2.X;
-			result.Y = value1.Y + value2.Y;
-			result.Z = value1.Z + value2.Z;
-		}
-
-		public static void Add(ref Vector3 value1, float value2, out Vector3 result)
-		{
-			result.X = value1.X + value2;
-			result.Y = value1.Y + value2;
-			result.Z = value1.Z + value2;
-		}
-
-		public static void Add(float value1, ref Vector3 value2, out Vector3 result)
-		{
-			result.X = value1 + value2.X;
-			result.Y = value1 + value2.Y;
-			result.Z = value1 + value2.Z;
-		}
-
 		public static Vector3 operator+(Vector3 p1, Vector3 p2)
 		{
 			p1.X += p2.X;
 			p1.Y += p2.Y;
 			p1.Z += p2.Z;
 			return p1;
+		}
+
+		public static Vector3 operator+(Vector3 p1, Vector2 p2)
+		{
+			p1.X += p2.X;
+			p1.Y += p2.Y;
+			return p1;
+		}
+
+		public static Vector3 operator+(Vector2 p1, Vector3 p2)
+		{
+			p2.X = p1.X + p2.X;
+			p2.Y = p1.Y + p2.Y;
+			return p2;
 		}
 
 		public static Vector3 operator+(Vector3 p1, float p2)
@@ -91,40 +84,26 @@ namespace Reign.Core
 		}
 
 		// -
-		public static void Sub(ref Vector3 value1, ref Vector3 value2, out Vector3 result)
-		{
-			result.X = value1.X - value2.X;
-			result.Y = value1.Y - value2.Y;
-			result.Z = value1.Z - value2.Z;
-		}
-
-		public static void Sub(ref Vector3 value1, float value2, out Vector3 result)
-		{
-			result.X = value1.X - value2;
-			result.Y = value1.Y - value2;
-			result.Z = value1.Z - value2;
-		}
-
-		public static void Sub(float value1, ref Vector3 value2, out Vector3 result)
-		{
-			result.X = value1 - value2.X;
-			result.Y = value1 - value2.Y;
-			result.Z = value1 - value2.Z;
-		}
-
-		public static void Neg(ref Vector3 value, out Vector3 result)
-		{
-			result.X = -value.X;
-			result.Y = -value.Y;
-			result.Z = -value.Z;
-		}
-
 		public static Vector3 operator-(Vector3 p1, Vector3 p2)
 		{
 			p1.X -= p2.X;
 			p1.Y -= p2.Y;
 			p1.Z -= p2.Z;
 			return p1;
+		}
+
+		public static Vector3 operator-(Vector3 p1, Vector2 p2)
+		{
+			p1.X -= p2.X;
+			p1.Y -= p2.Y;
+			return p1;
+		}
+
+		public static Vector3 operator-(Vector2 p1, Vector3 p2)
+		{
+			p2.X = p1.X - p2.X;
+			p2.Y = p1.Y - p2.Y;
+			return p2;
 		}
 
 		public static Vector3 operator-(Vector3 p1, float p2)
@@ -152,33 +131,26 @@ namespace Reign.Core
 		}
 
 		// *
-		public static void Mul(ref Vector3 value1, ref Vector3 value2, out Vector3 result)
-		{
-			result.X = value1.X * value2.X;
-			result.Y = value1.Y * value2.Y;
-			result.Z = value1.Z * value2.Z;
-		}
-
-		public static void Mul(ref Vector3 value1, float value2, out Vector3 result)
-		{
-			result.X = value1.X * value2;
-			result.Y = value1.Y * value2;
-			result.Z = value1.Z * value2;
-		}
-
-		public static void Mul(float value1, ref Vector3 value2, out Vector3 result)
-		{
-			result.X = value1 * value2.X;
-			result.Y = value1 * value2.Y;
-			result.Z = value1 * value2.Z;
-		}
-
 		public static Vector3 operator*(Vector3 p1, Vector3 p2)
 		{
 			p1.X *= p2.X;
 			p1.Y *= p2.Y;
 			p1.Z *= p2.Z;
 			return p1;
+		}
+
+		public static Vector3 operator*(Vector3 p1, Vector2 p2)
+		{
+			p1.X *= p2.X;
+			p1.Y *= p2.Y;
+			return p1;
+		}
+
+		public static Vector3 operator*(Vector2 p1, Vector3 p2)
+		{
+			p2.X = p1.X * p2.X;
+			p2.Y = p1.Y * p2.Y;
+			return p2;
 		}
 
 		public static Vector3 operator*(Vector3 p1, float p2)
@@ -198,33 +170,26 @@ namespace Reign.Core
 		}
 
 		// /
-		public static void Div(ref Vector3 value1, ref Vector3 value2, out Vector3 result)
-		{
-			result.X = value1.X / value2.X;
-			result.Y = value1.Y / value2.Y;
-			result.Z = value1.Z / value2.Z;
-		}
-
-		public static void Div(ref Vector3 value1, float value2, out Vector3 result)
-		{
-			result.X = value1.X / value2;
-			result.Y = value1.Y / value2;
-			result.Z = value1.Z / value2;
-		}
-
-		public static void Div(float value1, ref Vector3 value2, out Vector3 result)
-		{
-			result.X = value1 / value2.X;
-			result.Y = value1 / value2.Y;
-			result.Z = value1 / value2.Z;
-		}
-
 		public static Vector3 operator/(Vector3 p1, Vector3 p2)
 		{
 			p1.X /= p2.X;
 			p1.Y /= p2.Y;
 			p1.Z /= p2.Z;
 			return p1;
+		}
+
+		public static Vector3 operator/(Vector3 p1, Vector2 p2)
+		{
+			p1.X /= p2.X;
+			p1.Y /= p2.Y;
+			return p1;
+		}
+
+		public static Vector3 operator/(Vector2 p1, Vector3 p2)
+		{
+			p2.X = p1.X / p2.X;
+			p2.Y = p1.Y / p2.Y;
+			return p2;
 		}
 
 		public static Vector3 operator/(Vector3 p1, float p2)

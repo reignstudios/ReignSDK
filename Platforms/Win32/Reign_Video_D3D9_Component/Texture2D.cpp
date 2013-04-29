@@ -48,6 +48,7 @@ namespace Reign_Video_D3D9_Component
 					array<byte>^ mipmapData = mipmaps[i];
 
 					D3DLOCKED_RECT rect;
+					ZeroMemory(&rect, sizeof(D3DLOCKED_RECT));
 					systemTexture->LockRect(i, &rect, NULL, D3DLOCK_DISCARD);
 					pin_ptr<byte> srcData = &mipmapData[0];
 					memcpy(rect.pBits, srcData, mipmapData->Length);
