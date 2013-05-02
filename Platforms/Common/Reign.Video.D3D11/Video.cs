@@ -241,14 +241,34 @@ namespace Reign.Video.D3D11
 			com.Present();
 		}
 
+		internal static SurfaceFormats DefaultSurfaceFormat()
+		{
+			#if ARM
+			return SurfaceFormats.RGBAx4;
+			#else
+			return SurfaceFormats.RGBAx8;
+			#endif
+		}
+
 		internal REIGN_DXGI_FORMAT surfaceFormat(SurfaceFormats surfaceFormat)
 		{
 			switch (surfaceFormat)
 			{
-				case SurfaceFormats.Defualt: return REIGN_DXGI_FORMAT.R8G8B8A8_UNORM;
+				case SurfaceFormats.Defualt:
+					#if ARM
+					return REIGN_DXGI_FORMAT.B4G4R4A4_UNORM;
+					#else
+					return REIGN_DXGI_FORMAT.R8G8B8A8_UNORM;
+					#endif
+
 				case SurfaceFormats.DXT1: return REIGN_DXGI_FORMAT.BC1_UNORM;
 				case SurfaceFormats.DXT3: return REIGN_DXGI_FORMAT.BC2_UNORM;
 				case SurfaceFormats.DXT5: return REIGN_DXGI_FORMAT.BC3_UNORM;
+				case SurfaceFormats.RGBx565: return REIGN_DXGI_FORMAT.B5G6R5_UNORM;
+				#if ARM
+				case SurfaceFormats.RGBAx4: return REIGN_DXGI_FORMAT.B4G4R4A4_UNORM;
+				#endif
+				case SurfaceFormats.RGBx5_Ax1: return REIGN_DXGI_FORMAT.B5G5R5A1_UNORM;
 				case SurfaceFormats.RGBAx8: return REIGN_DXGI_FORMAT.R8G8B8A8_UNORM;
 				case SurfaceFormats.RGBx10_Ax2: return REIGN_DXGI_FORMAT.R10G10B10A2_UNORM;
 				case SurfaceFormats.RGBAx16f: return REIGN_DXGI_FORMAT.R16G16B16A16_FLOAT;

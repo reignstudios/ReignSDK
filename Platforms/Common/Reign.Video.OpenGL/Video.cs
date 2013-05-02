@@ -148,8 +148,8 @@ namespace Reign.Video.OpenGL
 				pfd.nVersion = 1;
 				pfd.dwFlags = WGL.PFD_DRAW_TO_WINDOW | WGL.PFD_SUPPORT_OPENGL | WGL.PFD_DOUBLEBUFFER;
 				pfd.iPixelType = (byte)WGL.PFD_TYPE_RGBA;
-				pfd.cColorBits = 24;
-				pfd.cAlphaBits = 8;
+				//pfd.cColorBits = 24;
+				//pfd.cAlphaBits = 8;
 				pfd.cDepthBits = (byte)depthBit;
 				pfd.cStencilBits = (byte)stencilBit;
 				pfd.iLayerType      = (byte)WGL.PFD_MAIN_PLANE;
@@ -843,31 +843,69 @@ namespace Reign.Video.OpenGL
 			}
 		}
 
-		internal static int surfaceFormat(SurfaceFormats surfaceFormat)
+		internal static SurfaceFormats DefaultSurfaceFormat()
+		{
+			#if GLES
+			return SurfaceFormats.RGBAx4;
+			#else
+			return SurfaceFormats.RGBAx8;
+			#endif
+		}
+
+		internal static int surfaceFormat(SurfaceFormats surfaceFormat, out uint pixelOrder, out uint byteSizes)
 		{
 			switch (surfaceFormat)
 			{
 				case SurfaceFormats.Defualt:
+					pixelOrder = GL.RGBA;
 					#if iOS || ANDROID || NaCl || RPI
-					return (int)GL.RGBA;
+					byteSizes = GL.UNSIGNED_SHORT_4_4_4_4;
+					return (int)GL.RGBA4;
 					#else
+					byteSizes = GL.UNSIGNED_BYTE;
 					return GL.RGBA8;
 					#endif
+
+				case SurfaceFormats.RGBx565:
+					pixelOrder = GL.RGB;
+					byteSizes = GL.UNSIGNED_SHORT_5_6_5;
+					return GL.RGB565;
+
+				case SurfaceFormats.RGBAx4:
+					pixelOrder = GL.RGBA;
+					byteSizes = GL.UNSIGNED_SHORT_4_4_4_4;
+					return GL.RGBA4;
+
+				case SurfaceFormats.RGBx5_Ax1:
+					pixelOrder = GL.RGBA;
+					byteSizes = GL.UNSIGNED_SHORT_5_5_5_1;
+					return GL.RGB5_A1;
 
 				case SurfaceFormats.RGBAx8:
-					#if iOS || ANDROID || NaCl || RPI
-					return (int)GL.RGBA;
-					#else
+					pixelOrder = GL.RGBA;
+					byteSizes = GL.UNSIGNED_BYTE;
 					return GL.RGBA8;
-					#endif
 
-				case SurfaceFormats.RGBx10_Ax2: return GL.RGB10_A2;
-				case SurfaceFormats.RGBAx16f: return GL.RGBA16F;
-				case SurfaceFormats.RGBAx32f: return GL.RGBA32F;
+				case SurfaceFormats.RGBx10_Ax2:
+					pixelOrder = GL.RGBA;
+					byteSizes = GL.UNSIGNED_INT_10_10_10_2;
+					return GL.RGB10_A2;
+
+				case SurfaceFormats.RGBAx16f:
+					pixelOrder = GL.RGBA;
+					byteSizes = GL.FLOAT;
+					return GL.RGBA16F;
+
+				case SurfaceFormats.RGBAx32f:
+					pixelOrder = GL.RGBA;
+					byteSizes = GL.FLOAT;
+					return GL.RGBA32F;
 
 				default: 
 					Debug.ThrowError("Video", "Unsuported SurfaceFormat: " + surfaceFormat);
-					return GL.RGBA8;
+					pixelOrder = 0;
+					byteSizes = 0;
+					return 0;
 			}
 		}
 		#endregion

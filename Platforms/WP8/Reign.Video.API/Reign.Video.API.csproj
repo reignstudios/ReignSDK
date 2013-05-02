@@ -66,7 +66,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\Lib\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WP8</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WP8;ARM</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -76,7 +76,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\Lib\</OutputPath>
-    <DefineConstants>TRACE;WP8</DefineConstants>
+    <DefineConstants>TRACE;WP8;ARM</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>

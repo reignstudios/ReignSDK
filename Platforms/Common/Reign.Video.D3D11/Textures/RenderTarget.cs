@@ -9,6 +9,7 @@ namespace Reign.Video.D3D11
 		#region Properties
 		private RenderTargetCom renderTargetCom;
 		private DepthStencil depthStencil;
+		private bool initSuccess;
 		#endregion
 
 		#region Constructors
@@ -25,7 +26,7 @@ namespace Reign.Video.D3D11
 		public RenderTarget(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent, width, height, surfaceFormat, usage, loadedCallback)
 		{
-			initDepthStencil(width, height, depthStencilFormat);
+			if (initSuccess) initDepthStencil(width, height, depthStencilFormat);
 		}
 
 		public RenderTarget(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
@@ -35,7 +36,8 @@ namespace Reign.Video.D3D11
 
 		protected override bool init(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			if (!base.init(parent, image, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, true, loadedCallback)) return false;
+			initSuccess = base.init(parent, image, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, true, loadedCallback);
+			if (!initSuccess) return false;
 
 			try
 			{

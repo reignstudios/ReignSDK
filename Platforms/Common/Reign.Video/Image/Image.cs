@@ -172,6 +172,9 @@ namespace Reign.Video
 		{
 			switch (surfaceFormat)
 			{
+				case SurfaceFormats.RGBx565: return width * height * 2;
+				case SurfaceFormats.RGBAx4: return width * height * 2;
+				case SurfaceFormats.RGBx5_Ax1: return width * height * 2;
 				case SurfaceFormats.RGBAx8: return width * height * 4;
 				case SurfaceFormats.RGBx10_Ax2: return width * height * 4;
 				case SurfaceFormats.RGBAx16f: return (width * height * 4) * 2;
@@ -186,7 +189,7 @@ namespace Reign.Video
 				case SurfaceFormats.PVR_RGB_4: return (width * height) / 2;
 				case SurfaceFormats.PVR_RGBA_2: return (width * height) / 4;
 				case SurfaceFormats.PVR_RGBA_4: return (width * height) / 2;
-				default: Debug.ThrowError("Image", string.Format("Unsuported surface format: ", surfaceFormat)); break;
+				default: Debug.ThrowError("Image", string.Format("Unsuported surface format: {0}", surfaceFormat)); break;
 			}
 
 			return -1;

@@ -106,16 +106,27 @@ namespace Reign.Video.XNA
 			Device.SetVertexBuffer(null);
 		}
 
+		internal static SurfaceFormats DefaultSurfaceFormat()
+		{
+			return SurfaceFormats.RGBAx8;
+		}
+
 		internal static SurfaceFormat surfaceFormat(SurfaceFormats surfaceFormat)
 		{
 			switch (surfaceFormat)
 			{
+				case SurfaceFormats.Defualt: return SurfaceFormat.Color;
 				case SurfaceFormats.RGBAx8: return SurfaceFormat.Color;
+
 				#if !SILVERLIGHT
+				case SurfaceFormats.RGBx565: return SurfaceFormat.Bgr565;
+				case SurfaceFormats.RGBAx4: return SurfaceFormat.Bgra4444;
+				case SurfaceFormats.RGBx5_Ax1: return SurfaceFormat.Bgra5551;
 				case SurfaceFormats.RGBx10_Ax2: return SurfaceFormat.Rgba1010102;
 				case SurfaceFormats.RGBAx16f: return SurfaceFormat.HalfVector4;
 				case SurfaceFormats.RGBAx32f: return SurfaceFormat.Vector4;
 				#endif
+
 				default:
 					Debug.ThrowError("RenderTarget", "Unsuported SurfaceFormat");
 					return SurfaceFormat.Color;

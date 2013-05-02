@@ -129,10 +129,12 @@ namespace Reign.Video.OpenGL
 					if (imageType == typeof(ImagePNG) || imageType == typeof(ImageJPG) || imageType == typeof(ImageBMP) || imageType == typeof(ImageBMPC))
 					#endif
 					{
+						uint pixelOrder, byteSizes;
+						int format = Video.surfaceFormat(surfaceFormat, out pixelOrder, out byteSizes);
 						var mipmap = image.Mipmaps[0];
 						fixed (byte* data = mipmap.Data)
 						{
-							GL.TexImage2D(GL.TEXTURE_2D, 0, Video.surfaceFormat(surfaceFormat), mipmap.Size.Width, mipmap.Size.Height, 0, GL.RGBA, GL.UNSIGNED_BYTE, data);
+							GL.TexImage2D(GL.TEXTURE_2D, 0, format, mipmap.Size.Width, mipmap.Size.Height, 0, pixelOrder, byteSizes, data);
 							if (generateMipmaps)
 							{
 								hasMipmaps = true;
@@ -190,14 +192,17 @@ namespace Reign.Video.OpenGL
 				}
 				else
 				{
-					GL.TexImage2D(GL.TEXTURE_2D, 0, Video.surfaceFormat(surfaceFormat), width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, IntPtr.Zero.ToPointer());
+					//GL.TexImage2D(GL.TEXTURE_2D, 0, Video.surfaceFormat(surfaceFormat), width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, IntPtr.Zero.ToPointer());
+					uint pixelOrder, byteSizes;
+					int format = Video.surfaceFormat(surfaceFormat, out pixelOrder, out byteSizes);
+					GL.TexImage2D(GL.TEXTURE_2D, 0, format, width, height, 0, pixelOrder, byteSizes, IntPtr.Zero.ToPointer());
 					if (generateMipmaps)
 					{
 						hasMipmaps = true;
 						GL.GenerateMipmap(GL.TEXTURE_2D);
 					}
 					Size = new Size2(width, height);
-					PixelByteSize = Image.CalculatePixelByteSize((surfaceFormat == SurfaceFormats.Defualt ? SurfaceFormats.RGBAx8 : surfaceFormat), width, height);
+					PixelByteSize = Image.CalculatePixelByteSize((surfaceFormat == SurfaceFormats.Defualt ? Video.DefaultSurfaceFormat() : surfaceFormat), width, height);
 				}
 
 				SizeF = Size.ToVector2();
@@ -256,7 +261,9 @@ namespace Reign.Video.OpenGL
 		public void Copy(Texture2DI texture)
 		{
 			var textureTEMP = (Texture2D)texture;
-			GL.CopyTexImage2D(textureTEMP.Texture, 0, (uint)Video.surfaceFormat(SurfaceFormats.RGBAx8), 0, 0, Size.Width, Size.Height, 0);
+			uint pixelOrder, byteSizes;
+			int format = Video.surfaceFormat(Video.DefaultSurfaceFormat(), out pixelOrder, out byteSizes);
+			GL.CopyTexImage2D(textureTEMP.Texture, 0, (uint)format, 0, 0, Size.Width, Size.Height, 0);
 		}
 
 		public void Update(byte[] data)

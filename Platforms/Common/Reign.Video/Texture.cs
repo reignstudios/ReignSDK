@@ -15,16 +15,23 @@ namespace Reign.Video
 	{
 		Defualt,
 		Unknown,
+
 		DXT1,
 		DXT3,
 		DXT5,
+
 		ATC_RGB,
 		ATC_RGBA_Explicit,
 		ATC_RGBA_Interpolated,
+
 		PVR_RGB_2,
 		PVR_RGBA_2,
 		PVR_RGB_4,
 		PVR_RGBA_4,
+
+		RGBx565,
+		RGBAx4,
+		RGBx5_Ax1,
 		RGBAx8,
 		RGBx10_Ax2,
 		RGBAx16f,

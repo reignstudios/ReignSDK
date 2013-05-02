@@ -134,7 +134,13 @@ namespace Reign.Video.Vita
 		{
 			switch (surfaceFormat)
 			{
+				case SurfaceFormats.Defualt: return PixelFormat.Rgba4444;
+				case SurfaceFormats.RGBx565: return PixelFormat.Rgb565;
+				case SurfaceFormats.RGBAx4: return PixelFormat.Rgba4444;
+				case SurfaceFormats.RGBx5_Ax1: return PixelFormat.Rgba5551;
 				case SurfaceFormats.RGBAx8: return PixelFormat.Rgba;
+				case SurfaceFormats.RGBAx16f: return PixelFormat.RgbaH;
+				
 				default:
 					Debug.ThrowError("RenderTarget", "Unsuported SurfaceFormat");
 					return PixelFormat.Rgba;

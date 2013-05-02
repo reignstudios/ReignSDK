@@ -231,6 +231,11 @@ namespace Reign.Video.D3D9
 			}
 		}
 
+		internal static SurfaceFormats DefaultSurfaceFormat()
+		{
+			return SurfaceFormats.RGBAx8;
+		}
+
 		internal REIGN_D3DFORMAT surfaceFormat(SurfaceFormats surfaceFormat)
 		{
 		    switch (surfaceFormat)
@@ -239,6 +244,9 @@ namespace Reign.Video.D3D9
 		        case SurfaceFormats.DXT1: return REIGN_D3DFORMAT.DXT1;
 		        case SurfaceFormats.DXT3: return REIGN_D3DFORMAT.DXT3;
 		        case SurfaceFormats.DXT5: return REIGN_D3DFORMAT.DXT5;
+				case SurfaceFormats.RGBx565: return REIGN_D3DFORMAT.R5G6B5;
+				case SurfaceFormats.RGBAx4: return REIGN_D3DFORMAT.A4R4G4B4;
+				case SurfaceFormats.RGBx5_Ax1: return REIGN_D3DFORMAT.A1R5G5B5;
 		        case SurfaceFormats.RGBAx8: return REIGN_D3DFORMAT.A8R8G8B8;
 		        case SurfaceFormats.RGBx10_Ax2: return REIGN_D3DFORMAT.A2R10G10B10;
 		        case SurfaceFormats.RGBAx16f: return REIGN_D3DFORMAT.A16B16G16R16F;

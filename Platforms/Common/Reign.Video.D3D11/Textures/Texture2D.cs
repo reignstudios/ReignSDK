@@ -132,7 +132,7 @@ namespace Reign.Video.D3D11
 				{
 					if (width == 0 || height == 0) Debug.ThrowError("Texture2D", "Width or Height cannot be 0");
 					Size = new Size2(width, height);
-					PixelByteSize = Image.CalculatePixelByteSize((surfaceFormat == SurfaceFormats.Defualt ? SurfaceFormats.RGBAx8 : surfaceFormat), width, height);
+					PixelByteSize = Image.CalculatePixelByteSize((surfaceFormat == SurfaceFormats.Defualt ? Video.DefaultSurfaceFormat() : surfaceFormat), width, height);
 				}
 				SizeF = Size.ToVector2();
 
