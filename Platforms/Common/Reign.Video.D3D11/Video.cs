@@ -265,7 +265,7 @@ namespace Reign.Video.D3D11
 				case SurfaceFormats.DXT3: return REIGN_DXGI_FORMAT.BC2_UNORM;
 				case SurfaceFormats.DXT5: return REIGN_DXGI_FORMAT.BC3_UNORM;
 				case SurfaceFormats.RGBx565: return REIGN_DXGI_FORMAT.B5G6R5_UNORM;
-				#if ARM
+				#if WINRT || WP8
 				case SurfaceFormats.RGBAx4: return REIGN_DXGI_FORMAT.B4G4R4A4_UNORM;
 				#endif
 				case SurfaceFormats.RGBx5_Ax1: return REIGN_DXGI_FORMAT.B5G5R5A1_UNORM;
