@@ -125,22 +125,16 @@ namespace Reign.Video.XNA
 					if (fileName != null || image != null)
 					{
 						#if SILVERLIGHT
-						texture = new X.Texture2D(video.Device, 256, 256);
-						texture.SetData<byte>(image.Mipmaps[0].Data);
+						texture = new X.Texture2D(video.Device, image.Size.Width, image.Size.Height, image.Mipmaps.Length != 0, Video.surfaceFormat(surfaceFormat));
+						for (int i = 0; i != image.Mipmaps.Length; ++i)
+						{
+							var mipmap = image.Mipmaps[i];
+							texture.SetData<byte>(i, null, mipmap.Data, 0, mipmap.Data.Length);
+						}
 						#else
 						texture = parent.FindParentOrSelfWithException<RootDisposable>().Content.Load<X.Texture2D>(Streams.StripFileExt(fileName));
 						loadedFromContentManager = true;
 						#endif
-						switch (texture.Format)
-						{
-							case X.SurfaceFormat.Color: surfaceFormat = SurfaceFormats.RGBAx8; break;
-							#if !SILVERLIGHT
-							case X.SurfaceFormat.Dxt1: surfaceFormat = SurfaceFormats.DXT1; break;
-							case X.SurfaceFormat.Dxt3: surfaceFormat = SurfaceFormats.DXT3; break;
-							case X.SurfaceFormat.Dxt5: surfaceFormat = SurfaceFormats.DXT5; break;
-							#endif
-							default: Debug.ThrowError("Texture2D", "Unsuported surface format"); break;
-						}
 					}
 					else
 					{

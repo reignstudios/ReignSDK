@@ -145,6 +145,27 @@ namespace Reign.Core
 		{
 			return base.GetHashCode();
 		}
-#endregion
+
+		public Size2 FitWithinFrame(Size2 frame, Size2 obj)
+		{
+			float frameSlope = frame.Width / (float)frame.Height;
+			float objSlope = obj.Width / (float)obj.Height;
+			Size2 size;
+			if (objSlope > frameSlope)
+			{
+				float scale = frame.Width / obj.Width;
+				size.Width = (int)(obj.Width * scale);
+				size.Height = (int)(obj.Height * scale);
+			}
+			else
+			{
+				float scale = frame.Height / obj.Height;
+				size.Width = (int)(obj.Width * scale);
+				size.Height = (int)(obj.Height * scale);
+			}
+
+			return size;
+		}
+		#endregion
 	}
 }
