@@ -46,7 +46,7 @@ namespace Reign.Core
 			base.Name = desc.Name;
 			base.Text = desc.Name;
 			var frame = desc.FrameSize;
-			if (frame.Width == 0 || frame.Height == 0) frame = (OS.ScreenSize.ToVector2() / 1.5f).ToSize();
+			if (frame.Width == 0 || frame.Height == 0) frame = (OS.ScreenSize.ToVector2() / 1.5f).ToSize2();
 			base.ClientSize = new System.Drawing.Size(frame.Width, frame.Height);
 	
 			switch (desc.StartPosition)
