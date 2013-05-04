@@ -433,7 +433,7 @@ namespace Reign_Video_D3D11_Component
 		if ((lastWidth != width || lastHeight != height) && width != 0 && height != 0)
 		{
 			renderTarget->Release();
-			depthStencil->Release();
+			if (depthStencil) depthStencil->Release();
 			if (depthTexture) depthTexture->Release();
 			#if WINRT
 			if (dxgiSurface) dxgiSurface->Release();

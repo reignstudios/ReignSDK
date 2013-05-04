@@ -628,7 +628,7 @@ namespace ShaderMaterials.{0}
 			Shader.Apply();
 		}}
 
-		public static void ApplyGlobalContants()
+		public void ApplyGlobalContants()
 		{{
 			{4}
 		}}
@@ -638,7 +638,7 @@ namespace ShaderMaterials.{0}
 			{5}
 		}}
 
-		public static void ApplyInstancingContants()
+		public void ApplyInstancingContants()
 		{{
 			{6}
 		}}

@@ -92,10 +92,10 @@ namespace Reign.Core
 		{
 			return new Matrix4
 			(
-				new Vector4(transform.Transform.X, 0),
-				new Vector4(transform.Transform.Y, 0),
-				new Vector4(transform.Transform.Z, 0),
-				new Vector4(transform.Translation.X, transform.Translation.Y, transform.Translation.Z, 1)
+				new Vector4(transform.Transform.X, transform.Translation.X),
+				new Vector4(transform.Transform.Y, transform.Translation.Y),
+				new Vector4(transform.Transform.Z, transform.Translation.Z),
+				new Vector4(0, 0, 0, 1)
 			);
 		}
 
@@ -104,21 +104,21 @@ namespace Reign.Core
 			result.X.X = transform.Transform.X.X;
 			result.X.Y = transform.Transform.X.Y;
 			result.X.Z = transform.Transform.X.Z;
-			result.X.W = 0;
+			result.X.W = transform.Translation.X;
 
 			result.Y.X = transform.Transform.Y.X;
 			result.Y.Y = transform.Transform.Y.Y;
 			result.Y.Z = transform.Transform.Y.Z;
-			result.Y.W = 0;
+			result.Y.W = transform.Translation.Y;
 
 			result.Z.X = transform.Transform.Z.X;
 			result.Z.Y = transform.Transform.Z.Y;
 			result.Z.Z = transform.Transform.Z.Z;
-			result.Z.W = 0;
+			result.Z.W = transform.Translation.Z;
 
-			result.W.X = transform.Translation.X;
-			result.W.Y = transform.Translation.Y;
-			result.W.Z = transform.Translation.Z;
+			result.W.X = 0;
+			result.W.Y = 0;
+			result.W.Z = 0;
 			result.W.W = 1;
 		}
 
@@ -126,10 +126,10 @@ namespace Reign.Core
 		{
 			return new Matrix4
 			(
-				new Vector4(transform.X, 0),
-				new Vector4(transform.Y, 0),
-				new Vector4(transform.Z, 0),
-				new Vector4(position.X, position.Y, position.Z, 1)
+				new Vector4(transform.X, position.X),
+				new Vector4(transform.Y, position.Y),
+				new Vector4(transform.Z, position.Z),
+				new Vector4(0, 0, 0, 1)
 			);
 		}
 
@@ -138,21 +138,21 @@ namespace Reign.Core
 			result.X.X = transform.X.X;
 			result.X.Y = transform.X.Y;
 			result.X.Z = transform.X.Z;
-			result.X.W = 0;
+			result.X.W = position.X;
 
 			result.Y.X = transform.Y.X;
 			result.Y.Y = transform.Y.Y;
 			result.Y.Z = transform.Y.Z;
-			result.Y.W = 0;
+			result.Y.W = position.Y;
 
 			result.Z.X = transform.Z.X;
 			result.Z.Y = transform.Z.Y;
 			result.Z.Z = transform.Z.Z;
-			result.Z.W = 0;
+			result.Z.W = position.Z;
 
-			result.W.X = position.X;
-			result.W.Y = position.Y;
-			result.W.Z = position.Z;
+			result.W.X = 0;
+			result.W.Y = 0;
+			result.W.Z = 0;
 			result.W.W = 1;
 		}
 
@@ -160,10 +160,10 @@ namespace Reign.Core
 		{
 			return new Matrix4
 			(
-				new Vector4(transform.X * scale.X, 0),
-				new Vector4(transform.Y * scale.Y, 0),
-				new Vector4(transform.Z * scale.Z, 0),
-				new Vector4(position.X, position.Y, position.Z, 1)
+				new Vector4(transform.X * scale.X, position.X),
+				new Vector4(transform.Y * scale.Y, position.Y),
+				new Vector4(transform.Z * scale.Z, position.Z),
+				new Vector4(0, 0, 0, 1)
 			);
 		}
 
@@ -172,21 +172,21 @@ namespace Reign.Core
 			result.X.X = transform.X.X * scale.X;
 			result.X.Y = transform.X.Y * scale.X;
 			result.X.Z = transform.X.Z * scale.X;
-			result.X.W = 0;
+			result.X.W = position.X;
 
 			result.Y.X = transform.Y.X * scale.Y;
 			result.Y.Y = transform.Y.Y * scale.Y;
 			result.Y.Z = transform.Y.Z * scale.Y;
-			result.Y.W = 0;
+			result.Y.W = position.Y;
 
 			result.Z.X = transform.Z.X * scale.Z;
 			result.Z.Y = transform.Z.Y * scale.Z;
 			result.Z.Z = transform.Z.Z * scale.Z;
-			result.Z.W = 0;
+			result.Z.W = position.Z;
 
-			result.W.X = position.X;
-			result.W.Y = position.Y;
-			result.W.Z = position.Z;
+			result.W.X = 0;
+			result.W.Y = 0;
+			result.W.Z = 0;
 			result.W.W = 1;
 		}
 
