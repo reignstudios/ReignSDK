@@ -94,7 +94,11 @@ namespace Reign.Core
 
 		public static void AddLoadableException(Exception e)
 		{
-			lock (loadableExceptions) loadableExceptions.Add(e);
+			lock (loadableExceptions)
+			{
+				loadableExceptions.Add(e);
+				Message.Show("Loadable Error", e.Message);
+			}
 		}
 
 		public static Exception UpdateLoad()
@@ -120,6 +124,7 @@ namespace Reign.Core
 					aysncLoadDone = false;
 					asyncLoadingExeception = null;
 					asyncUpdateLoad();
+					return asyncLoadingExeception;
 				}
 			}
 
@@ -138,7 +143,11 @@ namespace Reign.Core
 			{
 				try
 				{
-					if (loadable.UpdateLoad() || loadable.FailedToLoad) loadables.Remove(loadable);
+					if (loadable.UpdateLoad() || loadable.FailedToLoad)
+					{
+						loadables.Remove(loadable);
+						if (loadable.FailedToLoad) Debug.ThrowError("Loader", "Failed to load object");
+					}
 				}
 				catch (Exception e)
 				{

@@ -379,9 +379,9 @@ namespace Reign.Video.D3D11
 			throw new NotImplementedException();
 		}
 
-		public void Set(Matrix4[] values)
+		public unsafe void Set(Matrix4[] values)
 		{
-			throw new NotImplementedException();
+			fixed (Matrix4* data = values) com.Set((int)data, sizeof(Matrix4) * values.Length);
 		}
 
 		public void Set(float[] values, int count)
@@ -449,9 +449,9 @@ namespace Reign.Video.D3D11
 			throw new NotImplementedException();
 		}
 
-		public void Set(Matrix4[] values, int offset, int count)
+		public unsafe void Set(Matrix4[] values, int offset, int count)
 		{
-			throw new NotImplementedException();
+			fixed (Matrix4* data = values) com.Set((int)data + offset, sizeof(Matrix4) * count);
 		}
 		#endif
 		#endregion
