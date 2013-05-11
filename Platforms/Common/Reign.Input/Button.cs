@@ -5,7 +5,7 @@
 		#region Properties
 		public bool Down {get; private set;}
 		public bool Up {get; private set;}
-		public int TimeOn {get; private set;}
+		public int OnTic {get; private set;}
 
 		private bool onOld;
 		public bool On { get; private set; }
@@ -18,8 +18,8 @@
 			Up = false;
 			onOld = On;
 			On = on;
-			if (On == true) TimeOn ++;
-			else TimeOn = 0;
+			if (On == true) OnTic ++;
+			else OnTic = 0;
 		
 			if (onOld != On)
 			{
@@ -34,7 +34,7 @@
 			Up = false;
 			On = false;
 			onOld = false;
-			TimeOn = 0;
+			OnTic = 0;
 		}
 		#endregion
 	}
