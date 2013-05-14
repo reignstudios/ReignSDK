@@ -209,7 +209,7 @@ namespace Reign.Video
 	
 		public void Apply()
 		{
-			ViewMatrix = Matrix4.LookAt(Position, LookAtPosition, UpPosition-Position);
+			ViewMatrix = Matrix4.View(Position, LookAtPosition, UpPosition-Position);
 			ProjectionMatrix = Matrix4.Perspective(Fov, float.IsNaN(Aspect) ? ViewPort.AspectRatio : Aspect, Near, Far);
 			TransformMatrix = ViewMatrix.Multiply(ProjectionMatrix);
 			TransformInverseMatrix = TransformMatrix.Invert();
@@ -217,7 +217,7 @@ namespace Reign.Video
 
 		public void ApplyOrthographic()
 		{
-			ViewMatrix = Matrix4.LookAt(Position, LookAtPosition, UpPosition-Position);
+			ViewMatrix = Matrix4.View(Position, LookAtPosition, UpPosition-Position);
 			ProjectionMatrix = Matrix4.Orthographic(ViewPort.Size.Width, ViewPort.Size.Height, Near, Far);
 			TransformMatrix = ViewMatrix.Multiply(ProjectionMatrix);
 			TransformInverseMatrix = TransformMatrix.Invert();
@@ -225,7 +225,7 @@ namespace Reign.Video
 
 		public void ApplyOrthographicCentered()
 		{
-			ViewMatrix = Matrix4.LookAt(Position, LookAtPosition, UpPosition-Position);
+			ViewMatrix = Matrix4.View(Position, LookAtPosition, UpPosition-Position);
 			ProjectionMatrix = Matrix4.OrthographicCentered(ViewPort.Size.Width, ViewPort.Size.Height, Near, Far);
 			TransformMatrix = ViewMatrix.Multiply(ProjectionMatrix);
 			TransformInverseMatrix = TransformMatrix.Invert();

@@ -761,22 +761,14 @@ namespace Reign.Core
 			Transpose(result, out result);
 		}
 
-		public static Matrix4 LookAt(Vector3 position, Vector3 lookAt, Vector3 upVector)
+		public static Matrix4 View(Vector3 position, Vector3 lookAt, Vector3 upVector)
 		{
-			var forward = (lookAt - position).Normalize();
-			var xVec = forward.Cross(upVector).Normalize();
-			upVector = xVec.Cross(forward);
-			
-			return new Matrix4
-			(
-				new Vector4(xVec.X, xVec.Y, xVec.Z, position.Dot(-xVec)),
-				new Vector4(upVector.X, upVector.Y, upVector.Z, position.Dot(-upVector)),
-				new Vector4(-forward.X, -forward.Y, -forward.Z, position.Dot(forward)),
-				new Vector4(0, 0, 0, 1)
-			);
+			Matrix4 result;
+			View(ref position, ref lookAt, ref upVector, out result);
+			return result;
 		}
 
-		public static void LookAt(ref Vector3 position, ref Vector3 lookAt, ref Vector3 upVector, out Matrix4 result)
+		public static void View(ref Vector3 position, ref Vector3 lookAt, ref Vector3 upVector, out Matrix4 result)
 		{
 			var forward = (lookAt - position).Normalize();
 			var xVec = forward.Cross(upVector).Normalize();
@@ -825,18 +817,9 @@ namespace Reign.Core
 
 		public static Matrix4 Frustum(float left, float right, float bottom, float top, float near, float far)
 		{
-			float width = right - left;
-			float height = top - bottom;
-			float depth = far - near;
-			float n = near * 2;
-
-			return new Matrix4
-			(
-				new Vector4(n/width, 0, (right+left)/width, 0),
-				new Vector4(0, n/height, (top+bottom)/height, 0),
-				new Vector4(0, 0, -(far+near)/depth, -(n*far)/depth),
-				new Vector4(0, 0, -1, 1)
-			);
+			Matrix4 result;
+			Frustum(left, right, bottom, top, near, far, out result);
+			return result;
 		}
 
 		public static void Frustum(float left, float right, float bottom, float top, float near, float far, out Matrix4 result)
@@ -864,7 +847,7 @@ namespace Reign.Core
 			result.W.X = 0;
 			result.W.Y = 0;
 			result.W.Z = -1;
-			result.W.W = 1;
+			result.W.W = 0;
 		}
 
 		public static Matrix4 Orthographic(float width, float height, float near, float far)
@@ -879,17 +862,9 @@ namespace Reign.Core
 
 		public static Matrix4 Orthographic(float left, float right, float bottom, float top, float near, float far)
 		{
-			float width = right - left;
-			float height = top - bottom;
-			float depth = far - near;
-
-			return new Matrix4
-			(
-				new Vector4((2/width), 0, 0, -(right+left)/width),
-				new Vector4(0, (2/height), 0, -(top+bottom)/height),
-				new Vector4(0, 0, -2/depth, 0),//-(far+near)/depth
-				new Vector4(0, 0, 0, 1)
-			);
+			Matrix4 result;
+			Orthographic(left, right, bottom, top, near, far, out result);
+			return result;
 		}
 
 		public static void Orthographic(float left, float right, float bottom, float top, float near, float far, out Matrix4 result)
@@ -898,20 +873,20 @@ namespace Reign.Core
 			float height = top - bottom;
 			float depth = far - near;
 
-			result.X.X = (2/width);
+			result.X.X = 2/width;
 			result.X.Y = 0;
 			result.X.Z = 0;
 			result.X.W = -(right+left)/width;
 
 			result.Y.X = 0;
-			result.Y.Y = (2/height);
+			result.Y.Y = 2/height;
 			result.Y.Z = 0;
 			result.Y.W = -(top+bottom)/height;
 
 			result.Z.X = 0;
 			result.Z.Y = 0;
 			result.Z.Z = -2/depth;
-			result.Z.W = 0;
+			result.Z.W = -(far+near)/depth;
 
 			result.W.X = 0;
 			result.W.Y = 0;
@@ -931,17 +906,9 @@ namespace Reign.Core
 
 		public static Matrix4 OrthographicCentered(float left, float right, float bottom, float top, float near, float far)
 		{
-			float width = right - left;
-			float height = top - bottom;
-			float depth = far - near;
-
-			return new Matrix4
-			(
-				new Vector4((2/width), 0, 0, 0),
-				new Vector4(0, (2/height), 0, 0),
-				new Vector4(0, 0, -2/depth, 0),//-(far+near)/depth
-				new Vector4(0, 0, 0, 1)
-			);
+			Matrix4 result;
+			OrthographicCentered(left, right, bottom, top, near, far, out result);
+			return result;
 		}
 
 		public static void OrthographicCentered(float left, float right, float bottom, float top, float near, float far, out Matrix4 result)
@@ -962,8 +929,8 @@ namespace Reign.Core
 
 			result.Z.X = 0;
 			result.Z.Y = 0;
-			result.Z.Z = -2/depth;
-			result.Z.W = 0;
+			result.Z.Z = (-2)/depth;
+			result.Z.W = -((far+near)/depth);
 
 			result.W.X = 0;
 			result.W.Y = 0;
