@@ -37,10 +37,10 @@ namespace Reign.UI
 			rect = elementRect;
 		}
 
-		public void Render(Camera camera)
+		public void Render(UI ui)
 		{
-			font.DrawStart(camera);
-			font.Draw(Caption, Position.ToVector2() + (Size.ToVector2() * .5f), Color, fontSize, true, true);
+			font.DrawStart(ui.camera);
+			font.Draw(Caption, Position.ToVector2() + (Size.ToVector2() * .5f), Color, fontSize * ui.AutoScale, true, true);
 		}
 		#endregion
 	}

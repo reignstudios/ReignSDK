@@ -9,8 +9,8 @@ float4 out Position_VSPS : POSITION,
 float3 out Normal_VSPS : TEXCOORD0,
 float2 out UV_VSPS : TEXCOORD1)
 {
-	float4 loc = mul(Transform,  float4(Position_VS, 1));
+	float4 loc = mul( float4(Position_VS, 1), Transform);
 	Position_VSPS = mul(loc, Camera);
-	Normal_VSPS = mul(Transform,  float4(Normal_VS, 0)).xyz;
+	Normal_VSPS = mul( float4(Normal_VS, 0), Transform).xyz;
 	UV_VSPS = float2(UV_VS.x, 1.0-UV_VS.y);
 }

@@ -36,12 +36,5 @@ namespace Reign.UI
 			rect = new Rect2(position, size);
 		}
 		#endregion
-
-		#region Methods
-		public bool Intersects(Point2 point)
-		{
-			return point.Intersects(rect);
-		}
-		#endregion
 	}
 }

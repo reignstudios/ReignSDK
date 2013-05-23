@@ -13,7 +13,7 @@ float4 out Position_VSPS : POSITION,
 float4 out Light_VSPS : TEXCOORD0,
 float2 out UV_VSPS : TEXCOORD1)
 {
-	float4 loc = mul(Transform,  float4(Position_VS, 1));
+	float4 loc = mul( float4(Position_VS, 1), Transform);
 	Position_VSPS = mul(loc, Camera);
 	UV_VSPS = float2(UV_VS.x, 1.0-UV_VS.y);
 

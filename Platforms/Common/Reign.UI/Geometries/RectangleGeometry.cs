@@ -9,7 +9,6 @@ namespace Reign.UI
 		#region Properties
 		private UI ui;
 		private VertexBufferI vertexBuffer;
-		private IndexBufferI indexBuffer;
 		#endregion
 
 		#region Constructors
@@ -27,14 +26,14 @@ namespace Reign.UI
 					1, 1,
 					1, 0
 				};
-				vertexBuffer = VertexBufferAPI.New(ui.video, BufferLayoutDescAPI.New(BufferLayoutTypes.Position2), BufferUsages.Default, VertexBufferTopologys.Triangle, verts);
 
 				var indices = new int[]
 				{
 					0, 1, 2,
 					0, 2, 3
 				};
-				indexBuffer = IndexBufferAPI.New(ui.video, BufferUsages.Default, indices);
+
+				vertexBuffer = VertexBufferAPI.New(ui.video, BufferLayoutDescAPI.New(BufferLayoutTypes.Position2), BufferUsages.Default, VertexBufferTopologys.Triangle, verts, indices);
 			}
 			catch (Exception e)
 			{
@@ -51,12 +50,6 @@ namespace Reign.UI
 				vertexBuffer.Dispose();
 				vertexBuffer = null;
 			}
-
-			if (indexBuffer != null)
-			{
-				indexBuffer.Dispose();
-				indexBuffer = null;
-			}
 			base.Dispose();
 		}
 		#endregion
@@ -64,7 +57,7 @@ namespace Reign.UI
 		#region Methods
 		public void Render()
 		{
-			if (ui.lastGeometryRendered != this) vertexBuffer.Enable(indexBuffer);
+			if (ui.lastGeometryRendered != this) vertexBuffer.Enable();
 			ui.lastGeometryRendered = this;
 			vertexBuffer.Draw();
 		}

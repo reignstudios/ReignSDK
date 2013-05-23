@@ -129,7 +129,7 @@ namespace ShaderMaterials.Shaders
 			Shader.Apply();
 		}
 
-		public static void ApplyGlobalContants()
+		public void ApplyGlobalContants()
 		{
 			CameraConstant.Set(Camera);LightDirectionConstant.Set(LightDirection);LightDirection2Constant.Set(LightDirection2);LightColorConstant.Set(LightColor);LightColor2Constant.Set(LightColor2);
 		}
@@ -139,7 +139,7 @@ namespace ShaderMaterials.Shaders
 			TransformConstant.Set(Transform);DiffuseConstant.Set(Diffuse);
 		}
 
-		public static void ApplyInstancingContants()
+		public void ApplyInstancingContants()
 		{
 			
 		}

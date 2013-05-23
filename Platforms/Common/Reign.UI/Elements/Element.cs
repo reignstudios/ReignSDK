@@ -46,12 +46,26 @@ namespace Reign.UI
 		public VisualI[] Visuals {get; private set;}
 		public ShapeI RolloverShape {get; private set;}
 
+		private Element parent;
+		public Element Parent {get{return parent;}}
+
 		private List<Element> childeren;
 		public ReadOnlyCollection<Element> Childeren {get {return childeren.AsReadOnly();}}
 
 		public HorizontalAlignments HorizontalAlignment;
 		public VerticalAlignments VerticalAlignment;
 		public bool CenterX, CenterY, AutoScalePositionX, AutoScalePositionY, AutoScaleWidth, AutoScaleHeight;
+
+		public bool AutoScaleAll
+		{
+			set
+			{
+				AutoScalePositionX = value;
+				AutoScalePositionY = value;
+				AutoScaleWidth = value;
+				AutoScaleHeight = value;
+			}
+		}
 
 		public Point2 Position
 		{
@@ -103,10 +117,39 @@ namespace Reign.UI
 				if (child.currentState != ElementStates.None) childState = child.currentState;
 			}
 
+			// align, offset and scale rollover rect
+			Point2 viewPos;
+			Size2 viewSize;
+			if (parent == null)
+			{
+				viewPos = ui.viewPort.Position;
+				viewSize = ui.viewPort.Size;
+			}
+			
+			Rect2 rolloverRect = RolloverShape.Rect;
+			if (AutoScalePositionX) rolloverRect.Position.X = (int)(rolloverRect.Position.X * ui.AutoScale);
+			if (AutoScalePositionY) rolloverRect.Position.Y = (int)(rolloverRect.Position.Y * ui.AutoScale);
+			if (AutoScaleWidth) rolloverRect.Size.Width = (int)(rolloverRect.Size.Width * ui.AutoScale);
+			if (AutoScaleHeight) rolloverRect.Size.Height = (int)(rolloverRect.Size.Height * ui.AutoScale);
+			if (CenterX) rolloverRect.Position.X -= rolloverRect.Size.Width / 2;
+			if (CenterY) rolloverRect.Position.Y -= rolloverRect.Size.Height / 2;
+
+			switch (HorizontalAlignment)
+			{
+				case HorizontalAlignments.Right: rolloverRect.Position.X += (ui.viewPort.Size.Width - rolloverRect.Size.Width); break;
+				case HorizontalAlignments.Center: rolloverRect.Position.X += (ui.viewPort.Size.Width / 2); break;
+			}
+
+			switch (VerticalAlignment)
+			{
+				case VerticalAlignments.Top: rolloverRect.Position.Y += (ui.viewPort.Size.Height - rolloverRect.Size.Height); break;
+				case VerticalAlignments.Center: rolloverRect.Position.Y += (ui.viewPort.Size.Height / 2); break;
+			}
+
 			// get mouse state
 			eventArgs.MousePosition = mouse.Position;
 			currentState = ElementStates.None;
-			if (RolloverShape.Intersects(mouse.Position) && childState == ElementStates.None)
+			if (mouse.Position.Intersects(rolloverRect) && childState == ElementStates.None)
 			{
 				if (lastState == ElementStates.None)
 				{
@@ -137,11 +180,11 @@ namespace Reign.UI
 			// calculate visual effects
 			if (Effects != null)
 			{
-				foreach (var effect in Effects) effect.Update(RolloverShape.Rect, Visuals, currentState, out visualRect);
+				foreach (var effect in Effects) effect.Update(rolloverRect, Visuals, currentState, out visualRect);
 			}
 			else
 			{
-				visualRect = RolloverShape.Rect;
+				visualRect = rolloverRect;
 			}
 
 			// update visuals
@@ -150,19 +193,30 @@ namespace Reign.UI
 
 		public virtual void Render()
 		{
-			foreach (var visual in Visuals) visual.Render(ui.camera);
+			foreach (var visual in Visuals) visual.Render(ui);
 			foreach (var child in Childeren) child.Render();
 		}
 
 		public void AddChild(Element childElement)
 		{
-			if (!childeren.Contains(childElement)) childeren.Add(childElement);
-			else Debug.ThrowError("Element", "Already contains child");
+			if (!childeren.Contains(childElement))
+			{
+				childeren.Add(childElement);
+				childElement.parent = this;
+			}
+			else
+			{
+				Debug.ThrowError("Element", "Already contains child");
+			}
 		}
 
 		public void RemoveChild(Element childElement)
 		{
-			if (childeren.Contains(childElement)) childeren.Remove(childElement);
+			if (childeren.Contains(childElement))
+			{
+				childeren.Remove(childElement);
+				childElement.parent = null;
+			}
 		}
 		#endregion
 	}

@@ -28,6 +28,6 @@ namespace Reign.UI
 		Texture2DI Texture3 {get; set;}
 
 		void Update(Rect2 elementRect);
-		void Render(Camera camera);
+		void Render(UI ui);
 	}
 }

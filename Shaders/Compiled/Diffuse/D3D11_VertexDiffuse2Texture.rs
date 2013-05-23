@@ -27,7 +27,7 @@ VSOutPSIn main(VSIn In)
 {
 	VSOutPSIn Out;
 
-	float4 loc = mul(Transform,  float4(In.Position_VS, 1));
+	float4 loc = mul( float4(In.Position_VS, 1), Transform);
 	Out.Position_VSPS = mul(loc, Camera);
 	Out.UV_VSPS = float2(In.UV_VS.x, 1.0-In.UV_VS.y);
 

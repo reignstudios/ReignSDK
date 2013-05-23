@@ -234,32 +234,32 @@ namespace Reign.Video
 		public Vector2 Project(Vector3 position)
 		{
 			var pos = new Vector4(position, 1);
-			return pos.Project(ProjectionMatrix, ViewMatrix, ViewPort.Location.X, ViewPort.Location.Y, ViewPort.Size.Width, ViewPort.Size.Height).ToVector2();
+			return pos.Project(ProjectionMatrix, ViewMatrix, ViewPort.Position.X, ViewPort.Position.Y, ViewPort.Size.Width, ViewPort.Size.Height).ToVector2();
 		}
 
 		public Vector4 Project(Vector4 position)
 		{
-			return position.Project(ProjectionMatrix, ViewMatrix, ViewPort.Location.X, ViewPort.Location.Y, ViewPort.Size.Width, ViewPort.Size.Height);
+			return position.Project(ProjectionMatrix, ViewMatrix, ViewPort.Position.X, ViewPort.Position.Y, ViewPort.Size.Width, ViewPort.Size.Height);
 		}
 
 		public Vector3 UnProjectNormalized(Vector2 screenPosition)
 		{
 			var pos = new Vector4(screenPosition, 0, 1);
-			var near = pos.UnProject(TransformInverseMatrix, ViewPort.Location.X, ViewPort.Location.Y, ViewPort.Size.Width, ViewPort.Size.Height);
+			var near = pos.UnProject(TransformInverseMatrix, ViewPort.Position.X, ViewPort.Position.Y, ViewPort.Size.Width, ViewPort.Size.Height);
 			pos.Z = 1;
-			var far = pos.UnProject(TransformInverseMatrix, ViewPort.Location.X, ViewPort.Location.Y, ViewPort.Size.Width, ViewPort.Size.Height);
+			var far = pos.UnProject(TransformInverseMatrix, ViewPort.Position.X, ViewPort.Position.Y, ViewPort.Size.Width, ViewPort.Size.Height);
 			return (far - near).ToVector3().Normalize();
 		}
 
 		public Vector4 UnProject(Vector2 screenPosition)
 		{
 			var pos = new Vector4(screenPosition, 0, 1);
-			return pos.UnProject(TransformInverseMatrix, ViewPort.Location.X, ViewPort.Location.Y, ViewPort.Size.Width, ViewPort.Size.Height);
+			return pos.UnProject(TransformInverseMatrix, ViewPort.Position.X, ViewPort.Position.Y, ViewPort.Size.Width, ViewPort.Size.Height);
 		}
 
 		public Vector4 UnProject(Vector4 screenPosition)
 		{
-			return screenPosition.UnProject(TransformInverseMatrix, ViewPort.Location.X, ViewPort.Location.Y, ViewPort.Size.Width, ViewPort.Size.Height);
+			return screenPosition.UnProject(TransformInverseMatrix, ViewPort.Position.X, ViewPort.Position.Y, ViewPort.Size.Width, ViewPort.Size.Height);
 		}
 		#endregion
 	}

@@ -77,9 +77,9 @@ namespace Reign.UI
 			rect = elementRect;
 		}
 
-		public void Render(Camera camera)
+		public void Render(UI ui)
 		{
-			shaderCamera.Set(camera.TransformMatrix);
+			shaderCamera.Set(ui.camera.TransformMatrix);
 			shaderPosition.Set(Position.ToVector2());
 			shaderSize.Set(Size.ToVector2());
 			shaderColor.Set(Color);

@@ -129,7 +129,7 @@ namespace ShaderMaterials.Shaders
 			Shader.Apply();
 		}
 
-		public static void ApplyGlobalContants()
+		public void ApplyGlobalContants()
 		{
 			CameraConstant.Set(Camera);
 		}
@@ -139,7 +139,7 @@ namespace ShaderMaterials.Shaders
 			
 		}
 
-		public static void ApplyInstancingContants()
+		public void ApplyInstancingContants()
 		{
 			
 		}

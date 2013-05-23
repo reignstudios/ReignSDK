@@ -31,7 +31,7 @@ namespace Reign.Video.OpenGL
 		#region Methods
 		public override void Apply()
 		{
-			GL.Viewport(Location.X, Location.Y, Size.Width, Size.Height);
+			GL.Viewport(Position.X, Position.Y, Size.Width, Size.Height);
 
 			#if DEBUG
 			Video.checkForError();
@@ -40,7 +40,7 @@ namespace Reign.Video.OpenGL
 
 		public override void Apply(RenderTargetI renderTarget)
 		{
-			GL.Viewport(Location.X, Location.Y, Size.Width, Size.Height);
+			GL.Viewport(Position.X, Position.Y, Size.Width, Size.Height);
 
 			#if DEBUG
 			Video.checkForError();

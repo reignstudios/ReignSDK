@@ -5,7 +5,7 @@ namespace Reign.Video
 	public abstract class ViewPortI
 	{
 		#region Properties
-		public Point2 Location {get; set;}
+		public Point2 Position {get; set;}
 		public Size2 Size {get; set;}
 		public float AspectRatio {get{return Size.Width / (float)Size.Height;}}
 		#endregion
@@ -25,13 +25,13 @@ namespace Reign.Video
 		#region Methods
 		public void Set(int x, int y, int width, int height)
 		{
-			Location = new Point2(x, y);
+			Position = new Point2(x, y);
 			Size = new Size2(width, height);
 		}
 
 		public void Set(Point2 location, Size2 size)
 		{
-			this.Location = location;
+			this.Position = location;
 			this.Size = size;
 		}
 

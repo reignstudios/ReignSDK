@@ -43,12 +43,12 @@ namespace Reign.Video.D3D9
 		#region Methods
 		public override void Apply()
 		{
-			com.Apply(Location.X, video.BackBufferSize.Height - Size.Height - Location.Y, Size.Width, Size.Height);
+			com.Apply(Position.X, video.BackBufferSize.Height - Size.Height - Position.Y, Size.Width, Size.Height);
 		}
 
 		public override void Apply(RenderTargetI renderTarget)
 		{
-			com.Apply(Location.X, renderTarget.Size.Height - Size.Height - Location.Y, Size.Width, Size.Height);
+			com.Apply(Position.X, renderTarget.Size.Height - Size.Height - Position.Y, Size.Width, Size.Height);
 		}
 		#endregion
 	}

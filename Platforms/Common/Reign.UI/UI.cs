@@ -15,8 +15,9 @@ namespace Reign.UI
 		internal GeometryI lastGeometryRendered;
 		private List<GeometryI> geometries;
 		private List<Element> elements;
-		private ViewPortI viewPort;
+		internal ViewPortI viewPort;
 		internal Camera camera;
+		public Camera Cam {set{camera = value;}}
 
 		private RasterizerStateI rasterizerState;
 		private DepthStencilStateI depthStencilState;
@@ -28,6 +29,9 @@ namespace Reign.UI
 		internal BufferLayoutI shaderLayout;
 		internal Font font;
 		internal float fontSize;
+
+		public float AutoScale {get; private set;}
+		public float ManualScale;
 		#endregion
 
 		#region Constructors
@@ -41,8 +45,8 @@ namespace Reign.UI
 				this.video = video;
 				geometries = new List<GeometryI>();
 				elements = new List<Element>();
-				viewPort = ViewPortAPI.New(video, 0, 0, video.BackBufferSize.Width, video.BackBufferSize.Height);
-				camera = new Camera(viewPort, new Vector3(0, 0, 10), new Vector3(), new Vector3(0, 1, 10));
+				viewPort = ViewPortAPI.New(video, Point2.Zero, video.BackBufferSize);
+				camera = new Camera(viewPort, new Vector3(0, 0, 10), new Vector3(), new Vector3(0, 1, 10), 9, 11, MathUtilities.DegToRad(90));
 
 				rasterizerState = RasterizerStateAPI.New(video, RasterizerStateDescAPI.New(RasterizerStateTypes.Solid_CullNone));
 				depthStencilState = DepthStencilStateAPI.New(video, DepthStencilStateDescAPI.New(DepthStencilStateTypes.None));
@@ -109,6 +113,9 @@ namespace Reign.UI
 
 		public void Update()
 		{
+			if (ManualScale == 0) AutoScale = viewPort.Size.ToVector2().Length() / new Vector2(1280, 720).Length();
+			else AutoScale = ManualScale;
+
 			foreach (var element in elements) element.Update(mouse);
 		}
 
@@ -122,6 +129,7 @@ namespace Reign.UI
 			viewPort.Size = video.BackBufferSize;
 			viewPort.Apply();
 			camera.ApplyOrthographic();
+			lastGeometryRendered = null;
 			foreach (var element in elements) element.Render();
 		}
 
