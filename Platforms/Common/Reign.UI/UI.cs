@@ -32,6 +32,7 @@ namespace Reign.UI
 
 		public float AutoScale {get; private set;}
 		public float ManualScale;
+		public bool AutoScaleAllDefault = true;
 		#endregion
 
 		#region Constructors

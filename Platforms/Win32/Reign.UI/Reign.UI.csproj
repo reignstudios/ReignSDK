@@ -94,6 +94,9 @@
     <Compile Include="..\..\Common\Reign.UI\Elements\Element.cs">
       <Link>Elements\Element.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.UI\Elements\Label.cs">
+      <Link>Elements\Label.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.UI\Geometries\GeometryI.cs">
       <Link>Geometries\GeometryI.cs</Link>
     </Compile>

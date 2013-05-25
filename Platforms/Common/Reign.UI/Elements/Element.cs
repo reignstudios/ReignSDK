@@ -96,6 +96,8 @@ namespace Reign.UI
 			Enabled = true;
 			HorizontalAlignment = HorizontalAlignments.Left;
 			VerticalAlignment = VerticalAlignments.Bottom;
+
+			AutoScaleAll = ui.AutoScaleAllDefault;
 		}
 
 		protected void init(VisualI[] visuals, ShapeI rolloverShape)
