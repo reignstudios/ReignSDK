@@ -17,10 +17,10 @@ namespace Reign.UI
 		#endregion
 
 		#region Constructors
-		public Label(UI ui, string text, int x, int y, int width, int height, bool hasBackground, bool hasBorder)
+		public Label(UI ui, string text, bool centerTextX, bool centerTextY, int x, int y, int width, int height, bool hasBackground, bool hasBorder)
 		: base(ui)
 		{
-			visualText = new VisualText(ui.font, ui.fontSize, ui.ForegroundColorIdle, text, VisualLayers.Forground);
+			visualText = new VisualText(ui.font, ui.fontSize, ui.ForegroundColorIdle, text, VisualLayers.Forground, centerTextX, centerTextY);
 			var visuals = new List<VisualI>();
 			if (hasBackground) visuals.Add(new VisualRectangle(ui, ui.BackgroundColorIdle, null, null, null, VisualLayers.Background, VisualFillModes.Solid));
 			if (hasBorder) visuals.Add(new VisualRectangle(ui, ui.BorderColorIdle, null, null, null, VisualLayers.Border, VisualFillModes.Border));

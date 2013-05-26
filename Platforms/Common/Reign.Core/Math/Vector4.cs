@@ -471,6 +471,19 @@ namespace Reign.Core
 			result.W = (float)Math.Floor(vector.W);
 		}
 
+		public Vector4 Round()
+		{
+			return new Vector4((float)Math.Round(X), (float)Math.Round(Y), (float)Math.Round(Z), (float)Math.Round(W));
+		}
+
+		public static void Round(ref Vector4 vector, out Vector4 result)
+		{
+			result.X = (float)Math.Round(vector.X);
+			result.Y = (float)Math.Round(vector.Y);
+			result.Z = (float)Math.Round(vector.Z);
+			result.W = (float)Math.Round(vector.W);
+		}
+
 		public float Length()
 		{
 			return (float)Math.Sqrt((X*X) + (Y*Y) + (Z*Z) + (W*W));

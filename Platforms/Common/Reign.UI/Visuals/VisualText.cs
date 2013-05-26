@@ -18,16 +18,19 @@ namespace Reign.UI
 		private Font font;
 		private float fontSize;
 		public string Caption;
+		public bool CenterX, CenterY;
 		#endregion
 
 		#region Constructors
-		public VisualText(Font font, float fontSize, Vector4 color, string caption, VisualLayers layer)
+		public VisualText(Font font, float fontSize, Vector4 color, string caption, VisualLayers layer, bool centerX, bool centerY)
 		{
 			Layout = layer;
 			this.font = font;
 			this.fontSize = fontSize;
 			Color = color;
 			Caption = caption;
+			CenterX = centerX;
+			CenterY = centerY;
 		}
 		#endregion
 
@@ -40,7 +43,10 @@ namespace Reign.UI
 		public void Render(UI ui)
 		{
 			font.DrawStart(ui.camera);
-			font.Draw(Caption, Position.ToVector2() + (Size.ToVector2() * .5f), Color, fontSize * ui.AutoScale, true, true);
+			var pos = Position.ToVector2() + (Size.ToVector2() * .5f);
+			if (!CenterX) pos.X = Position.X;
+			if (!CenterY) pos.Y = Position.Y;
+			font.Draw(Caption, pos, Color, fontSize * ui.AutoScale, CenterX, CenterY);
 		}
 		#endregion
 	}

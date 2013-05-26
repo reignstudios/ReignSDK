@@ -22,7 +22,7 @@ namespace Reign.UI
 			Effects = new EffectI[1];
 			Effects[0] = new ColorFadeEffect(ui.BackgroundColorIdle, ui.BackgroundColorRollover, ui.BackgroundColorPressed, ui.ForegroundColorIdle, ui.ForegroundColorRollover, ui.ForegroundColorPressed, ui.BorderColorIdle, ui.BorderColorRollover, ui.BorderColorPressed);
 
-			visualText = new VisualText(ui.font, ui.fontSize, ui.ForegroundColorIdle, caption, VisualLayers.Forground);
+			visualText = new VisualText(ui.font, ui.fontSize, ui.ForegroundColorIdle, caption, VisualLayers.Forground, true, true);
 			var visuals = new VisualI[]
 			{
 				new VisualRectangle(ui, ui.BackgroundColorIdle, null, null, null, VisualLayers.Background, VisualFillModes.Solid),

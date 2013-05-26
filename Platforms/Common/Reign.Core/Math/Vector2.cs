@@ -271,6 +271,17 @@ namespace Reign.Core
 			result.Y = (float)Math.Floor(vector.Y);
 		}
 
+		public Vector2 Round()
+		{
+			return new Vector2((float)Math.Round(X), (float)Math.Round(Y));
+		}
+
+		public static void Round(ref Vector2 vector, out Vector2 result)
+		{
+			result.X = (float)Math.Round(vector.X);
+			result.Y = (float)Math.Round(vector.Y);
+		}
+
 		public float Length()
 		{
 			return (float)Math.Sqrt((X*X) + (Y*Y));
