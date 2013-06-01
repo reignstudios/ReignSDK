@@ -38,7 +38,7 @@ namespace Reign.Core
 			theEvent = new ApplicationEvent();
 		
 			var frame = desc.FrameSize;
-			if (frame.Width == 0 || frame.Height == 0) frame = (OS.ScreenSize.ToVector2() / 1.5f).ToSize();
+			if (frame.Width == 0 || frame.Height == 0) frame = (OS.ScreenSize.ToVector2() / 1.5f).ToSize2();
 			
 			//X11.XInitThreads();// Only needed for multi threaded applications.
 			dc = X11.XOpenDisplay(IntPtr.Zero);
