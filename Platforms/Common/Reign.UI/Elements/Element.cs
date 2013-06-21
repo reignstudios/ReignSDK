@@ -19,14 +19,18 @@ namespace Reign.UI
 	public enum HorizontalAlignments
 	{
 		Left,
+		LeftOuter,
 		Right,
+		RightOuter,
 		Center
 	}
 
 	public enum VerticalAlignments
 	{
 		Bottom,
+		BottomOuter,
 		Top,
+		TopOuter,
 		Center
 	}
 
@@ -111,23 +115,25 @@ namespace Reign.UI
 		#region Methods
 		public virtual void Update(MouseI mouse)
 		{
-			// update childeren
-			var childState = ElementStates.None;
-			foreach (var child in Childeren)
-			{
-				child.Update(mouse);
-				if (child.currentState != ElementStates.None) childState = child.currentState;
-			}
-
 			// align, offset and scale rollover rect
-			Point2 viewPos;
-			Size2 viewSize;
+			int parentLeft, parentRight, parentBottom, parentTop;
 			if (parent == null)
 			{
-				viewPos = ui.viewPort.Position;
-				viewSize = ui.viewPort.Size;
+				parentLeft = ui.Left;
+				parentRight = ui.Right;
+				parentBottom = ui.Bottom;
+				parentTop = ui.Top;
+			}
+			else
+			{
+				var rect = parent.visualRect;
+				parentLeft = rect.Position.X;
+				parentRight = rect.Position.X + rect.Size.Width;
+				parentBottom = rect.Position.Y;
+				parentTop = rect.Position.Y + rect.Size.Height;
 			}
 			
+			// get scaled size
 			Rect2 rolloverRect = RolloverShape.Rect;
 			if (AutoScalePositionX) rolloverRect.Position.X = (int)(rolloverRect.Position.X * ui.AutoScale);
 			if (AutoScalePositionY) rolloverRect.Position.Y = (int)(rolloverRect.Position.Y * ui.AutoScale);
@@ -136,22 +142,29 @@ namespace Reign.UI
 			if (CenterX) rolloverRect.Position.X -= rolloverRect.Size.Width / 2;
 			if (CenterY) rolloverRect.Position.Y -= rolloverRect.Size.Height / 2;
 
+			// align to parent
 			switch (HorizontalAlignment)
 			{
-				case HorizontalAlignments.Right: rolloverRect.Position.X += (ui.viewPort.Size.Width - rolloverRect.Size.Width); break;
-				case HorizontalAlignments.Center: rolloverRect.Position.X += (ui.viewPort.Size.Width / 2); break;
+				case HorizontalAlignments.Left: rolloverRect.Position.X += parentLeft; break;
+				case HorizontalAlignments.LeftOuter: rolloverRect.Position.X += parentLeft - rolloverRect.Size.Width; break;
+				case HorizontalAlignments.Right: rolloverRect.Position.X += parentRight - rolloverRect.Size.Width; break;
+				case HorizontalAlignments.RightOuter: rolloverRect.Position.X += parentRight; break;
+				case HorizontalAlignments.Center: rolloverRect.Position.X += (parentLeft + parentRight) / 2; break;
 			}
 
 			switch (VerticalAlignment)
 			{
-				case VerticalAlignments.Top: rolloverRect.Position.Y += (ui.viewPort.Size.Height - rolloverRect.Size.Height); break;
-				case VerticalAlignments.Center: rolloverRect.Position.Y += (ui.viewPort.Size.Height / 2); break;
+				case VerticalAlignments.Bottom: rolloverRect.Position.Y += parentBottom; break;
+				case VerticalAlignments.BottomOuter: rolloverRect.Position.Y += parentBottom - rolloverRect.Size.Height; break;
+				case VerticalAlignments.Top: rolloverRect.Position.Y += (parentTop - rolloverRect.Size.Height); break;
+				case VerticalAlignments.TopOuter: rolloverRect.Position.Y += parentTop; break;
+				case VerticalAlignments.Center: rolloverRect.Position.Y += (parentBottom + parentTop) / 2; break;
 			}
 
 			// get mouse state
 			eventArgs.MousePosition = mouse.Position;
 			currentState = ElementStates.None;
-			if (mouse.Position.Intersects(rolloverRect) && childState == ElementStates.None)
+			if (mouse.Position.Intersects(rolloverRect))
 			{
 				if (lastState == ElementStates.None)
 				{
@@ -191,6 +204,12 @@ namespace Reign.UI
 
 			// update visuals
 			foreach (var visual in Visuals) visual.Update(visualRect);
+
+			// update childeren
+			foreach (var child in Childeren)
+			{
+				child.Update(mouse);
+			}
 		}
 
 		public virtual void Render()

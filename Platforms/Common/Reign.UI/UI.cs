@@ -15,9 +15,16 @@ namespace Reign.UI
 		internal GeometryI lastGeometryRendered;
 		private List<GeometryI> geometries;
 		private List<Element> elements;
-		internal ViewPortI viewPort;
+
+		private ViewPortI viewPort;
 		internal Camera camera;
-		public Camera Cam {set{camera = value;}}
+
+		public bool AutoTVOverscanSize;
+		public int TVOverscanSize, ManualLeft, ManualRight, ManualBottom, ManualTop;
+		public int Left {get; private set;}
+		public int Right {get; private set;}
+		public int Bottom {get; private set;}
+		public int Top {get; private set;}
 
 		private RasterizerStateI rasterizerState;
 		private DepthStencilStateI depthStencilState;
@@ -114,8 +121,26 @@ namespace Reign.UI
 
 		public void Update()
 		{
+			// calculate screen attributes
 			if (ManualScale == 0) AutoScale = viewPort.Size.ToVector2().Length() / new Vector2(1280, 720).Length();
 			else AutoScale = ManualScale;
+
+			if (AutoTVOverscanSize)
+			{
+				// TODO: set a good TVOverscanSize reletive to screen size
+			}
+
+			if (ManualLeft == 0) Left = TVOverscanSize;
+			else Left = ManualLeft;
+
+			if (ManualRight == 0) Right = viewPort.Size.Width - TVOverscanSize;
+			else Right = ManualRight;
+
+			if (ManualBottom == 0) Bottom = TVOverscanSize;
+			else Bottom = ManualBottom;
+
+			if (ManualTop == 0) Top = viewPort.Size.Height - TVOverscanSize;
+			else Top = ManualTop;
 
 			foreach (var element in elements) element.Update(mouse);
 		}
