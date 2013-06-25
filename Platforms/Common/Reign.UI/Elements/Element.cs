@@ -34,6 +34,14 @@ namespace Reign.UI
 		Center
 	}
 
+	public enum AlignmentTypes
+	{
+		Fixed,
+		AutoScale,
+		PercentOfParentWidth,
+		PercentOfParentHeight
+	}
+
 	public class ElementEventArgs
 	{
 		public Point2 MousePosition;
@@ -58,25 +66,29 @@ namespace Reign.UI
 
 		public HorizontalAlignments HorizontalAlignment;
 		public VerticalAlignments VerticalAlignment;
-		public bool CenterX, CenterY, AutoScalePositionX, AutoScalePositionY, AutoScaleWidth, AutoScaleHeight;
+		public AlignmentTypes PositionAlignmentTypeX, PositionAlignmentTypeY, SizeAlignmentTypeWidth, SizeAlignmentTypeHeight;
+		public bool CenterX, CenterY;
 
 		public bool AutoScaleAll
 		{
 			set
 			{
-				AutoScalePositionX = value;
-				AutoScalePositionY = value;
-				AutoScaleWidth = value;
-				AutoScaleHeight = value;
+				var scale = value ? AlignmentTypes.AutoScale : AlignmentTypes.Fixed;
+				PositionAlignmentTypeX = scale;
+				PositionAlignmentTypeY = scale;
+				SizeAlignmentTypeWidth = scale;
+				SizeAlignmentTypeHeight = scale;
 			}
 		}
 
+		public float PercentX, PercentY;
 		public Point2 Position
 		{
 			get {return RolloverShape.Rect.Position;}
 			set {RolloverShape.Rect = new Rect2(value, RolloverShape.Rect.Size);}
 		}
 
+		public float PercentWidth, PercentHeight;
 		public Size2 Size
 		{
 			get {return RolloverShape.Rect.Size;}
@@ -100,7 +112,6 @@ namespace Reign.UI
 			Enabled = true;
 			HorizontalAlignment = HorizontalAlignments.Left;
 			VerticalAlignment = VerticalAlignments.Bottom;
-
 			AutoScaleAll = ui.AutoScaleAllDefault;
 		}
 
@@ -113,16 +124,32 @@ namespace Reign.UI
 		#endregion
 
 		#region Methods
+		private int GetAlignmentValue(AlignmentTypes alignmentType, int parentWidth, int parentHeight, int value, float percentValue)
+		{
+			switch (alignmentType)
+			{
+				case AlignmentTypes.Fixed: return value;
+				case AlignmentTypes.AutoScale: return (int)(value * ui.AutoScale);
+				case AlignmentTypes.PercentOfParentWidth: return (int)(parentWidth * percentValue);
+				case AlignmentTypes.PercentOfParentHeight: return (int)(parentHeight * percentValue);
+			}
+
+			return 0;
+		}
+
 		public virtual void Update(MouseI mouse)
 		{
 			// align, offset and scale rollover rect
 			int parentLeft, parentRight, parentBottom, parentTop;
+			int parentWidth, parentHeight;
 			if (parent == null)
 			{
 				parentLeft = ui.Left;
 				parentRight = ui.Right;
 				parentBottom = ui.Bottom;
 				parentTop = ui.Top;
+				parentWidth = ui.Width;
+				parentHeight = ui.Height;
 			}
 			else
 			{
@@ -131,14 +158,16 @@ namespace Reign.UI
 				parentRight = rect.Position.X + rect.Size.Width;
 				parentBottom = rect.Position.Y;
 				parentTop = rect.Position.Y + rect.Size.Height;
+				parentWidth = rect.Size.Width;
+				parentHeight = rect.Size.Height;
 			}
 			
 			// get scaled size
 			Rect2 rolloverRect = RolloverShape.Rect;
-			if (AutoScalePositionX) rolloverRect.Position.X = (int)(rolloverRect.Position.X * ui.AutoScale);
-			if (AutoScalePositionY) rolloverRect.Position.Y = (int)(rolloverRect.Position.Y * ui.AutoScale);
-			if (AutoScaleWidth) rolloverRect.Size.Width = (int)(rolloverRect.Size.Width * ui.AutoScale);
-			if (AutoScaleHeight) rolloverRect.Size.Height = (int)(rolloverRect.Size.Height * ui.AutoScale);
+			rolloverRect.Position.X = GetAlignmentValue(PositionAlignmentTypeX, parentWidth, parentHeight, rolloverRect.Position.X, PercentX);
+			rolloverRect.Position.Y = GetAlignmentValue(PositionAlignmentTypeY, parentWidth, parentHeight, rolloverRect.Position.Y, PercentY);
+			rolloverRect.Size.Width = GetAlignmentValue(SizeAlignmentTypeWidth, parentWidth, parentHeight, rolloverRect.Size.Width, PercentWidth);
+			rolloverRect.Size.Height = GetAlignmentValue(SizeAlignmentTypeHeight, parentWidth, parentHeight, rolloverRect.Size.Height, PercentHeight);
 			if (CenterX) rolloverRect.Position.X -= rolloverRect.Size.Width / 2;
 			if (CenterY) rolloverRect.Position.Y -= rolloverRect.Size.Height / 2;
 

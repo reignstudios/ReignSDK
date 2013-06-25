@@ -25,6 +25,10 @@ namespace Reign.UI
 		public int Right {get; private set;}
 		public int Bottom {get; private set;}
 		public int Top {get; private set;}
+		public int X {get{return Left;}}
+		public int Y {get{return Bottom;}}
+		public int Width {get{return Right - Left;}}
+		public int Height {get{return Top - Bottom;}}
 
 		private RasterizerStateI rasterizerState;
 		private DepthStencilStateI depthStencilState;
@@ -103,18 +107,18 @@ namespace Reign.UI
 		#endregion
 
 		#region Methods
-		public void AddElement(Element element)
+		public void AddChild(Element element)
 		{
-			AddElement(element, true);
+			AddChild(element, true);
 		}
 
-		public void AddElement(Element element, bool enabled)
+		public void AddChild(Element element, bool enabled)
 		{
 			if (elements.Contains(element)) Debug.ThrowError("UI", "Element has been added to the UI");
 			elements.Add(element);
 		}
 
-		public void RemoveElement(Element element)
+		public void RemoveChild(Element element)
 		{
 			if (elements.Contains(element)) elements.Remove(element);
 		}
