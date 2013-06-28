@@ -8,7 +8,7 @@
 		public int OnTic {get; private set;}
 
 		private bool onOld;
-		public bool On { get; private set; }
+		public bool On {get; private set;}
 		#endregion
 
 		#region Methods
@@ -28,7 +28,7 @@
 			}
 		}
 
-		public void Flush()
+		public virtual void Flush()
 		{
 			Down = false;
 			Up = false;

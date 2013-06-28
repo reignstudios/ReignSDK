@@ -9,14 +9,14 @@ namespace Reign.Input.WinForms
 		#region Properties
 		private Input input;
 		
-		public Button Left {get; private set;}
-		public Button Middle {get; private set;}
-		public Button Right {get; private set;}
+		public PositionButton Left {get; private set;}
+		public PositionButton Middle {get; private set;}
+		public PositionButton Right {get; private set;}
 		public float ScrollWheelVelocity {get; private set;}
 		public Point2 Velocity {get; private set;}
-		public Vector2 VelocityVector {get; private set;}
+		public Vector2 Velocityf {get; private set;}
 		public Point2 Position {get; private set;}
-		public Vector2 PositionVector {get; private set;}
+		public Vector2 Positionf {get; private set;}
 		
 		private bool leftOn, middleOn, rightOn, scollWheelChanged;
 		private float scrollWheelVelocity;
@@ -36,9 +36,9 @@ namespace Reign.Input.WinForms
 			input.UpdateEventCallback += UpdateEvent;
 			input.UpdateCallback += Update;
 			
-			Left = new Button();
-			Middle = new Button();
-			Right = new Button();
+			Left = new PositionButton();
+			Middle = new PositionButton();
+			Right = new PositionButton();
 		}
 		
 		
@@ -113,16 +113,16 @@ namespace Reign.Input.WinForms
 				ScrollWheelVelocity = 0;
 			}
 			
-			Left.Update(leftOn);
-			Middle.Update(middleOn);
-			Right.Update(rightOn);
-			
 			lastLocation = Position;
 			Position = new Point2(currentPosition.X, input.application.FrameSize.Height - currentPosition.Y);
-			PositionVector = Position.ToVector2();
+			Positionf = Position.ToVector2();
 
 			Velocity = Position - lastLocation;
-			VelocityVector = Velocity.ToVector2();
+			Velocityf = Velocity.ToVector2();
+
+			Left.Update(leftOn, Position, Positionf);
+			Middle.Update(middleOn, Position, Positionf);
+			Right.Update(rightOn, Position, Positionf);
 		}
 		#endregion
 	}

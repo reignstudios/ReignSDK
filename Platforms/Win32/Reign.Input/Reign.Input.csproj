@@ -97,6 +97,9 @@
     <Compile Include="..\..\Common\Reign.Input\Mouse.cs">
       <Link>Mouse.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\Reign.Input\PositionButton.cs">
+      <Link>PositionButton.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

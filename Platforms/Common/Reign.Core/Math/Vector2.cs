@@ -172,6 +172,16 @@ namespace Reign.Core
 			return base.GetHashCode();
 		}
 
+		public float SlopeXY()
+		{
+			return X / Y;
+		}
+
+		public float SlopeYX()
+		{
+			return Y / X;
+		}
+
 		public Vector2 DegToRad()
 		{
 			return new Vector2(MathUtilities.DegToRad(X), MathUtilities.DegToRad(Y));
