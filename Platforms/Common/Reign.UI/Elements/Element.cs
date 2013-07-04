@@ -13,7 +13,9 @@ namespace Reign.UI
 		Enter,
 		Exit,
 		Over,
-		Pressed
+		Pressed,
+		Down,
+		Up
 	}
 
 	public enum HorizontalAlignments
@@ -99,7 +101,7 @@ namespace Reign.UI
 		public Rect2 VisualRect {get {return visualRect;}}
 
 		public delegate void MouseEventCallBack(Element sender, ElementEventArgs args);
-		public event MouseEventCallBack OnEnter, OnExit, OnPressed, OnOver;
+		public event MouseEventCallBack OnEnter, OnExit, OnPressed, OnDown, OnUp, OnOver;
 		private ElementEventArgs eventArgs;
 		#endregion
 
@@ -200,7 +202,7 @@ namespace Reign.UI
 					currentState = ElementStates.Enter;
 					if (OnEnter != null) OnEnter(this, eventArgs);
 				}
-				else if (lastState == ElementStates.Enter || lastState == ElementStates.Over || lastState == ElementStates.Pressed)
+				else if (lastState == ElementStates.Enter || lastState == ElementStates.Over || lastState == ElementStates.Pressed || lastState == ElementStates.Down || lastState == ElementStates.Up)
 				{
 					if (mouse.Left.On)
 					{
@@ -211,6 +213,17 @@ namespace Reign.UI
 					{
 						currentState = ElementStates.Over;
 						if (OnOver != null) OnOver(this, eventArgs);
+					}
+
+					if (mouse.Left.Down)
+					{
+						currentState = ElementStates.Down;
+						if (OnDown != null) OnDown(this, eventArgs);
+					}
+					else if (mouse.Left.Up)
+					{
+						currentState = ElementStates.Up;
+						if (OnUp != null) OnUp(this, eventArgs);
 					}
 				}
 			}

@@ -123,6 +123,11 @@ namespace Reign.UI
 			if (elements.Contains(element)) elements.Remove(element);
 		}
 
+		public void RemoveAllChilderen()
+		{
+			elements.Clear();
+		}
+
 		public void Update()
 		{
 			// calculate screen attributes

@@ -31,6 +31,27 @@ Platforms
 
     Sony
     - Vita
+
+    Planned to support:
+    - Ouya
+    - GameStick
+    - Oculus Rift
+    - Nvidia Shield
+    - GoogleTV
+
+    Would like to support:
+    - PS3 (If like Vita Indie dev)
+    - PS4 (If like Vita Indie dev)
+    - Xbox One (If like 360 Indie dev)
+    - Roku
+    - AppleTV
+    - GCW-Zero
+    - BlackBerry10
+    - Tizen
+    - Ubuntu Phone
+    - SailfishOS (Might not be worth it)
+    - Google Game Console (Will know more later 2013)
+    - WP7 (Might add this back in)
 ========================================================================
 
 ------------------------------------------------------------
