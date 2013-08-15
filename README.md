@@ -38,6 +38,7 @@ Platforms
     - Oculus Rift
     - Nvidia Shield
     - GoogleTV
+    - GamePop
 
     Would like to support:
     - PS3 (If like Vita Indie dev)
@@ -50,6 +51,7 @@ Platforms
     - SailfishOS
     - AppleTV / Apple Game Console
     - Google Game Console (Will know more later 2013)
+    - Amazon Game Console (Will know more later 2013)
     - Mad Catz MOJO Android Game Console
     - WP7 (Might add this back in with non shader based API features)
     - FEZ Game-O (Might be possible with non shader based API features)
