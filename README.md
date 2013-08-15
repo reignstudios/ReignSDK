@@ -44,14 +44,15 @@ Platforms
     - PS4 (If like Vita Indie dev)
     - Xbox One (If like 360 Indie dev)
     - Roku
-    - AppleTV
     - GCW-Zero
     - BlackBerry10
     - Tizen
-    - Ubuntu Phone
-    - SailfishOS (Might not be worth it)
+    - SailfishOS
+    - AppleTV / Apple Game Console
     - Google Game Console (Will know more later 2013)
-    - WP7 (Might add this back in)
+    - WP7 (Might add this back in with non shader based API features)
+    - FEZ Game-O (Might be possible with non shader based API features)
+    - Ubuntu Phone (Looks like this may never come out)
 ========================================================================
 
 ------------------------------------------------------------
