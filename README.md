@@ -33,6 +33,7 @@ Platforms
     - Vita
 
     Planned to support:
+    - BSD
     - Ouya
     - GameStick
     - Oculus Rift
