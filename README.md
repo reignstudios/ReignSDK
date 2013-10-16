@@ -42,21 +42,20 @@ Platforms
     - GamePop
 
     Would like to support:
-    - PS3 (If like Vita Indie dev)
-    - PS4 (If like Vita Indie dev)
-    - Xbox One (If like 360 Indie dev)
+    - PS3
+    - PS4
+    - Xbox One
     - Roku
     - GCW-Zero
     - BlackBerry10
     - Tizen
     - SailfishOS
-    - AppleTV / Apple Game Console
+    - AppleTV / Apple Game Console (Will know more later)
     - Google Game Console (Will know more later 2013)
     - Amazon Game Console (Will know more later 2013)
     - Mad Catz MOJO Android Game Console
     - WP7 (Might add this back in with non shader based API features)
     - FEZ Game-O (Might be possible with non shader based API features)
-    - Ubuntu Phone (Looks like this may never come out)
 ========================================================================
 
 ------------------------------------------------------------
