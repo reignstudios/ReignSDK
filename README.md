@@ -56,6 +56,7 @@ Platforms
     - Mad Catz MOJO Android Game Console
     - WP7 (Might add this back in with non shader based API features)
     - FEZ Game-O (Might be possible with non shader based API features)
+    - iConsole.tv
 ========================================================================
 
 ------------------------------------------------------------

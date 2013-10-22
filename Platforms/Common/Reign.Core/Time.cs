@@ -158,7 +158,10 @@ namespace Reign.Core
 			int sleepTime = (int)System.Math.Max((1000/fps) - stopWatch.ElapsedMilliseconds, 0);
 
 			#if WINRT
-			new ManualResetEvent(false).WaitOne(sleepTime);
+			using (var _event = new ManualResetEvent(false))
+			{
+				_event.WaitOne(sleepTime);
+			}
 			#else
 			Thread.Sleep(sleepTime);
 			#endif
