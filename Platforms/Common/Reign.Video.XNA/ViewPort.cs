@@ -40,8 +40,8 @@ namespace Reign.Video.XNA
 			#endif
 			var viewPort = new Microsoft.Xna.Framework.Graphics.Viewport()
 			{
-				X = Location.X,
-				Y = video.Device.PresentationParameters.BackBufferHeight - Size.Height - Location.Y,
+				X = Position.X,
+				Y = video.Device.PresentationParameters.BackBufferHeight - Size.Height - Position.Y,
 				Width = Size.Width,
 				Height = Size.Height,
 				MinDepth = 0,
@@ -60,8 +60,8 @@ namespace Reign.Video.XNA
 			#endif
 			var viewPort = new Microsoft.Xna.Framework.Graphics.Viewport()
 			{
-				X = Location.X,
-				Y = renderTarget.Size.Height - Size.Height - Location.Y,
+				X = Position.X,
+				Y = renderTarget.Size.Height - Size.Height - Position.Y,
 				Width = Size.Width,
 				Height = Size.Height,
 				MinDepth = 0,

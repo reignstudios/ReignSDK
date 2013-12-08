@@ -57,6 +57,7 @@ Platforms
     - WP7 (Might add this back in with non shader based API features)
     - FEZ Game-O (Might be possible with non shader based API features)
     - iConsole.tv
+    - MK802, MK802IV, ect
 ========================================================================
 
 ------------------------------------------------------------

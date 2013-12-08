@@ -64,7 +64,7 @@ namespace Reign.Core
 			graphics.PreferredBackBufferWidth = frame.Width;
 			graphics.PreferredBackBufferHeight = frame.Height;
 			#else
-			if (frame.Width == 0 || frame.Height == 0) frame = (OS.ScreenSize.ToVector2() / 1.5f).ToSize();
+			if (frame.Width == 0 || frame.Height == 0) frame = (OS.ScreenSize.ToVector2() / 1.5f).ToSize2();
 			graphics.PreferredBackBufferWidth = frame.Width;
 			graphics.PreferredBackBufferHeight = frame.Height;
 			#endif
