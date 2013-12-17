@@ -58,6 +58,7 @@ Platforms
     - FEZ Game-O (Might be possible with non shader based API features)
     - iConsole.tv
     - MK802, MK802IV, ect
+    - UDOO (Android or GNU/Linux)
 ========================================================================
 
 ------------------------------------------------------------
