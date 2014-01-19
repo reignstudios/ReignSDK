@@ -8,7 +8,7 @@ namespace Reign.Compiler
 {
 	public abstract class CodeFile
 	{
-		public readonly string Code, FileName;
+		public readonly string Code, FilePath, FileName;
 		protected CompilerBase compiler;
 		protected Node rootNode;
 
@@ -21,11 +21,12 @@ namespace Reign.Compiler
 			}
 		}
 
-		protected CodeFile(CompilerBase compiler, string code, string fileName)
+		protected CodeFile(CompilerBase compiler, string code, string filePath)
 		{
 			this.compiler = compiler;
 			this.Code = code;
-			this.FileName = fileName;
+			this.FilePath = filePath;
+			FileName = Path.GetFileName(filePath);
 			var syntaxTree = compiler.parser.Parse(code);
 			rootNode = Node.New(compiler, syntaxTree);
 		}
@@ -38,8 +39,8 @@ namespace Reign.Compiler
 
 		protected Stream compileToStream(string outputDirectory, string fileExt)
 		{
-			string fileName = Path.GetFileNameWithoutExtension(FileName) + fileExt;
-			string path = outputDirectory + fileName;
+			string filePath = Path.GetFileNameWithoutExtension(FilePath) + fileExt;
+			string path = outputDirectory + filePath;
 			string root = Path.GetDirectoryName(path);
 			if (!Directory.Exists(root)) Directory.CreateDirectory(root);
 			return new FileStream(path, FileMode.Create, FileAccess.Write);

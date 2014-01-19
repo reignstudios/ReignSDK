@@ -15,7 +15,8 @@ namespace Reign.Compiler
 
 	public enum CompilerOutputTypes
 	{
-		Cpp,
+		Cpp_VC,
+		Cpp_GCC,
 		D3D11_HLSL,
 		D3D9_HLSL,
 		XNA_HLSL,
@@ -52,7 +53,8 @@ namespace Reign.Compiler
 			// get base type
 			switch (outputType)
 			{
-				case CompilerOutputTypes.Cpp: baseOutputType = CompilerBaseOutputTypes.Cpp; break;
+				case CompilerOutputTypes.Cpp_VC: baseOutputType = CompilerBaseOutputTypes.Cpp; break;
+				case CompilerOutputTypes.Cpp_GCC: baseOutputType = CompilerBaseOutputTypes.Cpp; break;
 
 				case CompilerOutputTypes.D3D11_HLSL: baseOutputType = CompilerBaseOutputTypes.HLSL; break;
 				case CompilerOutputTypes.D3D9_HLSL: baseOutputType = CompilerBaseOutputTypes.HLSL; break;
@@ -78,6 +80,8 @@ namespace Reign.Compiler
 				case CompilerInputTypes.CsCode:
 					codeFiles.Add(CodeFile.New(this, input, "Main.cs"));
 					break;
+
+				default: throw new Exception("InputType not supported yet: " + inputType);
 			}
 		}
 		

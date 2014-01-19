@@ -11,6 +11,7 @@ namespace Reign.Compiler
 	{
 		public readonly string Label;
 		public List<Node> Children;
+		public Node Next, Prev;
 		protected AstNode astNode;
 
 		public static Node New(CompilerBase compiler, AstNode astNode)
@@ -63,7 +64,15 @@ namespace Reign.Compiler
 
 			// create childeren
 			Children = new List<Node>();
-			foreach (var child in astNode.Children) Children.Add(New(compiler, child));
+			Node lastNode = null;
+			foreach (var child in astNode.Children)
+			{
+				var newNode = New(compiler, child);
+				if (lastNode != null) lastNode.Next = newNode;
+				newNode.Prev = lastNode;
+				Children.Add(newNode);
+				lastNode = newNode;
+			}
 		}
 
 		public virtual void Compile(StreamWriter writer, int mode)

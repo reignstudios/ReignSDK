@@ -15,19 +15,20 @@ namespace Reign.Compiler
 
 		public override void Compile(string outputDirectory)
 		{
-			// write cpp file
-			using (var stream = compileToStream(outputDirectory, ".cpp"))
+			// write h file
+			using (var stream = compileToStream(outputDirectory, ".h"))
 			using (var writer = new StreamWriter(stream))
 			{
 				Compile(writer, 0);
 			}
 
-			// write h file
-			/*using (var stream = compileToStream(outputDirectory, ".h"))
+			// write cpp file
+			using (var stream = compileToStream(outputDirectory, ".cpp"))
 			using (var writer = new StreamWriter(stream))
 			{
+				writer.WriteLine(string.Format(@"#include ""{0}.h""", Path.GetFileNameWithoutExtension(FileName)));
 				Compile(writer, 1);
-			}*/
+			}
 		}
 	}
 }
