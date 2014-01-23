@@ -6,20 +6,9 @@ using ICSharpCode.NRefactory.CSharp;
 
 namespace Reign.Compiler
 {
-	public enum CppNodeTypes
-	{
-		None,
-		Disabled,
-		OpenNamespaceBracket,
-		CloseNamespaceBracket,
-		OpenObjectBracket,
-		CloseObjectBracket
-	}
-
 	public class CppNode : Node
 	{
-		private CppNodeTypes markedType;
-		private int endBracketCount;
+		private static bool enableTokens, enableTokens2, convertNextPointerType, disableNextIdentifier;
 
 		public CppNode(CompilerBase compiler, AstNode astNode)
 		: base(compiler, astNode)
@@ -31,38 +20,20 @@ namespace Reign.Compiler
 		{
 			if (mode == 0) CompileHeaderFile(writer);
 			else CompileCppFile(writer);
-
-			base.Compile(writer, mode);
 		}
 
 		public void CompileHeaderFile(StreamWriter writer)
 		{
 			var type = astNode.GetType();
-			if (type == typeof(UsingDeclaration))
+			if (type == typeof(SyntaxTree))
+			{
+				base.Compile(writer, 0);
+			}
+			else if (type == typeof(UsingDeclaration))
 			{
 				var value = ((UsingDeclaration)astNode);
+				writer.WriteLine(string.Format(@"#include ""{0}.h""", value.Namespace));
 				writer.WriteLine(string.Format(@"using namespace {0};", value.Namespace.Replace(".", "::")));
-			}
-			else if (type == typeof(CSharpTokenNode))
-			{
-				switch (astNode.Role.ToString())
-				{
-					case "{":
-						if (markedType == CppNodeTypes.OpenNamespaceBracket) writer.WriteLine(Environment.NewLine + "{");
-						else if (markedType == CppNodeTypes.OpenObjectBracket) writer.WriteLine("{");
-						break;
-
-					case "}":
-						if (markedType == CppNodeTypes.CloseNamespaceBracket)
-						{
-							for (int i = 0; i != endBracketCount; ++i) writer.WriteLine("}");
-						}
-						else if (markedType == CppNodeTypes.CloseObjectBracket)
-						{
-							writer.WriteLine("};");
-						}
-						break;
-				}
 			}
 			else if (type == typeof(NamespaceDeclaration))
 			{
@@ -75,31 +46,9 @@ namespace Reign.Compiler
 					writer.Write(string.Format(@"namespace {0}{1}", name, count == names.Length ? "" : "{"));
 				}
 
-				// mark brackets
-				int openBrackets = 0;
-				foreach (CppNode node in Children)
-				{
-					var t = node.astNode.GetType();
-					if (t == typeof(CSharpTokenNode))
-					{
-						switch (node.astNode.Role.ToString())
-						{
-							case "{":
-								if (openBrackets == 0) node.markedType = CppNodeTypes.OpenNamespaceBracket;
-								openBrackets++;
-								break;
-
-							case "}":
-								openBrackets--;
-								if (openBrackets == 0)
-								{
-									node.markedType = CppNodeTypes.CloseNamespaceBracket;
-									node.endBracketCount = count;
-								}
-								break;
-						}
-					}
-				}
+				writer.WriteLine(Environment.NewLine + "{");
+				base.Compile(writer, 0);
+				for (int i = 0; i != count; ++i) writer.WriteLine("}");
 			}
 			else if (type == typeof(TypeDeclaration))
 			{
@@ -116,29 +65,16 @@ namespace Reign.Compiler
 					case ClassType.Enum: writer.Write("enum "); break;
 				}
 
-				writer.WriteLine(value.Name);
-
-				// mark brackets
-				int openBrackets = 0;
-				foreach (CppNode node in Children)
+				writer.Write(value.Name);
+				foreach (var b in value.BaseTypes)
 				{
-					var t = node.astNode.GetType();
-					if (t == typeof(CSharpTokenNode))
-					{
-						switch (node.astNode.Role.ToString())
-						{
-							case "{":
-								if (openBrackets == 0) node.markedType = CppNodeTypes.OpenObjectBracket;
-								openBrackets++;
-								break;
-
-							case "}":
-								openBrackets--;
-								if (openBrackets == 0) node.markedType = CppNodeTypes.CloseObjectBracket;
-								break;
-						}
-					}
+					if (b == value.BaseTypes.FirstOrNullObject()) writer.Write(" : ");
+					else writer.Write(", ");
+					writer.Write("public " + b.ToString());
 				}
+				writer.WriteLine(Environment.NewLine + "{");
+				base.Compile(writer, 0);
+				writer.WriteLine("};");
 			}
 			else if (type == typeof(MethodDeclaration))
 			{
@@ -154,6 +90,7 @@ namespace Reign.Compiler
 				}
 
 				writer.WriteLine(");");
+				base.Compile(writer, 0);
 			}
 			else if (type == typeof(FieldDeclaration))
 			{
@@ -191,46 +128,49 @@ namespace Reign.Compiler
 			if ((modifier & Modifiers.Protected) != 0) writer.Write("protected: ");
 			if ((modifier & Modifiers.Public) != 0) writer.Write("public: ");
 			if ((modifier & Modifiers.Static) != 0) writer.Write("static ");
+			if ((modifier & Modifiers.Virtual) != 0) writer.Write("virtual ");
+			if ((modifier & Modifiers.Abstract) != 0) writer.Write("virtual ");
 		}
 
 		public void CompileCppFile(StreamWriter writer)
 		{
 			var type = astNode.GetType();
-			if (type == typeof(UsingDeclaration))
+			if (type == typeof(SyntaxTree))
 			{
-				var value = ((UsingDeclaration)astNode);
-				writer.WriteLine(string.Format(@"#include ""{0}.h""", value.Namespace));
-				foreach (CppNode child in Children)
-				{
-					if (child.astNode.GetType() == typeof(CSharpTokenNode) && child.astNode.Role.ToString() == ";")
-					{
-						child.markedType = CppNodeTypes.Disabled;
-					}
-				}
+				base.Compile(writer, 1);
 			}
-			else if (type == typeof(CSharpTokenNode))
+			else if ((enableTokens || enableTokens2) && type == typeof(CSharpTokenNode))
 			{
 				switch (astNode.Role.ToString())
 				{
 					case "{": writer.WriteLine("{"); break;
-
-					case "}":
-						if (markedType == CppNodeTypes.CloseNamespaceBracket)
-						{
-							for (int i = 0; i != endBracketCount; ++i) writer.WriteLine("}");
-						}
-						else
-						{
-							writer.WriteLine("}");
-						}
-						break;
-
+					case "}": writer.WriteLine("}"); break;
 					case ",": writer.Write(", "); break;
-					case ";": if (markedType != CppNodeTypes.Disabled) writer.WriteLine(";"); break;
-					//case ".": if (markedType != CppNodeTypes.Disabled) writer.Write("."); break;
+					case ";": writer.WriteLine(";"); break;
+					case ".": writer.Write(convertNextPointerType ? "->" : "."); convertNextPointerType = false; break;
 					case "(": writer.Write("("); break;
 					case ")": writer.Write(")"); break;
+					case "[": writer.Write("["); break;
+					case "]": writer.Write("]"); break;
+
 					case "=": writer.Write(" = "); break;
+					case "+": writer.Write(" + "); break;
+					case "-": writer.Write(" - "); break;
+					case "*": writer.Write(" * "); break;
+					case "/": writer.Write(" / "); break;
+
+					case "+=": writer.Write(" += "); break;
+					case "-=": writer.Write(" -= "); break;
+					case "*=": writer.Write(" *= "); break;
+					case "/=": writer.Write(" /= "); break;
+
+					case "==": writer.Write(" == "); break;
+					case "!=": writer.Write(" != "); break;
+
+					case "++": writer.Write("++"); break;
+					case "--": writer.Write("--"); break;
+
+					case "for": writer.Write("for "); break;
 				}
 			}
 			else if (type == typeof(NamespaceDeclaration))
@@ -243,34 +183,124 @@ namespace Reign.Compiler
 					++count;
 					writer.WriteLine(string.Format(@"namespace {0}{1}", name, count == names.Length ? "" : "{"));
 				}
+
+				writer.WriteLine("{");
+				base.Compile(writer, 1);
+				for (int i = 0; i != count; ++i) writer.WriteLine("}");
+			}
+			else if (type == typeof(TypeDeclaration))
+			{
+				disableNextIdentifier = true;
+				base.Compile(writer, 1);
 			}
 			else if (type == typeof(MethodDeclaration))
 			{
 				var value = ((MethodDeclaration)astNode);
 					
-				var p = value.Parent as TypeDeclaration;
-				writer.Write(string.Format("{0} {1}::{2}", value.ReturnType.ToString(), p.Name, value.Name));
+				var t = value.Parent as TypeDeclaration;
+				writer.Write(string.Format("{0} {1}::{2}(", value.ReturnType.ToString(), t.Name, value.Name));
+				disableNextIdentifier = true;
+				
+				int count = 0;
+				foreach (var p in value.Parameters)
+				{
+					++count;
+					writer.Write(string.Format("{0} {1}{2}", p.Type.ToString(), p.Name, count != value.Parameters.Count ? ", " : ""));
+				}
+				
+				if ((value.Modifiers & Modifiers.Abstract) != 0)
+				{
+					writer.WriteLine(") {/* Abstract Method */}");
+				}
+				else
+				{
+					writer.WriteLine(")");
+					base.Compile(writer, 1);
+				}
 			}
-			else if (type == typeof(ParameterDeclaration))
+			else if (type == typeof(BlockStatement))
 			{
-				var value = ((ParameterDeclaration)astNode);
-				writer.Write(string.Format("{0} {1}", value.Type, value.Name));
+				writer.WriteLine("{");
+				base.Compile(writer, 1);
+				writer.WriteLine("}");
 			}
-			/*else if (type == typeof(Identifier))
+			else if (type == typeof(VariableDeclarationStatement))
 			{
-				var value = ((Identifier)astNode);
-				writer.Write(value.ToString());
+				var value = ((VariableDeclarationStatement)astNode);
+				string t = value.Type.ToString();
+				if (t == "var") writer.Write("auto ");
+				else writer.Write(t + " ");
+				enableTokens = true;
+				base.Compile(writer, 1);
+				enableTokens = false;
+			}
+			else if (type == typeof(ExpressionStatement))
+			{
+				enableTokens = true;
+				base.Compile(writer, 1);
+				enableTokens = false;
+			}
+			else if (type == typeof(AssignmentExpression))
+			{
+				base.Compile(writer, 1);
+			}
+			else if (type == typeof(UnaryOperatorExpression))
+			{
+				base.Compile(writer, 1);
+			}
+			else if (type == typeof(VariableInitializer))
+			{
+				base.Compile(writer, 1);
+			}
+			else if (type == typeof(PrimitiveExpression))
+			{
+				var value = ((PrimitiveExpression)astNode);
+				writer.Write(value.LiteralValue);
 			}
 			else if (type == typeof(IdentifierExpression))
 			{
 				var value = ((IdentifierExpression)astNode);
 				writer.Write(value.Identifier.ToString());
 			}
+			else if (type == typeof(BinaryOperatorExpression))
+			{
+				base.Compile(writer, 1);
+			}
+			else if (type == typeof(ParenthesizedExpression))
+			{
+				base.Compile(writer, 1);
+			}
+			else if (type == typeof(MemberReferenceExpression))
+			{
+				base.Compile(writer, 1);
+			}
 			else if (type == typeof(ThisReferenceExpression))
 			{
-				var value = ((ThisReferenceExpression)astNode);
-				writer.Write("this->");
-			}*/
+				convertNextPointerType = true;
+				writer.Write("this");
+			}
+			else if (type == typeof(IndexerExpression))
+			{
+				base.Compile(writer, 1);
+			}
+			else if (type == typeof(Identifier))
+			{
+				if (disableNextIdentifier)
+				{
+					disableNextIdentifier = false;
+				}
+				else
+				{
+					var value = ((Identifier)astNode);
+					writer.Write(value.Name);
+				}
+			}
+			else if (type == typeof(ForStatement))
+			{
+				enableTokens2 = true;
+				base.Compile(writer, 1);
+				enableTokens2 = false;
+			}
 		}
 	}
 }
