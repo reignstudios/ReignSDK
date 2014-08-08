@@ -1,7 +1,7 @@
 ReignSDK
 ========
 
-Copyright (C) 2009-2012 Reign-Studios (Andrew Witte & Philip Witte).
+Copyright (C) 2009-2014 Reign-Studios (Andrew Witte & Philip Witte).
 All Rights Reserved.
 
 The ReignSDK is a set of libraries, projects, tools and source code written in C# and C/C++, of which are currently defined as follows:

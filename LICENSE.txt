@@ -1,6 +1,6 @@
 <<< ReignSDK >>>
 
-Copyright (C) 2009-2012 Reign-Studios (Andrew Witte & Philip Witte).
+Copyright (C) 2009-2014 Reign-Studios (Andrew Witte & Philip Witte).
 All Rights Reserved.
 
 All other 3rd party libraries and or source code contained or used within the ReignSDK, are subject to there own legal agreements.
@@ -21,7 +21,7 @@ along with this program.  If not, see "http://www.opensource.org/licenses/bsd-li
 
 -------------------------------------------------------------
 
-Copyright (c) 2009-2012, Andrew Witte & Philip Witte
+Copyright (c) 2009-2014, Andrew Witte & Philip Witte
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
