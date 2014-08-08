@@ -50,12 +50,12 @@ Platforms
     - BlackBerry10
     - Tizen
     - SailfishOS
-    - AppleTV / Apple Game Console (Will know more later)
-    - Google Game Console (Will know more later 2013)
-    - Amazon Game Console (Will know more later 2013)
+    - AppleTV / Apple Game Console
+    - Google Game Console
+    - Amazon Game Console
     - Mad Catz MOJO Android Game Console
-    - WP7 (Might add this back in with non shader based API features)
-    - FEZ Game-O (Might be possible with non shader based API features)
+    - WP7
+    - FEZ Game-O
     - iConsole.tv
     - MK802, MK802IV, ect
     - UDOO (Android or GNU/Linux)
