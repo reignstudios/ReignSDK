@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using ICSharpCode.NRefactory;
-using ICSharpCode.NRefactory.CSharp;
 using System.Collections.Generic;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis;
 
 namespace Reign.Compiler
 {
@@ -11,28 +11,31 @@ namespace Reign.Compiler
 		public readonly string Code, FilePath, FileName;
 		protected CompilerBase compiler;
 		protected Node rootNode;
+		private Document Document;
+		private CSharpSyntaxTree syntaxTree;
 
-		public static CodeFile New(CompilerBase compiler, string code, string fileName)
+		public static CodeFile New(CompilerBase compiler, Document document)
 		{
 			switch (compiler.baseOutputType)
 			{
-				case CompilerBaseOutputTypes.Cpp: return new CppCodeFile(compiler, code, fileName);
+				case CompilerBaseOutputTypes.Cpp: return new CppCodeFile(compiler, document);
 				default: throw new Exception("Unsuported CodeFile base type: " + compiler.baseOutputType);
 			}
 		}
 
-		protected CodeFile(CompilerBase compiler, string code, string filePath)
+		protected CodeFile(CompilerBase compiler, Document document)
 		{
 			this.compiler = compiler;
-			this.Code = code;
-			this.FilePath = filePath;
-			FileName = Path.GetFileName(filePath);
-			var syntaxTree = compiler.parser.Parse(code);
-			rootNode = Node.New(compiler, syntaxTree);
+			this.Document = document;
+			this.FilePath = document.FilePath;
+			FileName = Path.GetFileName(FilePath);
+			syntaxTree = (CSharpSyntaxTree)document.GetSyntaxTreeAsync().Result;
+			rootNode = Node.New(compiler, syntaxTree.GetRoot());
 		}
 
+		public abstract void Compile();
 		public abstract void Compile(string outputDirectory);
-		public void Compile(StreamWriter writer, int mode)
+		public virtual void Compile(StreamWriter writer, int mode)
 		{
 			rootNode.Compile(writer, mode);
 		}

@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using ICSharpCode.NRefactory;
-using ICSharpCode.NRefactory.CSharp;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.CodeAnalysis;
 
 namespace Reign.Compiler
 {
 	public enum CompilerInputTypes
 	{
-		CsCode,
-		CsFile,
 		CsProject,
 		CsSolution
 	}
@@ -17,16 +16,16 @@ namespace Reign.Compiler
 	{
 		Cpp_VC,
 		Cpp_GCC,
-		D3D11_HLSL,
-		D3D9_HLSL,
-		XNA_HLSL,
-		Silverlight_HLSL,
-		GL4_GLSL,
-		GL3_GLSL,
-		GL2_GLSL,
-		GLES3_GLSL,
-		GLES2_GLSL,
-		Vita_CG
+		HLSL_D3D11,
+		HLSL_D3D9,
+		HLSL_XNA,
+		HLSL_Silverlight,
+		GLSL_GL4,
+		GLSL_GL3,
+		GLSL_GL2,
+		GLSL_GLES3,
+		GLSL_GLES2,
+		CG_Vita
 	}
 
 	public enum CompilerBaseOutputTypes
@@ -37,13 +36,15 @@ namespace Reign.Compiler
 		CG
 	}
 
-    public abstract class CompilerBase
+    public abstract class CompilerBase : IDisposable
     {
-		internal CSharpParser parser;
 		internal CompilerInputTypes inputType;
 		internal CompilerOutputTypes outputType;
 		internal CompilerBaseOutputTypes baseOutputType;
-		private List<CodeFile> codeFiles;
+		public IReadOnlyList<CodeFile> CodeFiles;
+
+		private MSBuildWorkspace workspace;
+		private Project project;
 
 		protected CompilerBase(string input, CompilerInputTypes inputType, CompilerOutputTypes outputType)
 		{
@@ -54,40 +55,68 @@ namespace Reign.Compiler
 			switch (outputType)
 			{
 				case CompilerOutputTypes.Cpp_VC: baseOutputType = CompilerBaseOutputTypes.Cpp; break;
-				case CompilerOutputTypes.Cpp_GCC: baseOutputType = CompilerBaseOutputTypes.Cpp; break;
+				//case CompilerOutputTypes.Cpp_GCC: baseOutputType = CompilerBaseOutputTypes.Cpp; break;
 
-				case CompilerOutputTypes.D3D11_HLSL: baseOutputType = CompilerBaseOutputTypes.HLSL; break;
-				case CompilerOutputTypes.D3D9_HLSL: baseOutputType = CompilerBaseOutputTypes.HLSL; break;
-				case CompilerOutputTypes.XNA_HLSL: baseOutputType = CompilerBaseOutputTypes.HLSL; break;
-				case CompilerOutputTypes.Silverlight_HLSL: baseOutputType = CompilerBaseOutputTypes.HLSL; break;
+				//case CompilerOutputTypes.D3D11_HLSL: baseOutputType = CompilerBaseOutputTypes.HLSL; break;
+				//case CompilerOutputTypes.D3D9_HLSL: baseOutputType = CompilerBaseOutputTypes.HLSL; break;
+				//case CompilerOutputTypes.XNA_HLSL: baseOutputType = CompilerBaseOutputTypes.HLSL; break;
+				//case CompilerOutputTypes.Silverlight_HLSL: baseOutputType = CompilerBaseOutputTypes.HLSL; break;
 
-				case CompilerOutputTypes.GL4_GLSL: baseOutputType = CompilerBaseOutputTypes.GLSL; break;
-				case CompilerOutputTypes.GL3_GLSL: baseOutputType = CompilerBaseOutputTypes.GLSL; break;
-				case CompilerOutputTypes.GL2_GLSL: baseOutputType = CompilerBaseOutputTypes.GLSL; break;
-				case CompilerOutputTypes.GLES3_GLSL: baseOutputType = CompilerBaseOutputTypes.GLSL; break;
-				case CompilerOutputTypes.GLES2_GLSL: baseOutputType = CompilerBaseOutputTypes.GLSL; break;
+				//case CompilerOutputTypes.GL4_GLSL: baseOutputType = CompilerBaseOutputTypes.GLSL; break;
+				//case CompilerOutputTypes.GL3_GLSL: baseOutputType = CompilerBaseOutputTypes.GLSL; break;
+				//case CompilerOutputTypes.GL2_GLSL: baseOutputType = CompilerBaseOutputTypes.GLSL; break;
+				//case CompilerOutputTypes.GLES3_GLSL: baseOutputType = CompilerBaseOutputTypes.GLSL; break;
+				//case CompilerOutputTypes.GLES2_GLSL: baseOutputType = CompilerBaseOutputTypes.GLSL; break;
 
-				case CompilerOutputTypes.Vita_CG: baseOutputType = CompilerBaseOutputTypes.CG; break;
+				//case CompilerOutputTypes.Vita_CG: baseOutputType = CompilerBaseOutputTypes.CG; break;
 
-				default: throw new Exception("Unknown compiler base type: " + outputType);
+				default: throw new Exception("Unsuported compiler base type: " + outputType);
 			}
 
-			// create objects
-			parser = new CSharpParser();
-			codeFiles = new List<CodeFile>();
-			switch (inputType)
+			// load workspace
+			workspace = MSBuildWorkspace.Create();
+			if (inputType == CompilerInputTypes.CsProject)
 			{
-				case CompilerInputTypes.CsCode:
-					codeFiles.Add(CodeFile.New(this, input, "Main.cs"));
-					break;
+				project = workspace.OpenProjectAsync(input).Result;
+				var codeFiles = new List<CodeFile>();
+				foreach (var document in project.Documents)
+				{
+					codeFiles.Add(CodeFile.New(this, document));
+				}
 
-				default: throw new Exception("InputType not supported yet: " + inputType);
+				CodeFiles = codeFiles;
+			}
+			else
+			{
+				throw new Exception("Input type not supported: " + inputType);
+			}
+		}
+
+		~CompilerBase()
+		{
+			Dispose();
+		}
+
+		public void Dispose()
+		{
+			if (workspace != null)
+			{
+				workspace.Dispose();
+				workspace = null;
+			}
+		}
+
+		public void Compile()
+		{
+			foreach (var file in CodeFiles)
+			{
+				file.Compile();
 			}
 		}
 		
 		public void Compile(string outputDirectory)
 		{
-			foreach (var file in codeFiles)
+			foreach (var file in CodeFiles)
 			{
 				file.Compile(outputDirectory);
 			}
