@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Reign.Compiler
 {
 	public class CppCompiler : CompilerBase
 	{
-		public CppCompiler(string input, CompilerInputTypes inputType, CompilerOutputTypes outputType)
-		: base(input, inputType, outputType)
+		public static async Task<CppCompiler> New(string input, CompilerInputTypes inputType, CompilerOutputTypes outputType)
 		{
-			
+			var obj = new CppCompiler();
+			await obj.init(input, inputType, outputType);
+			return obj;
 		}
 	}
 }

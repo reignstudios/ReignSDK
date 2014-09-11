@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace Reign.Compiler
 {
@@ -46,7 +47,7 @@ namespace Reign.Compiler
 		private MSBuildWorkspace workspace;
 		private Project project;
 
-		protected CompilerBase(string input, CompilerInputTypes inputType, CompilerOutputTypes outputType)
+		protected async Task init(string input, CompilerInputTypes inputType, CompilerOutputTypes outputType)
 		{
 			this.inputType = inputType;
 			this.outputType = outputType;
@@ -77,7 +78,8 @@ namespace Reign.Compiler
 			workspace = MSBuildWorkspace.Create();
 			if (inputType == CompilerInputTypes.CsProject)
 			{
-				project = workspace.OpenProjectAsync(input).Result;
+				var langs = workspace.Services.SupportedLanguages;
+				project = await workspace.OpenProjectAsync(input);
 				var codeFiles = new List<CodeFile>();
 				foreach (var document in project.Documents)
 				{
