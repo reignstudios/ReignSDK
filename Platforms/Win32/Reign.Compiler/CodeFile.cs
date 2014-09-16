@@ -3,34 +3,41 @@ using System.IO;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace Reign.Compiler
 {
 	public abstract class CodeFile
 	{
-		public readonly string Code, FilePath, FileName;
+		public string Code, FilePath, FileName;
 		protected CompilerBase compiler;
 		protected Node rootNode;
 		private Document Document;
 		private CSharpSyntaxTree syntaxTree;
+		private SemanticModel semanticModel;
 
-		public static CodeFile New(CompilerBase compiler, Document document)
+		public static async Task<CodeFile> New(CompilerBase compiler, Document document)
 		{
 			switch (compiler.baseOutputType)
 			{
-				case CompilerBaseOutputTypes.Cpp: return new CppCodeFile(compiler, document);
+				case CompilerBaseOutputTypes.Cpp:
+					var file = new CppCodeFile();
+					await file.init(compiler, document);
+					return file;
+
 				default: throw new Exception("Unsuported CodeFile base type: " + compiler.baseOutputType);
 			}
 		}
 
-		protected CodeFile(CompilerBase compiler, Document document)
+		private async Task init(CompilerBase compiler, Document document)
 		{
 			this.compiler = compiler;
 			this.Document = document;
 			this.FilePath = document.FilePath;
 			FileName = Path.GetFileName(FilePath);
 			syntaxTree = (CSharpSyntaxTree)document.GetSyntaxTreeAsync().Result;
-			rootNode = Node.New(compiler, syntaxTree.GetRoot());
+			semanticModel = await document.GetSemanticModelAsync();
+			rootNode = Node.New(compiler, syntaxTree.GetRoot(), semanticModel);
 		}
 
 		public abstract void Compile();

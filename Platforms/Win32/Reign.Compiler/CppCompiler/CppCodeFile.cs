@@ -10,12 +10,6 @@ namespace Reign.Compiler
 	{
 		public string CppCode, HeaderCode;
 
-		public CppCodeFile(CompilerBase compiler, Document document)
-		: base(compiler, document)
-		{
-			
-		}
-
 		public override void Compile()
 		{
 			// write h file

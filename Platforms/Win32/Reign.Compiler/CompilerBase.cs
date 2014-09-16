@@ -83,7 +83,7 @@ namespace Reign.Compiler
 				var codeFiles = new List<CodeFile>();
 				foreach (var document in project.Documents)
 				{
-					codeFiles.Add(CodeFile.New(this, document));
+					codeFiles.Add(await CodeFile.New(this, document));
 				}
 
 				CodeFiles = codeFiles;
