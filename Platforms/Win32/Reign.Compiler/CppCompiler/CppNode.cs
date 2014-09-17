@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -105,7 +106,7 @@ namespace Reign.Compiler
 			}
 		}
 
-		private string comileBlockStatment(string line, CSharpSyntaxNode baseNode)
+		private string formatBlockStatment(string line, CSharpSyntaxNode baseNode)
 		{
 			var type = baseNode.GetType();
 			if (type == typeof(LocalDeclarationStatementSyntax))
@@ -114,26 +115,33 @@ namespace Reign.Compiler
 				if (node.Declaration.Type.IsVar)
 				{
 					var symbolInfo = semanticModel.GetSymbolInfo(node.Declaration.Type);
-					line = Regex.Replace(line, @"var\s*", symbolInfo.Symbol.ToString() + " ", RegexOptions.Singleline);
-					return line;
+					line = Regex.Replace(line, @"var\s*", symbolInfo.Symbol + " ", RegexOptions.Singleline);
 				}
 			}
 			else if (type == typeof(ExpressionStatementSyntax))
 			{
-				var node = (ExpressionStatementSyntax)baseNode;
-				var e = node.Expression;
+				// do nothing...
+			}
+			else if (type == typeof(InvocationExpressionSyntax))
+			{
+				var node = (InvocationExpressionSyntax)baseNode;
 				string fullName = "";
+				var e = node.Expression;
 				while (e != null)
 				{
-					if (e.GetType() == typeof(InvocationExpressionSyntax))
-					{
-						var eNode = (InvocationExpressionSyntax)e;
-						e = eNode.Expression;
-					}
-					else if (e.GetType() == typeof(MemberAccessExpressionSyntax))
+					if (e.GetType() == typeof(MemberAccessExpressionSyntax))
 					{
 						var eNode = (MemberAccessExpressionSyntax)e;
 						fullName += eNode.Name + ".";
+						
+						// TODO: If extension method, then do special convert
+						/*var symbolInfo = semanticModel.GetSymbolInfo(eNode);
+						foreach (var r in symbolInfo.Symbol.DeclaringSyntaxReferences)
+						{
+							var root = (CSharpSyntaxNode)r.GetSyntax();
+							var i = semanticModel.GetDeclaredSymbol((MethodDeclarationSyntax)root).IsExtensionMethod;
+						}*/
+
 						e = eNode.Expression;
 					}
 					else if (e.GetType() == typeof(IdentifierNameSyntax))
@@ -142,25 +150,68 @@ namespace Reign.Compiler
 						fullName += eNode.Identifier;
 						e = null;
 					}
+					else if (e.GetType() == typeof(ThisExpressionSyntax))
+					{
+						var eNode = (ThisExpressionSyntax)e;
+						fullName += "this";
+						e = null;
+					}
+					else if (e.GetType() == typeof(PredefinedTypeSyntax))
+					{
+						var eNode = (PredefinedTypeSyntax)e;
+						var symbolInfo = semanticModel.GetSymbolInfo(eNode);
+						switch (symbolInfo.Symbol.Name)// convert base type static methods
+						{
+							case "Int32": line = line.Replace("int.", "Int32_EXT::"); break;
+							// TODO: Add more base types
+						}
+						e = null;
+					}
 					else
 					{
 						e = null;
 					}
 				}
-				//var e = (InvocationExpressionSyntax)node.Expression;
-				//var e2 = (MemberAccessExpressionSyntax)e.Expression;
-				//var i = (IdentifierNameSyntax)e2.Expression;
-
+				
+				// flip path
 				var values = fullName.Split('.');
+				fullName = "";
+				for (int i = values.Length-1; i != -1; --i)
+				{
+					fullName += values[i];
+					if (i != 0) fullName += "::";
+				}
 
+				// replace C# path with CPP path
+				line = Regex.Replace(line, fullName.Replace("::", "."), fullName.Replace("this::", "this->"));
 
-				return line;
+				// format sub method calls
+				//foreach (var childNode in node.ChildNodes())
+				//{
+				//	if (childNode.GetType() != typeof(ArgumentListSyntax)) continue;
+				//	var n = (ArgumentListSyntax)childNode;
+				//	foreach (var a in n.Arguments)
+				//	{
+				//		if (a.Expression == null) continue;
+				//		var t = a.Expression.GetType();
+				//		if (t == typeof(InvocationExpressionSyntax))
+				//		{
+				//			line = formatExpressions(line, a.Expression);
+				//		}
+				//		else if (t == typeof(BinaryExpressionSyntax))
+				//		{
+				//			var b = (BinaryExpressionSyntax)a.Expression;
+				//			if (b.Left.GetType() == typeof(InvocationExpressionSyntax)) line = formatExpressions(line, b.Left);
+				//			else if (b.Right.GetType() == typeof(InvocationExpressionSyntax)) line = formatExpressions(line, b.Right);
+				//		}
+				//	}
+				//}
 			}
 
 			// search deeper
 			foreach (var childNode in baseNode.ChildNodes())
 			{
-				line = comileBlockStatment(line, (CSharpSyntaxNode)childNode);
+				line = formatBlockStatment(line, (CSharpSyntaxNode)childNode);
 			}
 
 			return line;
@@ -233,9 +284,9 @@ namespace Reign.Compiler
 				foreach (var statement in node.Statements)
 				{
 					string line = statement.GetText().ToString().Replace("\n", "").Replace("\r", "").Replace("\t", "");
-					line = comileBlockStatment(line, statement);
+					line = formatBlockStatment(line, statement);
 					writer.WriteLine(line);
-					writer.WriteLine(statement.GetType());
+					//writer.WriteLine(statement.GetType());
 				}
 
 				base.Compile(writer, mode);
