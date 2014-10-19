@@ -179,7 +179,7 @@ namespace Reign.Compiler
 					{
 						var eNode = (IdentifierNameSyntax)e;
 
-						// check if were a value type
+						// check if were a value type or if were an instance block
 						var symbolInfo = semanticModel.GetSymbolInfo(eNode);
 						foreach (var r in symbolInfo.Symbol.DeclaringSyntaxReferences)
 						{
@@ -259,28 +259,6 @@ namespace Reign.Compiler
 						line = Regex.Replace(line, fullName.Replace("->", "."), newFullName);
 					}
 				}
-
-				// format sub method calls
-				//foreach (var childNode in node.ChildNodes())
-				//{
-				//	if (childNode.GetType() != typeof(ArgumentListSyntax)) continue;
-				//	var n = (ArgumentListSyntax)childNode;
-				//	foreach (var a in n.Arguments)
-				//	{
-				//		if (a.Expression == null) continue;
-				//		var t = a.Expression.GetType();
-				//		if (t == typeof(InvocationExpressionSyntax))
-				//		{
-				//			line = formatExpressions(line, a.Expression);
-				//		}
-				//		else if (t == typeof(BinaryExpressionSyntax))
-				//		{
-				//			var b = (BinaryExpressionSyntax)a.Expression;
-				//			if (b.Left.GetType() == typeof(InvocationExpressionSyntax)) line = formatExpressions(line, b.Left);
-				//			else if (b.Right.GetType() == typeof(InvocationExpressionSyntax)) line = formatExpressions(line, b.Right);
-				//		}
-				//	}
-				//}
 			}
 
 			// search deeper
