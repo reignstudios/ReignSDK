@@ -112,10 +112,26 @@ namespace Reign.Compiler
 			if (type == typeof(LocalDeclarationStatementSyntax))
 			{
 				var node = (LocalDeclarationStatementSyntax)baseNode;
+				var symbolInfo = semanticModel.GetSymbolInfo(node.Declaration.Type);
+				bool isValueType = true;
+				foreach (var r in symbolInfo.Symbol.DeclaringSyntaxReferences)
+				{
+					var root = (CSharpSyntaxNode)r.GetSyntax();
+					var symbol = semanticModel.GetDeclaredSymbol(root);
+					isValueType = Microsoft.CodeAnalysis.CSharp.Symbols.NamedTypeSymbolInfo.GetTypeSymbel(symbolInfo.Symbol);
+				}
+
 				if (node.Declaration.Type.IsVar)
 				{
-					var symbolInfo = semanticModel.GetSymbolInfo(node.Declaration.Type);
-					line = Regex.Replace(line, @"var\s*", symbolInfo.Symbol + " ", RegexOptions.Singleline);
+					line = Regex.Replace(line, @"var\s*", symbolInfo.Symbol + (isValueType?" ":"* "), RegexOptions.Singleline);
+				}
+				
+				if (isValueType)
+				{
+					foreach (var variable in node.Declaration.Variables)
+					{
+						line = Regex.Replace(line, variable.Identifier+@"\s*=\s*new", variable.Identifier+" = ", RegexOptions.Singleline);
+					}
 				}
 			}
 			else if (type == typeof(ExpressionStatementSyntax))
@@ -127,33 +143,64 @@ namespace Reign.Compiler
 				var node = (InvocationExpressionSyntax)baseNode;
 				string fullName = "";
 				var e = node.Expression;
+				bool isInstanceMethod = false, isValueType = false;
 				while (e != null)
 				{
 					if (e.GetType() == typeof(MemberAccessExpressionSyntax))
 					{
 						var eNode = (MemberAccessExpressionSyntax)e;
-						fullName += eNode.Name + ".";
 						
-						// TODO: If extension method, then do special convert
-						/*var symbolInfo = semanticModel.GetSymbolInfo(eNode);
+						// convert ext method
+						bool isExt = false;
+						var symbolInfo = semanticModel.GetSymbolInfo(eNode);
 						foreach (var r in symbolInfo.Symbol.DeclaringSyntaxReferences)
 						{
 							var root = (CSharpSyntaxNode)r.GetSyntax();
-							var i = semanticModel.GetDeclaredSymbol((MethodDeclarationSyntax)root).IsExtensionMethod;
-						}*/
+							var symbol = semanticModel.GetDeclaredSymbol((MethodDeclarationSyntax)root);
+							if (symbol.IsExtensionMethod)
+							{
+								isExt = true;
+								var iNode = (IdentifierNameSyntax)eNode.Expression;
+								string fullNameExt = ((ClassDeclarationSyntax)root.Parent).Identifier.ToString() + "::" + eNode.Name;
+								line = Regex.Replace(line, iNode.Identifier.ToString() + @"\." + eNode.Name + @".*?\(", fullNameExt + "(" + iNode.Identifier + (symbol.Parameters.Length >= 2 ? ", " : ""), RegexOptions.Singleline);
+								e = eNode.Expression;
+							}
+						}
+						
+						// otherwise continue normaly
+						if (!isExt)
+						{
+							fullName += eNode.Name + ".";
+						}
 
 						e = eNode.Expression;
 					}
 					else if (e.GetType() == typeof(IdentifierNameSyntax))
 					{
 						var eNode = (IdentifierNameSyntax)e;
+						var symbolInfo = semanticModel.GetSymbolInfo(eNode);
+						foreach (var r in symbolInfo.Symbol.DeclaringSyntaxReferences)
+						{
+							var root = (CSharpSyntaxNode)r.GetSyntax();
+							if (root.GetType() == typeof(VariableDeclaratorSyntax))
+							{
+								var rootType = (VariableDeclaratorSyntax)root;
+								var symbol = semanticModel.GetDeclaredSymbol(rootType);
+								var namedType = Microsoft.CodeAnalysis.CSharp.Symbols.SourceLocalSymbolInfo.GetTypeSymbel((ILocalSymbol)symbol);
+								if (namedType.IsValueType) isValueType = true;
+								isInstanceMethod = true;
+							}
+						}
 						fullName += eNode.Identifier;
+						if (isInstanceMethod) fullName = fullName.Replace("."+eNode.Identifier, "->"+eNode.Identifier);
 						e = null;
 					}
 					else if (e.GetType() == typeof(ThisExpressionSyntax))
 					{
 						var eNode = (ThisExpressionSyntax)e;
+						isInstanceMethod = true;
 						fullName += "this";
+						fullName = fullName.Replace(".this", "->this");
 						e = null;
 					}
 					else if (e.GetType() == typeof(PredefinedTypeSyntax))
@@ -162,7 +209,7 @@ namespace Reign.Compiler
 						var symbolInfo = semanticModel.GetSymbolInfo(eNode);
 						switch (symbolInfo.Symbol.Name)// convert base type static methods
 						{
-							case "Int32": line = line.Replace("int.", "Int32_EXT::"); break;
+							case "Int32": line = line.Replace("int.", "Int32_EXT."); break;
 							// TODO: Add more base types
 						}
 						e = null;
@@ -172,18 +219,43 @@ namespace Reign.Compiler
 						e = null;
 					}
 				}
-				
-				// flip path
-				var values = fullName.Split('.');
-				fullName = "";
-				for (int i = values.Length-1; i != -1; --i)
-				{
-					fullName += values[i];
-					if (i != 0) fullName += "::";
-				}
 
 				// replace C# path with CPP path
-				line = Regex.Replace(line, fullName.Replace("::", "."), fullName.Replace("this::", "this->"));
+				if (!isInstanceMethod)
+				{
+					// flip path
+					var values = fullName.Split('.');
+					fullName = "";
+					for (int i = values.Length-1; i != -1; --i)
+					{
+						fullName += values[i];
+						if (i != 0) fullName += "::";
+					}
+
+					line = Regex.Replace(line, fullName.Replace("::", "."), fullName);
+				}
+				else
+				{
+					if (!isValueType)
+					{
+						// flip path
+						var values = Regex.Split(fullName, @"(\.|->)");
+						string newFullName = "";
+						fullName = "";
+						for (int i = values.Length-1; i > -1; i -= 2)
+						{
+							newFullName += values[i];
+							fullName += values[i];
+							if (i != 0)
+							{
+								newFullName += values[i-1];
+								fullName += values[i-1];
+							}
+						}
+
+						line = Regex.Replace(line, fullName.Replace("->", "."), newFullName);
+					}
+				}
 
 				// format sub method calls
 				//foreach (var childNode in node.ChildNodes())
