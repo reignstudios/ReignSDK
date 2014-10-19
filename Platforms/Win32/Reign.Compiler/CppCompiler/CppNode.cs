@@ -143,7 +143,7 @@ namespace Reign.Compiler
 				var node = (InvocationExpressionSyntax)baseNode;
 				string fullName = "";
 				var e = node.Expression;
-				bool isInstanceMethod = false, isValueType = false;
+				bool isInstanceBlock = false, isValueType = false;
 				while (e != null)
 				{
 					if (e.GetType() == typeof(MemberAccessExpressionSyntax))
@@ -178,6 +178,8 @@ namespace Reign.Compiler
 					else if (e.GetType() == typeof(IdentifierNameSyntax))
 					{
 						var eNode = (IdentifierNameSyntax)e;
+
+						// check if were a value type
 						var symbolInfo = semanticModel.GetSymbolInfo(eNode);
 						foreach (var r in symbolInfo.Symbol.DeclaringSyntaxReferences)
 						{
@@ -188,17 +190,18 @@ namespace Reign.Compiler
 								var symbol = semanticModel.GetDeclaredSymbol(rootType);
 								var namedType = Microsoft.CodeAnalysis.CSharp.Symbols.SourceLocalSymbolInfo.GetTypeSymbel((ILocalSymbol)symbol);
 								if (namedType.IsValueType) isValueType = true;
-								isInstanceMethod = true;
+								if (!namedType.IsStatic) isInstanceBlock = true;
 							}
 						}
+
 						fullName += eNode.Identifier;
-						if (isInstanceMethod) fullName = fullName.Replace("."+eNode.Identifier, "->"+eNode.Identifier);
+						if (!isValueType && isInstanceBlock) fullName = fullName.Replace("."+eNode.Identifier, "->"+eNode.Identifier);
 						e = null;
 					}
 					else if (e.GetType() == typeof(ThisExpressionSyntax))
 					{
 						var eNode = (ThisExpressionSyntax)e;
-						isInstanceMethod = true;
+						isInstanceBlock = true;
 						fullName += "this";
 						fullName = fullName.Replace(".this", "->this");
 						e = null;
@@ -221,7 +224,7 @@ namespace Reign.Compiler
 				}
 
 				// replace C# path with CPP path
-				if (!isInstanceMethod)
+				if (!isInstanceBlock)
 				{
 					// flip path
 					var values = fullName.Split('.');
