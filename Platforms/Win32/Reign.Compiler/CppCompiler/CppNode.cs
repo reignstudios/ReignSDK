@@ -117,8 +117,8 @@ namespace Reign.Compiler
 				foreach (var r in symbolInfo.Symbol.DeclaringSyntaxReferences)
 				{
 					var root = (CSharpSyntaxNode)r.GetSyntax();
-					var symbol = semanticModel.GetDeclaredSymbol(root);
-					isValueType = Microsoft.CodeAnalysis.CSharp.Symbols.NamedTypeSymbolInfo.GetTypeSymbel(symbolInfo.Symbol);
+					var symbol = semanticModel.GetDeclaredSymbol(root) as INamedTypeSymbol;
+					if (symbol != null) isValueType = symbol.IsValueType;
 				}
 
 				if (node.Declaration.Type.IsVar)
@@ -134,6 +134,14 @@ namespace Reign.Compiler
 					}
 				}
 			}
+			else if (type == typeof(LiteralExpressionSyntax))
+			{
+				var node = (LiteralExpressionSyntax)baseNode;
+				if (node.IsKind(SyntaxKind.StringLiteralExpression))
+				{
+					line = line.Replace(node.ToString(), "L"+node.ToString());
+				}
+			}
 			else if (type == typeof(ExpressionStatementSyntax))
 			{
 				// do nothing...
@@ -141,9 +149,9 @@ namespace Reign.Compiler
 			else if (type == typeof(InvocationExpressionSyntax))
 			{
 				var node = (InvocationExpressionSyntax)baseNode;
-				string fullName = "";
+				string fullName = "", identifier = null;
 				var e = node.Expression;
-				bool isInstanceBlock = false, isValueType = false;
+				bool isInstanceBlock = false, isValueType = false, isSpecialType = false;
 				while (e != null)
 				{
 					if (e.GetType() == typeof(MemberAccessExpressionSyntax))
@@ -179,6 +187,15 @@ namespace Reign.Compiler
 					{
 						var eNode = (IdentifierNameSyntax)e;
 
+						Func<SpecialType,bool> handleSpecial = delegate(SpecialType specialType)
+						{
+							switch (specialType)// TODO: add more types
+							{
+								case SpecialType.System_Int32: return true;
+								default: return false;
+							}
+						};
+
 						// check if were a value type or if were an instance block
 						var symbolInfo = semanticModel.GetSymbolInfo(eNode);
 						foreach (var r in symbolInfo.Symbol.DeclaringSyntaxReferences)
@@ -187,14 +204,25 @@ namespace Reign.Compiler
 							if (root.GetType() == typeof(VariableDeclaratorSyntax))
 							{
 								var rootType = (VariableDeclaratorSyntax)root;
-								var symbol = semanticModel.GetDeclaredSymbol(rootType);
-								var namedType = Microsoft.CodeAnalysis.CSharp.Symbols.SourceLocalSymbolInfo.GetTypeSymbel((ILocalSymbol)symbol);
+								var symbol = semanticModel.GetDeclaredSymbol(rootType) as ILocalSymbol;
+								var namedType = symbol.Type;
 								if (namedType.IsValueType) isValueType = true;
-								if (!namedType.IsStatic) isInstanceBlock = true;
+								if (!symbol.IsStatic) isInstanceBlock = true;
+								isSpecialType = handleSpecial(namedType.SpecialType);
+							}
+							else if (root.GetType() == typeof(ParameterSyntax))
+							{
+								var rootType = (ParameterSyntax)root;
+								var symbol = semanticModel.GetDeclaredSymbol(rootType) as IParameterSymbol;
+								var namedType = symbol.Type;
+								if (namedType.IsValueType) isValueType = true;
+								if (!symbol.IsStatic) isInstanceBlock = true;
+								isSpecialType = handleSpecial(namedType.SpecialType);
 							}
 						}
 
 						fullName += eNode.Identifier;
+						identifier = eNode.Identifier.ToString();
 						if (!isValueType && isInstanceBlock) fullName = fullName.Replace("."+eNode.Identifier, "->"+eNode.Identifier);
 						e = null;
 					}
@@ -257,6 +285,10 @@ namespace Reign.Compiler
 						}
 
 						line = Regex.Replace(line, fullName.Replace("->", "."), newFullName);
+					}
+					else if (isSpecialType)
+					{
+						line = Regex.Replace(line, identifier+@"\.ToString\(\)", string.Format("STRING_EXT::ToString({0})", identifier));
 					}
 				}
 			}
