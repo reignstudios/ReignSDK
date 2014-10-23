@@ -38,14 +38,18 @@ namespace Reign.Compiler
 			}
 		}
 
+		private string formatSpecialType(SpecialType specialType, string typeName)
+		{
+			switch (specialType)// TODO: add more types
+			{
+				case SpecialType.System_Int32: return typeName.Replace(typeName, "Int32");
+				default: return typeName;
+			}
+		}
+
 		private void compileHeaderFile(StreamWriter writer, int mode)
 		{
-			//var asNode = syntaxNode.AsNode();
-			//var asToken = syntaxNode.AsToken();
-			//var nodeType = asNode != null ? asNode.GetType() : null;
-			//var tokenType = asToken != null ? asToken.GetType() : null;
 			var nodeType = syntaxNode.GetType();
-			//writer.WriteLine(type); base.Compile(writer, mode); return;
 
 			// namespace
 			if (nodeType == typeof(NamespaceDeclarationSyntax))
@@ -71,8 +75,20 @@ namespace Reign.Compiler
 			else if (nodeType == typeof(FieldDeclarationSyntax))
 			{
 				var node = (FieldDeclarationSyntax)syntaxNode;
+
+				// convert type name
+				string name = node.Declaration.Type.ToString();
+				if (node.Declaration.Type.GetType() == typeof(PredefinedTypeSyntax))
+				{
+					var eNode = (PredefinedTypeSyntax)node.Declaration.Type;
+
+					var symbolInfo = semanticModel.GetSymbolInfo(eNode);
+					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
+				}
+
 				writeModifiers(writer, node.Modifiers);
-				writer.Write(node.Declaration.Type.ToString() + " ");
+				writer.Write(name + " ");
 				base.Compile(writer, mode);
 			}
 			else if (nodeType == typeof(VariableDeclarationSyntax))
@@ -89,19 +105,36 @@ namespace Reign.Compiler
 			else if (nodeType == typeof(MethodDeclarationSyntax))
 			{
 				var node = (MethodDeclarationSyntax)syntaxNode;
+
+				// convert return name
+				string name = node.ReturnType.ToString();
+				if (node.ReturnType.GetType() == typeof(PredefinedTypeSyntax))
+				{
+					var eNode = (PredefinedTypeSyntax)node.ReturnType;
+
+					var symbolInfo = semanticModel.GetSymbolInfo(eNode);
+					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
+				}
+
 				writeModifiers(writer, node.Modifiers);
-				writer.Write(node.ReturnType.ToString() + " ");
+				writer.Write(name + " ");
 				writer.Write(node.Identifier.ToString() + "(");
 				foreach (var p in node.ParameterList.Parameters)
 				{
-					writer.Write(string.Format("{0} {1}", p.Type, p.Identifier));
+					// convert parameter name
+					var symbolInfo = semanticModel.GetSymbolInfo(p.Type);
+					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+					name = p.Type.ToString();
+					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
+
+					writer.Write(string.Format("{0} {1}", name, p.Identifier));
 					if (p != node.ParameterList.Parameters.Last()) writer.Write(", ");
 				}
 				writer.WriteLine(");");
 			}
 			else
 			{
-				//writer.WriteLine(type);
 				base.Compile(writer, mode);
 			}
 		}
@@ -121,16 +154,34 @@ namespace Reign.Compiler
 					if (symbol != null) isValueType = symbol.IsValueType;
 				}
 
+				// convert var type
 				if (node.Declaration.Type.IsVar)
 				{
-					line = Regex.Replace(line, @"var\s*", symbolInfo.Symbol + (isValueType?" ":"* "), RegexOptions.Singleline);
+					line = Regex.Replace(line, @"var\s*", symbolInfo.Symbol.ToString().Replace(".", "::") + (isValueType?" ":"* "));
+				}
+
+				// convert special types
+				foreach (var r in node.Declaration.Variables)
+				{
+					var rootType = (VariableDeclaratorSyntax)r;
+					var symbol = (ILocalSymbol)semanticModel.GetDeclaredSymbol(rootType);
+					var namedType = symbol.Type;
+					switch (namedType.SpecialType)
+					{
+						case SpecialType.System_Int32:
+							line = Regex.Replace(line, symbolInfo.Symbol+@"\s", "Int32 ");
+							line = Regex.Replace(line, symbolInfo.Symbol+@"::", "Int32::");
+							break;
+						// TODO: Add more types
+					}
 				}
 				
+				// remove new for value types
 				if (isValueType)
 				{
 					foreach (var variable in node.Declaration.Variables)
 					{
-						line = Regex.Replace(line, variable.Identifier+@"\s*=\s*new", variable.Identifier+" = ", RegexOptions.Singleline);
+						line = Regex.Replace(line, variable.Identifier+@"\s*=\s*new", variable.Identifier+" = ");
 					}
 				}
 			}
@@ -139,7 +190,7 @@ namespace Reign.Compiler
 				var node = (LiteralExpressionSyntax)baseNode;
 				if (node.IsKind(SyntaxKind.StringLiteralExpression))
 				{
-					line = line.Replace(node.ToString(), "L"+node.ToString());
+					line = line.Replace(node.ToString(), "string(L"+node.ToString()+")");
 				}
 			}
 			else if (type == typeof(ExpressionStatementSyntax))
@@ -151,7 +202,7 @@ namespace Reign.Compiler
 				var node = (InvocationExpressionSyntax)baseNode;
 				string fullName = "", identifier = null;
 				var e = node.Expression;
-				bool isInstanceBlock = false, isValueType = false, isSpecialType = false;
+				bool isInstanceBlock = false, isValueType = false;//, isSpecialType = false;
 				while (e != null)
 				{
 					if (e.GetType() == typeof(MemberAccessExpressionSyntax))
@@ -187,14 +238,14 @@ namespace Reign.Compiler
 					{
 						var eNode = (IdentifierNameSyntax)e;
 
-						Func<SpecialType,bool> handleSpecial = delegate(SpecialType specialType)
-						{
-							switch (specialType)// TODO: add more types
-							{
-								case SpecialType.System_Int32: return true;
-								default: return false;
-							}
-						};
+						//Func<SpecialType,bool> handleSpecial = delegate(SpecialType specialType)
+						//{
+						//	switch (specialType)// TODO: add more types
+						//	{
+						//		case SpecialType.System_Int32: return true;
+						//		default: return false;
+						//	}
+						//};
 
 						// check if were a value type or if were an instance block
 						var symbolInfo = semanticModel.GetSymbolInfo(eNode);
@@ -204,20 +255,20 @@ namespace Reign.Compiler
 							if (root.GetType() == typeof(VariableDeclaratorSyntax))
 							{
 								var rootType = (VariableDeclaratorSyntax)root;
-								var symbol = semanticModel.GetDeclaredSymbol(rootType) as ILocalSymbol;
+								var symbol = (ILocalSymbol)semanticModel.GetDeclaredSymbol(rootType);
 								var namedType = symbol.Type;
 								if (namedType.IsValueType) isValueType = true;
 								if (!symbol.IsStatic) isInstanceBlock = true;
-								isSpecialType = handleSpecial(namedType.SpecialType);
+								//isSpecialType = handleSpecial(namedType.SpecialType);
 							}
 							else if (root.GetType() == typeof(ParameterSyntax))
 							{
 								var rootType = (ParameterSyntax)root;
-								var symbol = semanticModel.GetDeclaredSymbol(rootType) as IParameterSymbol;
+								var symbol = (IParameterSymbol)semanticModel.GetDeclaredSymbol(rootType);
 								var namedType = symbol.Type;
 								if (namedType.IsValueType) isValueType = true;
 								if (!symbol.IsStatic) isInstanceBlock = true;
-								isSpecialType = handleSpecial(namedType.SpecialType);
+								//isSpecialType = handleSpecial(namedType.SpecialType);
 							}
 						}
 
@@ -237,10 +288,12 @@ namespace Reign.Compiler
 					else if (e.GetType() == typeof(PredefinedTypeSyntax))
 					{
 						var eNode = (PredefinedTypeSyntax)e;
+
 						var symbolInfo = semanticModel.GetSymbolInfo(eNode);
-						switch (symbolInfo.Symbol.Name)// convert base type static methods
+						var namedType = (INamedTypeSymbol)symbolInfo.Symbol;
+						switch (namedType.SpecialType)// convert special type static methods
 						{
-							case "Int32": line = line.Replace("int.", "Int32_EXT."); break;
+							case SpecialType.System_Int32: line = line.Replace("int.", "Int32."); break;
 							// TODO: Add more base types
 						}
 						e = null;
@@ -286,10 +339,10 @@ namespace Reign.Compiler
 
 						line = Regex.Replace(line, fullName.Replace("->", "."), newFullName);
 					}
-					else if (isSpecialType)
-					{
-						line = Regex.Replace(line, identifier+@"\.ToString\(\)", string.Format("STRING_EXT::ToString({0})", identifier));
-					}
+					//else if (isSpecialType)
+					//{
+					//	line = Regex.Replace(line, identifier+@"\.ToString\(\)", string.Format("STRING_EXT::ToString({0})", identifier));
+					//}
 				}
 			}
 
@@ -304,12 +357,7 @@ namespace Reign.Compiler
 
 		private void compileCppFile(StreamWriter writer, int mode)
 		{
-			//var asNode = syntaxNode.AsNode();
-			//var asToken = syntaxNode.AsToken();
-			//var nodeType = asNode != null ? asNode.GetType() : null;
-			//var tokenType = asToken != null ? asToken.GetType() : null;
 			var nodeType = syntaxNode.GetType();
-			//writer.WriteLine(type); base.Compile(writer, mode); return;
 
 			// namespace
 			if (nodeType == typeof(NamespaceDeclarationSyntax))
@@ -328,34 +376,42 @@ namespace Reign.Compiler
 				currentClass = (ClassDeclarationSyntax)syntaxNode;
 				base.Compile(writer, mode);
 			}
-			//// fields
-			//else if (type == typeof(FieldDeclarationSyntax))
-			//{
-			//	var node = (FieldDeclarationSyntax)syntaxNode;
-			//	writeModifiers(writer, node.Modifiers);
-			//	writer.Write(node.Declaration.Type.ToString() + " ");
-			//	base.Compile(writer, mode);
-			//}
-			//else if (type == typeof(VariableDeclarationSyntax))
-			//{
-			//	var node = (VariableDeclarationSyntax)syntaxNode;
-			//	foreach (var v in node.Variables)
-			//	{
-			//		writer.Write(string.Format("{0} = {1}", v.Identifier.Value, v.Initializer.Value));
-			//		if (v != node.Variables.Last()) writer.Write(", ");
-			//	}
-			//	writer.WriteLine(";");
-			//}
 			// methods
 			else if (nodeType == typeof(MethodDeclarationSyntax))
 			{
 				var node = (MethodDeclarationSyntax)syntaxNode;
-				var test = node.GetText();
-				writer.Write(string.Format("{0} {1}::", node.ReturnType.ToString(), currentClass.Identifier));
+
+				//Func<SpecialType,string,string> formatSpecialType = delegate(SpecialType specialType, string typeName)
+				//{
+				//	switch (specialType)// TODO: add more types
+				//	{
+				//		case SpecialType.System_Int32: return typeName.Replace(typeName, "Int32");
+				//		default: return typeName;
+				//	}
+				//};
+
+				// convert return name
+				string name = node.ReturnType.ToString();
+				if (node.ReturnType.GetType() == typeof(PredefinedTypeSyntax))
+				{
+					var eNode = (PredefinedTypeSyntax)node.ReturnType;
+
+					var symbolInfo = semanticModel.GetSymbolInfo(eNode);
+					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
+				}
+
+				writer.Write(string.Format("{0} {1}::", name, currentClass.Identifier));
 				writer.Write(node.Identifier.ToString() + "(");
 				foreach (var p in node.ParameterList.Parameters)
 				{
-					writer.Write(string.Format("{0} {1}", p.Type, p.Identifier));
+					// convert parameter name
+					var symbolInfo = semanticModel.GetSymbolInfo(p.Type);
+					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+					name = p.Type.ToString();
+					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
+
+					writer.Write(string.Format("{0} {1}", name, p.Identifier));
 					if (p != node.ParameterList.Parameters.Last()) writer.Write(", ");
 				}
 				writer.WriteLine(")");
@@ -371,57 +427,12 @@ namespace Reign.Compiler
 					string line = statement.GetText().ToString().Replace("\n", "").Replace("\r", "").Replace("\t", "");
 					line = formatBlockStatment(line, statement);
 					writer.WriteLine(line);
-					//writer.WriteLine(statement.GetType());
 				}
 
 				base.Compile(writer, mode);
 			}
-			/*else if (nodeType == typeof(LocalDeclarationStatementSyntax))
-			{
-				var node = (LocalDeclarationStatementSyntax)syntaxNode;
-				var symbolInfo = semanticModel.GetSymbolInfo(node.Declaration.Type);
-				writer.Write(symbolInfo.Symbol + " ");
-				base.Compile(writer, mode);
-			}*/
-			//else if (type == typeof(VariableDeclarationSyntax))
-			//{
-			//	var node = (VariableDeclarationSyntax)syntaxNode;
-			//	var symbolInfo = semanticModel.GetSymbolInfo(node.Type);
-			//	writer.WriteLine(string.Format("{0} {1}", symbolInfo.Symbol, node.));
-			//}
-			/*else if (nodeType == typeof(VariableDeclaratorSyntax))
-			{
-				var node = (VariableDeclaratorSyntax)syntaxNode;
-				writer.Write(node.Identifier);
-				base.Compile(writer, mode);
-			}
-			else if (nodeType == typeof(EqualsValueClauseSyntax))
-			{
-				var node = (EqualsValueClauseSyntax)syntaxNode;
-				writer.Write(" = ");
-				base.Compile(writer, mode);
-			}
-			else if (nodeType == typeof(LiteralExpressionSyntax))
-			{
-				var node = (LiteralExpressionSyntax)syntaxNode;
-				writer.Write(node.Token);
-				base.Compile(writer, mode);
-			}*/
-			//else if (type == typeof(BinaryExpressionSyntax))
-			//{
-			//	var node = (BinaryExpressionSyntax)syntaxNode;
-			//	writer.Write(string.Format("{0} {1} {2}", node.Left, node.OperatorToken, node.Right));
-			//	base.Compile(writer, mode);
-			//}
-			//else if (tokenType != null)// && tokenType.Name == ";")
-			//{
-			//	writer.Write(tokenType.FullName);
-			//	base.Compile(writer, mode);
-			//}
 			else
 			{
-				//if (nodeType != null) writer.WriteLine(nodeType);
-				//writer.WriteLine(nodeType);
 				base.Compile(writer, mode);
 			}
 		}
