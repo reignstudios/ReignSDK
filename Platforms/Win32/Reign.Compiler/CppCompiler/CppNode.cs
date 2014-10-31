@@ -66,7 +66,20 @@ namespace Reign.Compiler
 			else if (nodeType == typeof(ClassDeclarationSyntax))
 			{
 				var node = (ClassDeclarationSyntax)syntaxNode;
-				writer.WriteLine(string.Format("class {0}", node.Identifier));
+				writer.Write(string.Format("class {0} : public ", node.Identifier));
+				if (node.BaseList != null)
+				{
+					var last = node.BaseList.Types.Last();
+					foreach (var type in node.BaseList.Types)
+					{
+						writer.Write(type);
+						if (type != last) writer.Write(", ");
+					}
+				}
+				else
+				{
+					writer.WriteLine("Object");
+				}
 				writer.WriteLine("{");
 				base.Compile(writer, mode);
 				writer.WriteLine("};");

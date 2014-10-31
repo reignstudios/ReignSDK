@@ -116,7 +116,7 @@ namespace Reign.Compiler
 			}
 		}
 		
-		public void Compile(string outputDirectory)
+		public virtual void Compile(string outputDirectory)
 		{
 			foreach (var file in CodeFiles)
 			{

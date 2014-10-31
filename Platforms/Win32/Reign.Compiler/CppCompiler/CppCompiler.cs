@@ -14,5 +14,19 @@ namespace Reign.Compiler
 			await obj.init(input, inputType, outputType);
 			return obj;
 		}
+
+		public override void Compile(string outputDirectory)
+		{
+			if (outputType == CompilerOutputTypes.Cpp_VC)
+			{
+				// TODO: output VS proj file
+			}
+			else if (outputType == CompilerOutputTypes.Cpp_GCC)
+			{
+				// TODO: output make file
+			}
+
+			base.Compile(outputDirectory);
+		}
 	}
 }
