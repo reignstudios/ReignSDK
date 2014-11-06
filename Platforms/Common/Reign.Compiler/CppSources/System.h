@@ -10,7 +10,7 @@ namespace System
 		}
 	};
 
-	class string : object
+	class string : public object
 	{
 		public: string(wchar_t* value)
 		{
@@ -23,7 +23,7 @@ namespace System
 		}
 	};
 
-	struct Int32 : object
+	struct Int32 : public object
 	{
 		int Value;
 
@@ -53,9 +53,14 @@ namespace System
 		}
 	};
 
-	class Console
+	class Console : public object
 	{
 		public: static void Write(object* value)
+		{
+			
+		}
+
+		public: static void WriteLine(object* value)
 		{
 			
 		}
