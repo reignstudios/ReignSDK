@@ -9,14 +9,14 @@ namespace Reign.Compiler
 {
 	public abstract class CodeFile
 	{
-		public string Code, FilePath, FileName;
-		protected CompilerBase compiler;
+		public string Code, FilePath, FileName, Name;
+		protected CompilerSolution compiler;
 		protected Node rootNode;
 		private Document Document;
 		private CSharpSyntaxTree syntaxTree;
 		private SemanticModel semanticModel;
 
-		public static async Task<CodeFile> New(CompilerBase compiler, Document document)
+		public static async Task<CodeFile> New(CompilerSolution compiler, Document document)
 		{
 			switch (compiler.baseOutputType)
 			{
@@ -29,11 +29,12 @@ namespace Reign.Compiler
 			}
 		}
 
-		private async Task init(CompilerBase compiler, Document document)
+		private async Task init(CompilerSolution compiler, Document document)
 		{
 			this.compiler = compiler;
 			this.Document = document;
 			this.FilePath = document.FilePath;
+			Name = Path.GetFileNameWithoutExtension(document.Name);
 			FileName = Path.GetFileName(FilePath);
 			syntaxTree = (CSharpSyntaxTree)document.GetSyntaxTreeAsync().Result;
 			semanticModel = await document.GetSemanticModelAsync();
@@ -53,7 +54,7 @@ namespace Reign.Compiler
 			string path = outputDirectory + filePath;
 			string root = Path.GetDirectoryName(path);
 			if (!Directory.Exists(root)) Directory.CreateDirectory(root);
-			return new FileStream(path, FileMode.Create, FileAccess.Write);
+			return new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
 		}
 	}
 }

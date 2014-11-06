@@ -125,10 +125,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeFile.cs" />
+    <Compile Include="CompilerProject.cs" />
+    <Compile Include="CppCompiler\CppCompilerProject.cs" />
     <Compile Include="Node.cs" />
-    <Compile Include="CompilerBase.cs" />
+    <Compile Include="CompilerSolution.cs" />
     <Compile Include="CppCompiler\CppCodeFile.cs" />
-    <Compile Include="CppCompiler\CppCompiler.cs" />
+    <Compile Include="CppCompiler\CppCompilerSolution.cs" />
     <Compile Include="CppCompiler\CppNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

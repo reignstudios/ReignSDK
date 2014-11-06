@@ -37,20 +37,38 @@ namespace Reign.Compiler
 		CG
 	}
 
-    public abstract class CompilerBase : IDisposable
+    public abstract class CompilerSolution : IDisposable
     {
+		public string Name;
 		internal CompilerInputTypes inputType;
 		internal CompilerOutputTypes outputType;
 		internal CompilerBaseOutputTypes baseOutputType;
-		public IReadOnlyList<CodeFile> CodeFiles;
-
+		internal bool outputSolutionFile, outputProjectFiles;
+		internal string reignCppSorces;
+		public IReadOnlyList<CompilerProject> Projects;
 		private MSBuildWorkspace workspace;
-		private Project project;
 
-		protected async Task init(string input, CompilerInputTypes inputType, CompilerOutputTypes outputType)
+		public static async Task<CompilerSolution> New(string input, CompilerInputTypes inputType, CompilerOutputTypes outputType, bool outputSolutionFile, bool outputProjectFiles, string reignCppSorces)
+		{
+			switch (outputType)
+			{
+				case CompilerOutputTypes.Cpp_VC:
+				case CompilerOutputTypes.Cpp_GCC:
+					var obj = new CppCompilerSolution();
+					await obj.init(input, inputType, outputType, outputSolutionFile, outputProjectFiles, reignCppSorces);
+					return obj;
+
+				default: throw new Exception("Unsuported Solution output type: " + outputType);
+			}
+		}
+
+		private async Task init(string input, CompilerInputTypes inputType, CompilerOutputTypes outputType, bool outputSolutionFile, bool outputProjectFiles, string reignCppSorces)
 		{
 			this.inputType = inputType;
 			this.outputType = outputType;
+			this.outputSolutionFile = outputSolutionFile;
+			this.outputProjectFiles = outputProjectFiles;
+			this.reignCppSorces = reignCppSorces;
 
 			// get base type
 			switch (outputType)
@@ -78,15 +96,12 @@ namespace Reign.Compiler
 			workspace = MSBuildWorkspace.Create();
 			if (inputType == CompilerInputTypes.CsProject)
 			{
+				Name = "Reign";
 				var langs = workspace.Services.SupportedLanguages;
-				project = await workspace.OpenProjectAsync(input);
-				var codeFiles = new List<CodeFile>();
-				foreach (var document in project.Documents)
-				{
-					codeFiles.Add(await CodeFile.New(this, document));
-				}
-
-				CodeFiles = codeFiles;
+				var csProj = await workspace.OpenProjectAsync(input);
+				var projects = new List<CompilerProject>();
+				projects.Add(await CompilerProject.New(this, csProj));
+				Projects = projects;
 			}
 			else
 			{
@@ -94,7 +109,7 @@ namespace Reign.Compiler
 			}
 		}
 
-		~CompilerBase()
+		~CompilerSolution()
 		{
 			Dispose();
 		}
@@ -110,17 +125,17 @@ namespace Reign.Compiler
 
 		public void Compile()
 		{
-			foreach (var file in CodeFiles)
+			foreach (var project in Projects)
 			{
-				file.Compile();
+				project.Compile();
 			}
 		}
 		
 		public virtual void Compile(string outputDirectory)
 		{
-			foreach (var file in CodeFiles)
+			foreach (var project in Projects)
 			{
-				file.Compile(outputDirectory);
+				project.Compile(outputDirectory);
 			}
 		}
     }

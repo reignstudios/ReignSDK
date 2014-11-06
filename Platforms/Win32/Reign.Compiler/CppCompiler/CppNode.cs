@@ -78,7 +78,7 @@ namespace Reign.Compiler
 				}
 				else
 				{
-					writer.WriteLine("Object");
+					writer.WriteLine("object");
 				}
 				writer.WriteLine("{");
 				base.Compile(writer, mode);

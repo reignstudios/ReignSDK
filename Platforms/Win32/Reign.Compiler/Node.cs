@@ -15,7 +15,7 @@ namespace Reign.Compiler
 		internal CSharpSyntaxNode syntaxNode;
 		protected SemanticModel semanticModel;
 
-		public static Node New(CompilerBase compiler, CSharpSyntaxNode syntaxNode, SemanticModel semanticModel)
+		public static Node New(CompilerSolution compiler, CSharpSyntaxNode syntaxNode, SemanticModel semanticModel)
 		{
 			switch (compiler.baseOutputType)
 			{
@@ -28,7 +28,7 @@ namespace Reign.Compiler
 			}
 		}
 
-		private void init(CompilerBase compiler, CSharpSyntaxNode syntaxNode, SemanticModel semanticModel)
+		private void init(CompilerSolution compiler, CSharpSyntaxNode syntaxNode, SemanticModel semanticModel)
 		{
 			this.syntaxNode = syntaxNode;
 			this.semanticModel = semanticModel;
