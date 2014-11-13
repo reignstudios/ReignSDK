@@ -37,38 +37,43 @@ namespace Reign.Compiler
 		CG
 	}
 
+	public class CompilerOutputDesc
+	{
+		// Global
+		public string OutputDirectory;
+
+		// Visual C++
+		public bool Cpp_VC_OutputSolution, Cpp_VC_OutputProjects;
+		public string Cpp_VC_ReignCppSources;
+	}
+
     public abstract class CompilerSolution : IDisposable
     {
 		public string Name;
 		internal CompilerInputTypes inputType;
 		internal CompilerOutputTypes outputType;
 		internal CompilerBaseOutputTypes baseOutputType;
-		internal bool outputSolutionFile, outputProjectFiles;
-		internal string reignCppSorces;
 		public IReadOnlyList<CompilerProject> Projects;
 		private MSBuildWorkspace workspace;
 
-		public static async Task<CompilerSolution> New(string input, CompilerInputTypes inputType, CompilerOutputTypes outputType, bool outputSolutionFile, bool outputProjectFiles, string reignCppSorces)
+		public static async Task<CompilerSolution> New(string input, CompilerInputTypes inputType, CompilerOutputTypes outputType)
 		{
 			switch (outputType)
 			{
 				case CompilerOutputTypes.Cpp_VC:
 				case CompilerOutputTypes.Cpp_GCC:
 					var obj = new CppCompilerSolution();
-					await obj.init(input, inputType, outputType, outputSolutionFile, outputProjectFiles, reignCppSorces);
+					await obj.init(input, inputType, outputType);
 					return obj;
 
 				default: throw new Exception("Unsuported Solution output type: " + outputType);
 			}
 		}
 
-		private async Task init(string input, CompilerInputTypes inputType, CompilerOutputTypes outputType, bool outputSolutionFile, bool outputProjectFiles, string reignCppSorces)
+		private async Task init(string input, CompilerInputTypes inputType, CompilerOutputTypes outputType)
 		{
 			this.inputType = inputType;
 			this.outputType = outputType;
-			this.outputSolutionFile = outputSolutionFile;
-			this.outputProjectFiles = outputProjectFiles;
-			this.reignCppSorces = reignCppSorces;
 
 			// get base type
 			switch (outputType)
@@ -131,11 +136,11 @@ namespace Reign.Compiler
 			}
 		}
 		
-		public virtual void Compile(string outputDirectory)
+		public virtual void Compile(CompilerOutputDesc desc)
 		{
 			foreach (var project in Projects)
 			{
-				project.Compile(outputDirectory);
+				project.Compile(desc);
 			}
 		}
     }

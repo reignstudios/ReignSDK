@@ -2,67 +2,53 @@
 
 namespace System
 {
+	// ======================================
+	// object
+	// ======================================
 	class object
 	{
-		public: operator object*()
-		{
-			return this;
-		}
+		public: operator object*();
 	};
 
+	// ======================================
+	// string
+	// ======================================
 	class string : public object
 	{
-		public: string(wchar_t* value)
-		{
-			
-		}
+		public: wchar_t* Value;
 
-		public: string& operator+(string value)
-		{
-			return value;
-		}
+		// constructors
+		public: string(wchar_t* value);
+
+		// operators
+		public: string& operator+(string& value);
 	};
 
+	// ======================================
+	// int32
+	// ======================================
 	struct Int32 : public object
 	{
-		int Value;
+		public: int Value;
 
-		Int32(int value)
-		{
-			this->Value = value;
-		}
+		// constructors
+		public: Int32(int value);
 
-		Int32 operator+(int value)
-		{
-			return Int32(Value + value);
-		}
+		// operators
+		public: Int32 operator+(int value);
+		public: friend Int32 operator+(int p1, Int32 p2);
 
-		friend Int32 operator+(int p1, Int32 p2)
-		{
-			return Int32(p1 + p2);
-		}
-
-		static Int32 Parse(string value)
-		{
-			return Int32(0);
-		}
-
-		string ToString()
-		{
-			return string(L"TODO");
-		}
+		// methods
+		public: static Int32 Parse(string value);
+		public: string ToString();
 	};
 
+	// ======================================
+	// console
+	// ======================================
 	class Console : public object
 	{
-		public: static void Write(object* value)
-		{
-			
-		}
-
-		public: static void WriteLine(object* value)
-		{
-			
-		}
+		public: static void Write(object* value);
+		public: static void WriteLine(object* value);
 	};
 }

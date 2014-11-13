@@ -9,17 +9,13 @@ namespace Reign.Compiler
 {
 	public class CppCompilerSolution : CompilerSolution
 	{
-		public override void Compile(string outputDirectory)
+		public override void Compile(CompilerOutputDesc desc)
 		{
-			if (!outputSolutionFile)
+			if (desc.Cpp_VC_OutputSolution && outputType == CompilerOutputTypes.Cpp_VC)
 			{
-				// do nothing...
-			}
-			else if (outputType == CompilerOutputTypes.Cpp_VC)
-			{
-				string root = Path.GetDirectoryName(outputDirectory);
+				string root = Path.GetDirectoryName(desc.OutputDirectory);
 				if (!Directory.Exists(root)) Directory.CreateDirectory(root);
-				using (var stream = new FileStream(outputDirectory + Name + ".sln", FileMode.Create, FileAccess.Write, FileShare.None))
+				using (var stream = new FileStream(desc.OutputDirectory + Name + ".sln", FileMode.Create, FileAccess.Write, FileShare.None))
 				using (var writer = new StreamWriter(stream))
 				{
 					writer.WriteLine(@"Microsoft Visual Studio Solution File, Format Version 12.00");
@@ -58,7 +54,7 @@ namespace Reign.Compiler
 				// TODO: output make file
 			}
 
-			base.Compile(outputDirectory);
+			base.Compile(desc);
 		}
 	}
 }

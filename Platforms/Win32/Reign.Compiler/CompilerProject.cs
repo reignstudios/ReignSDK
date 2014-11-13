@@ -67,11 +67,11 @@ namespace Reign.Compiler
 			}
 		}
 
-		public virtual void Compile(string outputDirectory)
+		public virtual void Compile(CompilerOutputDesc desc)
 		{
 			foreach (var file in CodeFiles)
 			{
-				file.Compile(outputDirectory + project.Name + "/");
+				file.Compile(desc.OutputDirectory + project.Name + "/");
 			}
 		}
 	}

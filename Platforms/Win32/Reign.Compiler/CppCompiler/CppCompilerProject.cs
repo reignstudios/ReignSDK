@@ -155,13 +155,9 @@ namespace Reign.Compiler
 			ID = Guid.NewGuid();
 		}
 
-		public override void Compile(string outputDirectory)
+		public override void Compile(CompilerOutputDesc desc)
 		{
-			if (!compiler.outputProjectFiles)
-			{
-				// do nothing...
-			}
-			else if (compiler.outputType == CompilerOutputTypes.Cpp_VC)
+			if (desc.Cpp_VC_OutputProjects && compiler.outputType == CompilerOutputTypes.Cpp_VC)
 			{
 				// generate xml >>>
 				var projXML = new XML.Project();
@@ -280,7 +276,7 @@ namespace Reign.Compiler
 						TargetExt = CompilerProjectType == CompilerProjectTypes.EXE ? ".exe" : ".lib",
 						//ExtensionsToDeleteOnClean = "*.cdf;*.cache;*.obj;*.ilk;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi",
 						EnableManagedIncrementalBuild = "false",
-						IncludePath = compiler.reignCppSorces + ";$(IncludePath)"
+						IncludePath = desc.Cpp_VC_ReignCppSources + ";$(IncludePath)"
 					},
 					new XML.PropertyGroup()
 					{
@@ -292,7 +288,7 @@ namespace Reign.Compiler
 						TargetExt = CompilerProjectType == CompilerProjectTypes.EXE ? ".exe" : ".lib",
 						//ExtensionsToDeleteOnClean = "*.cdf;*.cache;*.obj;*.ilk;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.xml;*.metagen;*.bi",
 						EnableManagedIncrementalBuild = "false",
-						IncludePath = compiler.reignCppSorces + ";$(IncludePath)"
+						IncludePath = desc.Cpp_VC_ReignCppSources + ";$(IncludePath)"
 					}
 				};
 
@@ -374,7 +370,7 @@ namespace Reign.Compiler
 					(
 						new XML.ClInclude()
 						{
-							Include = compiler.reignCppSorces + string.Format("/{0}.h", file)
+							Include = desc.Cpp_VC_ReignCppSources + string.Format("/{0}.h", file)
 						}
 					);
 				}
@@ -388,7 +384,7 @@ namespace Reign.Compiler
 					(
 						new XML.ClCompile()
 						{
-							Include = compiler.reignCppSorces + string.Format("/{0}.cpp", file)
+							Include = desc.Cpp_VC_ReignCppSources + string.Format("/{0}.cpp", file)
 						}
 					);
 				}
@@ -399,9 +395,9 @@ namespace Reign.Compiler
 				projXML.ExtensionTargets = new XML.ImportGroup() {Label = "ExtensionTargets"};
 
 				// save proj file
-				string root = outputDirectory + project.Name;
+				string root = desc.OutputDirectory + project.Name;
 				if (!Directory.Exists(root)) Directory.CreateDirectory(root);
-				using (var stream = new FileStream(outputDirectory + string.Format("{0}/{0}.vcxproj", Name), FileMode.Create, FileAccess.Write, FileShare.None))
+				using (var stream = new FileStream(desc.OutputDirectory + string.Format("{0}/{0}.vcxproj", Name), FileMode.Create, FileAccess.Write, FileShare.None))
 				using (var writer = new StreamWriter(stream))
 				{
 					using (var unformatedStream = new MemoryStream())
@@ -441,7 +437,7 @@ namespace Reign.Compiler
 				// TODO: output make file
 			}
 
-			base.Compile(outputDirectory);
+			base.Compile(desc);
 		}
 	}
 }

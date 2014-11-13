@@ -11,7 +11,7 @@ namespace Reign.Compiler
 {
 	public class CppNode : Node
 	{
-		private static ClassDeclarationSyntax currentClass;
+		private static TypeDeclarationSyntax currentTypeDecl;
 
 		public override void Compile(StreamWriter writer, int mode)
 		{
@@ -84,6 +84,28 @@ namespace Reign.Compiler
 				base.Compile(writer, mode);
 				writer.WriteLine("};");
 			}
+			// struct
+			else if (nodeType == typeof(StructDeclarationSyntax))
+			{
+				var node = (StructDeclarationSyntax)syntaxNode;
+				writer.Write(string.Format("struct {0} : public ", node.Identifier));
+				if (node.BaseList != null)
+				{
+					var last = node.BaseList.Types.Last();
+					foreach (var type in node.BaseList.Types)
+					{
+						writer.Write(type);
+						if (type != last) writer.Write(", ");
+					}
+				}
+				else
+				{
+					writer.WriteLine("object");
+				}
+				writer.WriteLine("{");
+				base.Compile(writer, mode);
+				writer.WriteLine("};");
+			}
 			// fields
 			else if (nodeType == typeof(FieldDeclarationSyntax))
 			{
@@ -109,7 +131,8 @@ namespace Reign.Compiler
 				var node = (VariableDeclarationSyntax)syntaxNode;
 				foreach (var v in node.Variables)
 				{
-					writer.Write(string.Format("{0} = {1}", v.Identifier.Value, v.Initializer.Value));
+					if (v.Initializer != null) writer.Write(string.Format("{0} = {1}", v.Identifier.Value, v.Initializer.Value));
+					else writer.Write(v.Identifier.Value);
 					if (v != node.Variables.Last()) writer.Write(", ");
 				}
 				writer.WriteLine(";");
@@ -386,7 +409,13 @@ namespace Reign.Compiler
 			// class
 			else if (nodeType == typeof(ClassDeclarationSyntax))
 			{
-				currentClass = (ClassDeclarationSyntax)syntaxNode;
+				currentTypeDecl = (ClassDeclarationSyntax)syntaxNode;
+				base.Compile(writer, mode);
+			}
+			// struct
+			else if (nodeType == typeof(StructDeclarationSyntax))
+			{
+				currentTypeDecl = (StructDeclarationSyntax)syntaxNode;
 				base.Compile(writer, mode);
 			}
 			// methods
@@ -414,7 +443,7 @@ namespace Reign.Compiler
 					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
 				}
 
-				writer.Write(string.Format("{0} {1}::", name, currentClass.Identifier));
+				writer.Write(string.Format("{0} {1}::", name, currentTypeDecl.Identifier));
 				writer.Write(node.Identifier.ToString() + "(");
 				foreach (var p in node.ParameterList.Parameters)
 				{
@@ -428,21 +457,19 @@ namespace Reign.Compiler
 					if (p != node.ParameterList.Parameters.Last()) writer.Write(", ");
 				}
 				writer.WriteLine(")");
-				writer.WriteLine("{");
 				base.Compile(writer, mode);
-				writer.WriteLine("}");
 			}
 			else if (nodeType == typeof(BlockSyntax))
 			{
 				var node = (BlockSyntax)syntaxNode;
+				writer.WriteLine("{");
 				foreach (var statement in node.Statements)
 				{
-					string line = statement.GetText().ToString().Replace("\n", "").Replace("\r", "").Replace("\t", "");
+					string line = statement.GetText().ToString().Replace("\t", " ");
 					line = formatBlockStatment(line, statement);
-					writer.WriteLine(line);
+					writer.Write(line);
 				}
-
-				base.Compile(writer, mode);
+				writer.WriteLine("}");
 			}
 			else
 			{
