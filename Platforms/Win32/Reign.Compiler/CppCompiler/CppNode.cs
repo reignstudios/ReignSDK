@@ -47,6 +47,44 @@ namespace Reign.Compiler
 			}
 		}
 
+		private void writeTypeInfoHeader(StreamWriter writer, TypeDeclarationSyntax node)
+		{
+			writer.WriteLine(string.Format("class TYPE_{0} : public Type", node.Identifier));
+			writer.WriteLine("{");
+			foreach (var childNode in node.ChildNodes())
+			{
+				var type = childNode.GetType();
+				if (type == typeof(FieldDeclarationSyntax))
+				{
+					var n = (FieldDeclarationSyntax)childNode;
+					string name = n.Declaration.Type.ToString();
+					if (n.Declaration.Type.GetType() == typeof(PredefinedTypeSyntax))
+					{
+						var eNode = (PredefinedTypeSyntax)n.Declaration.Type;
+
+						var symbolInfo = semanticModel.GetSymbolInfo(eNode);
+						var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+						if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
+					}
+
+					foreach (var childNode2 in childNode.ChildNodes())
+					{
+						if (childNode2.GetType() == typeof(VariableDeclarationSyntax))
+						{
+							var n2 = (VariableDeclarationSyntax)childNode2;
+							foreach (var v in n2.Variables)
+							{
+								writer.WriteLine(string.Format("public: TYPE_{0}* {1};", name, v.Identifier.Value));
+							}
+						}
+					}
+				}
+			}
+			writer.WriteLine(string.Format("public: TYPE_{0}();", node.Identifier));
+			writer.WriteLine("};");
+			writer.WriteLine(string.Format("TYPE_{0}* TYPEOBJ_{0} = new TYPE_{0}();", node.Identifier));
+		}
+
 		private void compileHeaderFile(StreamWriter writer, int mode)
 		{
 			var nodeType = syntaxNode.GetType();
@@ -59,6 +97,21 @@ namespace Reign.Compiler
 				var values = value.Split('.');
 				foreach (var name in values) writer.Write(string.Format(@"namespace {0}{{ ", name));
 				writer.WriteLine();
+				// write object forward declares
+				foreach (CSharpSyntaxNode node2 in syntaxNode.ChildNodes())
+				{
+					var type = node2.GetType();
+					if (type == typeof(ClassDeclarationSyntax))
+					{
+						var n = (ClassDeclarationSyntax)node2;
+						writer.WriteLine(string.Format("class {0};", n.Identifier));
+					}
+					else if (type == typeof(StructDeclarationSyntax))
+					{
+						var n = (StructDeclarationSyntax)node2;
+						writer.WriteLine(string.Format("struct {0};", n.Identifier));
+					}
+				}
 				base.Compile(writer, mode);
 				for (int i = 0; i != values.Length; ++i) writer.Write("}");
 			}
@@ -81,8 +134,10 @@ namespace Reign.Compiler
 					writer.WriteLine("object");
 				}
 				writer.WriteLine("{");
+				writer.WriteLine("public: void* operator new(size_t size);");// write GC new override
 				base.Compile(writer, mode);
 				writer.WriteLine("};");
+				writeTypeInfoHeader(writer, node);
 			}
 			// struct
 			else if (nodeType == typeof(StructDeclarationSyntax))
@@ -105,6 +160,7 @@ namespace Reign.Compiler
 				writer.WriteLine("{");
 				base.Compile(writer, mode);
 				writer.WriteLine("};");
+				writeTypeInfoHeader(writer, node);
 			}
 			// fields
 			else if (nodeType == typeof(FieldDeclarationSyntax))
@@ -121,21 +177,27 @@ namespace Reign.Compiler
 					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
 					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
 				}
-
-				writeModifiers(writer, node.Modifiers);
-				writer.Write(name + " ");
-				base.Compile(writer, mode);
-			}
-			else if (nodeType == typeof(VariableDeclarationSyntax))
-			{
-				var node = (VariableDeclarationSyntax)syntaxNode;
-				foreach (var v in node.Variables)
+				else if (node.Declaration.Type.GetType() == typeof(IdentifierNameSyntax))
 				{
-					if (v.Initializer != null) writer.Write(string.Format("{0} = {1}", v.Identifier.Value, v.Initializer.Value));
-					else writer.Write(v.Identifier.Value);
-					if (v != node.Variables.Last()) writer.Write(", ");
+					var eNode = (IdentifierNameSyntax)node.Declaration.Type;
+
+					var symbolInfo = semanticModel.GetSymbolInfo(eNode);
+					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+					if (namedType != null && !namedType.IsValueType) name += "*";
 				}
-				writer.WriteLine(";");
+
+				foreach (var childNode in node.ChildNodes())
+				{
+					if (childNode.GetType() == typeof(VariableDeclarationSyntax))
+					{
+						var n = (VariableDeclarationSyntax)childNode;
+						foreach (var v in n.Variables)
+						{
+							writeModifiers(writer, node.Modifiers);
+							writer.WriteLine(string.Format("{0} {1};", name, v.Identifier.Value));
+						}
+					}
+				}
 			}
 			// methods
 			else if (nodeType == typeof(MethodDeclarationSyntax))
@@ -391,6 +453,63 @@ namespace Reign.Compiler
 			return line;
 		}
 
+		private void writeTypeInfoCpp(StreamWriter writer, TypeDeclarationSyntax node)
+		{
+			// get full name
+			string fullname = node.Identifier.ToString();
+			var parent = node.Parent;
+			while (parent != null)
+			{
+				if (parent.GetType() == typeof(TypeDeclarationSyntax)) fullname = ((TypeDeclarationSyntax)parent).Identifier + "." + fullname;
+				else if (parent.GetType() == typeof(NamespaceDeclarationSyntax)) fullname = ((NamespaceDeclarationSyntax)parent).Name + "." + fullname;
+				parent = parent.Parent;
+			}
+
+			// check if value type
+			bool isValueType = node.GetType() == typeof(StructDeclarationSyntax);
+
+			writer.WriteLine(string.Format(@"TYPE_{0}::TYPE_{0}() : Type(string(L""{1}""), {2})", node.Identifier, fullname, isValueType?"true":"false"));
+			writer.WriteLine("{");
+			foreach (var childNode in node.ChildNodes())
+			{
+				var type = childNode.GetType();
+				if (type == typeof(FieldDeclarationSyntax))
+				{
+					var n = (FieldDeclarationSyntax)childNode;
+					string name = n.Declaration.Type.ToString();
+					if (n.Declaration.Type.GetType() == typeof(PredefinedTypeSyntax))
+					{
+						var eNode = (PredefinedTypeSyntax)n.Declaration.Type;
+
+						var symbolInfo = semanticModel.GetSymbolInfo(eNode);
+						var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+						if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
+					}
+
+					foreach (var childNode2 in childNode.ChildNodes())
+					{
+						if (childNode2.GetType() == typeof(VariableDeclarationSyntax))
+						{
+							var n2 = (VariableDeclarationSyntax)childNode2;
+							writer.WriteLine(string.Format("TypeInfosCount = {0};", n2.Variables.Count));
+							writer.WriteLine("TypeInfoOffsets = new int[TypeInfosCount];");
+							writer.WriteLine("TypeInfos = new Type*[TypeInfosCount];");
+							writer.WriteLine("int sizeOffset = 0;");
+							int i = 0;
+							foreach (var v in n2.Variables)
+							{
+								writer.WriteLine(string.Format("{0} = TYPEOBJ_{1};", v.Identifier.Value, name));
+								writer.WriteLine(string.Format("TypeInfos[{0}] = {1}; TypeInfoOffsets[{0}] = sizeOffset;", i, v.Identifier.Value));
+								writer.WriteLine(string.Format("sizeOffset += sizeof({0});", v.Identifier.Value));
+								++i;
+							}
+						}
+					}
+				}
+			}
+			writer.WriteLine("}");
+		}
+
 		private void compileCppFile(StreamWriter writer, int mode)
 		{
 			var nodeType = syntaxNode.GetType();
@@ -409,13 +528,40 @@ namespace Reign.Compiler
 			// class
 			else if (nodeType == typeof(ClassDeclarationSyntax))
 			{
-				currentTypeDecl = (ClassDeclarationSyntax)syntaxNode;
+				var node = (ClassDeclarationSyntax)syntaxNode;
+				currentTypeDecl = node;
+				bool isStatic = false;
+				foreach (var m in node.Modifiers)
+				{
+					switch (m.ValueText)
+					{
+						case "static": isStatic = true; break;
+					}
+				}
+
+				// write type info
+				writeTypeInfoCpp(writer, node);
+
+				// write GC new override
+				if (!isStatic)
+				{
+					writer.WriteLine(string.Format("void* {0}::operator new(size_t size)", currentTypeDecl.Identifier));
+					writer.WriteLine("{");
+					writer.WriteLine("	void* data = malloc(size);");
+					writer.WriteLine(@"	if(data == NULL) throw ""Allocation Failed: No free memory"";");
+					writer.WriteLine("	memset(data, 0, size);");
+					writer.WriteLine(string.Format("	GC::AddHeapObject(TYPEOBJ_{0}, data);", currentTypeDecl.Identifier));
+					writer.WriteLine("	return data;");
+					writer.WriteLine("}");
+				}
 				base.Compile(writer, mode);
 			}
 			// struct
 			else if (nodeType == typeof(StructDeclarationSyntax))
 			{
-				currentTypeDecl = (StructDeclarationSyntax)syntaxNode;
+				var node = (StructDeclarationSyntax)syntaxNode;
+				currentTypeDecl = node;
+				writeTypeInfoCpp(writer, node);// write type info
 				base.Compile(writer, mode);
 			}
 			// methods

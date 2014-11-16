@@ -149,10 +149,17 @@ namespace Reign.Compiler
 	public class CppCompilerProject : CompilerProject
 	{
 		public Guid ID;
+		public IReadOnlyList<string> ReignCppSourceFiles;
 
 		public CppCompilerProject()
 		{
 			ID = Guid.NewGuid();
+
+			// reign cpp source files
+			var cppFiles = new List<string>();
+			cppFiles.Add("System");
+			cppFiles.Add("GC");
+			ReignCppSourceFiles = cppFiles;
 		}
 
 		public override void Compile(CompilerOutputDesc desc)

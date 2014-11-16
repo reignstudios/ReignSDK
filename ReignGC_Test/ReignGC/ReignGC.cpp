@@ -12,9 +12,9 @@ class ReignGC_TypeInfo
 	public: string Name;
 	public: bool IsValueType;
 
-	public: int* InfoOffsets, *ReferenceInfoOffsets;
-	public: ReignGC_TypeInfo** Infos, **ReferenceInfos;
-	public: int InfosCount, ReferenceInfosCount;
+	public: int* InfoOffsets;//, *ReferenceInfoOffsets;
+	public: ReignGC_TypeInfo** Infos;//, **ReferenceInfos;
+	public: int InfosCount;//, ReferenceInfosCount;
 
 	public: ReignGC_TypeInfo(string name, bool isValueType)
 	{
@@ -25,9 +25,9 @@ class ReignGC_TypeInfo
 		this->Infos = 0;
 		this->InfosCount = 0;
 
-		this->ReferenceInfoOffsets = 0;
+		/*this->ReferenceInfoOffsets = 0;
 		this->ReferenceInfos = 0;
-		this->ReferenceInfosCount = 0;
+		this->ReferenceInfosCount = 0;*/
 	}
 };
 
@@ -134,9 +134,9 @@ class ReignGC
 	private: void markHeapStack(ReignGC_HeapNode* startNode)
 	{
 		auto info = startNode->TypeInfo;
-		for (int i = 0; i != info->ReferenceInfosCount; ++i)
+		for (int i = 0; i != info->InfosCount; ++i)
 		{
-			unsigned char* data = reinterpret_cast<unsigned char*>(startNode->Data) + info->ReferenceInfoOffsets[i];
+			unsigned char* data = reinterpret_cast<unsigned char*>(startNode->Data) + info->InfoOffsets[i];
 			void* ptr = (void*)*reinterpret_cast<size_t*>(data);
 			for (ReignGC_HeapNode* node = Heap; node != NULL; node = node->Next)
 			{
@@ -201,10 +201,10 @@ class TestC_TypeInfo : public ReignGC_TypeInfo
 		Infos[0] = c; InfoOffsets[0] = 0;
 		Infos[1] = Ref; InfoOffsets[1] = sizeof(int);
 
-		ReferenceInfosCount = 1;
+		/*ReferenceInfosCount = 1;
 		ReferenceInfoOffsets = new int[InfosCount];
 		ReferenceInfos = new ReignGC_TypeInfo*[InfosCount];
-		ReferenceInfos[0] = Ref; ReferenceInfoOffsets[0] = sizeof(int);
+		ReferenceInfos[0] = Ref; ReferenceInfoOffsets[0] = sizeof(int);*/
 	}
 };
 

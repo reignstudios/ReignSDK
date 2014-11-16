@@ -1,3 +1,4 @@
+#define STRING
 #include "System.h"
 
 namespace System
@@ -13,6 +14,11 @@ namespace System
 	// ======================================
 	// string
 	// ======================================
+	string::string()
+	{
+		this->Value = 0;
+	}
+
 	string::string(wchar_t* value)
 	{
 		this->Value = value;
@@ -24,8 +30,13 @@ namespace System
 	}
 
 	// ======================================
-	// int32
+	// Int32
 	// ======================================
+	Int32::Int32()
+	{
+		this->Value = 0;
+	}
+
 	Int32::Int32(int value)
 	{
 		this->Value = value;
@@ -52,7 +63,7 @@ namespace System
 	}
 
 	// ======================================
-	// console
+	// Console
 	// ======================================
 	void Console::Write(object* value)
 	{
@@ -62,5 +73,26 @@ namespace System
 	void Console::WriteLine(object* value)
 	{
 		
+	}
+
+	// ======================================
+	// Type
+	// ======================================
+	Type::Type(string name, bool isValueType)
+	{
+		this->Name = name;
+		this->IsValueType = isValueType;
+
+		this->TypeInfoOffsets = 0;
+		this->TypeInfos = 0;
+		this->TypeInfosCount = 0;
+	}
+
+	// ======================================
+	// Type Infos
+	// ======================================
+	TYPE_Int32::TYPE_Int32() : Type(string(L"System.Int32"), true)
+	{
+		// ...
 	}
 }

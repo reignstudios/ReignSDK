@@ -54,6 +54,8 @@ namespace Reign.Compiler
 			using (var writer = new StreamWriter(stream))
 			{
 				writer.WriteLine(string.Format(@"#include ""{0}.h""", Path.GetFileNameWithoutExtension(FileName)));
+				writer.WriteLine(@"#include ""GC.h""");
+				writer.WriteLine("using namespace System;");
 				Compile(writer, 1);
 			}
 		}

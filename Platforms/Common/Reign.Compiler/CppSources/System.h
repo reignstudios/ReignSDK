@@ -15,9 +15,11 @@ namespace System
 	// ======================================
 	class string : public object
 	{
+		// fields
 		public: wchar_t* Value;
 
 		// constructors
+		public: string();
 		public: string(wchar_t* value);
 
 		// operators
@@ -25,13 +27,15 @@ namespace System
 	};
 
 	// ======================================
-	// int32
+	// Int32
 	// ======================================
 	struct Int32 : public object
 	{
+		// fields
 		public: int Value;
 
 		// constructors
+		public: Int32();
 		public: Int32(int value);
 
 		// operators
@@ -44,11 +48,37 @@ namespace System
 	};
 
 	// ======================================
-	// console
+	// Console
 	// ======================================
 	class Console : public object
 	{
 		public: static void Write(object* value);
 		public: static void WriteLine(object* value);
 	};
+
+	// ======================================
+	// Type
+	// ======================================
+	class Type : public object
+	{
+		// fields
+		public: string Name;
+		public: bool IsValueType;
+
+		public: int* TypeInfoOffsets;
+		public: Type** TypeInfos;
+		public: int TypeInfosCount;
+
+		// constructors
+		public: Type(string name, bool isValueType);
+	};
+
+	// ======================================
+	// Type Infos
+	// ======================================
+	class TYPE_Int32 : public Type
+	{
+		public: TYPE_Int32();
+	};
+	TYPE_Int32* TYPEOBJ_Int32 = new TYPE_Int32();
 }

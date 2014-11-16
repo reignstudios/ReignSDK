@@ -21,7 +21,6 @@ namespace Reign.Compiler
 		protected CompilerSolution compiler;
 		protected Project project;
 		public IReadOnlyList<CodeFile> CodeFiles;
-		public IReadOnlyList<string> ReignCppSourceFiles;
 
 		public static async Task<CompilerProject> New(CompilerSolution compiler, Project project)
 		{
@@ -52,11 +51,6 @@ namespace Reign.Compiler
 				codeFiles.Add(await CodeFile.New(compiler, document));
 			}
 			CodeFiles = codeFiles;
-
-			// reign cpp source files
-			var cppFiles = new List<string>();
-			cppFiles.Add("System");
-			ReignCppSourceFiles = cppFiles;
 		}
 
 		public void Compile()
