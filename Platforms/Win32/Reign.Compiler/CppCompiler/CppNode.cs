@@ -293,14 +293,43 @@ namespace Reign.Compiler
 			}
 			else if (type == typeof(ExpressionStatementSyntax))
 			{
-				// do nothing...
+				var node = (ExpressionStatementSyntax)baseNode;
+				if (node.Expression.GetType() == typeof(BinaryExpressionSyntax))
+				{
+					var e = (BinaryExpressionSyntax)node.Expression;
+					if (e.Left.GetType() == typeof(IdentifierNameSyntax) && e.Right.GetType() == typeof(ObjectCreationExpressionSyntax))
+					{
+						bool isStatic = false;
+						var t = (IdentifierNameSyntax)e.Left;
+						var symbolInfo = semanticModel.GetSymbolInfo(t);
+						foreach (var r in symbolInfo.Symbol.DeclaringSyntaxReferences)
+						{
+							var root = (CSharpSyntaxNode)r.GetSyntax();
+							if (root.GetType() == typeof(VariableDeclaratorSyntax))
+							{
+								var rootType = (VariableDeclaratorSyntax)root;
+								var symbol = semanticModel.GetDeclaredSymbol(rootType);
+								isStatic = symbol.IsStatic;
+							}
+							else if (root.GetType() == typeof(ParameterSyntax))
+							{
+								var rootType = (ParameterSyntax)root;
+								var symbol = semanticModel.GetDeclaredSymbol(rootType);
+								var namedType = symbol.Type;
+								isStatic = symbol.IsStatic;
+							}
+						}
+
+						if (isStatic) line += string.Format("GC::AddRootObjectPtrToLastHeapNode((void**)&{0});", t.Identifier) + Environment.NewLine;
+					}
+				}
 			}
 			else if (type == typeof(InvocationExpressionSyntax))
 			{
 				var node = (InvocationExpressionSyntax)baseNode;
 				string fullName = "", identifier = null;
 				var e = node.Expression;
-				bool isInstanceBlock = false, isValueType = false;//, isSpecialType = false;
+				bool isInstanceBlock = false, isValueType = false;
 				while (e != null)
 				{
 					if (e.GetType() == typeof(MemberAccessExpressionSyntax))
@@ -336,15 +365,6 @@ namespace Reign.Compiler
 					{
 						var eNode = (IdentifierNameSyntax)e;
 
-						//Func<SpecialType,bool> handleSpecial = delegate(SpecialType specialType)
-						//{
-						//	switch (specialType)// TODO: add more types
-						//	{
-						//		case SpecialType.System_Int32: return true;
-						//		default: return false;
-						//	}
-						//};
-
 						// check if were a value type or if were an instance block
 						var symbolInfo = semanticModel.GetSymbolInfo(eNode);
 						foreach (var r in symbolInfo.Symbol.DeclaringSyntaxReferences)
@@ -357,7 +377,6 @@ namespace Reign.Compiler
 								var namedType = symbol.Type;
 								if (namedType.IsValueType) isValueType = true;
 								if (!symbol.IsStatic) isInstanceBlock = true;
-								//isSpecialType = handleSpecial(namedType.SpecialType);
 							}
 							else if (root.GetType() == typeof(ParameterSyntax))
 							{
@@ -366,7 +385,6 @@ namespace Reign.Compiler
 								var namedType = symbol.Type;
 								if (namedType.IsValueType) isValueType = true;
 								if (!symbol.IsStatic) isInstanceBlock = true;
-								//isSpecialType = handleSpecial(namedType.SpecialType);
 							}
 						}
 

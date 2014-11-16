@@ -8,7 +8,7 @@ namespace System
 	GC_HeapNode::GC_HeapNode(Type* typeInfo, void* data)
 	{
 		Alive = false;
-		this->Next = 0;
+		this->Next = NULL;
 		this->TypeInfo = typeInfo;
 		this->Data = data;
 	}
@@ -27,6 +27,7 @@ namespace System
 	// ======================================
 	GC_RootNode::GC_RootNode(void** data)
 	{
+		this->Next = NULL;
 		this->Data = data;
 	}
 
@@ -38,6 +39,7 @@ namespace System
 		Heap = NULL;
 		LastHeapNode = NULL;
 		HeapSize = 0;
+		Root = NULL;
 	}
 
 	void GC::AddHeapObject(Type* type, void* data)
@@ -51,7 +53,10 @@ namespace System
 
 	void GC::AddRootObjectPtrToLastHeapNode(void** data)
 	{
-		Roots.push_back(GC_RootNode(data));
+		auto obj = new GC_RootNode(data);
+		if (Root == NULL) Root = obj;
+		else LastRootNode->Next = obj;
+		LastRootNode = obj;
 	}
 
 	GC_HeapNode* GC::findRootHeap(void* data)
@@ -70,22 +75,35 @@ namespace System
 
 	void GC::mark()
 	{
-		for (int i = 0; i != Roots.size(); ++i)
+		GC_RootNode* root = Root;
+		GC_RootNode* prevNode = NULL;
+		while (root != NULL)
 		{
-			auto node = findRootHeap(*Roots[i].Data);
-			if (node == NULL) continue;
+			auto nextNode = root->Next;
+			auto node = findRootHeap(root->Data);
+			if (node == NULL)
+			{
+				prevNode->Next = root->Next;
+				if (LastRootNode == root) LastRootNode = prevNode;// if end root obj, set last node to prev
+				delete root;
+				root = nextNode;
+				continue;
+			}
 
 			node->Alive = true;
 			markHeapStack(node);
+
+			prevNode = root;
+			root = nextNode;
 		}
 	}
 
 	void GC::markHeapStack(GC_HeapNode* startNode)
 	{
 		auto info = startNode->TypeInfo;
-		for (int i = 0; i != info->InfosCount; ++i)
+		for (int i = 0; i != info->TypeInfosCount; ++i)
 		{
-			unsigned char* data = reinterpret_cast<unsigned char*>(startNode->Data) + info->InfoOffsets[i];
+			unsigned char* data = reinterpret_cast<unsigned char*>(startNode->Data) + info->TypeInfoOffsets[i];
 			void* ptr = (void*)*reinterpret_cast<size_t*>(data);
 			for (GC_HeapNode* node = Heap; node != NULL; node = node->Next)
 			{

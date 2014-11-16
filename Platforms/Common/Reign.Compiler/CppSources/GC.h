@@ -29,6 +29,7 @@ namespace System
 	class GC_RootNode
 	{
 		// fields
+		public: GC_RootNode* Next;
 		public: void** Data;
 
 		// constructors
@@ -43,7 +44,7 @@ namespace System
 		// fields
 		public: static GC_HeapNode* Heap, *LastHeapNode;
 		public: static unsigned int HeapSize;
-		public: static std::vector<GC_RootNode> Roots;
+		public: static GC_RootNode* Root, *LastRootNode;
 
 		// constructors
 		public: static void Init();
