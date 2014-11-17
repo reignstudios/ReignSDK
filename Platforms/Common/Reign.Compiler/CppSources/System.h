@@ -2,12 +2,15 @@
 
 namespace System
 {
+	class string;
+
 	// ======================================
 	// object
 	// ======================================
 	class object
 	{
 		public: operator object*();
+		public: virtual string ToString();
 	};
 
 	// ======================================
@@ -24,6 +27,9 @@ namespace System
 
 		// operators
 		public: string& operator+(string& value);
+
+		// methods
+		public: virtual string ToString() override;
 	};
 
 	// ======================================
@@ -78,13 +84,13 @@ namespace System
 	// ======================================
 	class TYPE_string : public Type
 	{
+		public: static TYPE_string* Singlton;
 		public: TYPE_string();
 	};
-	TYPE_string* TYPEOBJ_string = new TYPE_string();
 
 	class TYPE_Int32 : public Type
 	{
+		public: static TYPE_Int32* Singlton;
 		public: TYPE_Int32();
 	};
-	TYPE_Int32* TYPEOBJ_Int32 = new TYPE_Int32();
 }

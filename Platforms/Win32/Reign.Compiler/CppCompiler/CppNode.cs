@@ -62,6 +62,7 @@ namespace Reign.Compiler
 		{
 			writer.WriteLine(string.Format("class TYPE_{0} : public Type", node.Identifier));
 			writer.WriteLine("{");
+			writer.WriteLine(string.Format("public: static TYPE_{0}* Singleton;", node.Identifier));
 			foreach (var childNode in node.ChildNodes())
 			{
 				var type = childNode.GetType();
@@ -88,7 +89,6 @@ namespace Reign.Compiler
 			}
 			writer.WriteLine(string.Format("public: TYPE_{0}();", node.Identifier));
 			writer.WriteLine("};");
-			writer.WriteLine(string.Format("TYPE_{0}* TYPEOBJ_{0} = new TYPE_{0}();", node.Identifier));
 		}
 
 		private void compileHeaderFile(StreamWriter writer, int mode)
@@ -500,6 +500,7 @@ namespace Reign.Compiler
 			// check if value type
 			bool isValueType = node.GetType() == typeof(StructDeclarationSyntax);
 
+			writer.WriteLine(string.Format(@"TYPE_{0}* TYPE_{0}::Singleton = new TYPE_{0};", node.Identifier));
 			writer.WriteLine(string.Format(@"TYPE_{0}::TYPE_{0}() : Type(string(L""{1}""), {2})", node.Identifier, fullname, isValueType?"true":"false"));
 			writer.WriteLine("{");
 			foreach (var childNode in node.ChildNodes())
@@ -525,7 +526,7 @@ namespace Reign.Compiler
 							int i = 0;
 							foreach (var v in n2.Variables)
 							{
-								writer.WriteLine(string.Format("{0} = TYPEOBJ_{1};", v.Identifier.Value, name));
+								writer.WriteLine(string.Format("{0} = TYPE_{1}::Singleton;", v.Identifier.Value, name));
 								writer.WriteLine(string.Format("TypeInfos[{0}] = {1}; TypeInfoOffsets[{0}] = sizeOffset;", i, v.Identifier.Value));
 								writer.WriteLine(string.Format("sizeOffset += sizeof({0});", v.Identifier.Value));
 								++i;
@@ -577,7 +578,7 @@ namespace Reign.Compiler
 					writer.WriteLine("	void* data = malloc(size);");
 					writer.WriteLine(@"	if(data == NULL) throw ""Allocation Failed: No free memory"";");
 					writer.WriteLine("	memset(data, 0, size);");
-					writer.WriteLine(string.Format("	GC::AddHeapObject(TYPEOBJ_{0}, data);", currentTypeDecl.Identifier));
+					writer.WriteLine(string.Format("	GC::AddHeapObject(TYPE_{0}::Singleton, data);", currentTypeDecl.Identifier));
 					writer.WriteLine("	return data;");
 					writer.WriteLine("}");
 				}

@@ -34,6 +34,10 @@ namespace System
 	// ======================================
 	// GC
 	// ======================================
+	GC_HeapNode* GC::Heap, *GC::LastHeapNode;
+	unsigned int GC::HeapSize;
+	GC_RootNode* GC::Root, *GC::LastRootNode;
+
 	void GC::Init()
 	{
 		Heap = NULL;

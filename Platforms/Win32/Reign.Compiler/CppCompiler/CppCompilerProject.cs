@@ -159,6 +159,7 @@ namespace Reign.Compiler
 			var cppFiles = new List<string>();
 			cppFiles.Add("System");
 			cppFiles.Add("GC");
+			if (CompilerProjectType == CompilerProjectTypes.EXE) cppFiles.Add("ReignMain");
 			ReignCppSourceFiles = cppFiles;
 		}
 

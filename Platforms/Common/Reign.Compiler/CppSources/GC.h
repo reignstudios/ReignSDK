@@ -1,9 +1,7 @@
 #pragma once
 #include "System.h"
 using namespace System;
-
 #include <iostream>
-#include <vector>
 
 namespace System
 {

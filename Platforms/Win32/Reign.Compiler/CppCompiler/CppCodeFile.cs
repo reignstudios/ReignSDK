@@ -17,6 +17,7 @@ namespace Reign.Compiler
 			{
 				var writer = new StreamWriter(stream);
 				var reader = new StreamReader(stream);
+				writer.WriteLine("#pragma once");
 				Compile(writer, 0);
 
 				writer.Flush();
@@ -45,6 +46,7 @@ namespace Reign.Compiler
 			using (var stream = compileToStream(outputDirectory, ".h"))
 			using (var writer = new StreamWriter(stream))
 			{
+				writer.WriteLine("#pragma once");
 				Compile(writer, 0);
 			}
 
