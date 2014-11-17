@@ -38,13 +38,24 @@ namespace Reign.Compiler
 			}
 		}
 
-		private string formatSpecialType(SpecialType specialType, string typeName)
+		private string formatNamedType(string name, ref SymbolInfo symbolInfo, INamedTypeSymbol namedType, bool removeArrayAndPointerSymbols)
 		{
-			switch (specialType)// TODO: add more types
+			if (namedType != null)
 			{
-				case SpecialType.System_Int32: return typeName.Replace(typeName, "Int32");
-				default: return typeName;
+				switch (namedType.SpecialType)// TODO: add more types
+				{
+					case SpecialType.System_Int32: name = name.Replace(name, "Int32"); break;
+				}
+
+				if (!namedType.IsValueType && namedType.SpecialType != SpecialType.System_String) name += "*";
 			}
+			else if (symbolInfo.Symbol as IArrayTypeSymbol != null)
+			{
+				name = name.Replace("[]", "*");
+			}
+
+			if (removeArrayAndPointerSymbols) name = name.Replace("[]", "").Replace("*", "");
+			return name;
 		}
 
 		private void writeTypeInfoHeader(StreamWriter writer, TypeDeclarationSyntax node)
@@ -58,14 +69,9 @@ namespace Reign.Compiler
 				{
 					var n = (FieldDeclarationSyntax)childNode;
 					string name = n.Declaration.Type.ToString();
-					if (n.Declaration.Type.GetType() == typeof(PredefinedTypeSyntax))
-					{
-						var eNode = (PredefinedTypeSyntax)n.Declaration.Type;
-
-						var symbolInfo = semanticModel.GetSymbolInfo(eNode);
-						var namedType = symbolInfo.Symbol as INamedTypeSymbol;
-						if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
-					}
+					var symbolInfo = semanticModel.GetSymbolInfo(n.Declaration.Type);
+					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+					name = formatNamedType(name, ref symbolInfo, namedType, true);
 
 					foreach (var childNode2 in childNode.ChildNodes())
 					{
@@ -169,22 +175,9 @@ namespace Reign.Compiler
 
 				// convert type name
 				string name = node.Declaration.Type.ToString();
-				if (node.Declaration.Type.GetType() == typeof(PredefinedTypeSyntax))
-				{
-					var eNode = (PredefinedTypeSyntax)node.Declaration.Type;
-
-					var symbolInfo = semanticModel.GetSymbolInfo(eNode);
-					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
-					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
-				}
-				else if (node.Declaration.Type.GetType() == typeof(IdentifierNameSyntax))
-				{
-					var eNode = (IdentifierNameSyntax)node.Declaration.Type;
-
-					var symbolInfo = semanticModel.GetSymbolInfo(eNode);
-					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
-					if (namedType != null && !namedType.IsValueType) name += "*";
-				}
+				var symbolInfo = semanticModel.GetSymbolInfo(node.Declaration.Type);
+				var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+				name = formatNamedType(name, ref symbolInfo, namedType, false);
 
 				foreach (var childNode in node.ChildNodes())
 				{
@@ -206,15 +199,9 @@ namespace Reign.Compiler
 
 				// convert return name
 				string name = node.ReturnType.ToString();
-				if (node.ReturnType.GetType() == typeof(PredefinedTypeSyntax))
-				{
-					var eNode = (PredefinedTypeSyntax)node.ReturnType;
-
-					var symbolInfo = semanticModel.GetSymbolInfo(eNode);
-					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
-					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
-					if (!namedType.IsValueType) name += "*";
-				}
+				var symbolInfo = semanticModel.GetSymbolInfo(node.ReturnType);
+				var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+				name = formatNamedType(name, ref symbolInfo, namedType, false);
 
 				writeModifiers(writer, node.Modifiers);
 				writer.Write(name + " ");
@@ -222,11 +209,10 @@ namespace Reign.Compiler
 				foreach (var p in node.ParameterList.Parameters)
 				{
 					// convert parameter name
-					var symbolInfo = semanticModel.GetSymbolInfo(p.Type);
-					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+					symbolInfo = semanticModel.GetSymbolInfo(p.Type);
+					namedType = symbolInfo.Symbol as INamedTypeSymbol;
 					name = p.Type.ToString();
-					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
-					if (!namedType.IsValueType) name += "*";
+					name = formatNamedType(name, ref symbolInfo, namedType, false);
 
 					writer.Write(string.Format("{0} {1}", name, p.Identifier));
 					if (p != node.ParameterList.Parameters.Last()) writer.Write(", ");
@@ -487,10 +473,6 @@ namespace Reign.Compiler
 
 						line = Regex.Replace(line, fullName.Replace("->", "."), newFullName);
 					}
-					//else if (isSpecialType)
-					//{
-					//	line = Regex.Replace(line, identifier+@"\.ToString\(\)", string.Format("STRING_EXT::ToString({0})", identifier));
-					//}
 				}
 			}
 
@@ -527,14 +509,9 @@ namespace Reign.Compiler
 				{
 					var n = (FieldDeclarationSyntax)childNode;
 					string name = n.Declaration.Type.ToString();
-					if (n.Declaration.Type.GetType() == typeof(PredefinedTypeSyntax))
-					{
-						var eNode = (PredefinedTypeSyntax)n.Declaration.Type;
-
-						var symbolInfo = semanticModel.GetSymbolInfo(eNode);
-						var namedType = symbolInfo.Symbol as INamedTypeSymbol;
-						if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
-					}
+					var symbolInfo = semanticModel.GetSymbolInfo(n.Declaration.Type);
+					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+					name = formatNamedType(name, ref symbolInfo, namedType, true);
 
 					foreach (var childNode2 in childNode.ChildNodes())
 					{
@@ -619,37 +596,21 @@ namespace Reign.Compiler
 			{
 				var node = (MethodDeclarationSyntax)syntaxNode;
 
-				//Func<SpecialType,string,string> formatSpecialType = delegate(SpecialType specialType, string typeName)
-				//{
-				//	switch (specialType)// TODO: add more types
-				//	{
-				//		case SpecialType.System_Int32: return typeName.Replace(typeName, "Int32");
-				//		default: return typeName;
-				//	}
-				//};
-
 				// convert return name
 				string name = node.ReturnType.ToString();
-				if (node.ReturnType.GetType() == typeof(PredefinedTypeSyntax))
-				{
-					var eNode = (PredefinedTypeSyntax)node.ReturnType;
-
-					var symbolInfo = semanticModel.GetSymbolInfo(eNode);
-					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
-					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
-					if (!namedType.IsValueType) name += "*";
-				}
+				var symbolInfo = semanticModel.GetSymbolInfo(node.ReturnType);
+				var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+				name = formatNamedType(name, ref symbolInfo, namedType, false);
 
 				writer.Write(string.Format("{0} {1}::", name, currentTypeDecl.Identifier));
 				writer.Write(node.Identifier.ToString() + "(");
 				foreach (var p in node.ParameterList.Parameters)
 				{
 					// convert parameter name
-					var symbolInfo = semanticModel.GetSymbolInfo(p.Type);
-					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
+					symbolInfo = semanticModel.GetSymbolInfo(p.Type);
+					namedType = symbolInfo.Symbol as INamedTypeSymbol;
 					name = p.Type.ToString();
-					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
-					if (!namedType.IsValueType) name += "*";
+					name = formatNamedType(name, ref symbolInfo, namedType, false);
 
 					writer.Write(string.Format("{0} {1}", name, p.Identifier));
 					if (p != node.ParameterList.Parameters.Last()) writer.Write(", ");

@@ -76,6 +76,12 @@ namespace System
 	// ======================================
 	// Type Infos
 	// ======================================
+	class TYPE_string : public Type
+	{
+		public: TYPE_string();
+	};
+	TYPE_string* TYPEOBJ_string = new TYPE_string();
+
 	class TYPE_Int32 : public Type
 	{
 		public: TYPE_Int32();

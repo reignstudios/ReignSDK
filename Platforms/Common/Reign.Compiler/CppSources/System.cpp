@@ -91,6 +91,11 @@ namespace System
 	// ======================================
 	// Type Infos
 	// ======================================
+	TYPE_string::TYPE_string() : Type(string(L"System.String"), true)
+	{
+		// ...
+	}
+
 	TYPE_Int32::TYPE_Int32() : Type(string(L"System.Int32"), true)
 	{
 		// ...
