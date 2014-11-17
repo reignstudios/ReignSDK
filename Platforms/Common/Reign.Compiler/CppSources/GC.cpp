@@ -15,7 +15,7 @@ namespace System
 
 	GC_HeapNode::~GC_HeapNode()
 	{
-		if (Data != NULL)
+		if (Data != NULL && !TypeInfo->IsValueType)
 		{
 			free(Data);
 			Data = NULL;

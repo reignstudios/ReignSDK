@@ -297,6 +297,24 @@ namespace Reign.Compiler
 				if (node.Expression.GetType() == typeof(BinaryExpressionSyntax))
 				{
 					var e = (BinaryExpressionSyntax)node.Expression;
+
+					// remove new for value types
+					if (e.Left.GetType() == typeof(IdentifierNameSyntax))
+					{
+						var t = (IdentifierNameSyntax)e.Left;
+						var symbolInfo = semanticModel.GetSymbolInfo(t);
+						bool isValueType = true;
+						foreach (var r in symbolInfo.Symbol.DeclaringSyntaxReferences)
+						{
+							var root = (CSharpSyntaxNode)r.GetSyntax();
+							var symbol = semanticModel.GetDeclaredSymbol(root) as INamedTypeSymbol;
+							if (symbol != null) isValueType = symbol.IsValueType;
+						}
+						
+						line = Regex.Replace(line, t.Identifier+@"\s*=\s*new", t.Identifier+" = ");
+					}
+
+					// add roots to GC
 					if (e.Left.GetType() == typeof(IdentifierNameSyntax) && e.Right.GetType() == typeof(ObjectCreationExpressionSyntax))
 					{
 						bool isStatic = false;
