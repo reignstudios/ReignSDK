@@ -213,6 +213,7 @@ namespace Reign.Compiler
 					var symbolInfo = semanticModel.GetSymbolInfo(eNode);
 					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
 					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
+					if (!namedType.IsValueType) name += "*";
 				}
 
 				writeModifiers(writer, node.Modifiers);
@@ -225,6 +226,7 @@ namespace Reign.Compiler
 					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
 					name = p.Type.ToString();
 					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
+					if (!namedType.IsValueType) name += "*";
 
 					writer.Write(string.Format("{0} {1}", name, p.Identifier));
 					if (p != node.ParameterList.Parameters.Last()) writer.Write(", ");
@@ -303,15 +305,27 @@ namespace Reign.Compiler
 					{
 						var t = (IdentifierNameSyntax)e.Left;
 						var symbolInfo = semanticModel.GetSymbolInfo(t);
-						bool isValueType = true;
+						bool isValueType = false;
 						foreach (var r in symbolInfo.Symbol.DeclaringSyntaxReferences)
 						{
 							var root = (CSharpSyntaxNode)r.GetSyntax();
-							var symbol = semanticModel.GetDeclaredSymbol(root) as INamedTypeSymbol;
-							if (symbol != null) isValueType = symbol.IsValueType;
+							if (root.GetType() == typeof(VariableDeclaratorSyntax))
+							{
+								var rootType = (VariableDeclaratorSyntax)root;
+								var symbol = semanticModel.GetDeclaredSymbol(rootType) as IFieldSymbol;
+								var namedType = symbol.Type;
+								isValueType = namedType.IsValueType;
+							}
+							else if (root.GetType() == typeof(ParameterSyntax))
+							{
+								var rootType = (ParameterSyntax)root;
+								var symbol = (IParameterSymbol)semanticModel.GetDeclaredSymbol(rootType);
+								var namedType = symbol.Type;
+								isValueType = namedType.IsValueType;
+							}
 						}
 						
-						line = Regex.Replace(line, t.Identifier+@"\s*=\s*new", t.Identifier+" = ");
+						if (isValueType) line = Regex.Replace(line, t.Identifier+@"\s*=\s*new", t.Identifier+" = ");
 					}
 
 					// add roots to GC
@@ -623,6 +637,7 @@ namespace Reign.Compiler
 					var symbolInfo = semanticModel.GetSymbolInfo(eNode);
 					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
 					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
+					if (!namedType.IsValueType) name += "*";
 				}
 
 				writer.Write(string.Format("{0} {1}::", name, currentTypeDecl.Identifier));
@@ -634,6 +649,7 @@ namespace Reign.Compiler
 					var namedType = symbolInfo.Symbol as INamedTypeSymbol;
 					name = p.Type.ToString();
 					if (namedType != null) name = formatSpecialType(namedType.SpecialType, name);
+					if (!namedType.IsValueType) name += "*";
 
 					writer.Write(string.Format("{0} {1}", name, p.Identifier));
 					if (p != node.ParameterList.Parameters.Last()) writer.Write(", ");
