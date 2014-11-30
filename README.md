@@ -7,7 +7,6 @@ All Rights Reserved.
 The ReignSDK is a set of libraries, projects, tools and source code written in C# and C/C++, of which are currently defined as follows:
 
 Platforms
---------
 ========================================================================
     Microsoft
     - Win32 (D3D11, D3D9 and OpenGL supported)
@@ -31,6 +30,7 @@ Platforms
 
     Sony
     - Vita
+    - PlaystationTV
 
     Planned to support:
     - BSD
@@ -38,7 +38,8 @@ Platforms
     - GameStick
     - Oculus Rift
     - Nvidia Shield
-    - GoogleTV
+    - AndroidTV
+    - FireTV
     - GamePop
 
     Would like to support:
@@ -47,7 +48,9 @@ Platforms
     - Xbox One
     - Roku
     - GCW-Zero
+    - BlackBerry9
     - BlackBerry10
+    - WebOS
     - Tizen
     - SailfishOS
     - AppleTV / Apple Game Console
@@ -55,6 +58,8 @@ Platforms
     - Amazon Game Console
     - Mad Catz MOJO Android Game Console
     - WP7
+    - ZuneHD
+    - Windows Mobile 5+
     - FEZ Game-O
     - iConsole.tv
     - MK802, MK802IV, ect
