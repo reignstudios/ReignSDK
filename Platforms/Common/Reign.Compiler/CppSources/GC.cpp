@@ -84,10 +84,10 @@ namespace System
 		while (root != NULL)
 		{
 			auto nextNode = root->Next;
-			auto node = findRootHeap(root->Data);
+			auto node = findRootHeap(*root->Data);
 			if (node == NULL)
 			{
-				prevNode->Next = root->Next;
+				if (prevNode != NULL) prevNode->Next = root->Next;
 				if (LastRootNode == root) LastRootNode = prevNode;// if end root obj, set last node to prev
 				delete root;
 				root = nextNode;

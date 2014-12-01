@@ -500,7 +500,7 @@ namespace Reign.Compiler
 			// check if value type
 			bool isValueType = node.GetType() == typeof(StructDeclarationSyntax);
 
-			writer.WriteLine(string.Format(@"TYPE_{0}* TYPE_{0}::Singleton = new TYPE_{0};", node.Identifier));
+			writer.WriteLine(string.Format(@"TYPE_{0}* TYPE_{0}::Singleton = new TYPE_{0}();", node.Identifier));
 			writer.WriteLine(string.Format(@"TYPE_{0}::TYPE_{0}() : Type(string(L""{1}""), {2})", node.Identifier, fullname, isValueType?"true":"false"));
 			writer.WriteLine("{");
 			foreach (var childNode in node.ChildNodes())
@@ -526,7 +526,7 @@ namespace Reign.Compiler
 							int i = 0;
 							foreach (var v in n2.Variables)
 							{
-								writer.WriteLine(string.Format("{0} = TYPE_{1}::Singleton;", v.Identifier.Value, name));
+								writer.WriteLine(string.Format("{0} = TYPE_{1}::Singleton();", v.Identifier.Value, name));
 								writer.WriteLine(string.Format("TypeInfos[{0}] = {1}; TypeInfoOffsets[{0}] = sizeOffset;", i, v.Identifier.Value));
 								writer.WriteLine(string.Format("sizeOffset += sizeof({0});", v.Identifier.Value));
 								++i;

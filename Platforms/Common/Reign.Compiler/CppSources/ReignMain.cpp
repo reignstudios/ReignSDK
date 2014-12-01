@@ -1,4 +1,4 @@
-#include "C:\Users\Andrew\Reign\Tests\ReignCompiler\OutputApp\TestApp\Program.h"
+#include "Program.h"
 #include "ReignMain.h"
 #include "GC.h"
 

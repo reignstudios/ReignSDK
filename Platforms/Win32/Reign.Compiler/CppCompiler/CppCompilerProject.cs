@@ -356,12 +356,12 @@ namespace Reign.Compiler
 				projXML.ItemGroups.Add(group);
 
 				group = new XML.ItemGroup();
-				group.ClIncludes = new List<XML.ClInclude>();
+				group.ClCompiles = new List<XML.ClCompile>();
 				foreach (var file in CodeFiles)
 				{
-					group.ClIncludes.Add
+					group.ClCompiles.Add
 					(
-						new XML.ClInclude()
+						new XML.ClCompile()
 						{
 							Include = string.Format("{0}.cpp", file.Name)
 						}
@@ -378,7 +378,7 @@ namespace Reign.Compiler
 					(
 						new XML.ClInclude()
 						{
-							Include = desc.Cpp_VC_ReignCppSources + string.Format("/{0}.h", file)
+							Include = file + ".h"
 						}
 					);
 				}
@@ -392,11 +392,19 @@ namespace Reign.Compiler
 					(
 						new XML.ClCompile()
 						{
-							Include = desc.Cpp_VC_ReignCppSources + string.Format("/{0}.cpp", file)
+							Include = file + ".cpp"
 						}
 					);
 				}
 				projXML.ItemGroups.Add(group);
+
+				// copy reign cpp sources
+				foreach (var file in ReignCppSourceFiles)
+				{
+					if (!Directory.Exists(desc.OutputDirectory + Name)) Directory.CreateDirectory(desc.OutputDirectory + Name);
+					File.Copy(desc.Cpp_VC_ReignCppSources + string.Format("/{0}.h", file), desc.OutputDirectory + string.Format("{0}/{1}.h", Name, file), true);
+					File.Copy(desc.Cpp_VC_ReignCppSources + string.Format("/{0}.cpp", file), desc.OutputDirectory + string.Format("{0}/{1}.cpp", Name, file), true);
+				}
 
 				// <<< ExtensionTargets
 				projXML.ExtensionTargetsImport = new XML.Import() {Project = @"$(VCTargetsPath)\Microsoft.Cpp.targets"};
