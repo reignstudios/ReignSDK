@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Core", "Reign.Core\Reign.Core.csproj", "{4889BC73-F2D9-4F03-B9A9-316B83FD9063}"
 EndProject
@@ -44,8 +44,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Reign_Video_D3D9_Component", "Reign_Video_D3D9_Component\Reign_Video_D3D9_Component.vcxproj", "{AF208116-8078-4FF3-8D85-8299313D19A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Video.D3D9", "Reign.Video.D3D9\Reign.Video.D3D9.csproj", "{1458BC70-3FF0-41C2-9AD6-93B466D40509}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reign.Compiler", "Reign.Compiler\Reign.Compiler.csproj", "{7DBE46B1-B73D-4275-B866-84DB84DC6E4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -368,18 +366,6 @@ Global
 		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Release|x64.ActiveCfg = Release|x64
 		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Release|x64.Build.0 = Release|x64
 		{1458BC70-3FF0-41C2-9AD6-93B466D40509}.Release|x86.ActiveCfg = Release|x86
-		{7DBE46B1-B73D-4275-B866-84DB84DC6E4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7DBE46B1-B73D-4275-B866-84DB84DC6E4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7DBE46B1-B73D-4275-B866-84DB84DC6E4A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{7DBE46B1-B73D-4275-B866-84DB84DC6E4A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{7DBE46B1-B73D-4275-B866-84DB84DC6E4A}.Debug|x64.ActiveCfg = Debug|x64
-		{7DBE46B1-B73D-4275-B866-84DB84DC6E4A}.Debug|x86.ActiveCfg = Debug|x86
-		{7DBE46B1-B73D-4275-B866-84DB84DC6E4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7DBE46B1-B73D-4275-B866-84DB84DC6E4A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7DBE46B1-B73D-4275-B866-84DB84DC6E4A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{7DBE46B1-B73D-4275-B866-84DB84DC6E4A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{7DBE46B1-B73D-4275-B866-84DB84DC6E4A}.Release|x64.ActiveCfg = Release|x64
-		{7DBE46B1-B73D-4275-B866-84DB84DC6E4A}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
