@@ -13,23 +13,6 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\Lib\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WIN32</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\Lib\</OutputPath>
-    <DefineConstants>TRACE;WIN32</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
@@ -73,18 +56,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_XP|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug_XP\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WIN32</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_XP|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Debug_XP\</OutputPath>
+    <OutputPath>..\Lib\x86\Debug_XP\</OutputPath>
     <DefineConstants>TRACE;DEBUG;WIN32</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -93,24 +67,15 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_XP|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x64\Debug_XP\</OutputPath>
+    <OutputPath>..\Lib\x64\Debug_XP\</OutputPath>
     <DefineConstants>TRACE;DEBUG;WIN32</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_XP|AnyCPU'">
-    <OutputPath>bin\Release_XP\</OutputPath>
-    <DefineConstants>TRACE;WIN32</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_XP|x86'">
-    <OutputPath>bin\x86\Release_XP\</OutputPath>
+    <OutputPath>..\Lib\x86\Release_XP\</OutputPath>
     <DefineConstants>TRACE;WIN32</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -119,7 +84,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_XP|x64'">
-    <OutputPath>bin\x64\Release_XP\</OutputPath>
+    <OutputPath>..\Lib\x64\Release_XP\</OutputPath>
     <DefineConstants>TRACE;WIN32</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -152,10 +117,12 @@
     <ProjectReference Include="..\Reign.Audio\Reign.Audio.csproj">
       <Project>{96C593BA-CA79-4DA1-A221-786398AF2425}</Project>
       <Name>Reign.Audio</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Reign.Core\Reign.Core.csproj">
       <Project>{4889BC73-F2D9-4F03-B9A9-316B83FD9063}</Project>
       <Name>Reign.Core</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

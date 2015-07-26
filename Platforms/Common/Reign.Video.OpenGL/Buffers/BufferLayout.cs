@@ -20,7 +20,7 @@ namespace Reign.Video.OpenGL
 			return new BufferLayout(parent, shader, desc);
 		}
 
-		public unsafe BufferLayout(DisposableI parent, ShaderI shader, BufferLayoutDescI desc)
+		public BufferLayout(DisposableI parent, ShaderI shader, BufferLayoutDescI desc)
 		: base(parent)
 		{
 			video = parent.FindParentOrSelfWithException<Video>();
