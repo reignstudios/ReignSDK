@@ -1,56 +1,66 @@
 ﻿using Reign.Core;
 
-namespace Reign.Video.API
+namespace Reign.Video.Abstraction
 {
-	public static class SamplerStateDesc
+	public static class SamplerStateDescAPI
 	{
-		public static void Init(VideoTypes type)
+		public static ISamplerStateDesc New(VideoTypes videoType, SamplerStateTypes type)
 		{
+			ISamplerStateDesc api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) SamplerStateDescAPI.Init(Reign.Video.D3D9.SamplerStateDesc.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.SamplerStateDesc(type);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) SamplerStateDescAPI.Init(Reign.Video.D3D11.SamplerStateDesc.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.SamplerStateDesc(type);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) SamplerStateDescAPI.Init(Reign.Video.OpenGL.SamplerStateDesc.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.SamplerStateDesc(type);
 			#endif
 
-			#if XNA
-			if (type == VideoTypes.XNA) SamplerStateDescAPI.Init(Reign.Video.XNA.SamplerStateDesc.New);
+			#if videoType
+			if (videoType == VideoTypes.XNA) api = new XNA.SamplerStateDesc(type);
 			#endif
 			
 			#if VITA
-			if (type == VideoTypes.Vita) SamplerStateDescAPI.Init(Reign.Video.Vita.SamplerStateDesc.New);
+			if (videoType == VideoTypes.Vita) api = new Vita.SamplerStateDesc(type);
 			#endif
+
+			if (api == null) Debug.ThrowError("SamplerStateDescAPI", "Unsuported InputType: " + type);
+			return api;
 		}
 	}
 
-	public static class SamplerState
+	public static class SamplerStateAPI
 	{
-		public static void Init(VideoTypes type)
+		public static ISamplerState Init(VideoTypes videoType, IDisposableResource parent, ISamplerStateDesc desc)
 		{
+			ISamplerState api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) SamplerStateAPI.Init(Reign.Video.D3D9.SamplerState.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.SamplerState(parent, desc);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) SamplerStateAPI.Init(Reign.Video.D3D11.SamplerState.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.SamplerState(parent, desc);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) SamplerStateAPI.Init(Reign.Video.OpenGL.SamplerState.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.SamplerState(parent, desc);
 			#endif
 
 			#if XNA
-			if (type == VideoTypes.XNA) SamplerStateAPI.Init(Reign.Video.XNA.SamplerState.New);
+			if (videoType == VideoTypes.XNA) api = new XNA.SamplerState(parent, desc);
 			#endif
 			
 			#if VITA
-			if (type == VideoTypes.Vita) SamplerStateAPI.Init(Reign.Video.Vita.SamplerState.New);
+			if (videoType == VideoTypes.Vita) api = new Vita.SamplerState(parent, desc);
 			#endif
+
+			if (api == null) Debug.ThrowError("SamplerStateAPI", "Unsuported InputType: " + videoType);
+			return api;
 		}
 	}
 }

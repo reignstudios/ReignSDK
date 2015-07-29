@@ -3,19 +3,14 @@ using Reign.Core;
 
 namespace Reign.Video.D3D9
 {
-	public class QuickDraw : QuickDrawI
+	public class QuickDraw : IQuickDraw
 	{
 		#region Properties
 		private VertexBuffer vertexBuffer;
 		#endregion
 
 		#region Constructors
-		public static QuickDraw New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc)
-		{
-			return new QuickDraw(parent, bufferLayoutDesc);
-		}
-
-		public QuickDraw(DisposableI parent, BufferLayoutDescI bufferLayoutDesc)
+		public QuickDraw(IDisposableResource parent, IBufferLayoutDesc bufferLayoutDesc)
 		: base(parent, bufferLayoutDesc)
 		{
 			try

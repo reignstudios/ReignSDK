@@ -25,8 +25,8 @@ namespace Reign.Video
 	#endif
 	{
 		#region Construtors
-		public ImagePNG(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback)
-		: base(fileName, flip, loadedCallback)
+		public ImagePNG(string filename, bool flip, Loader.LoadedCallbackMethod loadedCallback)
+		: base(filename, flip, loadedCallback)
 		{
 			
 		}

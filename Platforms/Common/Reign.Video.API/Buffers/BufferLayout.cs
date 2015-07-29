@@ -1,56 +1,110 @@
 ﻿using Reign.Core;
+using System.Collections.Generic;
 
-namespace Reign.Video.API
+namespace Reign.Video.Abstraction
 {
-	public static class BufferLayoutDesc
+	public static class BufferLayoutDescAPI
 	{
-		public static void Init(VideoTypes type)
+		public static IBufferLayoutDesc New(BufferLayoutTypes type)
 		{
+			return New(VideoAPI.DefaultAPI, type);
+		}
+
+		public static IBufferLayoutDesc New(VideoTypes videoType, BufferLayoutTypes type)
+		{
+			IBufferLayoutDesc api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) BufferLayoutDescAPI.Init(Reign.Video.D3D9.BufferLayoutDesc.New, Reign.Video.D3D9.BufferLayoutDesc.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.BufferLayoutDesc(type);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) BufferLayoutDescAPI.Init(Reign.Video.D3D11.BufferLayoutDesc.New, Reign.Video.D3D11.BufferLayoutDesc.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.BufferLayoutDesc(type);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) BufferLayoutDescAPI.Init(Reign.Video.OpenGL.BufferLayoutDesc.New, Reign.Video.OpenGL.BufferLayoutDesc.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.BufferLayoutDesc(type);
 			#endif
 
 			#if XNA
-			if (type == VideoTypes.XNA) BufferLayoutDescAPI.Init(Reign.Video.XNA.BufferLayoutDesc.New, Reign.Video.XNA.BufferLayoutDesc.New);
+			if (videoType == VideoTypes.XNA) api = new XNA.BufferLayoutDesc(type);
 			#endif
 			
 			#if VITA
-			if (type == VideoTypes.Vita) BufferLayoutDescAPI.Init(Reign.Video.Vita.BufferLayoutDesc.New, Reign.Video.Vita.BufferLayoutDesc.New);
+			if (videoType == VideoTypes.Vita) api = new Vita.BufferLayoutDesc(type);
 			#endif
+
+			if (api == null) Debug.ThrowError("BufferLayoutDescAPI", "Unsuported InputType: " + videoType);
+			return api;
+		}
+
+		public static IBufferLayoutDesc New(List<BufferLayoutElement> elements)
+		{
+			return New(VideoAPI.DefaultAPI, elements);
+		}
+
+		public static IBufferLayoutDesc New(VideoTypes videoType, List<BufferLayoutElement> elements)
+		{
+			IBufferLayoutDesc api = null;
+
+			#if WIN32
+			if (videoType == VideoTypes.D3D9) api = new D3D9.BufferLayoutDesc(elements);
+			#endif
+
+			#if WIN32 || WINRT || WP8
+			if (videoType == VideoTypes.D3D11) api = new D3D11.BufferLayoutDesc(elements);
+			#endif
+
+			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.BufferLayoutDesc(elements);
+			#endif
+
+			#if XNA
+			if (videoType == VideoTypes.XNA) api = new XNA.BufferLayoutDesc(elements);
+			#endif
+			
+			#if VITA
+			if (videoType == VideoTypes.Vita) api = new Vita.BufferLayoutDesc(elements);
+			#endif
+
+			if (api == null) Debug.ThrowError("BufferLayoutDescAPI", "Unsuported InputType: " + videoType);
+			return api;
 		}
 	}
 
-	public static class BufferLayout
+	public static class BufferLayoutAPI
 	{
-		public static void Init(VideoTypes type)
+		public static IBufferLayout New(IDisposableResource parent, IShader shader, IBufferLayoutDesc desc)
 		{
+			return New(VideoAPI.DefaultAPI, parent, shader, desc);
+		}
+
+		public static IBufferLayout New(VideoTypes videoType, IDisposableResource parent, IShader shader, IBufferLayoutDesc desc)
+		{
+			IBufferLayout api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) BufferLayoutAPI.Init(Reign.Video.D3D9.BufferLayout.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.BufferLayout(parent, shader, desc);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) BufferLayoutAPI.Init(Reign.Video.D3D11.BufferLayout.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.BufferLayout(parent, shader, desc);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) BufferLayoutAPI.Init(Reign.Video.OpenGL.BufferLayout.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.BufferLayout(parent, shader, desc);
 			#endif
 
 			#if XNA
-			if (type == VideoTypes.XNA) BufferLayoutAPI.Init(Reign.Video.XNA.BufferLayout.New);
+			if (videoType == VideoTypes.XNA) api = new XNA.BufferLayout(parent, shader, desc);
 			#endif
 			
 			#if VITA
-			if (type == VideoTypes.Vita) BufferLayoutAPI.Init(Reign.Video.Vita.BufferLayout.New);
+			if (videoType == VideoTypes.Vita) api = new Vita.BufferLayout(parent, shader, desc);
 			#endif
+
+			if (api == null) Debug.ThrowError("BufferLayoutAPI", "Unsuported InputType: " + videoType);
+			return api;
 		}
 	}
 }

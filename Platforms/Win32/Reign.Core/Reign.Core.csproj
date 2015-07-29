@@ -15,93 +15,94 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
   </PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-		<DebugSymbols>true</DebugSymbols>
-		<OutputPath>..\Lib\x86\Debug\</OutputPath>
-		<DefineConstants>TRACE;DEBUG;WIN32</DefineConstants>
-		<DebugType>full</DebugType>
-		<PlatformTarget>x86</PlatformTarget>
-		<ErrorReport>prompt</ErrorReport>
-		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-		<OutputPath>..\Lib\x86\Release\</OutputPath>
-		<DefineConstants>TRACE;WIN32</DefineConstants>
-		<Optimize>true</Optimize>
-		<DebugType>pdbonly</DebugType>
-		<PlatformTarget>x86</PlatformTarget>
-		<ErrorReport>prompt</ErrorReport>
-		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-		<DebugSymbols>true</DebugSymbols>
-		<OutputPath>..\Lib\x64\Debug\</OutputPath>
-		<DefineConstants>TRACE;DEBUG;WIN32</DefineConstants>
-		<DebugType>full</DebugType>
-		<PlatformTarget>x64</PlatformTarget>
-		<ErrorReport>prompt</ErrorReport>
-		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-		<OutputPath>..\Lib\x64\Release\</OutputPath>
-		<DefineConstants>TRACE;WIN32</DefineConstants>
-		<Optimize>true</Optimize>
-		<DebugType>pdbonly</DebugType>
-		<PlatformTarget>x64</PlatformTarget>
-		<ErrorReport>prompt</ErrorReport>
-		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_XP|x86'">
-		<DebugSymbols>true</DebugSymbols>
-		<OutputPath>..\Lib\x86\Debug_XP\</OutputPath>
-		<DefineConstants>TRACE;DEBUG;WIN32</DefineConstants>
-		<DebugType>full</DebugType>
-		<PlatformTarget>x86</PlatformTarget>
-		<ErrorReport>prompt</ErrorReport>
-		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_XP|x64'">
-		<DebugSymbols>true</DebugSymbols>
-		<OutputPath>..\Lib\x64\Debug_XP\</OutputPath>
-		<DefineConstants>TRACE;DEBUG;WIN32</DefineConstants>
-		<DebugType>full</DebugType>
-		<PlatformTarget>x64</PlatformTarget>
-		<ErrorReport>prompt</ErrorReport>
-		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_XP|x86'">
-		<OutputPath>..\Lib\x86\Release_XP\</OutputPath>
-		<DefineConstants>TRACE;WIN32</DefineConstants>
-		<Optimize>true</Optimize>
-		<DebugType>pdbonly</DebugType>
-		<PlatformTarget>x86</PlatformTarget>
-		<ErrorReport>prompt</ErrorReport>
-		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_XP|x64'">
-		<OutputPath>..\Lib\x64\Release_XP\</OutputPath>
-		<DefineConstants>TRACE;WIN32</DefineConstants>
-		<Optimize>true</Optimize>
-		<DebugType>pdbonly</DebugType>
-		<PlatformTarget>x64</PlatformTarget>
-		<ErrorReport>prompt</ErrorReport>
-		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\Lib\x86\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WIN32</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>..\Lib\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;WIN32</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\Lib\x64\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WIN32</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>..\Lib\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;WIN32</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_XP|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\Lib\x86\Debug_XP\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WIN32</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_XP|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\Lib\x64\Debug_XP\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WIN32</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_XP|x86'">
+    <OutputPath>..\Lib\x86\Release_XP\</OutputPath>
+    <DefineConstants>TRACE;WIN32</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_XP|x64'">
+    <OutputPath>..\Lib\x64\Release_XP\</OutputPath>
+    <DefineConstants>TRACE;WIN32</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Common\Reign.Core\Application.cs">
+      <Link>Application.cs</Link>
+    </Compile>
     <Compile Include="..\..\Common\Reign.Core\Debug.cs">
       <Link>Debug.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\Disposable\Disposable.cs">
-      <Link>Disposable\Disposable.cs</Link>
+    <Compile Include="..\..\Common\Reign.Core\Disposable\DisposableResource.cs">
+      <Link>Disposable\DisposableResource.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\Disposable\RootDisposable.cs">
-      <Link>Disposable\RootDisposable.cs</Link>
+    <Compile Include="..\..\Common\Reign.Core\Disposable\RootDisposableResource.cs">
+      <Link>Disposable\RootDisposableResource.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Extensions.cs">
       <Link>Extensions.cs</Link>
@@ -190,14 +191,11 @@
     <Compile Include="..\..\Common\Reign.Core\Math\Vector4.cs">
       <Link>Math\Vector4.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\OS\Application.cs">
-      <Link>OS\Application.cs</Link>
+    <Compile Include="..\..\Common\Reign.Core\MessageDialog.cs">
+      <Link>MessageDialog.cs</Link>
     </Compile>
-    <Compile Include="..\..\Common\Reign.Core\OS\Message.cs">
-      <Link>OS\Message.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\Reign.Core\OS\OS.cs">
-      <Link>OS\OS.cs</Link>
+    <Compile Include="..\..\Common\Reign.Core\Platform.cs">
+      <Link>Platform.cs</Link>
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Random.cs">
       <Link>Random.cs</Link>
@@ -207,9 +205,6 @@
     </Compile>
     <Compile Include="..\..\Common\Reign.Core\Time.cs">
       <Link>Time.cs</Link>
-    </Compile>
-    <Compile Include="OS\WinFormApplication.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

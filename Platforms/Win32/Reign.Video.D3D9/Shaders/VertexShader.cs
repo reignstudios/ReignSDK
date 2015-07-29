@@ -11,7 +11,7 @@ namespace Reign.Video.D3D9
 		#endregion
 
 		#region Constructors
-		public VertexShader(DisposableI parent, string code, ShaderVersions shaderVersion)
+		public VertexShader(IDisposableResource parent, string code, ShaderVersions shaderVersion)
 		: base(parent, code, shaderVersion, ShaderTypes.VS)
 		{
 			try

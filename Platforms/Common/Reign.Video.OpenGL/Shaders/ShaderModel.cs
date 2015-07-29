@@ -5,14 +5,14 @@ using System.IO;
 
 namespace Reign.Video.OpenGL
 {
-	public abstract class ShaderModel : Disposable
+	public abstract class ShaderModel : DisposableResource
 	{
 		#region Properties
 		public uint Shader {get; private set;}
 		#endregion
 
 		#region Constructors
-		public unsafe ShaderModel(ShaderI shader, string code, ShaderVersions shaderVersion, ShaderTypes shaderType, ShaderFloatingPointQuality quality)
+		public unsafe ShaderModel(IShader shader, string code, ShaderVersions shaderVersion, ShaderTypes shaderType, ShaderFloatingPointQuality quality)
 		: base(shader)
 		{
 			try
@@ -99,7 +99,7 @@ precision mediump float;
 			disposeChilderen();
 			if (Shader != 0)
 			{
-				if (!OS.AutoDisposedGL) GL.DeleteShader(Shader);
+				if (!IPlatform.Singleton.AutoDisposedGL) GL.DeleteShader(Shader);
 				Shader = 0;
 
 				#if DEBUG && !ANDROID

@@ -2,19 +2,14 @@ using Reign.Core;
 
 namespace Reign.Video.OpenGL
 {
-	public class DepthStencilState : Disposable, DepthStencilStateI
+	public class DepthStencilState : DisposableResource, IDepthStencilState
 	{
 		#region Properties
 		private DepthStencilStateDesc desc;
 		#endregion
 
 		#region Constructors
-		public static DepthStencilState New(DisposableI parent, DepthStencilStateDescI desc)
-		{
-			return new DepthStencilState(parent, desc);
-		}
-
-		public DepthStencilState(DisposableI parent, DepthStencilStateDescI desc)
+		public DepthStencilState(IDisposableResource parent, IDepthStencilStateDesc desc)
 		: base(parent)
 		{
 			this.desc = (DepthStencilStateDesc)desc;

@@ -201,9 +201,9 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public ImageDDS(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback)
+		public ImageDDS(string filename, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			new StreamLoader(fileName,
+			new StreamLoader(filename,
 			delegate(object sender, bool succeeded)
 			{
 				if (succeeded)

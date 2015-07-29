@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Reign.Networking.PC
 {
-	public class Server : ServerI
+	public class Server : IServer
 	{
 		#region Properties
 		public LinkedList<Client> Clients {get; private set;}

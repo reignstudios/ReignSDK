@@ -2,9 +2,9 @@
 
 namespace Reign.Audio.Dumby
 {
-	public class Audio : Disposable, AudioI
+	public class Audio : DisposableResource, IAudio
 	{
-		public Audio(DisposableI parent)
+		public Audio(IDisposableResource parent)
 		: base(parent)
 		{
 			

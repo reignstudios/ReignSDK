@@ -1,26 +1,36 @@
 ﻿using Reign.Core;
 
-namespace Reign.Input.API
+namespace Reign.Input.Abstraction
 {
-	public static class Keyboard
+	public static class KeyboardAPI
 	{
-		public static void Init(InputTypes type)
+		public static IKeyboard New(IDisposableResource parent)
 		{
+			return New(InputAPI.DefaultAPI, parent);
+		}
+
+		public static IKeyboard New(InputTypes inputType, IDisposableResource parent)
+		{
+			IKeyboard api = null;
+
 			#if WIN32
-			if (type == InputTypes.WinForms) KeyboardAPI.Init(Reign.Input.WinForms.Keyboard.New);
+			if (inputType == InputTypes.WinForms) api = new WinForms.Keyboard(parent);
 			#endif
 
 			#if WINRT
-			if (type == InputTypes.WinRT) KeyboardAPI.Init(Reign.Input.WinRT.Keyboard.New);
+			if (inputType == InputTypes.WinRT) api = new WinRT.Keyboard(parent);
 			#endif
 			
 			#if OSX
-			if (type == InputTypes.Cocoa) KeyboardAPI.Init(Reign.Input.Cocoa.Keyboard.New);
+			if (inputType == InputTypes.Cocoa) api = new Cocoa.Keyboard(parent);
 			#endif
 			
 			#if LINUX
-			if (type == InputTypes.X11) KeyboardAPI.Init(Reign.Input.X11.Keyboard.New);
+			if (inputType == InputTypes.X11) api = new X11.Keyboard(parent);
 			#endif
+
+			if (api == null) Debug.ThrowError("KeyboardAPI", "Unsuported InputType: " + inputType);
+			return api;
 		}
 	}
 }

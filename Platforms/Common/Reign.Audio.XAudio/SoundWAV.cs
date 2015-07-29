@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Reign.Audio.XAudio
 {
-	public class SoundWAVInstance : Disposable, SoundInstanceI
+	public class SoundWAVInstance : DisposableResource, ISoundInstance
 	{
 		#region Properties
 		private SoundWAVInstanceCom com;
@@ -100,7 +100,7 @@ namespace Reign.Audio.XAudio
 		#endregion
 	}
 
-	public class SoundWAV : SoundWAVI
+	public class SoundWAV : ISoundWAV
 	{
 		#region Properties
 		private Audio audio;
@@ -108,15 +108,10 @@ namespace Reign.Audio.XAudio
 		#endregion
 
 		#region Constructors
-		public static new SoundWAV New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return new SoundWAV(parent, fileName, instanceCount, looped, loadedCallback);
-		}
-
-		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
+		public SoundWAV(IDisposableResource parent, string filename, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
-			new StreamLoader(fileName,
+			new StreamLoader(filename,
 			delegate(object sender,  bool succeeded)
 			{
 				if (succeeded)
@@ -132,7 +127,7 @@ namespace Reign.Audio.XAudio
 			});
 		}
 
-		protected override void init(DisposableI parent, Stream stream, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
+		protected override void init(IDisposableResource parent, Stream stream, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			base.init(parent, stream, instanceCount, looped, loadedCallback);
 

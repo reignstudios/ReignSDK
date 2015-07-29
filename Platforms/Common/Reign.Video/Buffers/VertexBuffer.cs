@@ -13,7 +13,7 @@ namespace Reign.Video
 		Triangle
 	}
 
-	public abstract class VertexBufferI : Disposable
+	public abstract class IVertexBuffer : DisposableResource
 	{
 		#region Properties
 		protected BufferUsages usage;
@@ -22,11 +22,11 @@ namespace Reign.Video
 		public int VertexByteSize {get{return vertexByteSize;}}
 		public int VertexFloatArraySize {get{return vertexFloatArraySize;}}
 		public abstract VertexBufferTopologys Topology {get; set;}
-		public abstract IndexBufferI IndexBuffer {get;}
+		public abstract IIndexBuffer IndexBuffer {get;}
 		#endregion
 
 		#region Constructors
-		protected VertexBufferI(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, float[] vertices)
+		protected IVertexBuffer(IDisposableResource parent, IBufferLayoutDesc bufferLayoutDesc, BufferUsages usage, float[] vertices)
 		: base(parent)
 		{
 			this.usage = usage;
@@ -46,7 +46,7 @@ namespace Reign.Video
 			{
 				if (vertexFloatArraySize != vert.Length)
 				{
-					Debug.ThrowError("VertexBufferI", "A Vertex size does not match the buffer layout");
+					Debug.ThrowError("IVertexBuffer", "A Vertex size does not match the buffer layout");
 				}
 
 				foreach (var seg in vert)
@@ -76,7 +76,7 @@ namespace Reign.Video
 
 				if (vertexFloatArraySize != newVertex.Length)
 				{
-					Debug.ThrowError("VertexBufferI", "A Vertex size does not match the buffer layout");
+					Debug.ThrowError("IVertexBuffer", "A Vertex size does not match the buffer layout");
 				}
 
 				for (int i = 0; i != newVertex.Length; ++i)
@@ -88,42 +88,19 @@ namespace Reign.Video
 
 			Init(verts);
 			#else
-			Debug.ThrowError("VertexBufferI", "Does not work on Xbox360.");
+			Debug.ThrowError("IVertexBuffer", "Does not work on Xbox360.");
 			#endif
 		}*/
 
 		public abstract void Update(float[] vertices, int updateCount);
 		public abstract void Enable();
-		public abstract void Enable(IndexBufferI indexBuffer);
-		public abstract void Enable(VertexBufferI instanceBuffer);
-		public abstract void Enable(IndexBufferI indexBuffer, VertexBufferI instanceBuffer);
+		public abstract void Enable(IIndexBuffer indexBuffer);
+		public abstract void Enable(IVertexBuffer instanceBuffer);
+		public abstract void Enable(IIndexBuffer indexBuffer, IVertexBuffer instanceBuffer);
 		public abstract void Draw();
 		public abstract void Draw(int drawCount);
 		public abstract void DrawInstanced(int drawCount);
 		public abstract void DrawInstancedClassic(int drawCount, int meshVertexCount, int meshIndexCount);
 		#endregion
-	}
-
-	public static class VertexBufferAPI
-	{
-		public static void Init(NewPtrMethod newPtr, NewPtrMethod2 newPtr2)
-		{
-			VertexBufferAPI.newPtr = newPtr;
-			VertexBufferAPI.newPtr2 = newPtr2;
-		}
-
-		public delegate VertexBufferI NewPtrMethod(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices);
-		private static NewPtrMethod newPtr;
-		public static VertexBufferI New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
-		{
-			return newPtr(parent, bufferLayoutDesc, usage, topology, vertices);
-		}
-
-		public delegate VertexBufferI NewPtrMethod2(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices);
-		private static NewPtrMethod2 newPtr2;
-		public static VertexBufferI New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
-		{
-			return newPtr2(parent, bufferLayoutDesc, usage, topology, vertices, indices);
-		}
 	}
 }

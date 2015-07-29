@@ -3,7 +3,7 @@ using Reign.Core;
 
 namespace Reign.Video.OpenGL
 {
-	public class RasterizerStateDesc : RasterizerStateDescI
+	public class RasterizerStateDesc : IRasterizerStateDesc
 	{
 		#region Properties
 		internal uint fillMode;
@@ -12,11 +12,6 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public static RasterizerStateDesc New(RasterizerStateTypes type)
-		{
-			return new RasterizerStateDesc(type);
-		}
-
 		public RasterizerStateDesc(RasterizerStateTypes type)
 		{
 			switch (type)

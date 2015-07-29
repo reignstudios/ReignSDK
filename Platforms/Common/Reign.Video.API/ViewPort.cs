@@ -1,30 +1,40 @@
 ﻿using Reign.Core;
 
-namespace Reign.Video.API
+namespace Reign.Video.Abstraction
 {
-	public static class ViewPort
+	public static class ViewPortAPI
 	{
-		public static void Init(VideoTypes type)
+		public static IViewPort New(IDisposableResource parent, Point2 location, Size2 size)
 		{
+			return New(VideoAPI.DefaultAPI, parent, location, size);
+		}
+
+		public static IViewPort New(VideoTypes videoType, IDisposableResource parent, Point2 location, Size2 size)
+		{
+			IViewPort api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) ViewPortAPI.Init(Reign.Video.D3D9.ViewPort.New, Reign.Video.D3D9.ViewPort.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.ViewPort(parent, location, size);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) ViewPortAPI.Init(Reign.Video.D3D11.ViewPort.New, Reign.Video.D3D11.ViewPort.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.ViewPort(parent, location, size);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) ViewPortAPI.Init(Reign.Video.OpenGL.ViewPort.New, Reign.Video.OpenGL.ViewPort.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.ViewPort(parent, location, size);
 			#endif
 
 			#if XNA
-			if (type == VideoTypes.XNA) ViewPortAPI.Init(Reign.Video.XNA.ViewPort.New, Reign.Video.XNA.ViewPort.New);
+			if (videoType == VideoTypes.XNA) api = new XNA.ViewPort(parent, location, size);
 			#endif
 			
 			#if VITA
-			if (type == VideoTypes.Vita) ViewPortAPI.Init(Reign.Video.Vita.ViewPort.New, Reign.Video.Vita.ViewPort.New);
+			if (videoType == VideoTypes.Vita) api = new Vita.ViewPort(parent, location, size);
 			#endif
+
+			if (api == null) Debug.ThrowError("ViewPortAPI", "Unsuported InputType: " + videoType);
+			return api;
 		}
 	}
 }

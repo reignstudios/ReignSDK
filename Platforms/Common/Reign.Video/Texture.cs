@@ -45,7 +45,7 @@ namespace Reign.Video
 		DiscardContents
 	}
 
-	public interface TextureI : DisposableI, LoadableI
+	public interface ITexture : IDisposableResource, ILoadable
 	{
 		int PixelByteSize {get;}
 
@@ -53,7 +53,7 @@ namespace Reign.Video
 		void WritePixels(byte[] data);
 	}
 
-	public interface Texture2DI : DisposableI, TextureI
+	public interface ITexture2D : IDisposableResource, ITexture
 	{
 		#region Properties
 		Size2 Size {get;}
@@ -62,11 +62,11 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
-		void Copy(Texture2DI texture);
+		void Copy(ITexture2D texture);
 		#endregion
 	}
 
-	public interface Texture3DI : DisposableI, TextureI
+	public interface ITexture3D : IDisposableResource, ITexture
 	{
 		#region Properties
 	    Size3 Size {get;}
@@ -75,80 +75,18 @@ namespace Reign.Video
 		#endregion
 
 		#region Methods
-	    void Copy(Texture3DI texture);
+	    void Copy(ITexture3D texture);
 		#endregion
 	}
 
-	public interface RenderTargetI : Texture2DI
+	public interface IRenderTarget : ITexture2D
 	{
 		#region Methods
 		void Enable();
-		void Enable(DepthStencilI depthStencil);
+		void Enable(IDepthStencil depthStencil);
 		void ReadPixels(byte[] data);
 		void ReadPixels(Color4[] colors);
 		bool ReadPixel(Point2 position, out Color4 color);
 		#endregion
-	}
-
-	public static class Texture2DAPI
-	{
-		public static void Init(NewReferencePtrMethod newReferencePtr, NewPtrMethod1 newPtr1, NewPtrMethod2 newPtr2, NewPtrMethod3 newPtr3)
-		{
-			Texture2DAPI.newReferencePtr = newReferencePtr;
-			Texture2DAPI.newPtr1 = newPtr1;
-			Texture2DAPI.newPtr2 = newPtr2;
-			Texture2DAPI.newPtr3 = newPtr3;
-		}
-
-		public delegate Texture2DI NewReferencePtrMethod(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback);
-		private static NewReferencePtrMethod newReferencePtr;
-		public static Texture2DI NewReference(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return newReferencePtr(parent, fileName, loadedCallback);
-		}
-
-		public delegate Texture2DI NewPtrMethod1(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback);
-		private static NewPtrMethod1 newPtr1;
-		public static Texture2DI New(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return newPtr1(parent, fileName, loadedCallback);
-		}
-
-		public delegate Texture2DI NewPtrMethod2(DisposableI parent, string fileName, bool generateMipmaps, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback);
-		private static NewPtrMethod2 newPtr2;
-		public static Texture2DI New(DisposableI parent, string fileName, bool generateMipmaps, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return newPtr2(parent, fileName, generateMipmaps, usage, loadedCallback);
-		}
-
-		public delegate Texture2DI NewPtrMethod3(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback);
-		private static NewPtrMethod3 newPtr3;
-		public static Texture2DI New(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return newPtr3(parent, width, height, surfaceFormat, usage, loadedCallback);
-		}
-	}
-
-	public static class RenderTargetAPI
-	{
-		public static void Init(NewPtrMethod1 newPtr1, NewPtrMethod2 newPtr2)
-		{
-			RenderTargetAPI.newPtr1 = newPtr1;
-			RenderTargetAPI.newPtr2 = newPtr2;
-		}
-
-		public delegate RenderTargetI NewPtrMethod1(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback);
-		private static NewPtrMethod1 newPtr1;
-		public static RenderTargetI New(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return newPtr1(parent, width, height, multiSampleType, surfaceFormat, depthStencilFormat, usage, renderTargetUsage, loadedCallback);
-		}
-
-		public delegate RenderTargetI NewPtrMethod2(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback);
-		private static NewPtrMethod2 newPtr2;
-		public static RenderTargetI New(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return newPtr2(parent, fileName, multiSampleType, usage, renderTargetUsage, loadedCallback);
-		}
 	}
 }

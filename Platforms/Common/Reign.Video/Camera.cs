@@ -10,13 +10,13 @@ namespace Reign.Video
 
 		public Matrix3 BillBoardMatrix, BillBoardMatrixTranspose;
 		public Matrix4 ViewMatrix, ProjectionMatrix, TransformMatrix, TransformInverseMatrix;
-		public ViewPortI ViewPort;
+		public IViewPort ViewPort;
 		#endregion
 
 		#region Constructors
-		public Camera(ViewPortI viewPort)
+		public Camera(IViewPort viewPort)
 		{
-			ViewPort = (ViewPortI)viewPort;
+			ViewPort = viewPort;
 			Position = new Vector3(10, 10, 10);
 			LookAtPosition = new Vector3(0, 0, 0);
 			UpPosition = new Vector3(10, 11, 10);
@@ -26,9 +26,9 @@ namespace Reign.Video
 			Aspect = float.NaN;
 		}
 
-		public Camera(ViewPortI viewPort, Vector3 position, Vector3 lookAtPosition, Vector3 upPosition)
+		public Camera(IViewPort viewPort, Vector3 position, Vector3 lookAtPosition, Vector3 upPosition)
 		{
-			ViewPort = (ViewPortI)viewPort;
+			ViewPort = viewPort;
 			Position = position;
 			LookAtPosition = lookAtPosition;
 			UpPosition = upPosition;
@@ -38,9 +38,9 @@ namespace Reign.Video
 			Aspect = float.NaN;
 		}
 
-		public Camera(ViewPortI viewPort, Vector3 position, Vector3 lookAtPosition, Vector3 upPosition, float near, float far, float fov)
+		public Camera(IViewPort viewPort, Vector3 position, Vector3 lookAtPosition, Vector3 upPosition, float near, float far, float fov)
 		{
-			ViewPort = (ViewPortI)viewPort;
+			ViewPort = viewPort;
 			Position = position;
 			LookAtPosition = lookAtPosition;
 			UpPosition = upPosition;

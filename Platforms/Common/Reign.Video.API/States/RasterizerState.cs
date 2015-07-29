@@ -1,56 +1,66 @@
 ﻿using Reign.Core;
 
-namespace Reign.Video.API
+namespace Reign.Video.Abstraction
 {
-	public static class RasterizerStateDesc
+	public static class RasterizerStateDescAPI
 	{
-		public static void Init(VideoTypes type)
+		public static IRasterizerStateDesc New(VideoTypes videoType, RasterizerStateTypes type)
 		{
+			IRasterizerStateDesc api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) RasterizerStateDescAPI.Init(Reign.Video.D3D9.RasterizerStateDesc.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.RasterizerStateDesc(type);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) RasterizerStateDescAPI.Init(Reign.Video.D3D11.RasterizerStateDesc.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.RasterizerStateDesc(type);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) RasterizerStateDescAPI.Init(Reign.Video.OpenGL.RasterizerStateDesc.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.RasterizerStateDesc(type);
 			#endif
 
 			#if XNA
-			if (type == VideoTypes.XNA) RasterizerStateDescAPI.Init(Reign.Video.XNA.RasterizerStateDesc.New);
+			if (videoType == VideoTypes.XNA) api = new XNA.RasterizerStateDesc(type);
 			#endif
 			
 			#if VITA
-			if (type == VideoTypes.Vita) RasterizerStateDescAPI.Init(Reign.Video.Vita.RasterizerStateDesc.New);
+			if (videoType == VideoTypes.Vita) api = new Vita.RasterizerStateDesc(type);
 			#endif
+
+			if (api == null) Debug.ThrowError("RasterizerStateDescAPI", "Unsuported InputType: " + videoType);
+			return api;
 		}
 	}
 
-	public static class RasterizerState
+	public static class RasterizerStateAPI
 	{
-		public static void Init(VideoTypes type)
+		public static IRasterizerState New(VideoTypes videoType, IDisposableResource parent, IRasterizerStateDesc desc)
 		{
+			IRasterizerState api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) RasterizerStateAPI.Init(Reign.Video.D3D9.RasterizerState.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.RasterizerState(parent, desc);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) RasterizerStateAPI.Init(Reign.Video.D3D11.RasterizerState.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.RasterizerState(parent, desc);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) RasterizerStateAPI.Init(Reign.Video.OpenGL.RasterizerState.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.RasterizerState(parent, desc);
 			#endif
 
 			#if XNA
-			if (type == VideoTypes.XNA) RasterizerStateAPI.Init(Reign.Video.XNA.RasterizerState.New);
+			if (videoType == VideoTypes.XNA) api = new XNA.RasterizerState(parent, desc);
 			#endif
 			
 			#if VITA
-			if (type == VideoTypes.Vita) RasterizerStateAPI.Init(Reign.Video.Vita.RasterizerState.New);
+			if (videoType == VideoTypes.Vita) api = new Vita.RasterizerState(parent, desc);
 			#endif
+
+			if (api == null) Debug.ThrowError("RasterizerStateAPI", "Unsuported InputType: " + videoType);
+			return api;
 		}
 	}
 }

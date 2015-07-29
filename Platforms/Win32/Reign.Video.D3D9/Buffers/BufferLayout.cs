@@ -5,19 +5,14 @@ using Reign.Core;
 
 namespace Reign.Video.D3D9
 {
-	public class BufferLayout : Disposable, BufferLayoutI
+	public class BufferLayout : DisposableResource, IBufferLayout
 	{
 		#region Properties
 		private BufferLayoutCom com;
 		#endregion
 
 		#region Constructors
-		public static BufferLayout New(DisposableI parent, ShaderI shader, BufferLayoutDescI desc)
-		{
-			return new BufferLayout(parent, shader, desc);
-		}
-
-		public BufferLayout(DisposableI parent, ShaderI shader, BufferLayoutDescI desc)
+		public BufferLayout(IDisposableResource parent, IShader shader, IBufferLayoutDesc desc)
 		: base(parent)
 		{
 			try

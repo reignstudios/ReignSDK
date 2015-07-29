@@ -36,7 +36,7 @@ namespace Reign.Video
 		BMPC
 	}
 
-	public abstract class Image : LoadableI
+	public abstract class Image : ILoadable
 	{
 		public class Mipmap
 		{
@@ -126,26 +126,26 @@ namespace Reign.Video
 			SurfaceFormat = SurfaceFormats.Unknown;
 		}
 
-		public static Image New(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback)
+		public static Image New(string filename, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			string ext = Streams.GetFileExt(fileName);
+			string ext = Streams.GetFileExt(filename);
 			switch (ext.ToLower())
 			{
-				case ".dds": return new ImageDDS(fileName, flip, loadedCallback);
-				case ".atc": return new ImageDDS(fileName, flip, loadedCallback);
-				case ".pvr": return new ImagePVR(fileName, flip, loadedCallback);
+				case ".dds": return new ImageDDS(filename, flip, loadedCallback);
+				case ".atc": return new ImageDDS(filename, flip, loadedCallback);
+				case ".pvr": return new ImagePVR(filename, flip, loadedCallback);
 				#if !XNA && NaCl
-				case ".bmpc": return new ImageBMPC(fileName, flip, loadedCallback);
+				case ".bmpc": return new ImageBMPC(filename, flip, loadedCallback);
 				#endif
 				#if (!XNA && !NaCl && !VITA) || SILVERLIGHT
 				#if !WP8
-				case ".bmpc": return new ImageBMPC(fileName, flip, loadedCallback);
+				case ".bmpc": return new ImageBMPC(filename, flip, loadedCallback);
 				#endif
-				case ".png": return new ImagePNG(fileName, flip, loadedCallback);
-				case ".jpg": return new ImageJPG(fileName, flip, loadedCallback);
-				case ".jpeg": return new ImageJPG(fileName, flip, loadedCallback);
+				case ".png": return new ImagePNG(filename, flip, loadedCallback);
+				case ".jpg": return new ImageJPG(filename, flip, loadedCallback);
+				case ".jpeg": return new ImageJPG(filename, flip, loadedCallback);
 				#if !iOS && !ANDROID
-				case ".bmp": return new ImageBMP(fileName, flip, loadedCallback);
+				case ".bmp": return new ImageBMP(filename, flip, loadedCallback);
 				#endif
 				#endif
 				default:

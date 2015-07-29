@@ -1,7 +1,7 @@
 ﻿using System;
 using Reign.Core;
 
-namespace Reign.Video.API
+namespace Reign.Video.Abstraction
 {
 	[Flags]
 	public enum VideoTypes
@@ -14,19 +14,21 @@ namespace Reign.Video.API
 		OpenGL = 32
 	}
 
-	public static class Video
+	public static class VideoAPI
 	{
-		public static VideoI Init(VideoTypes typeFlags, out VideoTypes type, DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync)
-		{
-			bool d3d11 = (typeFlags & VideoTypes.D3D11) != 0;
-			bool d3d9 = (typeFlags & VideoTypes.D3D9) != 0;
-			bool gl = (typeFlags & VideoTypes.OpenGL) != 0;
-			bool xna = (typeFlags & VideoTypes.XNA) != 0;
-			bool vita = (typeFlags & VideoTypes.Vita) != 0;
+		public static VideoTypes DefaultAPI = VideoTypes.None;
 
-			type = VideoTypes.None;
+		public static IVideo New(VideoTypes videoTypeFlags, out VideoTypes videoType, IDisposableResource parent, IApplication application, DepthStencilFormats depthStencilFormats, bool vSync)
+		{
+			bool d3d11 = (videoTypeFlags & VideoTypes.D3D11) != 0;
+			bool d3d9 = (videoTypeFlags & VideoTypes.D3D9) != 0;
+			bool gl = (videoTypeFlags & VideoTypes.OpenGL) != 0;
+			bool xna = (videoTypeFlags & VideoTypes.XNA) != 0;
+			bool vita = (videoTypeFlags & VideoTypes.Vita) != 0;
+
+			videoType = VideoTypes.None;
 			Exception lastException = null;
-			VideoI video = null;
+			IVideo video = null;
 			while (true)
 			{
 				try
@@ -35,7 +37,7 @@ namespace Reign.Video.API
 					if (d3d11)
 					{
 						d3d11 = false;
-						type = VideoTypes.D3D11;
+						videoType = VideoTypes.D3D11;
 						video = new Reign.Video.D3D11.Video(parent, application, depthStencilFormats, vSync);
 						break;
 					}
@@ -45,7 +47,7 @@ namespace Reign.Video.API
 					else if (d3d9)
 					{
 					    d3d9 = false;
-					    type = VideoTypes.D3D9;
+					    videoType = VideoTypes.D3D9;
 					    video = new Reign.Video.D3D9.Video(parent, application, depthStencilFormats, vSync);
 						break;
 					}
@@ -55,7 +57,7 @@ namespace Reign.Video.API
 					if (gl)
 					{
 						gl = false;
-						type = VideoTypes.OpenGL;
+						videoType = VideoTypes.OpenGL;
 						video = new Reign.Video.OpenGL.Video(parent, application, depthStencilFormats, vSync);
 						break;
 					}
@@ -65,7 +67,7 @@ namespace Reign.Video.API
 					if (xna)
 					{
 						xna = false;
-						type = VideoTypes.XNA;
+						videoType = VideoTypes.XNA;
 						video = new Reign.Video.XNA.Video(parent, application, depthStencilFormats, vSync);
 						break;
 					}
@@ -75,7 +77,7 @@ namespace Reign.Video.API
 					if (vita)
 					{
 						vita = false;
-						type = VideoTypes.Vita;
+						videoType = VideoTypes.Vita;
 						video = new Reign.Video.Vita.Video(parent, application, depthStencilFormats, vSync);
 						break;
 					}
@@ -93,30 +95,11 @@ namespace Reign.Video.API
 			if (lastException != null)
 			{
 				string ex = lastException == null ? "" : " - Exception: " + lastException.Message;
-				Debug.ThrowError("Video", "Failed to create Video API" + ex);
-				type = VideoTypes.None;
+				Debug.ThrowError("VideoAPI", "Failed to create Video API" + ex);
+				videoType = VideoTypes.None;
 			}
 
-			// init api methods
-			ViewPort.Init(type);
-			Shader.Init(type);
-			QuickDraw.Init(type);
-			DepthStencil.Init(type);
-			Texture2D.Init(type);
-			RenderTarget.Init(type);
-			BlendState.Init(type);
-			BlendStateDesc.Init(type);
-			DepthStencilState.Init(type);
-			DepthStencilStateDesc.Init(type);
-			RasterizerState.Init(type);
-			RasterizerStateDesc.Init(type);
-			SamplerState.Init(type);
-			SamplerStateDesc.Init(type);
-			BufferLayout.Init(type);
-			BufferLayoutDesc.Init(type);
-			IndexBuffer.Init(type);
-			VertexBuffer.Init(type);
-
+			if (videoType != VideoTypes.None) DefaultAPI = videoType;
 			return video;
 		}
 	}

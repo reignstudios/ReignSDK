@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Reign.Video.OpenGL
 {
-	public class Texture2D : Disposable, Texture2DI
+	public class Texture2D : DisposableResource, ITexture2D
 	{
 		#region Properties
 		public bool Loaded {get; protected set;}
@@ -21,42 +21,10 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public static Texture2D NewReference(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			var texture = parent.FindChild<Texture2D>
-			(
-				"NewReference",
-				new ConstructorParam(typeof(DisposableI), parent),
-				new ConstructorParam(typeof(string), fileName),
-				new ConstructorParam(typeof(Loader.LoadedCallbackMethod), null)
-			);
-			if (texture != null)
-			{
-				++texture.referenceCount;
-				return texture;
-			}
-			return new Texture2D(parent, fileName, loadedCallback);
-		}
-
-		public static Texture2D New(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return new Texture2D(parent, fileName, loadedCallback);
-		}
-
-		public static Texture2D New(DisposableI parent, string fileName, bool generateMipmaps, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return new Texture2D(parent, fileName, generateMipmaps, usage, loadedCallback);
-		}
-
-		public static Texture2D New(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return new Texture2D(parent, width, height, surfaceFormat, usage, loadedCallback);
-		}
-
-		public Texture2D(DisposableI parent, string fileName, Loader.LoadedCallbackMethod loadedCallback)
+		public Texture2D(IDisposableResource parent, string filename, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
-			Image.New(fileName, false,
+			Image.New(filename, false,
 			delegate(object sender, bool succeeded)
 			{
 				if (succeeded)
@@ -73,10 +41,10 @@ namespace Reign.Video.OpenGL
 			});
 		}
 
-		public Texture2D(DisposableI parent, string fileName, bool generateMipmaps, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback)
+		public Texture2D(IDisposableResource parent, string filename, bool generateMipmaps, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
-			Image.New(fileName, false,
+			Image.New(filename, false,
 			delegate(object sender, bool succeeded)
 			{
 				if (succeeded)
@@ -93,13 +61,13 @@ namespace Reign.Video.OpenGL
 			});
 		}
 
-		public Texture2D(DisposableI parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback)
+		public Texture2D(IDisposableResource parent, int width, int height, SurfaceFormats surfaceFormat, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			init(parent, null, width, height, false, MultiSampleTypes.None, surfaceFormat, RenderTargetUsage.PlatformDefault, usage, false, loadedCallback);
 		}
 
-		protected unsafe virtual bool init(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback)
+		protected unsafe virtual bool init(IDisposableResource parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			try
 			{
@@ -241,7 +209,7 @@ namespace Reign.Video.OpenGL
 			disposeChilderen();
 			if (Texture != 0)
 			{
-				if (!OS.AutoDisposedGL)
+				if (!IPlatform.Singleton.AutoDisposedGL)
 				{
 					video.disableActiveTextures(this);
 					uint textureTEMP = Texture;
@@ -258,7 +226,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Methods
-		public void Copy(Texture2DI texture)
+		public void Copy(ITexture2D texture)
 		{
 			var textureTEMP = (Texture2D)texture;
 			uint pixelOrder, byteSizes;

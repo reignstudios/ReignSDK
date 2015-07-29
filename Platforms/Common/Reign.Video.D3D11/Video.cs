@@ -21,19 +21,19 @@ namespace Reign.Video.D3D11
 		public ShaderVersions MaxShaderVersion {get; internal set;}
 	}
 
-	public class Video : Disposable, VideoI
+	public class Video : DisposableResource, IVideo
 	{
 		#region Properties
 		public string FileTag {get; private set;}
 		public Size2 BackBufferSize {get; private set;}
-		private ApplicationI application;
+		private IApplication application;
 
 		internal VideoCom com;
 		public Caps Cap {get; private set;}
 		#endregion
 
 		#region Constructors
-		public Video(DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync)
+		public Video(IDisposableResource parent, IApplication application, DepthStencilFormats depthStencilFormats, bool vSync)
 		: base(parent)
 		{
 			#if WINRT
@@ -45,9 +45,9 @@ namespace Reign.Video.D3D11
 		}
 
 		#if WINRT
-		private void init(DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync, Windows.UI.Xaml.Controls.SwapChainBackgroundPanel swapChainBackgroundPanel)
+		private void init(IDisposableResource parent, IApplication application, DepthStencilFormats depthStencilFormats, bool vSync, Windows.UI.Xaml.Controls.SwapChainBackgroundPanel swapChainBackgroundPanel)
 		#else
-		private void init(DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync)
+		private void init(IDisposableResource parent, IApplication application, DepthStencilFormats depthStencilFormats, bool vSync)
 		#endif
 		{
 			this.application = application;
@@ -210,7 +210,7 @@ namespace Reign.Video.D3D11
 			com.EnableRenderTarget();
 		}
 
-		public void EnableRenderTarget(DepthStencilI depthStencil)
+		public void EnableRenderTarget(IDepthStencil depthStencil)
 		{
 			if (depthStencil != null) com.EnableRenderTarget(((DepthStencil)depthStencil).com);
 			else com.EnableRenderTarget(null);

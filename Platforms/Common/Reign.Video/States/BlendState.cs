@@ -66,45 +66,15 @@ namespace Reign.Video
 		}
 	}
 
-	public interface BlendStateDescI
+	public interface IBlendStateDesc
 	{
 		
 	}
 
-	public interface BlendStateI : DisposableI
+	public interface IBlendState : IDisposableResource
 	{
 		#region Methods
 		void Enable();
 		#endregion
-	}
-
-	public static class BlendStateAPI
-	{
-		public static void Init(NewPtrMethod newPtr)
-		{
-			BlendStateAPI.newPtr = newPtr;
-		}
-
-		public delegate BlendStateI NewPtrMethod(DisposableI parent, BlendStateDescI desc);
-		private static NewPtrMethod newPtr;
-		public static BlendStateI New(DisposableI parent, BlendStateDescI desc)
-		{
-			return newPtr(parent, desc);
-		}
-	}
-
-	public static class BlendStateDescAPI
-	{
-		public static void Init(NewPtrMethod newPtr)
-		{
-			BlendStateDescAPI.newPtr = newPtr;
-		}
-
-		public delegate BlendStateDescI NewPtrMethod(BlendStateTypes type);
-		private static NewPtrMethod newPtr;
-		public static BlendStateDescI New(BlendStateTypes type)
-		{
-			return newPtr(type);
-		}
 	}
 }

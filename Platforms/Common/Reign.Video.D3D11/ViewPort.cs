@@ -3,7 +3,7 @@ using Reign_Video_D3D11_Component;
 
 namespace Reign.Video.D3D11
 {
-	public class ViewPort : ViewPortI
+	public class ViewPort : IViewPort
 	{
 		#region Properties
 		private Video video;
@@ -11,31 +11,21 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
-		public static ViewPort New(VideoI video, int x, int y, int width, int height)
-		{
-			return new ViewPort(video, x, y, width, height);
-		}
-
-		public static ViewPort New(VideoI video, Point2 location, Size2 size)
-		{
-			return new ViewPort(video, location, size);
-		}
-
-		public ViewPort(VideoI video, int x, int y, int width, int height)
+		public ViewPort(IDisposableResource parent, int x, int y, int width, int height)
 		: base(x, y, width, height)
 		{
-			init(video);
+			init(parent);
 		}
 
-		public ViewPort(VideoI video, Point2 location, Size2 size)
+		public ViewPort(IDisposableResource parent, Point2 location, Size2 size)
 		: base(location, size)
 		{
-			init(video);
+			init(parent);
 		}
 
-		private void init(VideoI video)
+		private void init(IDisposableResource parent)
 		{
-			this.video = (Video)video;
+			video = parent.FindParentOrSelfWithException<Video>();
 			com = new ViewPortCom(this.video.com);
 		}
 		#endregion
@@ -46,7 +36,7 @@ namespace Reign.Video.D3D11
 			com.Apply(Position.X, video.BackBufferSize.Height - Size.Height - Position.Y, Size.Width, Size.Height);
 		}
 
-		public override void Apply(RenderTargetI renderTarget)
+		public override void Apply(IRenderTarget renderTarget)
 		{
 			com.Apply(Position.X, renderTarget.Size.Height - Size.Height - Position.Y, Size.Width, Size.Height);
 		}

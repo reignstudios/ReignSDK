@@ -5,7 +5,7 @@ using Reign_Video_D3D11_Component;
 
 namespace Reign.Video.D3D11
 {
-	public abstract class ShaderModel : Disposable
+	public abstract class ShaderModel : DisposableResource
 	{
 		#region Properties
 		#if WINRT || WP8

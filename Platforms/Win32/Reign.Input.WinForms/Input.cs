@@ -1,9 +1,8 @@
-﻿using System;
-using Reign.Core;
+﻿using Reign.Core;
 
 namespace Reign.Input.WinForms
 {
-	public class Input : Disposable, InputI
+	public class Input : DisposableResource, IInput
 	{
 		#region Properties
 		internal delegate void UpdateCallbackMethod();
@@ -12,11 +11,11 @@ namespace Reign.Input.WinForms
 		internal delegate void UpdateEventCallbackMethod(ApplicationEvent theEvent);
 		internal UpdateEventCallbackMethod UpdateEventCallback;
 
-		internal ApplicationI application;
+		internal IApplication application;
 		#endregion
 
 		#region Constructors
-		public Input(DisposableI parent, ApplicationI application)
+		public Input(IDisposableResource parent, IApplication application)
 		: base(parent)
 		{
 			this.application = application;

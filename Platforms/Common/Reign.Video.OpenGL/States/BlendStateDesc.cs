@@ -3,7 +3,7 @@ using Reign.Core;
 
 namespace Reign.Video.OpenGL
 {
-	public class BlendStateDesc : BlendStateDescI
+	public class BlendStateDesc : IBlendStateDesc
 	{
 		#region Properties
 		internal bool renderTargetWriteMaskR;
@@ -23,11 +23,6 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public static BlendStateDesc New(BlendStateTypes type)
-		{
-			return new BlendStateDesc(type);
-		}
-
 		public BlendStateDesc(BlendStateTypes type)
 		{
 			renderTargetWriteMaskR = true;

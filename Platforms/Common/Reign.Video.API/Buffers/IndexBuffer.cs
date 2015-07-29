@@ -1,26 +1,36 @@
 ﻿using Reign.Core;
 
-namespace Reign.Video.API
+namespace Reign.Video.Abstraction
 {
-	public static class IndexBuffer
+	public static class IndexBufferAPI
 	{
-		public static void Init(VideoTypes type)
+		public static IIndexBuffer New(IDisposableResource parent, BufferUsages usage, int[] indices)
 		{
+			return New(VideoAPI.DefaultAPI, parent, usage, indices);
+		}
+
+		public static IIndexBuffer New(VideoTypes videoType, IDisposableResource parent, BufferUsages usage, int[] indices)
+		{
+			IIndexBuffer api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) IndexBufferAPI.Init(Reign.Video.D3D9.IndexBuffer.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.IndexBuffer(parent, usage, indices);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) IndexBufferAPI.Init(Reign.Video.D3D11.IndexBuffer.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.IndexBuffer(parent, usage, indices);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) IndexBufferAPI.Init(Reign.Video.OpenGL.IndexBuffer.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.IndexBuffer(parent, usage, indices);
 			#endif
 
 			#if XNA
-			if (type == VideoTypes.XNA) IndexBufferAPI.Init(Reign.Video.XNA.IndexBuffer.New);
+			if (videoType == VideoTypes.XNA) api = new XNA.IndexBuffer(parent, usage, indices);
 			#endif
+
+			if (api == null) Debug.ThrowError("IndexBufferAPI", "Unsuported InputType: " + videoType);
+			return api;
 		}
 	}
 }

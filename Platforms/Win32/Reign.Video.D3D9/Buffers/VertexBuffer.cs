@@ -5,7 +5,7 @@ using Reign.Core;
 
 namespace Reign.Video.D3D9
 {
-	public class VertexBuffer : VertexBufferI
+	public class VertexBuffer : IVertexBuffer
 	{
 		#region Properties
 		private VertexBufferCom com;
@@ -27,36 +27,26 @@ namespace Reign.Video.D3D9
 		}
 
 		private IndexBuffer indexBuffer, currentIndexBuffer;
-		public override IndexBufferI IndexBuffer
+		public override IIndexBuffer IndexBuffer
 		{
 			get {return indexBuffer;}
 		}
 		#endregion
 
 		#region Constructors
-		public static VertexBuffer New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
-		{
-			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices);
-		}
-
-		public static VertexBuffer New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
-		{
-			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices, indices);
-		}
-
-		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
+		public VertexBuffer(IDisposableResource parent, IBufferLayoutDesc bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
 		: base(parent, bufferLayoutDesc, usage, vertices)
 		{
 			init(parent, bufferLayoutDesc, usage, topology, vertices, null);
 		}
 
-		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
+		public VertexBuffer(IDisposableResource parent, IBufferLayoutDesc bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
 		: base(parent, bufferLayoutDesc, usage, vertices)
 		{
 			init(parent, bufferLayoutDesc, usage, topology, vertices, indices);
 		}
 
-		private void init(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
+		private void init(IDisposableResource parent, IBufferLayoutDesc bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
 		{
 			try
 			{
@@ -109,13 +99,13 @@ namespace Reign.Video.D3D9
 			else com.Enable(null, null, vertexByteSize, 0);
 		}
 
-		public override void Enable(IndexBufferI indexBuffer)
+		public override void Enable(IIndexBuffer indexBuffer)
 		{
 			this.currentIndexBuffer = (IndexBuffer)indexBuffer;
 			com.Enable(((IndexBuffer)indexBuffer).com, null, vertexByteSize, 0);
 		}
 
-		public override void Enable(VertexBufferI instanceBuffer)
+		public override void Enable(IVertexBuffer instanceBuffer)
 		{
 			currentIndexBuffer = indexBuffer;
 			var ib = ((VertexBuffer)instanceBuffer);
@@ -123,7 +113,7 @@ namespace Reign.Video.D3D9
 			else com.Enable(null, ib.com, vertexByteSize, ib.vertexByteSize);
 		}
 
-		public override void Enable(IndexBufferI indexBuffer, VertexBufferI instanceBuffer)
+		public override void Enable(IIndexBuffer indexBuffer, IVertexBuffer instanceBuffer)
 		{
 			this.currentIndexBuffer = (IndexBuffer)indexBuffer;
 			var ib = ((VertexBuffer)instanceBuffer);

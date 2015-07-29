@@ -4,19 +4,14 @@ using Reign_Video_D3D9_Component;
 
 namespace Reign.Video.D3D9
 {
-	public class BlendState : Disposable, BlendStateI
+	public class BlendState : DisposableResource, IBlendState
 	{
 		#region Properties
 		private BlendStateCom com;
 		#endregion
 
 		#region Constructors
-		public static BlendState New(DisposableI parent, BlendStateDescI desc)
-		{
-			return new BlendState(parent, desc);
-		}
-
-		public BlendState(DisposableI parent, BlendStateDescI desc)
+		public BlendState(IDisposableResource parent, IBlendStateDesc desc)
 		: base(parent)
 		{
 			var video = parent.FindParentOrSelfWithException<Video>();

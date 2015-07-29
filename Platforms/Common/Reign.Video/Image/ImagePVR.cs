@@ -65,9 +65,9 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public ImagePVR(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback)
+		public ImagePVR(string filename, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			new StreamLoader(fileName,
+			new StreamLoader(filename,
 			delegate(object sender, bool succeeded)
 			{
 				if (succeeded)

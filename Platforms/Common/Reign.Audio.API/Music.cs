@@ -1,16 +1,26 @@
 ﻿using Reign.Core;
 
-namespace Reign.Audio.API
+namespace Reign.Audio.Abstraction
 {
-	public static class Music
+	public static class MusicAPI
 	{
-		public static void Init(AudioTypes type)
+		public static IMusic New(IDisposableResource parent, string filename)
 		{
+			return New(AudioAPI.DefaultAPI, parent, filename);
+		}
+
+		public static IMusic New(AudioTypes audioType, IDisposableResource parent, string filename)
+		{
+			IMusic api = null;
+
 			#if XNA
-			if (type == AudioTypes.XNA) MusicAPI.Init(Reign.Audio.XNA.Music.New);
+			if (audioType == AudioTypes.XNA) api = new XNA.Music(parent, filename);
 			#endif
 
-			if (type == AudioTypes.Dumby) MusicAPI.Init(Reign.Audio.Dumby.Music.New);
+			if (audioType == AudioTypes.Dumby) api = new Dumby.Music(parent, filename);
+
+			if (api == null) Debug.ThrowError("MusicAPI", "Unsuported InputType: " + audioType);
+			return api;
 		}
 	}
 }

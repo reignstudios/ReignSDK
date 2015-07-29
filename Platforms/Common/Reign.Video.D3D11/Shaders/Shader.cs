@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Reign.Video.D3D11
 {
-	public class Shader : ShaderI
+	public class Shader : IShader
 	{
 		#region Properties
 		private Video video;
@@ -26,29 +26,19 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
-		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return new Shader(parent, fileName, shaderVersion, loadedCallback);
-		}
-
-		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return new Shader(parent, fileName, shaderVersion, vsQuality, psQuality, loadedCallback);
-		}
-
-		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
+		public Shader(IDisposableResource parent, string filename, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			#if WINRT || WP8
 			Loader.AddLoadable(this);
-			fileName = Streams.StripFileExt(fileName) + ".mrs";
+			filename = Streams.StripFileExt(filename) + ".mrs";
 			#endif
-			new StreamLoader(fileName,
+			new StreamLoader(filename,
 			delegate(object sender, bool succeeded)
 			{
 				if (succeeded)
 				{
-					init(fileName, ((StreamLoader)sender).LoadedStream, shaderVersion, ShaderFloatingPointQuality.High, ShaderFloatingPointQuality.Low, loadedCallback);
+					init(filename, ((StreamLoader)sender).LoadedStream, shaderVersion, ShaderFloatingPointQuality.High, ShaderFloatingPointQuality.Low, loadedCallback);
 				}
 				else
 				{
@@ -59,19 +49,19 @@ namespace Reign.Video.D3D11
 			});
 		}
 
-		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
+		public Shader(IDisposableResource parent, string filename, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			#if WINRT || WP8
 			Loader.AddLoadable(this);
-			fileName = Streams.StripFileExt(fileName) + ".mrs";
+			filename = Streams.StripFileExt(filename) + ".mrs";
 			#endif
-			new StreamLoader(fileName,
+			new StreamLoader(filename,
 			delegate(object sender, bool succeeded)
 			{
 				if (succeeded)
 				{
-					init(fileName, ((StreamLoader)sender).LoadedStream, shaderVersion, vsQuality, psQuality, loadedCallback);
+					init(filename, ((StreamLoader)sender).LoadedStream, shaderVersion, vsQuality, psQuality, loadedCallback);
 				}
 				else
 				{
@@ -83,9 +73,9 @@ namespace Reign.Video.D3D11
 		}
 
 		#if WINRT || WP8
-		private async void init(string fileName, Stream stream, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
+		private async void init(string filename, Stream stream, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		#else
-		private void init(string fileName, Stream stream, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
+		private void init(string filename, Stream stream, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		#endif
 		{
 			try
@@ -98,7 +88,7 @@ namespace Reign.Video.D3D11
 				vertex = new VertexShader(this, code[0], shaderVersion);
 				pixel = new PixelShader(this, code[1], shaderVersion);
 				#else
-				await getReflections(fileName);
+				await getReflections(filename);
 				var code = getShaders(stream);
 				vertex = new VertexShader(this, code[0]);
 				pixel = new PixelShader(this, code[1]);
@@ -121,7 +111,7 @@ namespace Reign.Video.D3D11
 		}
 
 		#if WINRT || WP8
-		private async Task getReflections(string fileName)
+		private async Task getReflections(string filename)
 		{
 			vsVariableNames = new List<string>();
 			vsVariableByteOffsets = new List<int>();
@@ -138,7 +128,7 @@ namespace Reign.Video.D3D11
 			psVariableBufferSize = 0;
 			psResourceCount = 0;
 
-			using (var file = await Streams.OpenFile(Streams.StripFileExt(fileName) + ".ref"))
+			using (var file = await Streams.OpenFile(Streams.StripFileExt(filename) + ".ref"))
 			using (var reader = new System.IO.StreamReader(file))
 			{
 				var value = reader.ReadLine();
@@ -213,7 +203,7 @@ namespace Reign.Video.D3D11
 			pixel.Apply();
 		}
 
-		public override ShaderVariableI Variable(string name)
+		public override IShaderVariable Variable(string name)
 		{
 			// Try to find existing variable
 			foreach (var variable in variables)
@@ -235,7 +225,7 @@ namespace Reign.Video.D3D11
 			return newVariable;
 		}
 
-		public override ShaderResourceI Resource(string name)
+		public override IShaderResource Resource(string name)
 		{
 			// Try to find existing resource
 			foreach (var resource in resources)

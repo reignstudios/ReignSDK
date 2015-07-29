@@ -4,18 +4,13 @@ using Reign_Video_D3D9_Component;
 
 namespace Reign.Video.D3D9
 {
-	public class BlendStateDesc : BlendStateDescI
+	public class BlendStateDesc : IBlendStateDesc
 	{
 		#region Properties
 		internal BlendStateDescCom com;
 		#endregion
 
 		#region Constructors
-		public static BlendStateDesc New(BlendStateTypes type)
-		{
-			return new BlendStateDesc(type);
-		}
-
 		public BlendStateDesc(BlendStateTypes type)
 		{
 			uint renderTargetWriteMask = 0xFFFFFFFF;

@@ -48,7 +48,7 @@ namespace Reign.Video
 		Low
 	}
 
-	public interface ShaderVariableI
+	public interface IShaderVariable
 	{
 		void Set(float value);
 		void Set(float x, float y);
@@ -83,13 +83,13 @@ namespace Reign.Video
 		void Set(Matrix4[] values, int offset, int count);
 	}
 
-	public interface ShaderResourceI
+	public interface IShaderResource
 	{
-		void Set(Texture2DI resource);
-		void Set(Texture3DI resource);
+		void Set(ITexture2D resource);
+		void Set(ITexture3D resource);
 	}
 
-	public abstract class ShaderI : Disposable, LoadableI
+	public abstract class IShader : DisposableResource, ILoadable
 	{
 		#region Properties
 		public bool Loaded {get; protected set;}
@@ -97,7 +97,7 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		public ShaderI(DisposableI parent)
+		public IShader(IDisposableResource parent)
 		: base(parent)
 		{
 			
@@ -149,31 +149,8 @@ namespace Reign.Video
 		#endif
 
 		public abstract void Apply();
-		public abstract ShaderVariableI Variable(string name);
-		public abstract ShaderResourceI Resource(string name);
+		public abstract IShaderVariable Variable(string name);
+		public abstract IShaderResource Resource(string name);
 		#endregion
-	}
-
-	public static class ShaderAPI
-	{
-		public static void Init(NewPtrMethod1 newPtr1, NewPtrMethod2 newPtr2)
-		{
-			ShaderAPI.newPtr1 = newPtr1;
-			ShaderAPI.newPtr2 = newPtr2;
-		}
-
-		public delegate ShaderI NewPtrMethod1(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback);
-		private static NewPtrMethod1 newPtr1;
-		public static ShaderI New(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return newPtr1(parent, fileName, shaderVersion, loadedCallback);
-		}
-
-		public delegate ShaderI NewPtrMethod2(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback);
-		private static NewPtrMethod2 newPtr2;
-		public static ShaderI New(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return newPtr2(parent, fileName, shaderVersion, vsQuality, psQuality, loadedCallback);
-		}
 	}
 }

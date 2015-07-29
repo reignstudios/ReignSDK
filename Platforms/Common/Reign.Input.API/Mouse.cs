@@ -1,30 +1,40 @@
 ﻿using Reign.Core;
 
-namespace Reign.Input.API
+namespace Reign.Input.Abstraction
 {
-	public static class Mouse
+	public static class MouseAPI
 	{
-		public static void Init(InputTypes type)
+		public static IMouse New(IDisposableResource parent)
 		{
+			return New(InputAPI.DefaultAPI, parent);
+		}
+
+		public static IMouse New(InputTypes inputType, IDisposableResource parent)
+		{
+			IMouse api = null;
+
 			#if WIN32
-			if (type == InputTypes.WinForms) MouseAPI.Init(Reign.Input.WinForms.Mouse.New);
+			if (inputType == InputTypes.WinForms) api = new WinForms.Mouse(parent);
 			#endif
 
 			#if WINRT
-			if (type == InputTypes.WinRT) MouseAPI.Init(Reign.Input.WinRT.Mouse.New);
+			if (inputType == InputTypes.WinRT) api = new WinRT.Mouse(parent);
 			#endif
 			
 			#if OSX
-			if (type == InputTypes.Cocoa) MouseAPI.Init(Reign.Input.Cocoa.Mouse.New);
+			if (inputType == InputTypes.Cocoa) api = new Cocoa.Mouse(parent);
 			#endif
 			
 			#if LINUX
-			if (type == InputTypes.X11) MouseAPI.Init(Reign.Input.X11.Mouse.New);
+			if (inputType == InputTypes.X11) api = new X11.Mouse(parent);
 			#endif
 			
 			#if NaCl
-			if (type == InputTypes.NaCl) MouseAPI.Init(Reign.Input.NaCl.Mouse.New);
+			if (inputType == InputTypes.NaCl) api = new NaCl.Mouse(parent);
 			#endif
+
+			if (api == null) Debug.ThrowError("MouseAPI", "Unsuported InputType: " + inputType);
+			return api;
 		}
 	}
 }

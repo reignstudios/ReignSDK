@@ -2,19 +2,14 @@ using Reign.Core;
 
 namespace Reign.Video.OpenGL
 {
-	public class RasterizerState : Disposable, RasterizerStateI
+	public class RasterizerState : DisposableResource, IRasterizerState
 	{
 		#region Properties
 		private RasterizerStateDesc desc;
 		#endregion
 
 		#region Constructors
-		public static RasterizerState New(DisposableI parent, RasterizerStateDescI desc)
-		{
-			return new RasterizerState(parent, desc);
-		}
-
-		public RasterizerState(DisposableI parent, RasterizerStateDescI desc)
+		public RasterizerState(IDisposableResource parent, IRasterizerStateDesc desc)
 		: base(parent)
 		{
 			this.desc = (RasterizerStateDesc)desc;

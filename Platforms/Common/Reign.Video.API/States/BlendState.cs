@@ -1,56 +1,66 @@
 ﻿using Reign.Core;
 
-namespace Reign.Video.API
+namespace Reign.Video.Abstraction
 {
-	public static class BlendStateDesc
+	public static class BlendStateDescAPI
 	{
-		public static void Init(VideoTypes type)
+		public static IBlendStateDesc New(VideoTypes videoType, BlendStateTypes type)
 		{
+			IBlendStateDesc api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) BlendStateDescAPI.Init(Reign.Video.D3D9.BlendStateDesc.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.BlendStateDesc(type);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) BlendStateDescAPI.Init(Reign.Video.D3D11.BlendStateDesc.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.BlendStateDesc(type);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) BlendStateDescAPI.Init(Reign.Video.OpenGL.BlendStateDesc.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.BlendStateDesc(type);
 			#endif
 
 			#if XNA
-			if (type == VideoTypes.XNA) BlendStateDescAPI.Init(Reign.Video.XNA.BlendStateDesc.New);
+			if (videoType == VideoTypes.XNA) api = new XNA.BlendStateDesc(type);
 			#endif
 			
 			#if VITA
-			if (type == VideoTypes.Vita) BlendStateDescAPI.Init(Reign.Video.Vita.BlendStateDesc.New);
+			if (videoType == VideoTypes.Vita) api = new Vita.BlendStateDesc(type);
 			#endif
+
+			if (api == null) Debug.ThrowError("BlendStateDescAPI", "Unsuported InputType: " + videoType);
+			return api;
 		}
 	}
 
-	public static class BlendState
+	public static class BlendStateAPI
 	{
-		public static void Init(VideoTypes type)
+		public static IBlendState New(VideoTypes videoType, IDisposableResource parent, IBlendStateDesc desc)
 		{
+			IBlendState api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) BlendStateAPI.Init(Reign.Video.D3D9.BlendState.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.BlendState(parent, desc);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) BlendStateAPI.Init(Reign.Video.D3D11.BlendState.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.BlendState(parent, desc);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) BlendStateAPI.Init(Reign.Video.OpenGL.BlendState.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.BlendState(parent, desc);
 			#endif
 
 			#if XNA
-			if (type == VideoTypes.XNA) BlendStateAPI.Init(Reign.Video.XNA.BlendState.New);
+			if (videoType == VideoTypes.XNA) api = new XNA.BlendState(parent, desc);
 			#endif
 			
 			#if VITA
-			if (type == VideoTypes.Vita) BlendStateAPI.Init(Reign.Video.Vita.BlendState.New);
+			if (videoType == VideoTypes.Vita) api = new Vita.BlendState(parent, desc);
 			#endif
+
+			if (api == null) Debug.ThrowError("BlendStateAPI", "Unsuported InputType: " + videoType);
+			return api;
 		}
 	}
 }

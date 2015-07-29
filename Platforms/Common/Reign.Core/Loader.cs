@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Reign.Core
 {
-	public interface LoadableI
+	public interface ILoadable
 	{
 		bool Loaded {get;}
 		bool FailedToLoad {get;}
@@ -11,19 +11,19 @@ namespace Reign.Core
 		bool UpdateLoad();
 	}
 
-	public class LoadWaiter : LoadableI
+	public class LoadWaiter : ILoadable
 	{
 		#region Properties
 		public bool Loaded {get; private set;}
 		public bool FailedToLoad {get; private set;}
 		public Loader.LoadedCallbackMethod LoadedCallback {get; private set;}
 
-		private LoadableI[] loadables;
-		public LoadableI[] Loadables {get{return loadables;}}
+		private ILoadable[] loadables;
+		public ILoadable[] Loadables {get{return loadables;}}
 		#endregion
 
 		#region Constructors
-		public LoadWaiter(LoadableI[] loadables, Loader.LoadedCallbackMethod loadedCallback)
+		public LoadWaiter(ILoadable[] loadables, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			this.loadables = loadables;
 			LoadedCallback = loadedCallback;
@@ -71,7 +71,7 @@ namespace Reign.Core
 		public delegate void LoadedCallbackMethod(object sender, bool succeeded);
 
 		public static int ItemsRemainingToLoad {get{return loadables.Count;}}
-		private static List<LoadableI> loadables;
+		private static List<ILoadable> loadables;
 		private static List<Exception> loadableExceptions;
 		private static Exception asyncLoadingExeception;
 		private static bool aysncLoadDone;
@@ -80,14 +80,14 @@ namespace Reign.Core
 		#region Constructors
 		static Loader()
 		{
-			loadables = new List<LoadableI>();
+			loadables = new List<ILoadable>();
 			loadableExceptions = new List<Exception>();
 			aysncLoadDone = true;
 		}
 		#endregion
 
 		#region Methods
-		public static void AddLoadable(LoadableI loadable)
+		public static void AddLoadable(ILoadable loadable)
 		{
 			lock (loadables) if (!loadables.Contains(loadable)) loadables.Add(loadable);
 		}
@@ -97,7 +97,7 @@ namespace Reign.Core
 			lock (loadableExceptions)
 			{
 				loadableExceptions.Add(e);
-				Message.Show("Loadable Error", e.Message);
+				Debug.PrintError("Loadable Error", e.Message);
 			}
 		}
 

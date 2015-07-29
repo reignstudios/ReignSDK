@@ -1,30 +1,40 @@
 ﻿using Reign.Core;
 
-namespace Reign.Video.API
+namespace Reign.Video.Abstraction
 {
-	public static class Shader
+	public static class ShaderAPI
 	{
-		public static void Init(VideoTypes type)
+		public static IShader New(IDisposableResource parent, string filename, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
 		{
+			return New(VideoAPI.DefaultAPI, parent, filename, shaderVersion, loadedCallback);
+		}
+
+		public static IShader New(VideoTypes videoType, IDisposableResource parent, string filename, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
+		{
+			IShader api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) ShaderAPI.Init(Reign.Video.D3D9.Shader.New, Reign.Video.D3D9.Shader.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.Shader(parent, filename, shaderVersion, loadedCallback);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) ShaderAPI.Init(Reign.Video.D3D11.Shader.New, Reign.Video.D3D11.Shader.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.Shader(parent, filename, shaderVersion, loadedCallback);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) ShaderAPI.Init(Reign.Video.OpenGL.Shader.New, Reign.Video.OpenGL.Shader.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.Shader(parent, filename, shaderVersion, loadedCallback);
 			#endif
 
 			#if XNA
-			if (type == VideoTypes.XNA) ShaderAPI.Init(Reign.Video.XNA.Shader.New, Reign.Video.XNA.Shader.New);
+			if (videoType == VideoTypes.XNA) api = new XNA.Shader(parent, filename, shaderVersion, loadedCallback);
 			#endif
 			
 			#if VITA
-			if (type == VideoTypes.Vita) ShaderAPI.Init(Reign.Video.Vita.Shader.New, Reign.Video.Vita.Shader.New);
+			if (videoType == VideoTypes.Vita) api = new Vita.Shader(parent, filename, shaderVersion, loadedCallback);
 			#endif
+
+			if (api == null) Debug.ThrowError("ShaderAPI", "Unsuported InputType: " + videoType);
+			return api;
 		}
 	}
 }

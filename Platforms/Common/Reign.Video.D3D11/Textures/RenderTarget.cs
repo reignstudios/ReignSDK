@@ -4,7 +4,7 @@ using System;
 
 namespace Reign.Video.D3D11
 {
-	public class RenderTarget : Texture2D, RenderTargetI
+	public class RenderTarget : Texture2D, IRenderTarget
 	{
 		#region Properties
 		private RenderTargetCom renderTargetCom;
@@ -13,28 +13,18 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Constructors
-		public static RenderTarget New(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return new RenderTarget(parent, width, height, multiSampleType, surfaceFormat, depthStencilFormat, usage, renderTargetUsage, loadedCallback);
-		}
-
-		public static RenderTarget New(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return new RenderTarget(parent, fileName, multiSampleType, usage, renderTargetUsage, loadedCallback);
-		}
-
-		public RenderTarget(DisposableI parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
+		public RenderTarget(IDisposableResource parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent, width, height, surfaceFormat, usage, loadedCallback)
 		{
 			if (initSuccess) initDepthStencil(width, height, depthStencilFormat);
 		}
 
-		public RenderTarget(DisposableI parent, string fileName, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
-		: base(parent, fileName, false, usage, loadedCallback)
+		public RenderTarget(IDisposableResource parent, string filename, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
+		: base(parent, filename, false, usage, loadedCallback)
 		{
 		}
 
-		protected override bool init(DisposableI parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback)
+		protected override bool init(IDisposableResource parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			initSuccess = base.init(parent, image, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, true, loadedCallback);
 			if (!initSuccess) return false;
@@ -97,7 +87,7 @@ namespace Reign.Video.D3D11
 			else renderTargetCom.Enable();
 		}
 
-		public void Enable(DepthStencilI depthStencil)
+		public void Enable(IDepthStencil depthStencil)
 		{
 			renderTargetCom.Enable(((DepthStencil)depthStencil).com);
 		}

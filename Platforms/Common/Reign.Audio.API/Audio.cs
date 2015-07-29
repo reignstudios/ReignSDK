@@ -1,8 +1,7 @@
 ﻿using System;
 using Reign.Core;
-using Reign.Audio;
 
-namespace Reign.Audio.API
+namespace Reign.Audio.Abstraction
 {
 	[Flags]
 	public enum AudioTypes
@@ -17,21 +16,23 @@ namespace Reign.Audio.API
 		NaCl = 64
 	}
 
-	public static class Audio
+	public static class AudioAPI
 	{
-		public static AudioI Init(AudioTypes typeFlags, out AudioTypes type, DisposableI parent)
-		{
-			bool dumby = (typeFlags & AudioTypes.Dumby) != 0;
-			bool xAudio = (typeFlags & AudioTypes.XAudio) != 0;
-			bool xna = (typeFlags & AudioTypes.XNA) != 0;
-			bool cocoa = (typeFlags & AudioTypes.Cocoa) != 0;
-			bool openAL = (typeFlags & AudioTypes.OpenAL) != 0;
-			bool android = (typeFlags & AudioTypes.Android) != 0;
-			bool nacl = (typeFlags & AudioTypes.NaCl) != 0;
+		public static AudioTypes DefaultAPI = AudioTypes.None;
 
-			type = AudioTypes.None;
+		public static IAudio New(AudioTypes audioTypeFlags, out AudioTypes audioType, IDisposableResource parent)
+		{
+			bool dumby = (audioTypeFlags & AudioTypes.Dumby) != 0;
+			bool xAudio = (audioTypeFlags & AudioTypes.XAudio) != 0;
+			bool xna = (audioTypeFlags & AudioTypes.XNA) != 0;
+			bool cocoa = (audioTypeFlags & AudioTypes.Cocoa) != 0;
+			bool openAL = (audioTypeFlags & AudioTypes.OpenAL) != 0;
+			bool android = (audioTypeFlags & AudioTypes.Android) != 0;
+			bool nacl = (audioTypeFlags & AudioTypes.NaCl) != 0;
+
+			audioType = AudioTypes.None;
 			Exception lastException = null;
-			AudioI audio = null;
+			IAudio audio = null;
 			while (true)
 			{
 				try
@@ -40,7 +41,7 @@ namespace Reign.Audio.API
 					if (xAudio)
 					{
 						xAudio = false;
-						type = AudioTypes.XAudio;
+						audioType = AudioTypes.XAudio;
 						audio = new Reign.Audio.XAudio.Audio(parent);
 						break;
 					}
@@ -51,7 +52,7 @@ namespace Reign.Audio.API
 					if (xna)
 					{
 						xna = false;
-						type = AudioTypes.XNA;
+						audioType = AudioTypes.XNA;
 						audio = new Reign.Audio.XNA.Audio(parent);
 						break;
 					}
@@ -62,7 +63,7 @@ namespace Reign.Audio.API
 					if (cocoa)
 					{
 						cocoa = false;
-						type = AudioTypes.Cocoa;
+						audioType = AudioTypes.Cocoa;
 						audio = new Reign.Audio.Cocoa.Audio(parent);
 						break;
 					}
@@ -73,7 +74,7 @@ namespace Reign.Audio.API
 					if (openAL)
 					{
 						openAL = false;
-						type = AudioTypes.OpenAL;
+						audioType = AudioTypes.OpenAL;
 						audio = new Reign.Audio.OpenAL.Audio(parent);
 						break;
 					}
@@ -84,7 +85,7 @@ namespace Reign.Audio.API
 					if (android)
 					{
 						android = false;
-						type = AudioTypes.Android;
+						audioType = AudioTypes.Android;
 						audio = new Reign.Audio.Android.Audio(parent);
 						break;
 					}
@@ -102,7 +103,7 @@ namespace Reign.Audio.API
 					if (dumby)
 					{
 						dumby = false;
-						type = AudioTypes.Dumby;
+						audioType = AudioTypes.Dumby;
 						audio = new Reign.Audio.Dumby.Audio(parent);
 						break;
 					}
@@ -119,14 +120,11 @@ namespace Reign.Audio.API
 			if (lastException != null)
 			{
 				string ex = lastException == null ? "" : " - Exception: " + lastException.Message;
-				Debug.ThrowError("Audio", "Failed to create Audio API" + ex);
-				type = AudioTypes.None;
+				Debug.ThrowError("AudioAPI", "Failed to create Audio API" + ex);
+				audioType = AudioTypes.None;
 			}
 
-			// init api methods
-			Sound.Init(type);
-			Music.Init(type);
-
+			if (audioType != AudioTypes.None) DefaultAPI = audioType;
 			return audio;
 		}
 	}

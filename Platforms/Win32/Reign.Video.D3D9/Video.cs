@@ -15,11 +15,11 @@ namespace Reign.Video.D3D9
 		public ShaderVersions MaxShaderVersion {get; internal set;}
 	}
 
-	public class Video : Disposable, VideoI
+	public class Video : DisposableResource, IVideo
 	{
 		#region Properties
 		internal VideoCom com;
-		private ApplicationI application;
+		private IApplication application;
 		internal Texture2D[] currentVertexTextures, currentPixelTextures;
 		internal RenderTarget[] currentRenderTargets;
 		public Size2 BackBufferSize {get; private set;}
@@ -33,7 +33,7 @@ namespace Reign.Video.D3D9
 		#endregion
 
 		#region Constructors
-		public Video(DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync)
+		public Video(IDisposableResource parent, IApplication application, DepthStencilFormats depthStencilFormats, bool vSync)
 		: base(parent)
 		{
 			try
@@ -165,7 +165,7 @@ namespace Reign.Video.D3D9
 			com.EnableRenderTarget();
 		}
 
-		public void EnableRenderTarget(DepthStencilI depthStencil)
+		public void EnableRenderTarget(IDepthStencil depthStencil)
 		{
 			com.EnableRenderTarget(((DepthStencil)depthStencil).com);
 		}

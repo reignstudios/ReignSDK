@@ -1,26 +1,36 @@
 ﻿using Reign.Core;
 
-namespace Reign.Video.API
+namespace Reign.Video.Abstraction
 {
-	public static class DepthStencil
+	public static class DepthStencilAPI
 	{
-		public static void Init(VideoTypes type)
+		public static IDepthStencil New(IDisposableResource parent, int width, int height, DepthStencilFormats format)
 		{
+			return New(VideoAPI.DefaultAPI, parent, width, height, format);
+		}
+
+		public static IDepthStencil New(VideoTypes videoType, IDisposableResource parent, int width, int height, DepthStencilFormats format)
+		{
+			IDepthStencil api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) DepthStencilAPI.Init(Reign.Video.D3D9.DepthStencil.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.DepthStencil(parent, width, height, format);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) DepthStencilAPI.Init(Reign.Video.D3D11.DepthStencil.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.DepthStencil(parent, width, height, format);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) DepthStencilAPI.Init(Reign.Video.OpenGL.DepthStencil.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.DepthStencil(parent, width, height, format);
 			#endif
 			
 			#if VITA
-			if (type == VideoTypes.Vita) DepthStencilAPI.Init(Reign.Video.Vita.DepthStencil.New);
+			if (videoType == VideoTypes.Vita) api = new Vita.DepthStencil(parent, width, height, format);
 			#endif
+
+			if (api == null) Debug.ThrowError("DepthStencilAPI", "Unsuported InputType: " + videoType);
+			return api;
 		}
 	}
 }

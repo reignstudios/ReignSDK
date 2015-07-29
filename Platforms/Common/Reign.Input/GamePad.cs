@@ -11,7 +11,7 @@ namespace Reign.Input
 		Four
 	}
 
-	public interface GamePadI : DisposableI
+	public interface IGamePad : IDisposableResource
 	{
 		#region Properties
 		Button Back {get;}
@@ -41,20 +41,5 @@ namespace Reign.Input
 		void AddVibration(float strength, float fadeToStrength, float fadeSpeed);
 		void AddVibration(float strength);
 		#endregion
-	}
-
-	public static class GamePadAPI
-	{
-		public static void Init(NewPtrMethod newPtr)
-		{
-			GamePadAPI.newPtr = newPtr;
-		}
-
-		public delegate GamePadI NewPtrMethod(DisposableI parent, GamePadControllers controller);
-		internal static NewPtrMethod newPtr;
-		public static GamePadI New(DisposableI parent, GamePadControllers controller)
-		{
-			return newPtr(parent, controller);
-		}
 	}
 }

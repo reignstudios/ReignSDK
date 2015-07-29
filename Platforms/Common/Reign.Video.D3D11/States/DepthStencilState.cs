@@ -4,19 +4,14 @@ using Reign_Video_D3D11_Component;
 
 namespace Reign.Video.D3D11
 {
-	public class DepthStencilState : Disposable, DepthStencilStateI
+	public class DepthStencilState : DisposableResource, IDepthStencilState
 	{
 		#region Properties
 		private DepthStencilStateCom com;
 		#endregion
 
 		#region Constructors
-		public static DepthStencilState New(DisposableI parent, DepthStencilStateDescI desc)
-		{
-			return new DepthStencilState(parent, desc);
-		}
-
-		public DepthStencilState(DisposableI parent, DepthStencilStateDescI desc)
+		public DepthStencilState(IDisposableResource parent, IDepthStencilStateDesc desc)
 		: base(parent)
 		{
 			try

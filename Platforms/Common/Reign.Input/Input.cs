@@ -2,7 +2,7 @@
 
 namespace Reign.Input
 {
-	public interface InputI : DisposableI
+	public interface IInput : IDisposableResource
 	{
 		void Update();
 	}

@@ -4,18 +4,13 @@ using Reign_Video_D3D9_Component;
 
 namespace Reign.Video.D3D9
 {
-	public class DepthStencilStateDesc : DepthStencilStateDescI
+	public class DepthStencilStateDesc : IDepthStencilStateDesc
 	{
 		#region Properties
 		internal DepthStencilStateDescCom com;
 		#endregion
 
 		#region Constructors
-		public static DepthStencilStateDesc New(DepthStencilStateTypes type)
-		{
-			return new DepthStencilStateDesc(type);
-		}
-
 		public DepthStencilStateDesc(DepthStencilStateTypes type)
 		{
 			REIGN_D3DZBUFFERTYPE depthReadEnable = REIGN_D3DZBUFFERTYPE._FALSE;

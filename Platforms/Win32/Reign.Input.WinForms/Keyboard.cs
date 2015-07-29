@@ -1,10 +1,9 @@
-﻿using System;
-using Reign.Core;
+﻿using Reign.Core;
 using System.Windows.Forms;
 
 namespace Reign.Input.WinForms
 {
-	public class Keyboard : Disposable, KeyboardI
+	public class Keyboard : DisposableResource, IKeyboard
 	{
 		#region Properties
 		private Input input;
@@ -100,12 +99,7 @@ namespace Reign.Input.WinForms
 		#endregion
 	
 		#region Constructors
-		public static Keyboard New(DisposableI parent)
-		{
-			return new Keyboard(parent);
-		}
-
-		public Keyboard(DisposableI parent)
+		public Keyboard(IDisposableResource parent)
 		: base(parent)
 		{
 			input = parent.FindParentOrSelfWithException<Input>();

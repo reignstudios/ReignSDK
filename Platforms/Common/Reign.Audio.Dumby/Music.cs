@@ -2,19 +2,14 @@
 
 namespace Reign.Audio.Dumby
 {
-	public class Music : Disposable, MusicI
+	public class Music : DisposableResource, IMusic
 	{
 		#region Properties
 		public MusicStates State {get; private set;}
 		#endregion
 
 		#region Constructors
-		public static Music New(DisposableI parent, string fileName)
-		{
-			return new Music(parent, fileName);
-		}
-
-		public Music(DisposableI parent, string fileName)
+		public Music(IDisposableResource parent, string filename)
 		: base(parent)
 		{
 			State = MusicStates.Stopped;

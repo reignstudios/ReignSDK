@@ -5,7 +5,7 @@ using System;
 
 namespace Reign.Audio
 {
-	public abstract class SoundWAVI : SoundI, LoadableI
+	public abstract class ISoundWAV : ISound, ILoadable
 	{
 		#region Properites
 		public bool Loaded {get; protected set;}
@@ -19,7 +19,7 @@ namespace Reign.Audio
 		#endregion
 
 		#region Constructors
-		public SoundWAVI(DisposableI parent)
+		public ISoundWAV(IDisposableResource parent)
 		: base(parent)
 		{
 			// WAV will be handled by implomenting class
@@ -39,20 +39,20 @@ namespace Reign.Audio
 			chunkID = reader.ReadInt32();
 			if (chunkID != Streams.MakeFourCC('R', 'I', 'F', 'F'))
 			{
-				Debug.ThrowError("SoundWAVI", "Not a valid WAV file - No RIFF ID");
+				Debug.ThrowError("ISoundWAV", "Not a valid WAV file - No RIFF ID");
 			}
 			chunkSize = reader.ReadInt32();
 
 			riffType = reader.ReadInt32();
 			if (riffType != Streams.MakeFourCC('W', 'A', 'V', 'E'))
 			{
-				Debug.ThrowError("SoundWAVI", "Not a WAV file - No WAVE ID");
+				Debug.ThrowError("ISoundWAV", "Not a WAV file - No WAVE ID");
 			}
 
 			// navigate to 'fmt' chunk
 			while (stream.Position <= stream.Length)
 			{
-				if (stream.Position + sizeof(int) > stream.Length) Debug.ThrowError("SoundWAVI", "No fmt ID");
+				if (stream.Position + sizeof(int) > stream.Length) Debug.ThrowError("ISoundWAV", "No fmt ID");
 				formatID = reader.ReadInt32();
 				if (formatID == Streams.MakeFourCC('f', 'm', 't', ' ')) break;
 			}
@@ -75,7 +75,7 @@ namespace Reign.Audio
 			// navigate to 'data' chunk
 			while (stream.Position <= stream.Length)
 			{
-				if (stream.Position + sizeof(int) > stream.Length) Debug.ThrowError("SoundWAVI", "No data ID");
+				if (stream.Position + sizeof(int) > stream.Length) Debug.ThrowError("ISoundWAV", "No data ID");
 				dataID = reader.ReadInt32();
 				if (dataID == Streams.MakeFourCC('d', 'a', 't', 'a')) break;
 			}
@@ -84,7 +84,7 @@ namespace Reign.Audio
 			TotalTime = TimeSpan.FromSeconds(dataSize / formatAvgBytesPerSec);
 		}
 
-		protected virtual void init(DisposableI parent, Stream stream, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
+		protected virtual void init(IDisposableResource parent, Stream stream, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			using (stream)
 			using (var reader = new BinaryReader(stream))
@@ -99,20 +99,5 @@ namespace Reign.Audio
 			return Loaded;
 		}
 		#endregion
-	}
-
-	public static class SoundWAVAPI
-	{
-		public static void Init(NewPtrMethod newPtr)
-		{
-			SoundWAVAPI.newPtr = newPtr;
-		}
-
-		public delegate SoundWAVI NewPtrMethod(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback);
-		private static NewPtrMethod newPtr;
-		public static SoundWAVI New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return newPtr(parent, fileName, instanceCount, looped, loadedCallback);
-		}
 	}
 }

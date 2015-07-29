@@ -3,7 +3,7 @@ using Reign_Video_D3D9_Component;
 
 namespace Reign.Video.D3D9
 {
-	public class ShaderResource : ShaderResourceI
+	public class ShaderResource : IShaderResource
 	{
 		#region Properties
 		public delegate void ApplyMethod();
@@ -43,7 +43,7 @@ namespace Reign.Video.D3D9
 			else com.SetTexture2D(((Texture2D)resource.Target).com);
 		}
 
-		public void Set(Texture2DI resource)
+		public void Set(ITexture2D resource)
 		{
 			this.resource.Target = resource;
 			if (vertexIndex != -1) video.currentVertexTextures[vertexIndex] = (Texture2D)resource;
@@ -51,7 +51,7 @@ namespace Reign.Video.D3D9
 			Apply = setTexture2D;
 		}
 
-		public void Set(Texture3DI resource)
+		public void Set(ITexture3D resource)
 		{
 			throw new NotImplementedException();
 		}

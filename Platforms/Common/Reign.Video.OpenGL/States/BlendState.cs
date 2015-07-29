@@ -2,19 +2,14 @@ using Reign.Core;
 
 namespace Reign.Video.OpenGL
 {
-	public class BlendState : Disposable, BlendStateI
+	public class BlendState : DisposableResource, IBlendState
 	{
 		#region Properties
 		private BlendStateDesc desc;
 		#endregion
 
 		#region Constructors
-		public static BlendState New(DisposableI parent, BlendStateDescI desc)
-		{
-			return new BlendState(parent, desc);
-		}
-
-		public BlendState(DisposableI parent, BlendStateDescI desc)
+		public BlendState(IDisposableResource parent, IBlendStateDesc desc)
 		: base(parent)
 		{
 			this.desc = (BlendStateDesc)desc;

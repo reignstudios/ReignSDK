@@ -5,14 +5,14 @@ using System.Runtime.InteropServices;
 
 namespace Reign.Video.D3D9
 {
-	public abstract class ShaderModel : Disposable
+	public abstract class ShaderModel : DisposableResource
 	{
 		#region Properties
 		protected internal ShaderModelCom com;
 		#endregion
 
 		#region Constructors
-		public ShaderModel(DisposableI parent, string code, ShaderVersions shaderVersion, ShaderTypes shaderType)
+		public ShaderModel(IDisposableResource parent, string code, ShaderVersions shaderVersion, ShaderTypes shaderType)
 		: base(parent)
 		{
 			try

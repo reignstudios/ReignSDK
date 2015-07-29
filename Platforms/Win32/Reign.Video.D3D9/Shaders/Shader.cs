@@ -5,7 +5,7 @@ using System;
 
 namespace Reign.Video.D3D9
 {
-	public class Shader : ShaderI
+	public class Shader : IShader
 	{
 		#region Properties
 		private Video video;
@@ -17,25 +17,15 @@ namespace Reign.Video.D3D9
 		#endregion
 
 		#region Constructors
-		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return new Shader(parent, fileName, shaderVersion, loadedCallback);
-		}
-
-		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return new Shader(parent, fileName, shaderVersion, vsQuality, psQuality, loadedCallback);
-		}
-
-		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
+		public Shader(IDisposableResource parent, string filename, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
-			new StreamLoader(fileName,
+			new StreamLoader(filename,
 			delegate(object sender, bool succeeded)
 			{
 				if (succeeded)
 				{
-					init(fileName, ((StreamLoader)sender).LoadedStream, shaderVersion, loadedCallback);
+					init(filename, ((StreamLoader)sender).LoadedStream, shaderVersion, loadedCallback);
 				}
 				else
 				{
@@ -46,15 +36,15 @@ namespace Reign.Video.D3D9
 			});
 		}
 
-		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
+		public Shader(IDisposableResource parent, string filename, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
-			new StreamLoader(fileName,
+			new StreamLoader(filename,
 			delegate(object sender, bool succeeded)
 			{
 				if (succeeded)
 				{
-					init(fileName, ((StreamLoader)sender).LoadedStream, shaderVersion, loadedCallback);
+					init(filename, ((StreamLoader)sender).LoadedStream, shaderVersion, loadedCallback);
 				}
 				else
 				{
@@ -65,7 +55,7 @@ namespace Reign.Video.D3D9
 			});
 		}
 
-		private void init(string fileName, Stream stream, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
+		private void init(string filename, Stream stream, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			try
 			{
@@ -109,7 +99,7 @@ namespace Reign.Video.D3D9
 			}
 		}
 
-		public override ShaderVariableI Variable(string name)
+		public override IShaderVariable Variable(string name)
 		{
 			// Try to find existing variable
 			foreach (ShaderVariable variable in variables)
@@ -131,7 +121,7 @@ namespace Reign.Video.D3D9
 			return newVariable;
 		}
 
-		public override ShaderResourceI Resource(string name)
+		public override IShaderResource Resource(string name)
 		{
 			// Try to find existing variable
 			foreach (ShaderResource resource in resources)

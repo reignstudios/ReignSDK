@@ -4,7 +4,7 @@ using Reign_Video_D3D9_Component;
 
 namespace Reign.Video.D3D9
 {
-	public class DepthStencil : Disposable, DepthStencilI
+	public class DepthStencil : DisposableResource, IDepthStencil
 	{
 		#region Properties
 		public Size2 Size {get; private set;}
@@ -18,18 +18,13 @@ namespace Reign.Video.D3D9
 		#endregion
 
 		#region Constructors
-		public static DepthStencilI New(DisposableI parent, int width, int height, DepthStencilFormats depthStencilFormats)
-		{
-			return new DepthStencil(parent, width, height, depthStencilFormats);
-		}
-
-		public DepthStencil(DisposableI parent, int width, int height, DepthStencilFormats depthStencilFormats)
+		public DepthStencil(IDisposableResource parent, int width, int height, DepthStencilFormats depthStencilFormats)
 		: base(parent)
 		{
 			init(parent, width, height, depthStencilFormats);
 		}
 
-		private void init(DisposableI parent, int width, int height, DepthStencilFormats depthStencilFormats)
+		private void init(IDisposableResource parent, int width, int height, DepthStencilFormats depthStencilFormats)
 		{
 			try
 			{

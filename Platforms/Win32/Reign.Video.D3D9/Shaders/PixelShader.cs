@@ -11,7 +11,7 @@ namespace Reign.Video.D3D9
 		#endregion
 
 		#region Constructors
-		public PixelShader(DisposableI parent, string code, ShaderVersions shaderVersion)
+		public PixelShader(IDisposableResource parent, string code, ShaderVersions shaderVersion)
 		: base(parent, code, shaderVersion, ShaderTypes.PS)
 		{
 			try

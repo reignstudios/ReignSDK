@@ -1,8 +1,7 @@
 ﻿using System;
 using Reign.Core;
-using Reign.Input;
 
-namespace Reign.Input.API
+namespace Reign.Input.Abstraction
 {
 	[Flags]
 	public enum InputTypes
@@ -17,21 +16,23 @@ namespace Reign.Input.API
 		NaCl = 64
 	}
 
-	public static class Input
+	public static class InputAPI
 	{
-		public static InputI Init(InputTypes typeFlags, out InputTypes type, DisposableI parent, ApplicationI application)
-		{
-			bool winForms = (typeFlags & InputTypes.WinForms) != 0;
-			bool cocoa = (typeFlags & InputTypes.Cocoa) != 0;
-			bool x11 = (typeFlags & InputTypes.X11) != 0;
-			bool nacl = (typeFlags & InputTypes.NaCl) != 0;
-			bool metro = (typeFlags & InputTypes.WinRT) != 0;
-			bool xna = (typeFlags & InputTypes.XNA) != 0;
-			bool android = (typeFlags & InputTypes.Android) != 0;
+		public static InputTypes DefaultAPI = InputTypes.None;
 
-			type = InputTypes.None;
+		public static IInput New(InputTypes inputTypeFlags, out InputTypes inputType, IDisposableResource parent, IApplication application)
+		{
+			bool winForms = (inputTypeFlags & InputTypes.WinForms) != 0;
+			bool cocoa = (inputTypeFlags & InputTypes.Cocoa) != 0;
+			bool x11 = (inputTypeFlags & InputTypes.X11) != 0;
+			bool nacl = (inputTypeFlags & InputTypes.NaCl) != 0;
+			bool metro = (inputTypeFlags & InputTypes.WinRT) != 0;
+			bool xna = (inputTypeFlags & InputTypes.XNA) != 0;
+			bool android = (inputTypeFlags & InputTypes.Android) != 0;
+
+			inputType = InputTypes.None;
 			Exception lastException = null;
-			InputI input = null;
+			IInput input = null;
 			while (true)
 			{
 				try
@@ -40,8 +41,8 @@ namespace Reign.Input.API
 					if (winForms)
 					{
 						winForms = false;
-						type = InputTypes.WinForms;
-						input = new Reign.Input.WinForms.Input(parent, application);
+						inputType = InputTypes.WinForms;
+						input = new WinForms.Input(parent, application);
 						break;
 					}
 					#endif
@@ -50,8 +51,8 @@ namespace Reign.Input.API
 					if (cocoa)
 					{
 						cocoa = false;
-						type = InputTypes.Cocoa;
-						input = new Reign.Input.Cocoa.Input(parent, application);
+						inputType = InputTypes.Cocoa;
+						input = new Cocoa.Input(parent, application);
 						break;
 					}
 					#endif
@@ -60,8 +61,8 @@ namespace Reign.Input.API
 					if (x11)
 					{
 						x11 = false;
-						type = InputTypes.X11;
-						input = new Reign.Input.X11.Input(parent, application);
+						inputType = InputTypes.X11;
+						input = new X11.Input(parent, application);
 						break;
 					}
 					#endif
@@ -70,8 +71,8 @@ namespace Reign.Input.API
 					if (nacl)
 					{
 						nacl = false;
-						type = InputTypes.NaCl;
-						input = new Reign.Input.NaCl.Input(parent, application);
+						inputType = InputTypes.NaCl;
+						input = new NaCl.Input(parent, application);
 						break;
 					}
 					#endif
@@ -80,8 +81,8 @@ namespace Reign.Input.API
 					if (metro)
 					{
 						metro = false;
-						type = InputTypes.WinRT;
-						input = new Reign.Input.WinRT.Input(parent, application);
+						inputType = InputTypes.WinRT;
+						input = new WinRT.Input(parent, application);
 						break;
 					}
 					#endif
@@ -90,8 +91,8 @@ namespace Reign.Input.API
 					if (xna)
 					{
 						xna = false;
-						type = InputTypes.XNA;
-						input = new Reign.Input.XNA.Input(parent, application);
+						inputType = InputTypes.XNA;
+						input = new XNA.Input(parent, application);
 						break;
 					}
 					#endif
@@ -100,8 +101,8 @@ namespace Reign.Input.API
 					if (cocoa)
 					{
 						cocoa = false;
-						type = InputTypes.Cocoa;
-						input = new Reign.Input.Cocoa.Input(parent, application);
+						inputType = InputTypes.Cocoa;
+						input = new Cocoa.Input(parent, application);
 						break;
 					}
 					#endif
@@ -110,8 +111,8 @@ namespace Reign.Input.API
 					if (android)
 					{
 						android = false;
-						type = InputTypes.Android;
-						input = new Reign.Input.Android.Input(parent, application);
+						inputType = InputTypes.Android;
+						input = new Android.Input(parent, application);
 						break;
 					}
 					#endif
@@ -128,16 +129,11 @@ namespace Reign.Input.API
 			if (lastException != null)
 			{
 				string ex = lastException == null ? "" : " - Exception: " + lastException.Message;
-				Debug.ThrowError("Input", "Failed to create Input API" + ex);
-				type = InputTypes.None;
+				Debug.ThrowError("InputAPI", "Failed to create Input API" + ex);
+				inputType = InputTypes.None;
 			}
 
-			// init api methods
-			Keyboard.Init(type);
-			Mouse.Init(type);
-			GamePad.Init(type);
-			TouchScreen.Init(type);
-
+			if (inputType != InputTypes.None) DefaultAPI = inputType;
 			return input;
 		}
 	}

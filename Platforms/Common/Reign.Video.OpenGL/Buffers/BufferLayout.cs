@@ -3,7 +3,7 @@ using System;
 
 namespace Reign.Video.OpenGL
 {
-	public class BufferLayout : Disposable, BufferLayoutI
+	public class BufferLayout : DisposableResource, IBufferLayout
 	{
 		#region Properties
 		private Video video;
@@ -15,12 +15,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public static BufferLayout New(DisposableI parent, ShaderI shader, BufferLayoutDescI desc)
-		{
-			return new BufferLayout(parent, shader, desc);
-		}
-
-		public BufferLayout(DisposableI parent, ShaderI shader, BufferLayoutDescI desc)
+		public BufferLayout(IDisposableResource parent, IShader shader, IBufferLayoutDesc desc)
 		: base(parent)
 		{
 			video = parent.FindParentOrSelfWithException<Video>();

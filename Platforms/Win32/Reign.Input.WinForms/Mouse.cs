@@ -1,10 +1,8 @@
-﻿using System;
-using System.Windows.Forms;
-using Reign.Core;
+﻿using Reign.Core;
 
 namespace Reign.Input.WinForms
 {
-	public class Mouse : Disposable, MouseI
+	public class Mouse : DisposableResource, IMouse
 	{
 		#region Properties
 		private Input input;
@@ -24,12 +22,7 @@ namespace Reign.Input.WinForms
 		#endregion
 	
 		#region Constructors
-		public static Mouse New(DisposableI parent)
-		{
-			return new Mouse(parent);
-		}
-
-		public Mouse(DisposableI parent)
+		public Mouse(IDisposableResource parent)
 		: base(parent)
 		{
 			input = parent.FindParentOrSelfWithException<Input>();

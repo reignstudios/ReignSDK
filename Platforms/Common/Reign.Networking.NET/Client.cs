@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Reign.Networking.PC
 {
-	public class Client : ClientI
+	public class Client : IClient
 	{
 		#region Properties
 		private TcpClient client;

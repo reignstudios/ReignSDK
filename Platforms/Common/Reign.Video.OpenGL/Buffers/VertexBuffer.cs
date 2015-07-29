@@ -3,7 +3,7 @@ using System;
 
 namespace Reign.Video.OpenGL
 {
-	public class VertexBuffer : VertexBufferI
+	public class VertexBuffer : IVertexBuffer
 	{
 		#region Properties
 		private Video video;
@@ -29,36 +29,26 @@ namespace Reign.Video.OpenGL
 		}
 
 		private IndexBuffer indexBuffer, currentIndexBuffer;
-		public override IndexBufferI IndexBuffer
+		public override IIndexBuffer IndexBuffer
 		{
 			get {return indexBuffer;}
 		}
 		#endregion
 
 		#region Constructors
-		public static VertexBuffer New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
-		{
-			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices);
-		}
-
-		public static VertexBuffer New(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
-		{
-			return new VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices, indices);
-		}
-
-		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices)
+		public VertexBuffer(IDisposableResource parent, IBufferLayoutDesc bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices)
 		: base(parent, bufferLayoutDesc, bufferUsage, vertices)
 		{
 			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices, null);
 		}
 
-		public VertexBuffer(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
+		public VertexBuffer(IDisposableResource parent, IBufferLayoutDesc bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
 		: base(parent, bufferLayoutDesc, bufferUsage, vertices)
 		{
 			init(parent, bufferLayoutDesc, bufferUsage, vertexBufferTopology, vertices, indices);
 		}
 
-		private unsafe void init(DisposableI parent, BufferLayoutDescI bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
+		private unsafe void init(IDisposableResource parent, IBufferLayoutDesc bufferLayoutDesc, BufferUsages bufferUsage, VertexBufferTopologys vertexBufferTopology, float[] vertices, int[] indices)
 		{
 			try
 			{
@@ -93,7 +83,7 @@ namespace Reign.Video.OpenGL
 			disposeChilderen();
 			if (vertexBuffer != 0)
 			{
-				if (!OS.AutoDisposedGL)
+				if (!IPlatform.Singleton.AutoDisposedGL)
 				{
 					uint vertexBufferTEMP = vertexBuffer;
 					GL.BindBuffer(GL.ARRAY_BUFFER, 0);
@@ -131,21 +121,21 @@ namespace Reign.Video.OpenGL
 			this.instanceBuffer = null;
 		}
 
-		public override void Enable(IndexBufferI indexBuffer)
+		public override void Enable(IIndexBuffer indexBuffer)
 		{
 			video.currentVertexBuffer = this;
 			this.currentIndexBuffer = (IndexBuffer)indexBuffer;
 			this.instanceBuffer = null;
 		}
 
-		public override void Enable(VertexBufferI instanceBuffer)
+		public override void Enable(IVertexBuffer instanceBuffer)
 		{
 			video.currentVertexBuffer = this;
 			this.currentIndexBuffer = indexBuffer;
 			this.instanceBuffer = (VertexBuffer)instanceBuffer;
 		}
 
-		public override void Enable(IndexBufferI indexBuffer, VertexBufferI instanceBuffer)
+		public override void Enable(IIndexBuffer indexBuffer, IVertexBuffer instanceBuffer)
 		{
 			video.currentVertexBuffer = this;
 			this.currentIndexBuffer = (IndexBuffer)indexBuffer;

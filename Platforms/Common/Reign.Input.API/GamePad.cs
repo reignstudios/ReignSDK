@@ -1,16 +1,24 @@
-﻿using System;
-using Reign.Core;
-using Reign.Input;
+﻿using Reign.Core;
 
-namespace Reign.Input.API
+namespace Reign.Input.Abstraction
 {
-	public static class GamePad
+	public static class GamePadAPI
 	{
-		public static void Init(InputTypes type)
+		public static IGamePad New(IDisposableResource disposable)
 		{
+			return New(InputAPI.DefaultAPI, disposable);
+		}
+
+		public static IGamePad New(InputTypes inputType, IDisposableResource parent)
+		{
+			IGamePad api = null;
+
 			#if XNA
-			if (type == InputTypes.XNA) GamePadAPI.Init(Reign.Input.XNA.GamePad.New);
+			if (inputType == InputTypes.XNA) api = new XNA.GamePad(disposable);
 			#endif
+
+			if (api == null) Debug.ThrowError("GamePadAPI", "Unsuported InputType: " + inputType);
+			return api;
 		}
 	}
 }

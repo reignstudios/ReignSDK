@@ -4,7 +4,7 @@ using System;
 
 namespace Reign.Audio.XAudio
 {
-	public class Audio : Disposable, AudioI
+	public class Audio : DisposableResource, IAudio
 	{
 		#region Properties
 		internal delegate void UpdateCallbackFunc();
@@ -14,7 +14,7 @@ namespace Reign.Audio.XAudio
 		#endregion
 
 		#region Constructors
-		public Audio(DisposableI parent)
+		public Audio(IDisposableResource parent)
 		: base(parent)
 		{
 			try

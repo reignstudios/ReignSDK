@@ -4,18 +4,13 @@ using Reign_Video_D3D9_Component;
 
 namespace Reign.Video.D3D9
 {
-	public class SamplerStateDesc : SamplerStateDescI
+	public class SamplerStateDesc : ISamplerStateDesc
 	{
 		#region Properties
 		internal SamplerStateDescCom com;
 		#endregion
 
 		#region Constructors
-		public static SamplerStateDesc New(SamplerStateTypes type)
-		{
-			return new SamplerStateDesc(type);
-		}
-
 		public SamplerStateDesc(SamplerStateTypes type)
 		{
 			REIGN_D3DTEXTUREFILTERTYPE filter = REIGN_D3DTEXTUREFILTERTYPE.ANISOTROPIC;

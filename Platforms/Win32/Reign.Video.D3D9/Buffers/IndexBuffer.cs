@@ -5,19 +5,14 @@ using Reign.Core;
 
 namespace Reign.Video.D3D9
 {
-	public class IndexBuffer : IndexBufferI
+	public class IndexBuffer : IIndexBuffer
 	{
 		#region Properties
 		internal IndexBufferCom com;
 		#endregion
 
 		#region Constructors
-		public static IndexBuffer New(DisposableI parent, BufferUsages usage, int[] indices)
-		{
-			return new IndexBuffer(parent, usage, indices);
-		}
-
-		public IndexBuffer(DisposableI parent, BufferUsages usage, int[] indices)
+		public IndexBuffer(IDisposableResource parent, BufferUsages usage, int[] indices)
 		: base(parent, usage, indices)
 		{
 			try

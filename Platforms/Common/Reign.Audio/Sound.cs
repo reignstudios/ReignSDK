@@ -10,7 +10,7 @@ namespace Reign.Audio
 		Stopped
 	}
 
-	public interface SoundInstanceI : DisposableI
+	public interface ISoundInstance : IDisposableResource
 	{
 		SoundStates State {get;}
 		bool Looped {get;}
@@ -23,37 +23,25 @@ namespace Reign.Audio
 		void Stop();
 	}
 
-	public abstract class SoundI : Disposable
+	public abstract class ISound : DisposableResource
 	{
 		#region Properites
-		protected LinkedList<SoundInstanceI> activeInstances, inactiveInstances;
+		protected LinkedList<ISoundInstance> activeInstances, inactiveInstances;
 		#endregion
 
 		#region Constructors
-		public static SoundI New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			string ext = Streams.GetFileExt(fileName);
-			switch (ext.ToLower())
-			{
-				case ".wav": return SoundWAVAPI.New(parent, fileName, instanceCount, looped, loadedCallback);
-				default:
-					Debug.ThrowError("SoundI", string.Format("File 'ext' {0} not supported.", ext));
-					return null;
-			}
-		}
-
-		public SoundI(DisposableI parent)
+		public ISound(IDisposableResource parent)
 		: base(parent)
 		{
-			activeInstances = new LinkedList<SoundInstanceI>();
-			inactiveInstances = new LinkedList<SoundInstanceI>();
+			activeInstances = new LinkedList<ISoundInstance>();
+			inactiveInstances = new LinkedList<ISoundInstance>();
 		}
 		#endregion
 
 		#region Methods
 		public void Update()
 		{
-			var stoppedInstances = new Stack<SoundInstanceI>();
+			var stoppedInstances = new Stack<ISoundInstance>();
 			foreach (var active in activeInstances)
 			{
 				active.Update();
@@ -71,7 +59,7 @@ namespace Reign.Audio
 			}
 		}
 
-		public SoundInstanceI Play()
+		public ISoundInstance Play()
 		{
 			if (inactiveInstances.Count != 0)
 			{
@@ -86,7 +74,7 @@ namespace Reign.Audio
 			return null;
 		}
 
-		public virtual SoundInstanceI Play(float volume)
+		public virtual ISoundInstance Play(float volume)
 		{
 			if (inactiveInstances.Count != 0)
 			{
@@ -117,13 +105,5 @@ namespace Reign.Audio
 			}
 		}
 		#endregion
-	}
-
-	public static class SoundAPI
-	{
-		public static SoundI New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return SoundI.New(parent, fileName, instanceCount, looped, loadedCallback);
-		}
 	}
 }

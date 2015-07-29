@@ -1,30 +1,40 @@
 ﻿using Reign.Core;
 
-namespace Reign.Video.API
+namespace Reign.Video.Abstraction
 {
-	public static class QuickDraw
+	public static class QuickDrawAPI
 	{
-		public static void Init(VideoTypes type)
+		public static IQuickDraw New(IDisposableResource parent, IBufferLayoutDesc desc)
 		{
+			return New(parent, desc);
+		}
+
+		public static IQuickDraw New(VideoTypes videoType, IDisposableResource parent, IBufferLayoutDesc desc)
+		{
+			IQuickDraw api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) QuickDrawAPI.Init(Reign.Video.D3D9.QuickDraw.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.QuickDraw(parent, desc);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) QuickDrawAPI.Init(Reign.Video.D3D11.QuickDraw.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.QuickDraw(parent, desc);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) QuickDrawAPI.Init(Reign.Video.OpenGL.QuickDraw.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.QuickDraw(parent, desc);
 			#endif
 
 			#if XNA
-			if (type == VideoTypes.XNA) QuickDrawAPI.Init(Reign.Video.XNA.QuickDraw.New);
+			if (videoType == VideoTypes.XNA) api = new XNA.QuickDraw(parent, desc);
 			#endif
 			
 			#if VITA
-			if (type == VideoTypes.Vita) QuickDrawAPI.Init(Reign.Video.Vita.QuickDraw.New);
+			if (videoType == VideoTypes.Vita) api = new Vita.QuickDraw(parent, desc);
 			#endif
+
+			if (api == null) Debug.ThrowError("QuickDrawAPI", "Unsuported InputType: " + videoType);
+			return api;
 		}
 	}
 }

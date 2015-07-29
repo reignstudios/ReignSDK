@@ -3,7 +3,7 @@ using System;
 
 namespace Reign.Video.OpenGL
 {
-	public class DepthStencil : Disposable, DepthStencilI
+	public class DepthStencil : DisposableResource, IDepthStencil
 	{
 		#region Properties
 		public Size2 Size {get; private set;}
@@ -13,12 +13,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public static DepthStencilI New(DisposableI parent, int width, int height, DepthStencilFormats depthStencilFormats)
-		{
-			return new DepthStencil(parent, width, height, depthStencilFormats);
-		}
-
-		public unsafe DepthStencil(DisposableI parent, int width, int height, DepthStencilFormats depthStencilFormats)
+		public unsafe DepthStencil(IDisposableResource parent, int width, int height, DepthStencilFormats depthStencilFormats)
 		: base(parent)
 		{
 			try
@@ -101,7 +96,7 @@ namespace Reign.Video.OpenGL
 		    disposeChilderen();
 		    if (depthBuffer != 0)
 		    {
-		    	if (!OS.AutoDisposedGL)
+		    	if (!IPlatform.Singleton.AutoDisposedGL)
 		    	{
 					GL.BindRenderbuffer(GL.RENDERBUFFER, 0);
 

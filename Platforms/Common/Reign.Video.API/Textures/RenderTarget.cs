@@ -1,30 +1,40 @@
 ﻿using Reign.Core;
 
-namespace Reign.Video.API
+namespace Reign.Video.Abstraction
 {
-	public static class RenderTarget
+	public static class RenderTargetAPI
 	{
-		public static void Init(VideoTypes type)
+		public static IRenderTarget New(IDisposableResource parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
 		{
+			return New(parent, width, height, multiSampleType, surfaceFormat, depthStencilFormat, usage, renderTargetUsage, loadedCallback);
+		}
+
+		public static IRenderTarget New(VideoTypes videoType, IDisposableResource parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
+		{
+			IRenderTarget api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) RenderTargetAPI.Init(Reign.Video.D3D9.RenderTarget.New, Reign.Video.D3D9.RenderTarget.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.RenderTarget(parent, width, height, multiSampleType, surfaceFormat, depthStencilFormat, usage, renderTargetUsage, loadedCallback);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) RenderTargetAPI.Init(Reign.Video.D3D11.RenderTarget.New, Reign.Video.D3D11.RenderTarget.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.RenderTarget(parent, width, height, multiSampleType, surfaceFormat, depthStencilFormat, usage, renderTargetUsage, loadedCallback);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) RenderTargetAPI.Init(Reign.Video.OpenGL.RenderTarget.New, Reign.Video.OpenGL.RenderTarget.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.RenderTarget(parent, width, height, multiSampleType, surfaceFormat, depthStencilFormat, usage, renderTargetUsage, loadedCallback);
 			#endif
 
 			#if XNA
-			if (type == VideoTypes.XNA) RenderTargetAPI.Init(Reign.Video.XNA.RenderTarget.New, Reign.Video.XNA.RenderTarget.New);
+			if (videoType == VideoTypes.XNA) api = new XNA.RenderTarget(parent, width, height, multiSampleType, surfaceFormat, depthStencilFormat, usage, renderTargetUsage, loadedCallback);
 			#endif
 			
 			#if VITA
-			if (type == VideoTypes.Vita) RenderTargetAPI.Init(Reign.Video.Vita.RenderTarget.New, Reign.Video.Vita.RenderTarget.New);
+			if (videoType == VideoTypes.Vita) api = new Vita.RenderTarget(parent, width, height, multiSampleType, surfaceFormat, depthStencilFormat, usage, renderTargetUsage, loadedCallback);
 			#endif
+
+			if (api == null) Debug.ThrowError("RenderTargetAPI", "Unsuported InputType: " + videoType);
+			return api;
 		}
 	}
 }

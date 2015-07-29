@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace Reign.Video.D3D11
 {
-	public class ShaderVariable : ShaderVariableI
+	public class ShaderVariable : IShaderVariable
 	{
 		#region Properties
 		private ShaderVariableCom com;

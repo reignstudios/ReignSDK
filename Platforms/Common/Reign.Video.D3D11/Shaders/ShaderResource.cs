@@ -5,7 +5,7 @@ using Reign_Video_D3D11_Component;
 
 namespace Reign.Video.D3D11
 {
-	public class ShaderResource : ShaderResourceI
+	public class ShaderResource : IShaderResource
 	{
 		#region Properties
 		private ShaderResourceCom com;
@@ -21,12 +21,12 @@ namespace Reign.Video.D3D11
 		#endregion
 
 		#region Methods
-		public void Set(Texture2DI resource)
+		public void Set(ITexture2D resource)
 		{
 			com.Set(((Texture2D)resource).com);
 		}
 
-		public void Set(Texture3DI resource)
+		public void Set(ITexture3D resource)
 		{
 			throw new NotImplementedException();
 		}

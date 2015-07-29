@@ -4,19 +4,14 @@ using Reign_Video_D3D11_Component;
 
 namespace Reign.Video.D3D11
 {
-	public class RasterizerState : Disposable, RasterizerStateI
+	public class RasterizerState : DisposableResource, IRasterizerState
 	{
 		#region Properties
 		private RasterizerStateCom com;
 		#endregion
 
 		#region Constructors
-		public static RasterizerState New(DisposableI parent, RasterizerStateDescI desc)
-		{
-			return new RasterizerState(parent, desc);
-		}
-
-		public RasterizerState(DisposableI parent, RasterizerStateDescI desc)
+		public RasterizerState(IDisposableResource parent, IRasterizerStateDesc desc)
 		: base(parent)
 		{
 			try

@@ -2,7 +2,7 @@
 
 namespace Reign.Audio.Dumby
 {
-	public class SoundWAVInstance : Disposable, SoundInstanceI
+	public class SoundWAVInstance : DisposableResource, ISoundInstance
 	{
 		#region Properties
 		public SoundStates State {get{return SoundStates.Stopped;}}
@@ -27,15 +27,10 @@ namespace Reign.Audio.Dumby
 		#endregion
 	}
 
-	public class SoundWAV : SoundWAVI
+	public class SoundWAV : ISoundWAV
 	{
 		#region Constructors
-		public static new SoundWAV New(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return new SoundWAV(parent, fileName, instanceCount, looped, loadedCallback);
-		}
-
-		public SoundWAV(DisposableI parent, string fileName, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
+		public SoundWAV(IDisposableResource parent, string filename, int instanceCount, bool looped, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
 			for (int i = 0; i != instanceCount; ++i)

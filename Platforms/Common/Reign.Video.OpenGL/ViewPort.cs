@@ -2,26 +2,16 @@ using Reign.Core;
 
 namespace Reign.Video.OpenGL
 {
-	public class ViewPort : ViewPortI
+	public class ViewPort : IViewPort
 	{
 		#region Constructors
-		public static ViewPort New(VideoI video, int x, int y, int width, int height)
-		{
-			return new ViewPort(video, x, y, width, height);
-		}
-
-		public static ViewPort New(VideoI video, Point2 location, Size2 size)
-		{
-			return new ViewPort(video, location, size);
-		}
-
-		public ViewPort(VideoI video, int x, int y, int width, int height)
+		public ViewPort(IDisposableResource parent, int x, int y, int width, int height)
 		: base(x, y, width, height)
 		{
 			
 		}
 
-		public ViewPort(VideoI video, Point2 location, Size2 size)
+		public ViewPort(IDisposableResource parent, Point2 location, Size2 size)
 		: base(location, size)
 		{
 			
@@ -38,7 +28,7 @@ namespace Reign.Video.OpenGL
 			#endif
 		}
 
-		public override void Apply(RenderTargetI renderTarget)
+		public override void Apply(IRenderTarget renderTarget)
 		{
 			GL.Viewport(Position.X, Position.Y, Size.Width, Size.Height);
 

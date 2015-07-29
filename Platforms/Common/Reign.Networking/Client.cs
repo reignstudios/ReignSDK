@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Reign.Networking
 {
-	public interface ClientI
+	public interface IClient
 	{
 		byte[] Data {get; set;}
 		bool Connected {get;}

@@ -2,7 +2,7 @@ using Reign.Core;
 
 namespace Reign.Video.OpenGL
 {
-	public class SamplerState : Disposable, SamplerStateI
+	public class SamplerState : DisposableResource, ISamplerState
 	{
 		#region Properties
 		private Video video;
@@ -10,12 +10,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public static SamplerState New(DisposableI parent, SamplerStateDescI desc)
-		{
-			return new SamplerState(parent, desc);
-		}
-
-		public SamplerState(DisposableI parent, SamplerStateDescI desc)
+		public SamplerState(IDisposableResource parent, ISamplerStateDesc desc)
 		: base(parent)
 		{
 			video = parent.FindParentOrSelfWithException<Video>();

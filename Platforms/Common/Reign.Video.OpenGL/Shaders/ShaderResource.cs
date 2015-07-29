@@ -3,7 +3,7 @@ using Reign.Core;
 
 namespace Reign.Video.OpenGL
 {
-	public class ShaderResource : ShaderResourceI
+	public class ShaderResource : IShaderResource
 	{
 		#region Properties
 		internal delegate void ApplyFunc();
@@ -29,7 +29,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public ShaderResource(VideoI video, int location, int index, string name)
+		public ShaderResource(IVideo video, int location, int index, string name)
 		{
 			this.video = (Video)video;
 			this.location = location;
@@ -60,7 +60,7 @@ namespace Reign.Video.OpenGL
 			if (state != null) state.enable((Texture2D)texture.Target);
 		}
 
-		public void Set(Texture2DI resource)
+		public void Set(ITexture2D resource)
 		{
 			var texture = (Texture2D)resource;
 			video.currentTextures[index] = texture;
@@ -69,7 +69,7 @@ namespace Reign.Video.OpenGL
 			Apply = setTexture2D;
 		}
 
-		public void Set(Texture3DI resource)
+		public void Set(ITexture3D resource)
 		{
 			throw new NotImplementedException();
 		}

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace Reign.Video.OpenGL
 {
-	public class ShaderVariable : ShaderVariableI
+	public class ShaderVariable : IShaderVariable
 	{
 		[StructLayout(LayoutKind.Explicit)]
 		private struct ValueObject

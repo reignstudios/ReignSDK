@@ -1,6 +1,6 @@
 ﻿namespace Reign.Networking
 {
-	public interface ServerI
+	public interface IServer
 	{
 		bool Listening {get;}
 

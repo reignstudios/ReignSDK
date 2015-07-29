@@ -6,7 +6,7 @@ using Reign.Core;
 
 namespace Reign.Video.D3D9
 {
-	public class ShaderVariable : ShaderVariableI
+	public class ShaderVariable : IShaderVariable
 	{
 		[StructLayout(LayoutKind.Explicit)]
 		struct ValueObject

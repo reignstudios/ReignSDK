@@ -2,7 +2,7 @@
 
 namespace Reign.Input
 {
-	public interface KeyboardI : DisposableI
+	public interface IKeyboard : IDisposableResource
 	{
 		Button Key(int keyCode);
 
@@ -92,20 +92,5 @@ namespace Reign.Input
 		Button ArrowUp {get;}
 	
 		void Update();
-	}
-
-	public static class KeyboardAPI
-	{
-		public static void Init(NewPtrMethod newPtr)
-		{
-			KeyboardAPI.newPtr = newPtr;
-		}
-
-		public delegate KeyboardI NewPtrMethod(DisposableI parent);
-		internal static NewPtrMethod newPtr;
-		public static KeyboardI New(DisposableI parent)
-		{
-			return newPtr(parent);
-		}
 	}
 }

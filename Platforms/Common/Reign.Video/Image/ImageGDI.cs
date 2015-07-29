@@ -10,9 +10,9 @@ namespace Reign.Video
 	public abstract class ImageGDI : Image
 	{
 		#region Constructors
-		public ImageGDI(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback)
+		public ImageGDI(string filename, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			new StreamLoader(fileName,
+			new StreamLoader(filename,
 			delegate(object sender, bool succeeded)
 			{
 				if (succeeded)

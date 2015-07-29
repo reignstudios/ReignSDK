@@ -3,7 +3,7 @@ using System;
 
 namespace Reign.Video.OpenGL
 {
-	public class IndexBuffer : IndexBufferI
+	public class IndexBuffer : IIndexBuffer
 	{
 		#region Properties
 		private Video video;
@@ -11,12 +11,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public static IndexBuffer New(DisposableI parent, BufferUsages usage, int[] indices)
-		{
-			return new IndexBuffer(parent, usage, indices);
-		}
-
-		public unsafe IndexBuffer(DisposableI parent, BufferUsages bufferUsage, int[] indices)
+		public unsafe IndexBuffer(IDisposableResource parent, BufferUsages bufferUsage, int[] indices)
 		: base(parent, bufferUsage, indices)
 		{
 			try
@@ -66,7 +61,7 @@ namespace Reign.Video.OpenGL
 			disposeChilderen();
 			if (indexBuffer != 0)
 			{
-				if (!OS.AutoDisposedGL)
+				if (!IPlatform.Singleton.AutoDisposedGL)
 				{
 					uint indexBufferTEMP = indexBuffer;
 					GL.BindBuffer(GL.ELEMENT_ARRAY_BUFFER, 0);

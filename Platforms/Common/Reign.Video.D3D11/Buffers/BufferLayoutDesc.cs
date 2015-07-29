@@ -5,23 +5,13 @@ using Reign.Core;
 
 namespace Reign.Video.D3D11
 {
-	public class BufferLayoutDesc : BufferLayoutDescI
+	public class BufferLayoutDesc : IBufferLayoutDesc
 	{
 		#region Properties
 		internal BufferLayoutDescCom com;
 		#endregion
 
 		#region Constructors
-		public static BufferLayoutDesc New(List<BufferLayoutElement> elements)
-		{
-			return new BufferLayoutDesc(elements);
-		}
-
-		public static BufferLayoutDesc New(BufferLayoutTypes type)
-		{
-			return new BufferLayoutDesc(type);
-		}
-
 		public BufferLayoutDesc(List<BufferLayoutElement> elements)
 		: base(elements)
 		{

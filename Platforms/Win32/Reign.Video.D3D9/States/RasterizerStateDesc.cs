@@ -4,18 +4,13 @@ using Reign_Video_D3D9_Component;
 
 namespace Reign.Video.D3D9
 {
-	public class RasterizerStateDesc : RasterizerStateDescI
+	public class RasterizerStateDesc : IRasterizerStateDesc
 	{
 		#region Properties
 		internal RasterizerStateDescCom com;
 		#endregion
 
 		#region Constructors
-		public static RasterizerStateDesc New(RasterizerStateTypes type)
-		{
-			return new RasterizerStateDesc(type);
-		}
-
 		public RasterizerStateDesc(RasterizerStateTypes type)
 		{
 			REIGN_D3DFILLMODE fillMode = REIGN_D3DFILLMODE.POINT;

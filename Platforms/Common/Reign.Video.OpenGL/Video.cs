@@ -40,12 +40,12 @@ namespace Reign.Video.OpenGL
 		public bool TextureCompression_PVR {get; internal set;}
 	}
 
-	public class Video : Disposable, VideoI
+	public class Video : DisposableResource, IVideo
 	{
 		#region Properties
 		public string FileTag {get; private set;}
 		public Size2 BackBufferSize {get; private set;}
-		private ApplicationI application;
+		private IApplication application;
 
 		public Caps Caps;
 		private bool disposed;
@@ -77,7 +77,7 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public Video(DisposableI parent, ApplicationI application, DepthStencilFormats depthStencilFormats, bool vSync)
+		public Video(IDisposableResource parent, IApplication application, DepthStencilFormats depthStencilFormats, bool vSync)
 		: base(parent)
 		{
 			try
@@ -471,7 +471,7 @@ namespace Reign.Video.OpenGL
 					/*if (shaderValue >= 1.3f)
 					{
 						Caps.Version = Versions.GL3;
-						ShaderI.FileTag = "GL3_";
+						IShader.FileTag = "GL3_";
 						Caps.MaxShaderVersion = ShaderVersions.GLSL_1_30;
 					}*/
 					if (shaderValue >= 1.4f)
@@ -743,7 +743,7 @@ namespace Reign.Video.OpenGL
 		    #endif
 		}
 
-		public void EnableRenderTarget(DepthStencilI depthStencil)
+		public void EnableRenderTarget(IDepthStencil depthStencil)
 		{
 			#if iOS
 			((GLKView)application.View).BindDrawable();

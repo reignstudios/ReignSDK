@@ -1,30 +1,45 @@
 ﻿using Reign.Core;
 
-namespace Reign.Video.API
+namespace Reign.Video.Abstraction
 {
-	public static class VertexBuffer
+	public static class VertexBufferAPI
 	{
-		public static void Init(VideoTypes type)
+		public static IVertexBuffer New(IDisposableResource parent, IBufferLayoutDesc bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices)
 		{
+			return New(VideoAPI.DefaultAPI, parent, bufferLayoutDesc, usage, topology, vertices, null);
+		}
+
+		public static IVertexBuffer New(IDisposableResource parent, IBufferLayoutDesc bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
+		{
+			return New(VideoAPI.DefaultAPI, parent, bufferLayoutDesc, usage, topology, vertices, indices);
+		}
+
+		public static IVertexBuffer New(VideoTypes videoType, IDisposableResource parent, IBufferLayoutDesc bufferLayoutDesc, BufferUsages usage, VertexBufferTopologys topology, float[] vertices, int[] indices)
+		{
+			IVertexBuffer api = null;
+
 			#if WIN32
-			if (type == VideoTypes.D3D9) VertexBufferAPI.Init(Reign.Video.D3D9.VertexBuffer.New, Reign.Video.D3D9.VertexBuffer.New);
+			if (videoType == VideoTypes.D3D9) api = new D3D9.VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices, indices);
 			#endif
 
 			#if WIN32 || WINRT || WP8
-			if (type == VideoTypes.D3D11) VertexBufferAPI.Init(Reign.Video.D3D11.VertexBuffer.New, Reign.Video.D3D11.VertexBuffer.New);
+			if (videoType == VideoTypes.D3D11) api = new D3D11.VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices, indices);
 			#endif
 
 			#if WIN32 || OSX || LINUX || iOS || ANDROID || NaCl
-			if (type == VideoTypes.OpenGL) VertexBufferAPI.Init(Reign.Video.OpenGL.VertexBuffer.New, Reign.Video.OpenGL.VertexBuffer.New);
+			if (videoType == VideoTypes.OpenGL) api = new OpenGL.VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices, indices);
 			#endif
 
 			#if XNA
-			if (type == VideoTypes.XNA) VertexBufferAPI.Init(Reign.Video.XNA.VertexBuffer.New, Reign.Video.XNA.VertexBuffer.New);
+			if (videoType == VideoTypes.XNA) api = new XNA.VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices, indices);
 			#endif
 			
 			#if VITA
-			if (type == VideoTypes.Vita) VertexBufferAPI.Init(Reign.Video.Vita.VertexBuffer.New, Reign.Video.Vita.VertexBuffer.New);
+			if (videoType == VideoTypes.Vita) api = new Vita.VertexBuffer(parent, bufferLayoutDesc, usage, topology, vertices, indices);
 			#endif
+
+			if (api == null) Debug.ThrowError("VertexBufferAPI", "Unsuported InputType: " + videoType);
+			return api;
 		}
 	}
 }

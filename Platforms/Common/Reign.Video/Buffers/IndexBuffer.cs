@@ -5,7 +5,7 @@ using System;
 
 namespace Reign.Video
 {
-	public abstract class IndexBufferI : Disposable
+	public abstract class IIndexBuffer : DisposableResource
 	{
 		#region Properties
 		protected BufferUsages usage;
@@ -17,7 +17,7 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		protected IndexBufferI(DisposableI parent, BufferUsages usage, int[] indices)
+		protected IIndexBuffer(IDisposableResource parent, BufferUsages usage, int[] indices)
 		: base(parent)
 		{
 			this.usage = usage;
@@ -48,20 +48,5 @@ namespace Reign.Video
 
 		public abstract void Update(int[] indices, int updateCount);
 		#endregion
-	}
-
-	public static class IndexBufferAPI
-	{
-		public static void Init(NewPtrMethod1 newPtr1)
-		{
-			IndexBufferAPI.newPtr1 = newPtr1;
-		}
-
-		public delegate IndexBufferI NewPtrMethod1(DisposableI parent, BufferUsages usage, int[] indices);
-		private static NewPtrMethod1 newPtr1;
-		public static IndexBufferI New(DisposableI parent, BufferUsages usage, int[] indices)
-		{
-			return newPtr1(parent, usage, indices);
-		}
 	}
 }

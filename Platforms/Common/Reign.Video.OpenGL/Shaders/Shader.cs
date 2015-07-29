@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Reign.Video.OpenGL
 {
-	public class Shader : ShaderI
+	public class Shader : IShader
 	{
 		#region Properties
 		private Video video;
@@ -17,20 +17,10 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return new Shader(parent, fileName, shaderVersion, loadedCallback);
-		}
-
-		public static Shader New(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
-		{
-			return new Shader(parent, fileName, shaderVersion, vsQuality, psQuality, loadedCallback);
-		}
-
-		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
+		public Shader(IDisposableResource parent, string filename, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
-			new StreamLoader(fileName,
+			new StreamLoader(filename,
 			delegate(object sender, bool succeeded)
 			{
 				if (succeeded)
@@ -46,10 +36,10 @@ namespace Reign.Video.OpenGL
 			});
 		}
 		
-		public Shader(DisposableI parent, string fileName, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
+		public Shader(IDisposableResource parent, string filename, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{
-			new StreamLoader(fileName,
+			new StreamLoader(filename,
 			delegate(object sender, bool succeeded)
 			{
 				if (succeeded)
@@ -105,7 +95,7 @@ namespace Reign.Video.OpenGL
 			disposeChilderen();
 			if (program != 0)
 			{
-				if (!OS.AutoDisposedGL)
+				if (!IPlatform.Singleton.AutoDisposedGL)
 				{
 					GL.UseProgram(0);
 					GL.DeleteProgram(program);
@@ -140,7 +130,7 @@ namespace Reign.Video.OpenGL
 			}
 		}
 
-		public override ShaderVariableI Variable(string name)
+		public override IShaderVariable Variable(string name)
 		{
 			// Try to find existing variable
 			foreach (var variable in variables)
@@ -160,7 +150,7 @@ namespace Reign.Video.OpenGL
 			return variableOut;
 		}
 
-		public override ShaderResourceI Resource(string name)
+		public override IShaderResource Resource(string name)
 		{
 			// Try to find existing variable
 			foreach (var resource in resources)

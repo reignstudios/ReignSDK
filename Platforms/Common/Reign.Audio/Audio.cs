@@ -2,7 +2,7 @@
 
 namespace Reign.Audio
 {
-	public interface AudioI : DisposableI
+	public interface IAudio : IDisposableResource
 	{
 		void Update();
 	}

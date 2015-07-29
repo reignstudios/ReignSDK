@@ -14,9 +14,9 @@ namespace Reign.Video
 	public class ImageBMPC : Image
 	{
 		#region Construtors
-		public ImageBMPC(string fileName, bool flip, Loader.LoadedCallbackMethod loadedCallback)
+		public ImageBMPC(string filename, bool flip, Loader.LoadedCallbackMethod loadedCallback)
 		{
-			new StreamLoader(fileName,
+			new StreamLoader(filename,
 			delegate(object sender, bool succeeded)
 			{
 				if (succeeded)

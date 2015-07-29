@@ -40,15 +40,15 @@ namespace Reign.Core
 		public byte[] Data;
 		public bool FailedToLoad;
 		
-		public NaClFile(string fileName)
+		public NaClFile(string filename)
 		{
-			FileName = fileName;
+			FileName = filename;
 			ID = Guid.NewGuid();
 		}
 	}
 	#endif
 
-	public class StreamLoader : LoadableI
+	public class StreamLoader : ILoadable
 	{
 		#region Properties
 		public bool Loaded {get; private set;}
@@ -69,37 +69,37 @@ namespace Reign.Core
 			init(null, stream, loadedCallback);
 		}
 
-		public StreamLoader(string fileName, Loader.LoadedCallbackMethod loadedCallback)
+		public StreamLoader(string filename, Loader.LoadedCallbackMethod loadedCallback)
 		{
 			Loader.AddLoadable(this);
-			init(fileName, null, loadedCallback);
+			init(filename, null, loadedCallback);
 		}
 
 		#if WINRT || WP8
-		private async void init(string fileName, Stream stream, Loader.LoadedCallbackMethod loadedCallback)
+		private async void init(string filename, Stream stream, Loader.LoadedCallbackMethod loadedCallback)
 		#else
-		private void init(string fileName, Stream stream, Loader.LoadedCallbackMethod loadedCallback)
+		private void init(string filename, Stream stream, Loader.LoadedCallbackMethod loadedCallback)
 		#endif
 		{
 			try
 			{
-				if (fileName != null)
+				if (filename != null)
 				{
 					fromFile = true;
 					#if WINRT || WP8
-					LoadedStream = await Streams.OpenFile(fileName);
+					LoadedStream = await Streams.OpenFile(filename);
 					#elif NaCl
 					this.loadedCallback = loadedCallback;
 					
-					fileName = fileName.Replace('\\', '/');
-					file = new NaClFile(fileName);
+					filename = filename.Replace('\\', '/');
+					file = new NaClFile(filename);
 					Streams.NaClFileLoadedCallback += fileLoaded;
 					Streams.addPendingFile(file);
 					Loader.AddLoadable(this);
 					
 					return;
 					#else
-					LoadedStream = Streams.OpenFile(fileName);
+					LoadedStream = Streams.OpenFile(filename);
 					#endif
 				}
 				else
@@ -300,116 +300,116 @@ namespace Reign.Core
 		#endif
 
 		#if WINRT || WP8
-		public static async Task<Stream> OpenFile(string fileName)
+		public static async Task<Stream> OpenFile(string filename)
 		{
-			return await OpenFile(fileName, FolderLocations.Application);
+			return await OpenFile(filename, FolderLocations.Application);
 		}
 		#else
-		public static Stream OpenFile(string fileName)
+		public static Stream OpenFile(string filename)
 		{
-			return OpenFile(fileName, FolderLocations.Application);
+			return OpenFile(filename, FolderLocations.Application);
 		}
 		#endif
 
 		#if WINRT || WP8
-		public static async Task<Stream> OpenFile(string fileName, FolderLocations folderLocation)
+		public static async Task<Stream> OpenFile(string filename, FolderLocations folderLocation)
 		#else
-		public static Stream OpenFile(string fileName, FolderLocations folderLocation)
+		public static Stream OpenFile(string filename, FolderLocations folderLocation)
 		#endif
 		{
 			if (folderLocation == FolderLocations.Unknown) Debug.ThrowError("Streams", "Unsuported folder type: " + folderLocation.ToString());
 			
 			#if OSX || iOS
-			fileName = fileName.Replace('\\', '/');
-			string directory = GetFileDirectory(fileName);
-			string ext = GetFileExt(fileName);
+			filename = filename.Replace('\\', '/');
+			string directory = GetFileDirectory(filename);
+			string ext = GetFileExt(filename);
 			ext = (ext.Length > 0) ? ext.Remove(0, 1) : "";
-			string file = GetFileNameWithoutExt(fileName);
+			string file = GetFileNameWithoutExt(filename);
 			
 			string path = NSBundle.MainBundle.PathForResource(file, ext, directory, "");
-			if (string.IsNullOrEmpty(path)) Debug.ThrowError("Streams", "Could not find file: " + fileName);
+			if (string.IsNullOrEmpty(path)) Debug.ThrowError("Streams", "Could not find file: " + filename);
 			
 			return new FileStream(path, FileMode.Open, FileAccess.Read);
 			#elif ANDROID
 			try
 			{
-				fileName = fileName.Replace('\\', '/');
-				using (var stream = ((AndroidApplication)OS.CurrentApplication).Assets.Open(fileName))
+				filename = filename.Replace('\\', '/');
+				using (var stream = ((AndroidApplication)OS.CurrentApplication).Assets.Open(filename))
 				{
 					return CopyToMemoryStream(stream);
 				}
 			}
 			catch (Exception e)
 			{
-				Debug.ThrowError("Streams", "Could not find file: " + fileName + " - SubErrorMessage: " + e.Message);
+				Debug.ThrowError("Streams", "Could not find file: " + filename + " - SubErrorMessage: " + e.Message);
 				return null;
 			}
 			#elif NaCl
 			Debug.ThrowError("Streams", "Method not supported in NaCl. Use StreamLoader instead");
 			return null;
 			#elif WINRT || WP8
-			fileName = fileName.Replace('/', '\\');
+			filename = filename.Replace('/', '\\');
 			switch (folderLocation)
 			{
 				case FolderLocations.Application:
 					var appFolder = Package.Current.InstalledLocation;
-					return await appFolder.OpenStreamForReadAsync(fileName);
+					return await appFolder.OpenStreamForReadAsync(filename);
 
 				case FolderLocations.Storage:
 					var storageFolder = ApplicationData.Current.LocalFolder;
-					return await storageFolder.OpenStreamForReadAsync(fileName);
+					return await storageFolder.OpenStreamForReadAsync(filename);
 
 				case FolderLocations.Documents:
-					var docFile = await KnownFolders.DocumentsLibrary.GetFileAsync(fileName);
+					var docFile = await KnownFolders.DocumentsLibrary.GetFileAsync(filename);
 					return await docFile.OpenStreamForReadAsync();
 
 				case FolderLocations.Pictures:
-					var picFile = await KnownFolders.PicturesLibrary.GetFileAsync(fileName);
+					var picFile = await KnownFolders.PicturesLibrary.GetFileAsync(filename);
 					return await picFile.OpenStreamForReadAsync();
 
 				case FolderLocations.Music:
-					var musicFile = await KnownFolders.MusicLibrary.GetFileAsync(fileName);
+					var musicFile = await KnownFolders.MusicLibrary.GetFileAsync(filename);
 					return await musicFile.OpenStreamForReadAsync();
 
 				case FolderLocations.Video:
-					var videoFile = await KnownFolders.VideosLibrary.GetFileAsync(fileName);
+					var videoFile = await KnownFolders.VideosLibrary.GetFileAsync(filename);
 					return await videoFile.OpenStreamForReadAsync();
 			}
 			return null;
 			#elif SILVERLIGHT
-			fileName = fileName.Replace('\\', '/');
-			var file = Application.GetResourceStream(new Uri(fileName, UriKind.Relative));
-			if (file == null) Debug.ThrowError("Streams", "Failed to find file: " + fileName);
+			filename = filename.Replace('\\', '/');
+			var file = Application.GetResourceStream(new Uri(filename, UriKind.Relative));
+			if (file == null) Debug.ThrowError("Streams", "Failed to find file: " + filename);
 			return file.Stream;
 			#else
 			#if LINUX
-			fileName = fileName.Replace('\\', '/');
+			filename = filename.Replace('\\', '/');
 			#else
-			fileName = fileName.Replace('/', '\\');
+			filename = filename.Replace('/', '\\');
 			#if VITA
-			fileName = "/Application/" + fileName;
+			filename = "/Application/" + filename;
 			#endif
 			#endif
-			return new FileStream(fileName, FileMode.Open, FileAccess.Read);
+			return new FileStream(filename, FileMode.Open, FileAccess.Read);
 			#endif
 		}
 
 		#if WINRT || WP8
-		public static async Task<Stream> SaveFile(string fileName)
+		public static async Task<Stream> SaveFile(string filename)
 		{
-			return await SaveFile(fileName, FolderLocations.Storage);
+			return await SaveFile(filename, FolderLocations.Storage);
 		}
 		#else
-		public static Stream SaveFile(string fileName)
+		public static Stream SaveFile(string filename)
 		{
-			return SaveFile(fileName, FolderLocations.Storage);
+			return SaveFile(filename, FolderLocations.Storage);
 		}
 		#endif
 
 		#if WINRT || WP8
-		public static async Task<Stream> SaveFile(string fileName, FolderLocations folderLocation)
+		public static async Task<Stream> SaveFile(string filename, FolderLocations folderLocation)
 		#else
-		public static Stream SaveFile(string fileName, FolderLocations folderLocation)
+		public static Stream SaveFile(string filename, FolderLocations folderLocation)
 		#endif
 		{
 			#if OSX || iOS
@@ -419,31 +419,31 @@ namespace Reign.Core
 			#elif NaCl
 			throw new NotImplementedException();
 			#elif WINRT || WP8
-			fileName = fileName.Replace('/', '\\');
+			filename = filename.Replace('/', '\\');
 			switch (folderLocation)
 			{
 				case FolderLocations.Application:
 					var appFolder = Package.Current.InstalledLocation;
-					return await appFolder.OpenStreamForWriteAsync(fileName, CreationCollisionOption.ReplaceExisting);
+					return await appFolder.OpenStreamForWriteAsync(filename, CreationCollisionOption.ReplaceExisting);
 
 				case FolderLocations.Storage:
 					var storageFolder = ApplicationData.Current.LocalFolder;
-					return await storageFolder.OpenStreamForWriteAsync(fileName, CreationCollisionOption.ReplaceExisting);
+					return await storageFolder.OpenStreamForWriteAsync(filename, CreationCollisionOption.ReplaceExisting);
 
 				case FolderLocations.Documents:
-					var docFile = await KnownFolders.DocumentsLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+					var docFile = await KnownFolders.DocumentsLibrary.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
 					return await docFile.OpenStreamForWriteAsync();
 
 				case FolderLocations.Pictures:
-					var picFile = await KnownFolders.PicturesLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+					var picFile = await KnownFolders.PicturesLibrary.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
 					return await picFile.OpenStreamForWriteAsync();
 
 				case FolderLocations.Music:
-					var musicFile = await KnownFolders.MusicLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+					var musicFile = await KnownFolders.MusicLibrary.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
 					return await musicFile.OpenStreamForWriteAsync();
 
 				case FolderLocations.Video:
-					var videoFile = await KnownFolders.VideosLibrary.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+					var videoFile = await KnownFolders.VideosLibrary.CreateFileAsync(filename, CreationCollisionOption.ReplaceExisting);
 					return await videoFile.OpenStreamForWriteAsync();
 
 				default:
@@ -453,30 +453,30 @@ namespace Reign.Core
 			return null;
 			#else
 			#if LINUX
-			fileName = fileName.Replace('\\', '/');
+			filename = filename.Replace('\\', '/');
 			#else
-			fileName = fileName.Replace('/', '\\');
+			filename = filename.Replace('/', '\\');
 			#endif
-			return new FileStream(fileName, FileMode.Create, FileAccess.Write);
+			return new FileStream(filename, FileMode.Create, FileAccess.Write);
 			#endif
 		}
 
 		#if WINRT || WP8
-		public static async Task<bool> FileExists(string fileName)
+		public static async Task<bool> FileExists(string filename)
 		{
-			return await FileExists(fileName, FolderLocations.Storage);
+			return await FileExists(filename, FolderLocations.Storage);
 		}
 		#else
-		public static bool FileExists(string fileName)
+		public static bool FileExists(string filename)
 		{
-			return FileExists(fileName, FolderLocations.Storage);
+			return FileExists(filename, FolderLocations.Storage);
 		}
 		#endif
 
 		#if WINRT || WP8
-		public static async Task<bool> FileExists(string fileName, FolderLocations folderLocation)
+		public static async Task<bool> FileExists(string filename, FolderLocations folderLocation)
 		#else
-		public static bool FileExists(string fileName, FolderLocations folderLocation)
+		public static bool FileExists(string filename, FolderLocations folderLocation)
 		#endif
 		{
 			#if OSX || iOS
@@ -486,30 +486,30 @@ namespace Reign.Core
 			#elif NaCl
 			throw new NotImplementedException();
 			#elif WINRT || WP8
-			fileName = fileName.Replace('/', '\\');
+			filename = filename.Replace('/', '\\');
 			try
 			{
 				switch (folderLocation)
 				{
 					case FolderLocations.Application:
 						var appFolder = Package.Current.InstalledLocation;
-						return (await appFolder.GetFileAsync(fileName)) != null;
+						return (await appFolder.GetFileAsync(filename)) != null;
 
 					case FolderLocations.Storage:
 						var storageFolder = ApplicationData.Current.LocalFolder;
-						return (await storageFolder.GetFileAsync(fileName)) != null;
+						return (await storageFolder.GetFileAsync(filename)) != null;
 
 					case FolderLocations.Documents:
-						return (await KnownFolders.DocumentsLibrary.GetFileAsync(fileName)) != null;
+						return (await KnownFolders.DocumentsLibrary.GetFileAsync(filename)) != null;
 
 					case FolderLocations.Pictures:
-						return (await KnownFolders.PicturesLibrary.CreateFileAsync(fileName)) != null;
+						return (await KnownFolders.PicturesLibrary.CreateFileAsync(filename)) != null;
 
 					case FolderLocations.Music:
-						return (await KnownFolders.MusicLibrary.CreateFileAsync(fileName)) != null;
+						return (await KnownFolders.MusicLibrary.CreateFileAsync(filename)) != null;
 
 					case FolderLocations.Video:
-						return (await KnownFolders.VideosLibrary.CreateFileAsync(fileName)) != null;
+						return (await KnownFolders.VideosLibrary.CreateFileAsync(filename)) != null;
 
 					default:
 						Debug.ThrowError("Streams", "Unsuported folder location: " + folderLocation.ToString());
@@ -523,9 +523,9 @@ namespace Reign.Core
 			return false;
 			#else
 			#if LINUX
-			fileName = fileName.Replace('\\', '/');
+			filename = filename.Replace('\\', '/');
 			#else
-			fileName = fileName.Replace('/', '\\');
+			filename = filename.Replace('/', '\\');
 			#endif
 			throw new NotImplementedException();
 			#endif
@@ -546,21 +546,21 @@ namespace Reign.Core
 			return memoryStream;
 		}
 
-		public static string StripFileExt(string fileName)
+		public static string StripFileExt(string filename)
 		{
-			var match = Regex.Match(fileName, @".*\.");
+			var match = Regex.Match(filename, @".*\.");
 			if (match.Success && !string.IsNullOrEmpty(match.Value))
 			{
-				fileName = match.Value.Substring(0, match.Value.Length-1);
+				filename = match.Value.Substring(0, match.Value.Length-1);
 			}
 
-			return fileName;
+			return filename;
 		}
 		
-		public static string GetFileDirectory(string fileName)
+		public static string GetFileDirectory(string filename)
 		{
 			bool pass = false;
-			foreach (var c in fileName)
+			foreach (var c in filename)
 			{
 				if (c == '/' || c == '\\')
 				{
@@ -570,48 +570,48 @@ namespace Reign.Core
 			}
 			if (!pass) return "";
 
-			var match = Regex.Match(fileName, @".*[/\\]");
+			var match = Regex.Match(filename, @".*[/\\]");
 			if (match.Success && !string.IsNullOrEmpty(match.Value))
 			{
-				fileName = match.Value.Substring(0, match.Value.Length-1);
+				filename = match.Value.Substring(0, match.Value.Length-1);
 			}
 
 			#if WINRT || WP8 || LINUX
-			return fileName + '\\';
+			return filename + '\\';
 			#else
-			return fileName + '/';
+			return filename + '/';
 			#endif
 		}
 		
-		public static string GetFileNameWithExt(string fileName)
+		public static string GetFileNameWithExt(string filename)
 		{
-			var match = Regex.Match(fileName, @".*[/\\]");
+			var match = Regex.Match(filename, @".*[/\\]");
 			if (match.Success && !string.IsNullOrEmpty(match.Value))
 			{
-				fileName = fileName.Substring(match.Value.Length, fileName.Length - match.Value.Length);
+				filename = filename.Substring(match.Value.Length, filename.Length - match.Value.Length);
 			}
 
-			return fileName;
+			return filename;
 		}
 		
-		public static string GetFileNameWithoutExt(string fileName)
+		public static string GetFileNameWithoutExt(string filename)
 		{
-			fileName = GetFileNameWithExt(fileName);
-			string ext = GetFileExt(fileName);
-			return fileName.Substring(0, fileName.Length - ext.Length);
+			filename = GetFileNameWithExt(filename);
+			string ext = GetFileExt(filename);
+			return filename.Substring(0, filename.Length - ext.Length);
 		}
 
-		public static string GetFileExt(string fileName)
+		public static string GetFileExt(string filename)
 		{
-			var names = fileName.Split('.');
+			var names = filename.Split('.');
 			if (names.Length < 2) return null;
 			return '.' + names[names.Length-1];
 		}
 
-		public static bool IsAbsolutePath(string fileName)
+		public static bool IsAbsolutePath(string filename)
 		{
 			#if WIN32
-			var match = Regex.Match(fileName, @"A|C|D|E|F|G|H|I:/|\\");
+			var match = Regex.Match(filename, @"A|C|D|E|F|G|H|I:/|\\");
 			return match.Success;
 			#else
 			throw new NotImplementedException();
