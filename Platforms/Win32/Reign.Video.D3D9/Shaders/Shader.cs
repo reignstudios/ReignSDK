@@ -17,25 +17,6 @@ namespace Reign.Video.D3D9
 		#endregion
 
 		#region Constructors
-		public Shader(IDisposableResource parent, string filename, ShaderVersions shaderVersion, Loader.LoadedCallbackMethod loadedCallback)
-		: base(parent)
-		{
-			new StreamLoader(filename,
-			delegate(object sender, bool succeeded)
-			{
-				if (succeeded)
-				{
-					init(filename, ((StreamLoader)sender).LoadedStream, shaderVersion, loadedCallback);
-				}
-				else
-				{
-					FailedToLoad = true;
-					Dispose();
-					if (loadedCallback != null) loadedCallback(this, false);
-				}
-			});
-		}
-
 		public Shader(IDisposableResource parent, string filename, ShaderVersions shaderVersion, ShaderFloatingPointQuality vsQuality, ShaderFloatingPointQuality psQuality, Loader.LoadedCallbackMethod loadedCallback)
 		: base(parent)
 		{

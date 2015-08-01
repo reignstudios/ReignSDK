@@ -10,10 +10,11 @@ namespace Reign_Video_D3D9_Component
 		this->video = video;
 
 		IDirect3DPixelShader9* shaderTEMP = 0;
-		if (FAILED(video->device->CreatePixelShader((DWORD*)shaderModel->code->GetBufferPointer(), &shaderTEMP)))
+		// TODO: load data file file
+		/*if (FAILED(video->device->CreatePixelShader((DWORD*)shaderModel->code->GetBufferPointer(), &shaderTEMP)))
 		{
 			return PixelShaderErrors::PixelShader;
-		}
+		}*/
 		this->shader = shaderTEMP;
 
 		return PixelShaderErrors::None;

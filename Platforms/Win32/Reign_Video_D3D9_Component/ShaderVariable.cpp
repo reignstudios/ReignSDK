@@ -7,18 +7,18 @@ namespace Reign_Video_D3D9_Component
 	ShaderVariableCom::ShaderVariableCom(VideoCom^ video, IntPtr vertexHandle, IntPtr pixelHandle, ShaderModelCom^ vertexVariables, ShaderModelCom^ pixelVariables)
 	{
 		this->video = video;
-		this->vertexHandle = (D3DXHANDLE)vertexHandle.ToPointer();
+		/*this->vertexHandle = (D3DXHANDLE)vertexHandle.ToPointer();
 		this->pixelHandle = (D3DXHANDLE)pixelHandle.ToPointer();
 		this->vertexVariables = vertexVariables->variables;
-		this->pixelVariables = pixelVariables->variables;
+		this->pixelVariables = pixelVariables->variables;*/
 	}
 	#pragma endregion
 
 	#pragma region Methods
 	void ShaderVariableCom::SetFloat(float value)
 	{
-		if (vertexHandle) vertexVariables->SetFloat(video->device, vertexHandle, value);
-		if (pixelHandle) pixelVariables->SetFloat(video->device, pixelHandle, value);
+		/*if (vertexHandle) vertexVariables->SetFloat(video->device, vertexHandle, value);
+		if (pixelHandle) pixelVariables->SetFloat(video->device, pixelHandle, value);*/
 	}
 
 	/*void ShaderVariableCom::SetVector2(float x, float y)
@@ -45,9 +45,9 @@ namespace Reign_Video_D3D9_Component
 
 	void ShaderVariableCom::SetVector4(void* vector)
 	{
-		D3DXVECTOR4* ptr = (D3DXVECTOR4*)vector;
+		/*D3DXVECTOR4* ptr = (D3DXVECTOR4*)vector;
 		if (vertexHandle) vertexVariables->SetVector(video->device, vertexHandle, ptr);
-		if (pixelHandle) pixelVariables->SetVector(video->device, pixelHandle, ptr);
+		if (pixelHandle) pixelVariables->SetVector(video->device, pixelHandle, ptr);*/
 	}
 
 	/*void ShaderVariableCom::SetMatrix2()
@@ -64,31 +64,31 @@ namespace Reign_Video_D3D9_Component
 
 	void ShaderVariableCom::SetMatrix4(void* matrix)
 	{
-		D3DXMATRIX* ptr = (D3DXMATRIX*)matrix;
+		/*D3DXMATRIX* ptr = (D3DXMATRIX*)matrix;
 		if (vertexHandle) vertexVariables->SetMatrix(video->device, vertexHandle, ptr);
-		if (pixelHandle) pixelVariables->SetMatrix(video->device, pixelHandle, ptr);
+		if (pixelHandle) pixelVariables->SetMatrix(video->device, pixelHandle, ptr);*/
 	}
 
 	void ShaderVariableCom::SetFloatArray(array<float>^ values, int valueArrayOffset, int valueArrayCount)
 	{
-		pin_ptr<void> valuePtr = &values[valueArrayOffset];
+		/*pin_ptr<void> valuePtr = &values[valueArrayOffset];
 		float* ptr = ((float*)(void*)valuePtr);
 		if (vertexHandle) vertexVariables->SetFloatArray(video->device, vertexHandle, ptr, valueArrayCount);
-		if (pixelHandle) pixelVariables->SetFloatArray(video->device, pixelHandle, ptr, valueArrayCount);
+		if (pixelHandle) pixelVariables->SetFloatArray(video->device, pixelHandle, ptr, valueArrayCount);*/
 	}
 
 	void ShaderVariableCom::SetVector4Array(void* values, int valueArrayOffset, int valueArrayCount)
 	{
-		D3DXVECTOR4* ptr = ((D3DXVECTOR4*)values) + valueArrayOffset;
+		/*D3DXVECTOR4* ptr = ((D3DXVECTOR4*)values) + valueArrayOffset;
 		if (vertexHandle) vertexVariables->SetVectorArray(video->device, vertexHandle, ptr, valueArrayCount);
-		if (pixelHandle) pixelVariables->SetVectorArray(video->device, pixelHandle, ptr, valueArrayCount);
+		if (pixelHandle) pixelVariables->SetVectorArray(video->device, pixelHandle, ptr, valueArrayCount);*/
 	}
 
 	void ShaderVariableCom::SetMatrix4Array(void* values, int valueArrayOffset, int valueArrayCount)
 	{
-		D3DXMATRIX* ptr = ((D3DXMATRIX*)values) + valueArrayOffset;
+		/*D3DXMATRIX* ptr = ((D3DXMATRIX*)values) + valueArrayOffset;
 		if (vertexHandle) vertexVariables->SetMatrixArray(video->device, vertexHandle, ptr, valueArrayCount);
-		if (pixelHandle) pixelVariables->SetMatrixArray(video->device, pixelHandle, ptr, valueArrayCount);
+		if (pixelHandle) pixelVariables->SetMatrixArray(video->device, pixelHandle, ptr, valueArrayCount);*/
 	}
 	#pragma endregion
 }

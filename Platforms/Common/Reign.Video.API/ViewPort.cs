@@ -9,6 +9,16 @@ namespace Reign.Video.Abstraction
 			return New(VideoAPI.DefaultAPI, parent, location, size);
 		}
 
+		public static IViewPort New(IDisposableResource parent, int x, int y, int width, int height)
+		{
+			return New(VideoAPI.DefaultAPI, parent, new Point2(x, y), new Size2(width, height));
+		}
+
+		public static IViewPort New(VideoTypes videoType, IDisposableResource parent, int x, int y, int width, int height)
+		{
+			return New(VideoAPI.DefaultAPI, parent, new Point2(x, y), new Size2(width, height));
+		}
+
 		public static IViewPort New(VideoTypes videoType, IDisposableResource parent, Point2 location, Size2 size)
 		{
 			IViewPort api = null;

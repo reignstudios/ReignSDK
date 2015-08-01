@@ -1,13 +1,13 @@
 #include "pch.h"
 #include "ShaderModel.h"
-#include <D3DX9Effect.h>
+//#include <D3DX9Effect.h>// TODO load effects from compiled files
 
 namespace Reign_Video_D3D9_Component
 {
 	#pragma region Constructors
 	ShaderModelErrors ShaderModelCom::Init(VideoCom^ video, IntPtr codePtr, int codeLength, IntPtr shaderVersionTypePtr, [Out] string^% errorText)
 	{
-		null();
+		/*null();
 		this->video = video;
 
 		ID3DXConstantTable* variablesTEMP = 0;
@@ -24,26 +24,26 @@ namespace Reign_Video_D3D9_Component
 		code = codeTEMP;
 		variables = variablesTEMP;
 
-		errorText = nullptr;
+		errorText = nullptr;*/
 		return ShaderModelErrors::None;
 	}
 
 	ShaderModelCom::~ShaderModelCom()
 	{
-		if (code) code->Release();
-		if (variables) variables->Release();
+		//if (code) code->Release();
+		//if (variables) variables->Release();
 		null();
 	}
 
 	void ShaderModelCom::null()
 	{
-		code = 0;
-		variables = 0;
+		//code = 0;
+		//variables = 0;
 	}
 	#pragma endregion
 
 	#pragma region Methods
-	D3DXHANDLE ShaderModelCom::variableHandle(string^ name)
+	/*D3DXHANDLE ShaderModelCom::variableHandle(string^ name)
 	{
 		if (!variables) return 0;
 
@@ -52,17 +52,17 @@ namespace Reign_Video_D3D9_Component
 		Marshal::FreeHGlobal(namePtr);
 
 		return variable;
-	}
+	}*/
 
 	IntPtr ShaderModelCom::Variable(string^ name)
 	{
-		return IntPtr((void*)variableHandle(name));
+		return IntPtr::Zero;//IntPtr((void*)variableHandle(name));
 	}
 
 	int ShaderModelCom::Resource(string^ name)
 	{
-		D3DXHANDLE variable = variableHandle(name);
-		if (variable != 0) return variables->GetSamplerIndex(variable);
+		//D3DXHANDLE variable = variableHandle(name);
+		//if (variable != 0) return variables->GetSamplerIndex(variable);
 
 		return -1;
 	}
@@ -72,7 +72,7 @@ namespace Reign_Video_D3D9_Component
 		IntPtr codePtr = Marshal::StringToHGlobalAnsi(code);
 		IntPtr shaderVersionPtr = Marshal::StringToHGlobalAnsi(shaderType);
 
-		ID3DXConstantTable* variablesTEMP = 0;
+		/*ID3DXConstantTable* variablesTEMP = 0;
 		ID3DXBuffer *codeTEMP = 0,  *err = 0;
 		if (FAILED(D3DXCompileShader((char*)codePtr.ToPointer(), code->Length, 0, 0, "main", (char*)shaderVersionPtr.ToPointer(), D3DXSHADER_OPTIMIZATION_LEVEL3, &codeTEMP, &err, &variablesTEMP)))
 		{
@@ -85,14 +85,16 @@ namespace Reign_Video_D3D9_Component
 			}
 
 			return L"Failed with unknow error.";
-		}
+		}*/
 		//this->code = codeTEMP;
 		//variables = variablesTEMP;
 
 		if (shaderVersionPtr != IntPtr::Zero) Marshal::FreeHGlobal(shaderVersionPtr);
 		if (codePtr != IntPtr::Zero) Marshal::FreeHGlobal(codePtr);
-		buffer = IntPtr(codeTEMP->GetBufferPointer());
-		bufferSize = codeTEMP->GetBufferSize();
+		//buffer = IntPtr(codeTEMP->GetBufferPointer());
+		//bufferSize = codeTEMP->GetBufferSize();
+
+		return L"";
 	}
 	#pragma endregion
 }

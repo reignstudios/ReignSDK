@@ -7,8 +7,8 @@ namespace Reign_Video_D3D9_Component
 	{
 		#pragma region Properties
 		private: VideoCom^ video;
-		private: D3DXHANDLE vertexHandle, pixelHandle;
-		private: ID3DXConstantTable* vertexVariables, *pixelVariables;
+		//private: D3DXHANDLE vertexHandle, pixelHandle;
+		//private: ID3DXConstantTable* vertexVariables, *pixelVariables;
 		#pragma endregion
 
 		#pragma region Constructors

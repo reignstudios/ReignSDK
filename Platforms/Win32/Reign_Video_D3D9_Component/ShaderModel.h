@@ -1,6 +1,6 @@
 #pragma once
 #include "Video.h"
-#include <D3DX9Effect.h>
+//#include <D3DX9Effect.h>// TODO load effects from compiled files
 
 namespace Reign_Video_D3D9_Component
 {
@@ -14,8 +14,8 @@ namespace Reign_Video_D3D9_Component
 	{
 		#pragma region Properties
 		private: VideoCom^ video;
-		internal: ID3DXBuffer* code;
-		internal: ID3DXConstantTable* variables;
+		//internal: ID3DXBuffer* code;
+		//internal: ID3DXConstantTable* variables;
 		#pragma endregion
 
 		#pragma region Constructors
@@ -25,7 +25,7 @@ namespace Reign_Video_D3D9_Component
 		#pragma endregion
 
 		#pragma region Methods
-		private: D3DXHANDLE variableHandle(string^ name);
+		//private: D3DXHANDLE variableHandle(string^ name);
 		public: IntPtr Variable(string^ name);
 		public: int Resource(string^ name);
 		public: static string^ Compile(string^ code, int codeSize, string^ shaderType, [Out] IntPtr% buffer, [Out] int% bufferSize);

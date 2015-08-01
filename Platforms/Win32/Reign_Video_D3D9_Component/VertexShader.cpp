@@ -10,10 +10,11 @@ namespace Reign_Video_D3D9_Component
 		this->video = video;
 
 		IDirect3DVertexShader9* shaderTEMP = 0;
-		if (FAILED(video->device->CreateVertexShader((DWORD*)shaderModel->code->GetBufferPointer(), &shaderTEMP)))
+		// TODO: load data file file
+		/*if (FAILED(video->device->CreateVertexShader((DWORD*)shaderModel->code->GetBufferPointer(), &shaderTEMP)))
 		{
 			return VertexShaderErrors::VertexShader;
-		}
+		}*/
 		this->shader = shaderTEMP;
 
 		return VertexShaderErrors::None;

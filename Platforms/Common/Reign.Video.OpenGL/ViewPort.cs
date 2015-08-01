@@ -5,14 +5,8 @@ namespace Reign.Video.OpenGL
 	public class ViewPort : IViewPort
 	{
 		#region Constructors
-		public ViewPort(IDisposableResource parent, int x, int y, int width, int height)
-		: base(x, y, width, height)
-		{
-			
-		}
-
-		public ViewPort(IDisposableResource parent, Point2 location, Size2 size)
-		: base(location, size)
+		public ViewPort(IDisposableResource parent, Point2 position, Size2 size)
+		: base(position, size)
 		{
 			
 		}

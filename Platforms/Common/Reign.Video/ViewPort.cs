@@ -11,14 +11,9 @@ namespace Reign.Video
 		#endregion
 
 		#region Constructors
-		protected IViewPort(int x, int y, int width, int height)
+		protected IViewPort(Point2 position, Size2 size)
 		{
-			Set(x, y, width, height);
-		}
-
-		protected IViewPort(Point2 location, Size2 size)
-		{
-			Set(location, size);
+			Set(position, size);
 		}
 		#endregion
 
@@ -29,9 +24,9 @@ namespace Reign.Video
 			Size = new Size2(width, height);
 		}
 
-		public void Set(Point2 location, Size2 size)
+		public void Set(Point2 position, Size2 size)
 		{
-			this.Position = location;
+			this.Position = position;
 			this.Size = size;
 		}
 

@@ -12,15 +12,16 @@ namespace Reign.Video.OpenGL
 		#endregion
 
 		#region Constructors
-		public RenderTarget(IDisposableResource parent, int width, int height, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
-		: base(parent, width, height, surfaceFormat, usage, loadedCallback)
+		public RenderTarget(IDisposableResource parent, string filename, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback)
+		: base(parent, filename, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, loadedCallback)
 		{
 			if (initSuccess) initDepthStencil(width, height, depthStencilFormat);
 		}
 
-		public RenderTarget(IDisposableResource parent, string filename, MultiSampleTypes multiSampleType, BufferUsages usage, RenderTargetUsage renderTargetUsage, Loader.LoadedCallbackMethod loadedCallback)
-		: base(parent, filename, false, usage, loadedCallback)
+		public RenderTarget(IDisposableResource parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, DepthStencilFormats depthStencilFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, Loader.LoadedCallbackMethod loadedCallback)
+		: base(parent, image, width, height, generateMipmaps, multiSampleType, surfaceFormat, renderTargetUsage, usage, loadedCallback)
 		{
+			if (initSuccess) initDepthStencil(width, height, depthStencilFormat);
 		}
 
 		protected unsafe override bool init(IDisposableResource parent, Image image, int width, int height, bool generateMipmaps, MultiSampleTypes multiSampleType, SurfaceFormats surfaceFormat, RenderTargetUsage renderTargetUsage, BufferUsages usage, bool isRenderTarget, Loader.LoadedCallbackMethod loadedCallback)
