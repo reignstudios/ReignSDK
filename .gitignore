@@ -23,3 +23,5 @@ _ReSharper*/
 # System Files
 *.DS_Store
 *.cachefile
+
+*.gititgui-user
